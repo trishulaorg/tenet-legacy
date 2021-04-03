@@ -1,9 +1,9 @@
 version: '3'
 services:
   web:
-    build .
+    build: .
     ports:
-      - "8080:8080"
+      - "3000:3000"
   db:
     image: postgres:13-alpine
     ports:
