@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int      @id @default(autoincrement())
+  createdAt        DateTime @default(now())
+  name             String   @unique
+  iconUrl          String
+  followingBoards  Board[]  @relation("FollowingBoards", references: [id])
+  modelatingBoards Board[]  @relation(references: [id])
+}
+
+model Board {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  description String
+  moderators  User[]   @relation(references: [id])
+  followedBy  User[]   @relation("FollowingBoards", references: [id])
+  posts       Post[]
+}
+
+model Post {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  title       String
+  contentType ContentType
+  content     String // wip
+  comments    Comment[]
+  board       Board       @relation(fields: [boardId], references: [id])
+  boardId     Int
+}
+
+model Comment {
+  id          Int         @id @default(autoincrement())
+  contentType ContentType
+  content     String
+  postId      Int
+  post        Post        @relation(fields: [postId], references: [id])
+}
+
+enum ContentType {
+  TEXT
+  LINK
+  IMAGE
+  VIDEO
+  EMOJI
+}
