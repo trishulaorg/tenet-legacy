@@ -4,12 +4,41 @@ datasource db {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  createdAt        DateTime @default(now())
-  name             String   @unique
+  id               Int             @id @default(autoincrement())
+  createdAt        DateTime        @default(now())
+  name             String          @unique
   iconUrl          String
-  followingBoards  Board[]  @relation("FollowingBoards", references: [id])
-  modelatingBoards Board[]  @relation(references: [id])
+  followingBoards  Board[]         @relation("FollowingBoards", references: [id])
+  modelatingBoards Board[]         @relation(references: [id])
+  followingUsers   UserRelation[]  @relation("destUser")
+  followedUsers    UserRelation[]  @relation("srcUser")
+  votesOnComments  VoteOnComment[]
+  votesOnPosts     VoteOnPost[]
+}
+
+model UserRelation {
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now())
+  srcUserId  Int
+  srcUser    User     @relation("srcUser", fields: [srcUserId], references: [id])
+  destUserId Int
+  destUser   User     @relation("destUser", fields: [destUserId], references: [id])
+}
+
+model VoteOnPost {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  weight      Int
+}
+
+model VoteOnComment {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  weight      Int
 }
 
 model Board {
