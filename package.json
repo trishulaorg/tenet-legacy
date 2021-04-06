@@ -4,9 +4,11 @@
   "description": "Meta-internet",
   "main": "dest/index.js",
   "scripts": {
+    "preapi": "npm run migrate:test",
     "api": "NODE_ENV=development cd api && tsc && node index.js",
     "dev": "NODE_ENV=development node server.js",
     "build": "next build",
+    "migrate:test": "prisma migrate dev",
     "start": "NODE_ENV=production node server.js"
   },
   "repository": {

@@ -10,6 +10,8 @@ services:
       dockerfile: ./api/Dockerfile
     ports:
       - "4000:4000"
+    depends_on:
+      - db
   db:
     image: postgres:13-alpine
     ports:
