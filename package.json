@@ -4,7 +4,7 @@
   "description": "Meta-internet",
   "main": "dest/index.js",
   "scripts": {
-    "api": "cd api && tsc",
+    "api": "NODE_ENV=development cd api && tsc && node index.js",
     "dev": "NODE_ENV=development node server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js"
