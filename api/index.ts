@@ -1,38 +1,29 @@
+
 import { ApolloServer, gql } from "apollo-server"
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
 
 const typeDefs = gql`
-  type Book {
-    title: String
-    author: String
-  }
-
-  type Query {
-    books: [Book]
-  }
+    type User {
+        name: String
+        iconUrl: String
+    }
+    type Query {
+        users: [User]
+    }
 `;
 
-const books = [
-  {
-    title: "Harry Potter and the Chamber of Secrets",
-    author: "J.K. Rowling"
-  },
-  {
-    title: "Jurassic Park",
-    author: "Michael Crishton"
-  }
-];
-
 const resolvers = {
-  Query: {
-    books: () => books
-  }
+    Query: {
+        users: () => prisma.user.findMany()
+    }
 };
 
 const main = () => {
-  const server = new ApolloServer({ typeDefs, resolvers });
-  server.listen().then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
-  });
+    const server = new ApolloServer({ typeDefs, resolvers });
+    server.listen().then(({ url }) => {
+        console.log(`🚀  Server ready at ${url}`);
+    });
 }
 
 main();
