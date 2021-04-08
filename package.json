@@ -9,7 +9,9 @@
     "dev": "NODE_ENV=development node server.js",
     "build": "next build",
     "migrate:test": "prisma migrate dev",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server.js",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit",
+    "lint": "eslint --ext js,jsx,ts,tsx --fix"
   },
   "repository": {
     "type": "git",
