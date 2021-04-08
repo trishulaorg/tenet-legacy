@@ -11,7 +11,7 @@
     "migrate:test": "prisma migrate dev",
     "start": "NODE_ENV=production node server.js",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
-    "lint": "eslint --ext js,jsx,ts,tsx --fix",
+    "lint": "eslint . --ext js,jsx,ts,tsx --fix",
     "postinstall": "husky install"
   },
   "repository": {
