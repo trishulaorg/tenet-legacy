@@ -18,7 +18,7 @@ const resolvers = {
   },
 }
 
-const main: void = () => {
+const main: () => void = () => {
   const server = new ApolloServer({ typeDefs, resolvers })
   server.listen().then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`)
