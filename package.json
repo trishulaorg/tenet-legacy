@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "description": "Meta-internet",
   "main": "dest/index.js",
+  "files": [
+    "api",
+    "prisma",
+    "ui",
+    "stories",
+    "pages"
+  ],
   "scripts": {
     "preapi": "npm run migrate:test",
     "api": "NODE_ENV=development cd api && tsc && node index.js",
