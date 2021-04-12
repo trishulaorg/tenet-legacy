@@ -7,14 +7,51 @@ const typeDefs = gql`
     name: String
     iconUrl: String
   }
+  type Board {
+    title: String
+    posts: [Post]
+  }
+  type Post {
+    title: String
+    content: String
+  }
   type Query {
-    users: [User]
+    findUser(name: String!): User
+    findUsers(names: [String]!): [User]
+    removeUser(name: String!): Boolean
+    findBoard(title: String!): Board
   }
 `
 
 const resolvers = {
   Query: {
-    users: () => prisma.user.findMany(),
+    findUser: (name: string) => {
+      return prisma.user.findFirst({
+        where: {
+          name,
+        },
+      })
+    },
+    findUsers: (names: string[]) => {
+      return prisma.user.findMany({
+        where: {
+          name: {
+            in: names,
+          },
+        },
+      })
+    },
+    removeUser: (name: string) => {
+      name
+      return false // need to check tokens. wip.
+    },
+    findBoard: (title: string) => {
+      return prisma.board.findFirst({
+        where: {
+          title,
+        },
+      })
+    },
   },
 }
 
