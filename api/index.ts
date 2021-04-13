@@ -1,6 +1,5 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { ApolloServer, gql, IResolvers } from 'apollo-server'
 import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
 
 const typeDefs = gql`
   type User {
@@ -23,40 +22,46 @@ const typeDefs = gql`
   }
 `
 
-const resolvers = {
+type ValueOf<T> = T[keyof T]
+type ContextType = ReturnType<typeof context>
+
+const resolvers: IResolvers<void, ContextType> = {
   Query: {
-    findUser: (name: string) => {
-      return prisma.user.findFirst({
+    findUser: (_1, args: { name: string }, context) => {
+      return context.prisma.user.findFirst({
         where: {
-          name,
+          name: args.name,
         },
       })
     },
-    findUsers: (names: string[]) => {
-      return prisma.user.findMany({
+    findUsers: (_1, args: { names: string[] }, context) => {
+      return context.prisma.user.findMany({
         where: {
           name: {
-            in: names,
+            in: args.names,
           },
         },
       })
     },
-    removeUser: (name: string) => {
-      name
+    removeUser: () => {
       return false // need to check tokens. wip.
     },
-    findBoard: (title: string) => {
-      return prisma.board.findFirst({
+    findBoard: (_1, args: { title: string }, context) => {
+      return context.prisma.board.findFirst({
         where: {
-          title,
+          title: args.title,
         },
       })
     },
   },
 }
 
+const context = () => ({
+  prisma: new PrismaClient(),
+})
+
 const main: () => void = () => {
-  const server = new ApolloServer({ typeDefs, resolvers })
+  const server = new ApolloServer({ typeDefs, resolvers, context })
   server.listen().then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`)
   })
