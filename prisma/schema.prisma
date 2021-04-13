@@ -48,6 +48,7 @@ model VoteOnComment {
 
 model Board {
   id          Int      @id @default(autoincrement())
+  title       String
   createdAt   DateTime @default(now())
   description String
   moderators  User[]   @relation(references: [id])
