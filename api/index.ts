@@ -22,7 +22,6 @@ const typeDefs = gql`
   }
 `
 
-type ValueOf<T> = T[keyof T]
 type ContextType = ReturnType<typeof context>
 
 const resolvers: IResolvers<void, ContextType> = {
