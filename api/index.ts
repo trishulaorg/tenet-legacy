@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken'
 
 const tokenSecret = process.env.TOKEN_SECRET_KEY ?? "TEST"
 
+const prisma = new PrismaClient()
+
 const typeDefs = gql`
   type User {
     name: String
@@ -84,7 +86,6 @@ interface DecodedToken {
 }
 
 const context = async ({req}: ExpressContext) => {
-  const prisma = new PrismaClient()
   const token = req.headers.authorization
   let me: User | null = null
   if (token) {
