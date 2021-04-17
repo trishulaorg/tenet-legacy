@@ -14,6 +14,8 @@ services:
       - "4000:4000"
     depends_on:
       - db
+    volumes:
+      - ./api:/usr/src/app/api
   db:
     image: postgres:13-alpine
     ports:
