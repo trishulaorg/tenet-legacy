@@ -1,5 +1,9 @@
 import { ApolloServer, gql, IResolvers } from 'apollo-server'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User } from '@prisma/client'
+import { AuthenticationError, ExpressContext } from 'apollo-server-express/dist/index'
+import jwt from 'jsonwebtoken'
+
+const tokenSecret = process.env.TOKEN_SECRET_KEY ?? "TEST"
 
 const typeDefs = gql`
   type User {
@@ -14,7 +18,12 @@ const typeDefs = gql`
     title: String
     content: String
   }
+  type UserToken {
+    value: String!
+  }
   type Query {
+    me: User
+    auth(name: String!): UserToken
     findUser(name: String!): User
     findUsers(names: [String]!): [User]
     removeUser(name: String!): Boolean
@@ -22,11 +31,25 @@ const typeDefs = gql`
   }
 `
 
-type ValueOf<T> = T[keyof T]
-type ContextType = ReturnType<typeof context>
+type Unpromisify<T> = T extends Promise<infer U> ? U : T
+type ContextType = Unpromisify<ReturnType<typeof context>>
 
 const resolvers: IResolvers<void, ContextType> = {
   Query: {
+    me: (_1, _2, context) => {
+      return context.me
+    },
+    auth: async (_1, args: { name: string }, context) => {
+      const user = await context.prisma.user.findFirst({
+        where: {
+          name: args.name,
+        }
+      })
+      if (user) {
+        return { value: jwt.sign({ userId: user.id }, tokenSecret) }
+      }
+      throw new AuthenticationError("Given name was invalid.")
+    },
     findUser: (_1, args: { name: string }, context) => {
       return context.prisma.user.findFirst({
         where: {
@@ -56,9 +79,32 @@ const resolvers: IResolvers<void, ContextType> = {
   },
 }
 
-const context = () => ({
-  prisma: new PrismaClient(),
-})
+interface DecodedToken {
+  userId: number
+}
+
+const context = async ({req}: ExpressContext) => {
+  const prisma = new PrismaClient()
+  const token = req.headers.authorization
+  let me: User | null = null
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, tokenSecret) as DecodedToken
+      me = await prisma.user.findFirst({
+        where: {
+          id: decoded.userId
+        }
+      })
+    } catch {
+      // do nothing. just ignore it.
+    }
+  }
+
+  return {
+    me,
+    prisma,
+  }
+}
 
 const main: () => void = () => {
   const server = new ApolloServer({ typeDefs, resolvers, context })
