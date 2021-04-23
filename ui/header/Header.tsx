@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react'
 import { observer } from 'mobx-react'
-import { AppBar, IconButton, makeStyles, Toolbar, Menu, MenuItem } from '@material-ui/core'
+import { AppBar, IconButton, makeStyles, Toolbar } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
 import { Title } from './Title'
 import { HeaderState } from '../../states/HeaderState'
