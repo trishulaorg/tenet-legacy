@@ -12,5 +12,5 @@ const Template: Story<UserMenuProps> = (args) => <UserMenu {...args} />
 
 export const DefaultUserMenu = Template.bind({})
 DefaultUserMenu.args = {
-    menuVisibility: true
+  menuVisibility: true,
 }
