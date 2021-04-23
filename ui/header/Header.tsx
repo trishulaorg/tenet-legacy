@@ -4,10 +4,11 @@ import { AppBar, IconButton, makeStyles, Toolbar, Menu, MenuItem } from '@materi
 import MenuIcon from '@material-ui/icons/Menu'
 import { Title } from './Title'
 import { HeaderState } from '../../states/HeaderState'
+import { UserMenu } from './UserMenu'
 
 export type HeaderProps = Record<string, unknown>
 
-const HeaderStateContext = createContext<HeaderState>(new HeaderState())
+export const HeaderStateContext = createContext<HeaderState>(new HeaderState())
 
 const useStyles = makeStyles({
   root: {
@@ -16,21 +17,6 @@ const useStyles = makeStyles({
   emptySpace: {
     flexGrow: 1,
   },
-})
-
-const LoggedOutMenu: React.FC = observer(() => {
-  const state = useContext(HeaderStateContext)
-  return (
-    <Menu
-      anchorEl={state.menuAnchorElement}
-      id="ui-menu"
-      open={state.menuVisibility}
-      onClose={() => state.closeMenu()}
-    >
-      <MenuItem onClick={() => state.closeMenu()}>Sign up</MenuItem>
-      <MenuItem onClick={() => state.closeMenu()}>Log in</MenuItem>
-    </Menu>
-  )
 })
 
 export const HeaderImpl = observer((props: React.PropsWithChildren<HeaderProps>) => {
@@ -53,7 +39,7 @@ export const HeaderImpl = observer((props: React.PropsWithChildren<HeaderProps>)
             >
               <MenuIcon />
             </IconButton>
-            <LoggedOutMenu />
+            <UserMenu />
           </div>
         </Toolbar>
       </AppBar>
