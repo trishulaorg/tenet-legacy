@@ -3,7 +3,7 @@ import { PrismaClient, User } from '@prisma/client'
 import { AuthenticationError, ExpressContext } from 'apollo-server-express/dist/index'
 import jwt from 'jsonwebtoken'
 
-const tokenSecret = process.env.TOKEN_SECRET_KEY ?? "TEST"
+const tokenSecret = process.env.TOKEN_SECRET_KEY ?? 'TEST'
 
 const prisma = new PrismaClient()
 
@@ -45,12 +45,12 @@ const resolvers: IResolvers<void, ContextType> = {
       const user = await context.prisma.user.findFirst({
         where: {
           name: args.name,
-        }
+        },
       })
       if (user) {
         return { value: jwt.sign({ userId: user.id }, tokenSecret) }
       }
-      throw new AuthenticationError("Given name was invalid.")
+      throw new AuthenticationError('Given name was invalid.')
     },
     findUser: (_1, args: { name: string }, context) => {
       return context.prisma.user.findFirst({
@@ -85,7 +85,7 @@ interface DecodedToken {
   userId: number
 }
 
-const context = async ({req}: ExpressContext) => {
+const context = async ({ req }: ExpressContext) => {
   const token = req.headers.authorization
   let me: User | null = null
   if (token) {
@@ -93,8 +93,8 @@ const context = async ({req}: ExpressContext) => {
       const decoded = jwt.verify(token, tokenSecret) as DecodedToken
       me = await prisma.user.findFirst({
         where: {
-          id: decoded.userId
-        }
+          id: decoded.userId,
+        },
       })
     } catch {
       // do nothing. just ignore it.
