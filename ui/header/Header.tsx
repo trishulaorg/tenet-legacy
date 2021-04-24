@@ -8,7 +8,7 @@ import { UserMenu } from './UserMenu'
 
 export type HeaderProps = Record<string, unknown>
 
-export const HeaderStateContext = createContext<HeaderState>(new HeaderState())
+export const HeaderStateContext = createContext(new HeaderState())
 
 const useStyles = makeStyles({
   root: {
