@@ -33,9 +33,6 @@ const typeDefs = gql`
   }
 `
 
-type Unpromisify<T> = T extends Promise<infer U> ? U : T
-type ContextType = Unpromisify<ReturnType<typeof context>>
-
 const resolvers: IResolvers<void, ContextType> = {
   Query: {
     me: (_1, _2, context) => {
@@ -85,7 +82,13 @@ interface DecodedToken {
   userId: number
 }
 
-const context = async ({ req }: ExpressContext) => {
+type ContextType = {
+  me: User | null
+  prisma: typeof prisma
+}
+type ContextFunction = (args: ExpressContext) => Promise<ContextType>
+
+const context: ContextFunction = async ({ req }) => {
   const token = req.headers.authorization
   let me: User | null = null
   if (token) {
