@@ -24,10 +24,6 @@ During developping this software, you might repeat step 3 to 5. If there's a pro
 
 This software is written and maintained by @minamorl.
 
-### Contributors
-
-@mouroutai
-
 ## License
 
 All rights reserved.
