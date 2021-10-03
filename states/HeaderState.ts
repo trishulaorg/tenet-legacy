@@ -10,17 +10,14 @@ export class HeaderState {
     this.userState = userState
     makeAutoObservable(this)
   }
-  toggleMenu(menuAnchorElement: HTMLButtonElement): void {
+  toggleMenu(): void {
     this.menuVisibility = !this.menuVisibility
-    this.menuAnchorElement = this.menuVisibility ? menuAnchorElement : undefined
   }
   closeMenu(): void {
     this.menuVisibility = false
-    this.menuAnchorElement = undefined
   }
-  openMenu(menuAnchorElement: HTMLButtonElement): void {
+  openMenu(): void {
     this.menuVisibility = true
-    this.menuAnchorElement = menuAnchorElement
   }
   logIn(userState: UserState): void {
     this.userState = userState
