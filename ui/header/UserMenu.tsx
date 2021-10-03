@@ -1,52 +1,38 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-import Link from 'next/link'
-import { Grid, makeStyles, Menu, MenuItem } from '@material-ui/core'
 import { HeaderStateContext } from './Header'
-import { UserIcon } from './UserIcon'
-
-const useStyles = makeStyles({
-  paper: {
-    borderRadius: 0,
-    width: '200px',
-  },
-})
+import { MenuIcon } from '@heroicons/react/solid'
 
 export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
-  const styles = useStyles()
   return (
-    <Menu
-      anchorEl={state.menuAnchorElement}
-      classes={styles}
-      id="ui-menu"
-      open={state.menuVisibility}
-      onClose={() => state.closeMenu()}
-    >
-      {!state.userState ? (
-        <div>
-          <MenuItem onClick={() => state.closeMenu()}>
-            <Link href="/signup">Sign up</Link>
-          </MenuItem>
-          <MenuItem onClick={() => state.closeMenu()}>
-            <Link href="/signin">Sign in</Link>
-          </MenuItem>
-        </div>
-      ) : (
-        <div>
-          <MenuItem onClick={() => state.closeMenu()}>
-            <Grid container spacing={1}>
-              <Grid item xs={2}>
-                <UserIcon />
-              </Grid>
-              <Grid item xs="auto">
-                {state.userState.name}
-              </Grid>
-            </Grid>
-          </MenuItem>
-          <MenuItem onClick={() => state.closeMenu()}>Sign out</MenuItem>
-        </div>
-      )}
-    </Menu>
+    <>
+      <div className="flex-initial mx-3 my-auto flex items-center justify-center">
+        <button className="my-auto" onClick={() => state.toggleMenu()}>
+          <MenuIcon className="h-5 w-5 text-white" />
+          <UserMenuItems loggedIn={state.isLoggedIn} visibility={state.menuVisibility} />
+        </button>
+      </div>
+    </>
   )
+})
+
+export interface UserMenuItemsProps {
+  loggedIn: boolean
+  visibility: boolean
+}
+
+export const UserMenuItems: React.FC<UserMenuItemsProps> = observer((props) => {
+  const loggedOutMenuItems = (
+    <div className="relative inline-block float-right">
+      <ul
+        className={`${
+          props.visibility ? '' : 'hidden'
+        } absolute right-0 z-10 bg-white w-48 rounded-sm border-2`}
+      >
+        <li className="p-4">Sign In</li>
+      </ul>
+    </div>
+  )
+  return loggedOutMenuItems
 })
