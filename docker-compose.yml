@@ -6,6 +6,7 @@ services:
       - "3000:3000"
     volumes:
       - ./pages:/usr/src/app/pages
+    command: ["npm", "run", "dev"]
   api:
     build:
       context: ./
@@ -16,6 +17,7 @@ services:
       - db
     volumes:
       - ./api:/usr/src/app/api
+    command: ["npm", "run", "api:dev"]
   db:
     image: postgres:13-alpine
     ports:
