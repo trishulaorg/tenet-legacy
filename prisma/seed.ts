@@ -3,11 +3,49 @@ const prisma = new PrismaClient()
 
 async function main(): Promise<void> {
   for (let i = 0; i < 100; i++) {
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
-        iconUrl: 'dummy',
-        name: 'user' + i,
-        token: 'dummy',
+        token: 'token' + i,
+      },
+    })
+    const persona = await prisma.persona.create({
+      data: {
+        userId: user.id,
+        iconUrl: 'http://example.com/img/icon',
+        name: 'Persona' + i,
+      },
+    })
+    const board = await prisma.board.create({
+      data: {
+        title: 'Test Board',
+        description: 'This is a test board',
+      },
+    })
+    const post = await prisma.post.create({
+      data: {
+        personaId: persona.id,
+        boardId: board.id,
+        title: 'Test Post',
+        content: 'This is a test post',
+        contentType: 'TEXT',
+      },
+    })
+    const thread = await prisma.thread.create({
+      data: {
+        personaId: persona.id,
+        boardId: board.id,
+        postId: post.id,
+        content: 'Test',
+        contentType: 'TEXT',
+      },
+    })
+    await prisma.reply.create({
+      data: {
+        personaId: persona.id,
+        postId: post.id,
+        threadId: thread.id,
+        content: 'Test',
+        contentType: 'TEXT',
       },
     })
   }
