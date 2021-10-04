@@ -9,6 +9,9 @@ const prisma = new PrismaClient()
 
 const typeDefs = gql`
   type User {
+    token: String
+  }
+  type Persona {
     name: String
     iconUrl: String
   }
@@ -25,9 +28,9 @@ const typeDefs = gql`
   }
   type Query {
     me: User
-    auth(name: String!): UserToken
-    findUser(name: String!): User
-    findUsers(names: [String]!): [User]
+    auth(token: String!): UserToken
+    findPersona(name: String!): Persona
+    findPersonas(names: [String]!): [Persona]
     removeUser(name: String!): Boolean
     findBoard(title: String!): Board
   }
@@ -38,10 +41,10 @@ const resolvers: IResolvers<void, ContextType> = {
     me: (_1, _2, context) => {
       return context.me
     },
-    auth: async (_1, args: { name: string }, context) => {
+    auth: async (_1, args: { token: string }, context) => {
       const user = await context.prisma.user.findFirst({
         where: {
-          name: args.name,
+          token: args.token,
         },
       })
       if (user) {
@@ -49,15 +52,15 @@ const resolvers: IResolvers<void, ContextType> = {
       }
       throw new AuthenticationError('Given name was invalid.')
     },
-    findUser: (_1, args: { name: string }, context) => {
-      return context.prisma.user.findFirst({
+    findPersona: (_1, args: { name: string }, context) => {
+      return context.prisma.persona.findFirst({
         where: {
           name: args.name,
         },
       })
     },
-    findUsers: (_1, args: { names: string[] }, context) => {
-      return context.prisma.user.findMany({
+    findPersonas: (_1, args: { names: string[] }, context) => {
+      return context.prisma.persona.findMany({
         where: {
           name: {
             in: args.names,
@@ -72,6 +75,9 @@ const resolvers: IResolvers<void, ContextType> = {
       return context.prisma.board.findFirst({
         where: {
           title: args.title,
+        },
+        include: {
+          posts: true,
         },
       })
     },

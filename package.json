@@ -11,19 +11,22 @@
     "pages"
   ],
   "scripts": {
-    "preapi:dev": "npm run migrate:test && npm run seed:test",
+    "preapi:dev": "npm run migrate:test",
     "api:dev": "NODE_ENV=development nodemon --exec 'cd api && npx tsc && node dist/api/index.js' --watch ./api/ --ignore ./api/dist/ --ext ts,tsx,js,jsx",
     "dev": "NODE_ENV=development node server.js",
     "build": "next build",
-    "migrate:test": "prisma migrate dev",
+    "migrate:test": "prisma migrate dev --name init && npm run seed:test",
+    "seed:test": "prisma db seed",
     "start": "NODE_ENV=production next start",
-    "seed:test": "NODE_ENV=development prisma db seed --preview-feature",
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "lint": "eslint . --ext ts,tsx --fix",
     "postinstall": "husky install",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "repository": {
     "type": "git",
@@ -67,7 +70,7 @@
     "nodemon": "^2.0.7",
     "postcss": "^8.3.8",
     "prettier": "^2.2.1",
-    "prisma": "^2.20.1",
+    "prisma": "^3.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "storybook-addon-next-router": "^3.0.7",
@@ -76,7 +79,7 @@
     "typescript": "^4.2.3"
   },
   "dependencies": {
-    "@prisma/client": "^2.20.1",
+    "@prisma/client": "^3.1.1",
     "storybook": "^6.2.8"
   },
   "engines": {
