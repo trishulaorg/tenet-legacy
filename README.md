@@ -14,7 +14,7 @@ In each test environment, all servers above can be automatically set up and mana
 2. Execute `npm install` and `cp .env.example .env`
 3. Confirm you have already installed docker and docker-compose. then `docker compose build`
 4. `docker compose up` to make docker images work.
-5. After testing, you have to do `sudo docker-compose down` to clean up the environment.
+5. After testing, you have to do `docker compose down` to clean up the environment.
 
 During developping this software, you might repeat step 3 to 5. If there's a problem let me know. I've only tested on my Ubuntu environment.
 
