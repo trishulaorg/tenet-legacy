@@ -22,6 +22,14 @@ const typeDefs = gql`
   type Post {
     title: String
     content: String
+    threads: [Thread]
+  }
+  type Thread {
+    content: String
+    replies: [Reply]
+  }
+  type Reply {
+    content: String
   }
   type UserToken {
     value: String!
@@ -50,7 +58,7 @@ const resolvers: IResolvers<void, ContextType> = {
       if (user) {
         return { value: jwt.sign({ userId: user.id }, tokenSecret) }
       }
-      throw new AuthenticationError('Given name was invalid.')
+      throw new AuthenticationError('Given token was invalid.')
     },
     findPersona: (_1, args: { name: string }, context) => {
       return context.prisma.persona.findFirst({
@@ -77,7 +85,15 @@ const resolvers: IResolvers<void, ContextType> = {
           title: args.title,
         },
         include: {
-          posts: true,
+          posts: {
+            include: {
+              threads: {
+                include: {
+                  replies: true,
+                },
+              },
+            },
+          },
         },
       })
     },
