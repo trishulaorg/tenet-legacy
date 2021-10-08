@@ -6,6 +6,8 @@ services:
       - "3000:3000"
     volumes:
       - ./pages:/usr/src/app/pages
+      - ./states:/usr/src/app/states
+      - ./ui:/usr/src/app/ui
     command: ["npm", "run", "dev"]
   api:
     build:
