@@ -19,8 +19,7 @@ const Template: Story<StoryArgs> = (args) => {
   const staticState = new HeaderState()
   staticState.menuVisibility = true
   if (args.loggedIn) {
-    const userState = new UserState()
-    userState.name = 'exampleuser'
+    const userState = new UserState('dummy')
     staticState.logIn(userState)
   }
   return (

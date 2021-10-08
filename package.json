@@ -53,6 +53,7 @@
     "apollo-server": "^2.22.2",
     "autoprefixer": "^10.3.6",
     "babel-loader": "^8.2.2",
+    "dotenv": "^10.0.0",
     "eslint": "^7.23.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
