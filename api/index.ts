@@ -1,15 +1,16 @@
 import { ApolloServer, gql, IResolvers } from 'apollo-server'
 import { PrismaClient, User } from '@prisma/client'
-import { AuthenticationError, ExpressContext } from 'apollo-server-express/dist/index'
+import { ExpressContext } from 'apollo-server-express/dist/index'
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
 
-const tokenSecret = process.env.TOKEN_SECRET_KEY ?? 'TEST'
+dotenv.config()
 
 const prisma = new PrismaClient()
 
 const typeDefs = gql`
   type User {
-    token: String
+    personas: [Persona]
   }
   type Persona {
     name: String
@@ -31,12 +32,8 @@ const typeDefs = gql`
   type Reply {
     content: String
   }
-  type UserToken {
-    value: String!
-  }
   type Query {
     me: User
-    auth(token: String!): UserToken
     findPersona(name: String!): Persona
     findPersonas(names: [String]!): [Persona]
     removeUser(name: String!): Boolean
@@ -48,17 +45,6 @@ const resolvers: IResolvers<void, ContextType> = {
   Query: {
     me: (_1, _2, context) => {
       return context.me
-    },
-    auth: async (_1, args: { token: string }, context) => {
-      const user = await context.prisma.user.findFirst({
-        where: {
-          token: args.token,
-        },
-      })
-      if (user) {
-        return { value: jwt.sign({ userId: user.id }, tokenSecret) }
-      }
-      throw new AuthenticationError('Given token was invalid.')
     },
     findPersona: (_1, args: { name: string }, context) => {
       return context.prisma.persona.findFirst({
@@ -100,10 +86,6 @@ const resolvers: IResolvers<void, ContextType> = {
   },
 }
 
-interface DecodedToken {
-  userId: number
-}
-
 type ContextType = {
   me: User | null
   prisma: typeof prisma
@@ -113,14 +95,18 @@ type ContextFunction = (args: ExpressContext) => Promise<ContextType>
 const context: ContextFunction = async ({ req }) => {
   const token = req.headers.authorization
   let me: User | null = null
-  if (token) {
+  console.log(token)
+  if (token && process.env.API_TOKEN_SECRET) {
     try {
-      const decoded = jwt.verify(token, tokenSecret) as DecodedToken
-      me = await prisma.user.findFirst({
-        where: {
-          id: decoded.userId,
-        },
-      })
+      const decoded = jwt.verify(token, process.env.API_TOKEN_SECRET) as Record<string, string>
+      me = await prisma.user.findFirst({ where: { token: decoded.sub } })
+      if (!me) {
+        me = await prisma.user.create({
+          data: {
+            token: decoded.sub,
+          },
+        })
+      }
     } catch {
       // do nothing. just ignore it.
     }
