@@ -17,7 +17,7 @@ export const HeaderImpl = observer(() => {
 
   return (
     <nav className="flex item-center justify bg-gray-600 px-4 py-2">
-      <Title value="Coton" />
+      <Title />
       <UserMenu />
     </nav>
   )
