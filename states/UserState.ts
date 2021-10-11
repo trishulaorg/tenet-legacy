@@ -37,3 +37,4 @@ export class PersonaState {
 }
 
 export const UserStateContext = createContext(new UserState('', [], 0))
+export const PersonaStateContext = createContext(new PersonaState(''))
