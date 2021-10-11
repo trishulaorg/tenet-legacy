@@ -1,13 +1,12 @@
 import { getSession } from '@auth0/nextjs-auth0'
 import { GetServerSideProps } from 'next'
-import { UserState } from '../states/UserState'
 import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 
-const IndexPage: React.FC<{ token: string }> = ({ token }) => {
+const IndexPage: React.FC<{ token: string }> = () => {
   return (
     <div>
-      <Header user={new UserState(token)}></Header>
+      <Header></Header>
     </div>
   )
 }
