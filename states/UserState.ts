@@ -3,8 +3,11 @@ import { makeAutoObservable } from 'mobx'
 export class UserState {
   personas: PersonaState[] = []
   token
-  constructor(token: string) {
+  currentPersonaIndex: number
+  constructor(token: string, personas: PersonaState[], currentPersonaIndex: number) {
     this.token = token
+    this.personas = personas
+    this.currentPersonaIndex = currentPersonaIndex
     makeAutoObservable(this, { request: false })
   }
   async request(): Promise<void> {
@@ -19,11 +22,15 @@ export class UserState {
     }).then((r) => r.json())
     console.log(result)
   }
+  get currentPersona(): PersonaState {
+    return this.personas[this.currentPersonaIndex]
+  }
 }
 
 export class PersonaState {
-  name = ''
-  constructor() {
+  name: string
+  constructor(name: string) {
+    this.name = name
     makeAutoObservable(this)
   }
 }

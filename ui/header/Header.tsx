@@ -1,17 +1,10 @@
-import React, { createContext, useContext } from 'react'
+import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
 import { Title } from './Title'
-import { HeaderState } from '../../states/HeaderState'
+import { HeaderStateContext } from '../../states/HeaderState'
 import { UserMenu } from './UserMenu'
-import { UserState } from '../../states/UserState'
 
-export interface HeaderProps {
-  user: UserState
-}
-
-export const HeaderStateContext = createContext(new HeaderState())
-
-export const HeaderImpl = observer(() => {
+export const Header = observer(() => {
   const state = useContext(HeaderStateContext)
   state.userState?.request()
 
@@ -22,11 +15,3 @@ export const HeaderImpl = observer(() => {
     </nav>
   )
 })
-
-export const Header: React.FC<HeaderProps> = (props) => {
-  return (
-    <HeaderStateContext.Provider value={new HeaderState(props.user)}>
-      <HeaderImpl />
-    </HeaderStateContext.Provider>
-  )
-}

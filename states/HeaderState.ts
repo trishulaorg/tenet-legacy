@@ -1,10 +1,12 @@
 import { makeAutoObservable } from 'mobx'
+import { createContext } from 'react'
 
 import { UserState } from './UserState'
 
 export class HeaderState {
-  userState
+  userState?: UserState
   menuVisibility = false
+  personaListVisibility = false
   menuAnchorElement?: HTMLButtonElement
   constructor(userState?: UserState) {
     this.userState = userState
@@ -19,6 +21,15 @@ export class HeaderState {
   openMenu(): void {
     this.menuVisibility = true
   }
+  togglePersonaList(): void {
+    this.personaListVisibility = !this.personaListVisibility
+  }
+  openPersonaList(): void {
+    this.personaListVisibility = true
+  }
+  closePersonaList(): void {
+    this.personaListVisibility = false
+  }
   logIn(userState: UserState): void {
     this.userState = userState
   }
@@ -29,3 +40,5 @@ export class HeaderState {
     return Boolean(this.userState)
   }
 }
+
+export const HeaderStateContext = createContext(new HeaderState())
