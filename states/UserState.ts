@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx'
+import { createContext } from 'react'
 
 export class UserState {
   personas: PersonaState[] = []
@@ -34,3 +35,5 @@ export class PersonaState {
     makeAutoObservable(this)
   }
 }
+
+export const UserStateContext = createContext(new UserState('', [], 0))
