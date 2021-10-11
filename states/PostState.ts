@@ -1,21 +1,17 @@
 import { makeAutoObservable } from 'mobx'
-
-export interface Persona {
-  id: string
-  name: string
-  iconUrl?: string
-}
+import { createContext } from 'react'
+import { PersonaState } from './UserState'
 
 export class PostState {
   private children: PostState[] = []
   private parent?: PostState
   title: string
   content: string
-  author: Persona
+  author: PersonaState
   constructor(
     title: string,
     content: string,
-    author: Persona,
+    author: PersonaState,
     children?: PostState[],
     parent?: PostState
   ) {
@@ -37,3 +33,21 @@ export class PostState {
     return this.children.length !== 0
   }
 }
+
+export class BoardState {
+  id?: number
+  title = ''
+  description = ''
+  posts: PostState[] = []
+  constructor(id?: number, opts?: { title: string; description: string; posts: PostState[] }) {
+    this.id = id
+    if (opts) {
+      this.title = opts.title
+      this.description = opts.description
+      this.posts = opts.posts
+    }
+    makeAutoObservable(this)
+  }
+}
+
+export const BoardStateContext = createContext(new BoardState())
