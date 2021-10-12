@@ -2,6 +2,8 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react'
 
 import { PostCard } from '../ui/top/PostCard'
+import { PostState } from '../states/PostState'
+import { PersonaState } from '../states/UserState'
 
 export default {
   title: 'TOP/PostCard',
@@ -13,9 +15,17 @@ export default {
   ],
 } as Meta
 
-const Template: Story = () => {
-  return <PostCard />
+const post = new PostState(
+  'Post Title',
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis ...',
+  new PersonaState('test1')
+)
+
+const Template: Story = (args) => {
+  return <PostCard {...args} />
 }
 
 export const DefaultPostCard = Template.bind({})
-DefaultPostCard.args = {}
+DefaultPostCard.args = {
+  post,
+}
