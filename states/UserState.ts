@@ -28,6 +28,7 @@ export class UserState {
           me {
             personas {
               name
+              iconUrl
             }
           } 
         }`,
