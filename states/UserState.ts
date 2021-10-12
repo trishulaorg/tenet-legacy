@@ -11,6 +11,9 @@ export class UserState {
     this.currentPersonaIndex = currentPersonaIndex
     makeAutoObservable(this, { request: false })
   }
+  get isValidUser(): boolean {
+    return this.token !== ''
+  }
   async request(): Promise<void> {
     const result = await fetch('/api/graphql', {
       method: 'POST',
@@ -19,7 +22,16 @@ export class UserState {
         Accept: 'application/json',
         Authorization: this.token,
       },
-      body: JSON.stringify({ query: `query  { me { personas { name } } }` }),
+      body: JSON.stringify({
+        query: `
+        query {
+          me {
+            personas {
+              name
+            }
+          } 
+        }`,
+      }),
     }).then((r) => r.json())
     console.log(result)
   }
