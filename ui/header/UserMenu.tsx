@@ -9,7 +9,7 @@ export const UserMenu: React.FC = observer(() => {
   return (
     <>
       <div className="flex-initial mx-3 my-auto flex items-center justify-center">
-        <button className="my-auto">
+        <div className="my-auto">
           <button onClick={() => state.toggleMenu()}>
             <MenuIcon className="h-5 w-5 text-white" />{' '}
           </button>
@@ -17,7 +17,7 @@ export const UserMenu: React.FC = observer(() => {
             <UserMenuItems>
               <Switch visibility={state.isLoggedIn}>
                 <UserMenuItem onClick={() => state.togglePersonaList()}>
-                  {state.userState?.currentPersona.name}
+                  {state.userState?.currentPersona?.name}
                   <Switch visibility={state.personaListVisibility}>
                     <ul className="bg-white width-100">
                       {state.userState?.personas.map((p, idx) => (
@@ -41,7 +41,7 @@ export const UserMenu: React.FC = observer(() => {
               </Switch>
             </UserMenuItems>
           </Switch>
-        </button>
+        </div>
       </div>
     </>
   )
