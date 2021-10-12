@@ -95,11 +95,13 @@ type ContextFunction = (args: ExpressContext) => Promise<ContextType>
 const context: ContextFunction = async ({ req }) => {
   const token = req.headers.authorization
   let me: User | null = null
-  console.log(token)
   if (token && process.env.API_TOKEN_SECRET) {
     try {
       const decoded = jwt.verify(token, process.env.API_TOKEN_SECRET) as Record<string, string>
-      me = await prisma.user.findFirst({ where: { token: decoded.sub } })
+      me = await prisma.user.findFirst({
+        where: { token: decoded.sub },
+        include: { personas: true },
+      })
       if (!me) {
         me = await prisma.user.create({
           data: {
