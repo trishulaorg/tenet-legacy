@@ -2,7 +2,7 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react'
 
 import { PostCard } from '../ui/top/PostCard'
-import { PostState } from '../states/PostState'
+import { PostState, PostStateContext } from '../states/PostState'
 import { PersonaState } from '../states/UserState'
 
 export default {
@@ -22,10 +22,12 @@ const post = new PostState(
 )
 
 const Template: Story = (args) => {
-  return <PostCard {...args} />
+  return (
+    <PostStateContext.Provider value={post}>
+      <PostCard {...args} />
+    </PostStateContext.Provider>
+  )
 }
 
 export const DefaultPostCard = Template.bind({})
-DefaultPostCard.args = {
-  post,
-}
+DefaultPostCard.args = {}
