@@ -8,20 +8,16 @@ import {
 } from '@heroicons/react/solid'
 import { UserIcon } from '../common/UserIcon'
 
-export const PostCard = () => {
+export const PostCard = (props: any) => {
   return (
     <div className="max-w-2xl rounded-lg p-4 bg-white">
-      <h2 className="text-3xl pb-2">Post Title</h2>
+      <h2 className="text-3xl pb-2">{props.post.title}</h2>
       <div className="flex items-center pb-2">
         <UserIcon size={'small'} />
-        <p className="pl-1">username</p>
+        <p className="pl-1">{props.post.author.name}</p>
       </div>
       <div className="px-8 pb-8">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis ...
-        </p>
+        <p>{props.post.content}</p>
       </div>
       <div className="flex">
         <div className="flex items-center opacity-50">
