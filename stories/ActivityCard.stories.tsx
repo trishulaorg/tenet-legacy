@@ -22,7 +22,7 @@ const post = new PostState(
 )
 
 const Template: Story = (args) => {
-  return <ActivityCard {...args} />
+  return <ActivityCard title={args.title} content={args.content} author={args.author} />
 }
 
 export const DefaultPostCard = Template.bind({})
