@@ -1,13 +1,13 @@
 import React from 'react'
 import { Story, Meta } from '@storybook/react'
 
-import { PostCard } from '../ui/top/PostCard'
-import { PostState, PostStateContext } from '../states/PostState'
+import { ActivityCard } from '../ui/home/ActivityCard'
+import { PostState } from '../states/PostState'
 import { PersonaState } from '../states/UserState'
 
 export default {
-  title: 'TOP/PostCard',
-  component: PostCard,
+  title: 'HOME/ActivityCard',
+  component: ActivityCard,
   decorators: [
     (story) => (
       <div style={{ padding: '3rem', backgroundColor: '#f5f5f5', color: '#333' }}>{story()}</div>
@@ -22,12 +22,8 @@ const post = new PostState(
 )
 
 const Template: Story = (args) => {
-  return (
-    <PostStateContext.Provider value={post}>
-      <PostCard {...args} />
-    </PostStateContext.Provider>
-  )
+  return <ActivityCard {...args} />
 }
 
 export const DefaultPostCard = Template.bind({})
-DefaultPostCard.args = {}
+DefaultPostCard.args = { ...post }
