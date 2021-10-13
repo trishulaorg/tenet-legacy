@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import { PostStateContext } from '../../states/PostState'
+import React from 'react'
 import {
   TrendingUpIcon,
   TrendingDownIcon,
@@ -9,17 +8,16 @@ import {
 } from '@heroicons/react/solid'
 import { UserIcon } from '../common/UserIcon'
 
-export const PostCard = () => {
-  const state = useContext(PostStateContext)
+export const ActivityCard: React.FC = (props: any) => {
   return (
     <div className="max-w-2xl rounded-lg p-4 bg-white">
-      <h2 className="text-3xl pb-2">{state.title}</h2>
+      <h2 className="text-3xl pb-2">{props.title}</h2>
       <div className="flex items-center pb-2">
         <UserIcon size={'small'} />
-        <p className="pl-1">{state.author.name}</p>
+        <p className="pl-1">{props.author.name}</p>
       </div>
       <div className="px-8 pb-8">
-        <p>{state.content}</p>
+        <p>{props.content}</p>
       </div>
       <div className="flex">
         <div className="flex items-center opacity-50">

@@ -50,5 +50,4 @@ export class BoardState {
   }
 }
 
-export const PostStateContext = createContext(new PostState('', '', new PersonaState('')))
 export const BoardStateContext = createContext(new BoardState())
