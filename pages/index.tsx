@@ -4,7 +4,9 @@ import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
 import React from 'react'
-import { UserState } from '../states/UserState'
+import { PersonaState, UserState } from '../states/UserState'
+import { ActivityCard } from '../ui/home/ActivityCard'
+import { PostState } from '../states/PostState'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
@@ -20,6 +22,9 @@ const IndexPage: React.FC = () => {
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header></Header>
       </HeaderStateContext.Provider>
+      <ActivityCard
+        post={new PostState('title', 'UserContent', new PersonaState('user1'), Date.now())}
+      />
     </div>
   )
 }
