@@ -1,12 +1,16 @@
 import React from 'react'
 import { AnnotationIcon, ShareIcon, ThumbUpIcon, ThumbDownIcon } from '@heroicons/react/solid'
 
-export const ActivityCardIcons: React.FC = () => {
+export const ActivityCardIcons: React.FC<{
+  commentNumber: number
+  upvote: number
+  downvote: number
+}> = (props) => {
   const icons = [
-    { name: AnnotationIcon, text: '1k Comment' },
+    { name: AnnotationIcon, text: `${props.commentNumber} Comment` },
     { name: ShareIcon, text: 'Share' },
-    { name: ThumbUpIcon, text: '750' },
-    { name: ThumbDownIcon, text: '30' },
+    { name: ThumbUpIcon, text: `${props.upvote}` },
+    { name: ThumbDownIcon, text: `${props.downvote}` },
   ]
   return (
     <div className="flex">

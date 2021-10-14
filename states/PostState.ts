@@ -8,10 +8,16 @@ export class PostState {
   title: string
   content: string
   author: PersonaState
+  upvote: number
+  downvote: number
+  createdAt: Date | number
   constructor(
     title: string,
     content: string,
     author: PersonaState,
+    createdAt: Date | number,
+    upvote?: number,
+    downvote?: number,
     children?: PostState[],
     parent?: PostState
   ) {
@@ -20,6 +26,9 @@ export class PostState {
     this.author = author
     this.children = children ?? []
     this.parent = parent
+    this.upvote = upvote ?? 0
+    this.downvote = downvote ?? 0
+    this.createdAt = createdAt
     makeAutoObservable(this)
   }
   addResponse(state: PostState): PostState {
@@ -28,6 +37,9 @@ export class PostState {
   }
   get responses(): PostState[] {
     return this.children
+  }
+  get responseNumber(): number {
+    return this.children.length
   }
   get hasRepsponse(): boolean {
     return this.children.length !== 0

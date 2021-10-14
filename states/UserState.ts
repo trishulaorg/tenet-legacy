@@ -43,8 +43,10 @@ export class UserState {
 
 export class PersonaState {
   name: string
-  constructor(name: string) {
+  iconUrl: string
+  constructor(name: string, iconUrl = '') {
     this.name = name
+    this.iconUrl = iconUrl
     makeAutoObservable(this)
   }
 }
