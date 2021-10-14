@@ -23,7 +23,6 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const f = async (): Promise<void> => {
       const result = await fetchActivities(cookie)
-      console.log(result)
       setActivities(
         result.data.activities.map(
           (v) =>
@@ -35,7 +34,6 @@ const IndexPage: React.FC = () => {
             )
         )
       )
-      console.log(result)
     }
     f()
   }, [cookie])
