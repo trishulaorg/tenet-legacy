@@ -15,7 +15,7 @@ export class UserState {
     return this.token !== ''
   }
   async request(): Promise<void> {
-    const result = await fetch('/api/graphql', {
+    await fetch('/api/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,6 @@ export class UserState {
         }`,
       }),
     }).then((r) => r.json())
-    console.log(result)
   }
   get currentPersona(): PersonaState {
     return this.personas[this.currentPersonaIndex]
@@ -43,8 +42,10 @@ export class UserState {
 
 export class PersonaState {
   name: string
-  constructor(name: string) {
+  iconUrl: string
+  constructor(name: string, iconUrl = '') {
     this.name = name
+    this.iconUrl = iconUrl
     makeAutoObservable(this)
   }
 }

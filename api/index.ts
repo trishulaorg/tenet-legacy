@@ -24,20 +24,24 @@ const typeDefs = gql`
     title: String
     content: String
     threads: [Thread]
+    persona: Persona
   }
   type Thread {
     content: String
     replies: [Reply]
+    persona: Persona
   }
   type Reply {
     content: String
+    persona: Persona
   }
   type Query {
     me: User
-    findPersona(name: String!): Persona
-    findPersonas(names: [String]!): [Persona]
+    persona(name: String!): Persona
+    personas(names: [String]!): [Persona]
     removeUser(name: String!): Boolean
-    findBoard(title: String!): Board
+    board(title: String!): Board
+    activities: [Post]
   }
 `
 
@@ -46,14 +50,14 @@ const resolvers: IResolvers<void, ContextType> = {
     me: (_1, _2, context) => {
       return context.me
     },
-    findPersona: (_1, args: { name: string }, context) => {
+    persona: (_1, args: { name: string }, context) => {
       return context.prisma.persona.findFirst({
         where: {
           name: args.name,
         },
       })
     },
-    findPersonas: (_1, args: { names: string[] }, context) => {
+    personas: (_1, args: { names: string[] }, context) => {
       return context.prisma.persona.findMany({
         where: {
           name: {
@@ -65,7 +69,7 @@ const resolvers: IResolvers<void, ContextType> = {
     removeUser: () => {
       return false // need to check tokens. wip.
     },
-    findBoard: (_1, args: { title: string }, context) => {
+    board: (_1, args: { title: string }, context) => {
       return context.prisma.board.findFirst({
         where: {
           title: args.title,
@@ -80,6 +84,13 @@ const resolvers: IResolvers<void, ContextType> = {
               },
             },
           },
+        },
+      })
+    },
+    activities: (_1, _2, context) => {
+      return context.prisma.post.findMany({
+        include: {
+          persona: true,
         },
       })
     },

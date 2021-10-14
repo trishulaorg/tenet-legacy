@@ -8,6 +8,7 @@ services:
       - ./pages:/usr/src/app/pages
       - ./states:/usr/src/app/states
       - ./ui:/usr/src/app/ui
+      - ./libs:/usr/src/app/libs
     command: ["npm", "run", "dev"]
   api:
     build:
