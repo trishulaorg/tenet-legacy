@@ -7,6 +7,11 @@ import { PersonaState } from '../states/UserState'
 export default {
   title: 'Board/Board',
   component: Board,
+  decorators: [
+    (story) => (
+      <div style={{ padding: '3rem', backgroundColor: '#f5f5f5', color: '#333' }}>{story()}</div>
+    ),
+  ],
 } as Meta
 
 const post1 = new PostState('Post 1', 'Default Content', new PersonaState('test1'), Date.now())

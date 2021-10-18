@@ -17,7 +17,7 @@ export interface PostProps {
 
 export const Post: React.FC<PostProps> = observer((props) => {
   return (
-    <div className="bg-white filter drop-shadow p-4">
+    <div className="max-w-2xl rounded-lg p-4 bg-white">
       <CardTitle title={props.post.title} />
       <Author name={props.post.author.name} iconUrl={props.post.author.iconUrl} />
       <CardContent content={props.post.content} />

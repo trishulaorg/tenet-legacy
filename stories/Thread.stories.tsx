@@ -8,6 +8,11 @@ import { PersonaState } from '../states/UserState'
 export default {
   title: 'Thread/Thread',
   component: Post,
+  decorators: [
+    (story) => (
+      <div style={{ padding: '3rem', backgroundColor: '#f5f5f5', color: '#333' }}>{story()}</div>
+    ),
+  ],
 } as Meta
 
 const Template: Story<PostProps> = (args) => <Post {...args} />
