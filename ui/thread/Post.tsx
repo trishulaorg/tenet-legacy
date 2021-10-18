@@ -27,13 +27,18 @@ export const Post: React.FC<PostProps> = observer((props) => {
           upvote={props.post.upvote}
           downvote={props.post.downvote}
         />
-        <div className="pb-2"></div>
+        <div className="pb-2" />
         <CreatedAt created={props.post.createdAt} />
       </CardMeta>
-      <div className="pb-5"></div>
+      <div className="pb-5" />
       <CommentInput />
       <div className="pt-8 pb-2 border-b-2 border-black border-opacity-10">Sort by BEST</div>
-      {props.post.hasRepsponse ? <Thread posts={props.post.responses} /> : undefined}
+      <div className="pb-8" />
+      {props.post.hasRepsponse ? (
+        <Thread posts={props.post.responses} />
+      ) : (
+        <div>No Comments Yet</div>
+      )}
     </div>
   )
 })

@@ -1,5 +1,6 @@
 import React from 'react'
 
-export const CardMeta: React.FC = (props) => {
-  return <div>{props.children}</div>
+export const CardMeta: React.FC<{ isPost?: boolean }> = (props) => {
+  const style = props.isPost ? undefined : 'pl-4'
+  return <div className={style}>{props.children}</div>
 }
