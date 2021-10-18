@@ -11,11 +11,12 @@ export const CardIcons: React.FC<{
   commentNumber: number
   upvote: number
   downvote: number
+  isPost?: boolean
 }> = (props) => {
   const icons = [
     { name: ThumbUpIcon, text: `${props.upvote}` },
     { name: ThumbDownIcon, text: `${props.downvote}` },
-    { name: AnnotationIcon, text: `${props.commentNumber} Comment` },
+    { name: AnnotationIcon, text: props.isPost ? `${props.commentNumber} Comment` : 'reply' },
     { name: ShareIcon, text: 'Share' },
   ]
   return (
@@ -38,4 +39,8 @@ export const CardIcons: React.FC<{
       </div>
     </div>
   )
+}
+
+CardIcons.defaultProps = {
+  isPost: true,
 }
