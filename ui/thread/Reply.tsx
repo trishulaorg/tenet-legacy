@@ -26,6 +26,7 @@ export const Reply: React.FC<ThreadProps> = observer((props) => {
                   commentNumber={v.responseNumber}
                   upvote={v.upvote}
                   downvote={v.downvote}
+                  isPost={false}
                 />
                 <div className="pb-2" />
                 <CreatedAt created={v.createdAt} />
