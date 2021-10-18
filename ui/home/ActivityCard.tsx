@@ -1,12 +1,13 @@
 import React from 'react'
 import { observer } from 'mobx-react'
+import { PostState } from '../../states/PostState'
+
 import { Author } from '../common/Author'
 import { CardTitle } from '../common/CardTitle'
 import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
-import { PostState } from '../../states/PostState'
 
 interface ActivityCardProps {
   post: PostState
