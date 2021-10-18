@@ -32,6 +32,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
       </CardMeta>
       <div className="pb-5"></div>
       <CommentInput />
+      <div className="pt-8 pb-2 border-b-2 border-black border-opacity-10">Sort by BEST</div>
       {props.post.hasRepsponse ? <Thread posts={props.post.responses} /> : undefined}
     </div>
   )
