@@ -8,7 +8,7 @@ export const Board: React.FC = observer(() => {
   return (
     <ul>
       {state.posts.map((p, idx) => (
-        <li key={idx}>
+        <li key={idx} className="mb-5">
           <Post post={p} />
         </li>
       ))}
