@@ -1,7 +1,7 @@
 import React from 'react'
 import { AnnotationIcon, ShareIcon, ThumbUpIcon, ThumbDownIcon } from '@heroicons/react/solid'
 
-export const ActivityCardIcons: React.FC<{
+export const CardIcons: React.FC<{
   commentNumber: number
   upvote: number
   downvote: number
