@@ -15,7 +15,7 @@ export interface ThreadProps {
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
   return (
-    <ul className="pl-4 bg-gray-50">
+    <ul className="pl-4">
       {props.posts.map((v, i) => {
         return (
           <li key={i} className="py-4">
