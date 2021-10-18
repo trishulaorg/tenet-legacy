@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react'
 import React, { useContext } from 'react'
 import { BoardStateContext } from '../../states/PostState'
-import { Post } from '../thread/Thread'
+import { Post } from '../thread/Post'
 
 export const Board: React.FC = observer(() => {
   const state = useContext(BoardStateContext)

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Story, Meta } from '@storybook/react'
 
-import { Post, PostProps } from '../ui/thread/Thread'
+import { Post, PostProps } from '../ui/thread/Post'
 import { PostState } from '../states/PostState'
 import { PersonaState } from '../states/UserState'
 
