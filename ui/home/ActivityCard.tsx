@@ -1,12 +1,13 @@
 import React from 'react'
 import { observer } from 'mobx-react'
-import { Author } from './Author'
-import { ActivityCardTitle } from './ActivityCardTitle'
-import { ActivityCardContent } from './ActivityCardContent'
-import { ActivityCardIcons } from './ActivityCardIcons'
-import { ActivityCardMeta } from './ActivityCardMeta'
-import { CreatedAt } from './CreatedAt'
 import { PostState } from '../../states/PostState'
+
+import { Author } from '../common/Author'
+import { CardTitle } from '../common/CardTitle'
+import { CardContent } from '../common/CardContent'
+import { CardIcons } from '../common/CardIcons'
+import { CardMeta } from '../common/CardMeta'
+import { CreatedAt } from '../common/CreatedAt'
 
 interface ActivityCardProps {
   post: PostState
@@ -15,18 +16,18 @@ interface ActivityCardProps {
 export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => {
   return (
     <div className="max-w-2xl rounded-lg p-4 bg-white">
-      <ActivityCardTitle title={post.title} />
+      <CardTitle title={post.title} />
       <Author name={post.author.name} iconUrl={post.author.iconUrl} /> {/* TODO: replace iconUrl */}
-      <ActivityCardContent content={post.content} />
-      <ActivityCardMeta>
-        <ActivityCardIcons
+      <CardContent content={post.content} />
+      <CardMeta>
+        <CardIcons
           commentNumber={post.responseNumber}
           upvote={post.upvote}
           downvote={post.downvote}
         />
         <div className="pb-2"></div>
         <CreatedAt created={post.createdAt} />
-      </ActivityCardMeta>
+      </CardMeta>
     </div>
   )
 })
