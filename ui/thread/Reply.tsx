@@ -8,11 +8,11 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 
-export interface ThreadProps {
+export interface ReplyProps {
   posts: PostState[]
 }
 
-export const Reply: React.FC<ThreadProps> = observer((props) => {
+export const Reply: React.FC<ReplyProps> = observer((props) => {
   return (
     <ul className="pl-4">
       {props.posts.map((v, i) => {
