@@ -8,6 +8,7 @@ import { PersonaState, UserState } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
+import { Layout } from '../ui/layouts/Layout'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
@@ -42,11 +43,16 @@ const IndexPage: React.FC = () => {
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header></Header>
       </HeaderStateContext.Provider>
-      <ul>
-        {activities.map((v, idx) => (
-          <ActivityCard key={idx} post={v} />
-        ))}
-      </ul>
+      <Layout
+        Main={() => (
+          <ul>
+            {activities.map((v, idx) => (
+              <ActivityCard key={idx} post={v} />
+            ))}
+          </ul>
+        )}
+        Side={() => <div className="max-w-xs">test</div>}
+      />
     </div>
   )
 }
