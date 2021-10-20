@@ -7,7 +7,7 @@ export const PageLayout: React.FC<{ size: number }> = (props) => {
 
 export const Layout: React.FC<{ Main: React.FC; Side: React.FC }> = observer(({ Main, Side }) => {
   return (
-    <div className="mt-5 mx-auto max-w-screen-lg">
+    <div className="mt-5 mx-auto max-w-4xl">
       <div className="flex justify-center">
         <PageLayout size={2}>
           <Main />
