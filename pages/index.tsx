@@ -8,21 +8,17 @@ import { PersonaState, UserState } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
+import { useGqlToken } from '../libs/cookies'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
-  let cookie: string | undefined = undefined
-  if (process.browser) {
-    cookie = document.cookie
-      .split(';')
-      .filter((v) => v.trim().startsWith('gqltoken='))[0]
-      ?.substring('gqltoken='.length)
-    user = cookie ? new UserState(cookie, [], 0) : undefined
-  }
+  const token = useGqlToken()
+  user = token ? new UserState(token, [], 0) : undefined
+
   const [activities, setActivities] = useState<PostState[]>([])
   useEffect(() => {
     const f = async (): Promise<void> => {
-      const result = await fetchActivities(cookie)
+      const result = await fetchActivities(token)
       setActivities(
         result.data.activities.map(
           (v) =>
@@ -36,7 +32,7 @@ const IndexPage: React.FC = () => {
       )
     }
     f()
-  }, [cookie])
+  }, [token])
   return (
     <div>
       <HeaderStateContext.Provider value={new HeaderState(user)}>
