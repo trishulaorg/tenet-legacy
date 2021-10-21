@@ -1,13 +1,18 @@
 import React from 'react'
 import { Story, Meta } from '@storybook/react'
 
-import { Post, PostProps } from '../ui/thread/Thread'
+import { Post, PostProps } from '../ui/thread/Post'
 import { PostState } from '../states/PostState'
 import { PersonaState } from '../states/UserState'
 
 export default {
   title: 'Thread/Thread',
   component: Post,
+  decorators: [
+    (story) => (
+      <div style={{ padding: '3rem', backgroundColor: '#f5f5f5', color: '#333' }}>{story()}</div>
+    ),
+  ],
 } as Meta
 
 const Template: Story<PostProps> = (args) => <Post {...args} />

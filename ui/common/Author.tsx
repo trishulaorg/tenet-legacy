@@ -1,5 +1,5 @@
 import React from 'react'
-import { UserIcon } from '../common/UserIcon'
+import { UserIcon } from './UserIcon'
 
 export const Author: React.FC<{ name: string; iconUrl: string }> = ({ name, iconUrl }) => {
   return (
