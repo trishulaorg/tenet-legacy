@@ -15,7 +15,7 @@ interface ActivityCardProps {
 
 export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => {
   return (
-    <div className="max-w-2xl rounded-lg p-4 bg-white">
+    <div className="max-w-2xl rounded-lg p-4 bg-white mb-5">
       <CardTitle title={post.title} />
       <Author name={post.author.name} iconUrl={post.author.iconUrl} /> {/* TODO: replace iconUrl */}
       <CardContent content={post.content} />
