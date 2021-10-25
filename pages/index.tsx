@@ -10,6 +10,7 @@ import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
 import { Layout } from '../ui/layouts/Layout'
 import { HomeTabList } from '../ui/home/HomeTabList'
+import { HomeTab } from '../ui/home/HomeTab'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
@@ -47,7 +48,17 @@ const IndexPage: React.FC = () => {
       <Layout
         Main={() => (
           <>
-            <HomeTabList />
+            <HomeTabList>
+              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={true}>
+                Home
+              </HomeTab>
+              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
+                Activities
+              </HomeTab>
+              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
+                Hot Topics
+              </HomeTab>
+            </HomeTabList>
             <ul>
               {activities.map((v, idx) => (
                 <ActivityCard key={idx} post={v} />
