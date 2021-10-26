@@ -9,6 +9,8 @@ import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
 import { Layout } from '../ui/layouts/Layout'
+import { HomeTabList } from '../ui/home/HomeTabList'
+import { HomeTab } from '../ui/home/HomeTab'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
@@ -39,17 +41,30 @@ const IndexPage: React.FC = () => {
     f()
   }, [cookie])
   return (
-    <div>
+    <div className="bg-gray-600 bg-opacity-5">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header></Header>
       </HeaderStateContext.Provider>
       <Layout
         Main={() => (
-          <ul>
-            {activities.map((v, idx) => (
-              <ActivityCard key={idx} post={v} />
-            ))}
-          </ul>
+          <>
+            <HomeTabList>
+              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={true}>
+                Home
+              </HomeTab>
+              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
+                Activities
+              </HomeTab>
+              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
+                Hot Topics
+              </HomeTab>
+            </HomeTabList>
+            <ul>
+              {activities.map((v, idx) => (
+                <ActivityCard key={idx} post={v} />
+              ))}
+            </ul>
+          </>
         )}
         Side={() => <div className="max-w-xs">test</div>}
       />
