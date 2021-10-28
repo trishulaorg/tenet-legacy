@@ -1,3 +1,2 @@
-import { handleAuth } from '@auth0/nextjs-auth0'
-
-export default handleAuth()
+import { getInstance } from '../../../libs/auth0'
+export default getInstance().handleAuth()
