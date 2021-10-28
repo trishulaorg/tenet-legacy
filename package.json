@@ -15,7 +15,7 @@
     "api:dev": "NODE_ENV=development nodemon --exec 'cd server && npx tsc && node dist/server/index.js' --watch ./server/ --ignore ./server/dist/ --ext ts,tsx,js,jsx",
     "api": "NODE_ENV=production cd server && tsc && node dist/server/index.js",
     "dev": "NODE_ENV=development next dev",
-    "build": "next build",
+    "build": "NODE_ENV=production cd server && tsc",
     "migrate:test": "prisma migrate dev --name init && npm run seed:test || exit 0",
     "seed:test": "prisma db seed",
     "start": "NODE_ENV=production next start",
