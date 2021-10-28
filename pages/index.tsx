@@ -1,4 +1,3 @@
-import { getSession } from '@auth0/nextjs-auth0'
 import { GetServerSideProps } from 'next'
 import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
@@ -11,6 +10,7 @@ import { fetchActivities } from '../libs/fetchActivities'
 import { Layout } from '../ui/layouts/Layout'
 import { HomeTabList } from '../ui/home/HomeTabList'
 import { HomeTab } from '../ui/home/HomeTab'
+import { getInstance } from '../libs/auth0'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
@@ -73,7 +73,7 @@ const IndexPage: React.FC = () => {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = getSession(context.req, context.res)
+  const session = getInstance().getSession(context.req, context.res)
   if (!process.env.API_TOKEN_SECRET || !(session && session.user)) {
     return {
       props: {},
