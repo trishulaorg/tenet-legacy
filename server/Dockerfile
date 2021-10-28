@@ -6,6 +6,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+COPY .env ./
+
 COPY prisma ./
 
 RUN npm install
