@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "preapi:dev": "npm run migrate:test",
-    "api:dev": "NODE_ENV=development nodemon --exec 'cd api && npx tsc && node dist/api/index.js' --watch ./api/ --ignore ./api/dist/ --ext ts,tsx,js,jsx",
+    "api:dev": "NODE_ENV=development nodemon --exec 'cd server && npx tsc && node dist/server/index.js' --watch ./server/ --ignore ./server/dist/ --ext ts,tsx,js,jsx",
     "dev": "NODE_ENV=development next dev",
     "build": "next build",
     "migrate:test": "prisma migrate dev --name init && npm run seed:test || exit 0",
