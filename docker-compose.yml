@@ -13,13 +13,13 @@ services:
   api:
     build:
       context: ./
-      dockerfile: ./api/Dockerfile
+      dockerfile: ./server/Dockerfile
     ports:
       - "4000:4000"
     depends_on:
       - db
     volumes:
-      - ./api:/usr/src/app/api
+      - ./server:/usr/src/app/server
     command: ["npm", "run", "api:dev"]
   db:
     image: postgres:13-alpine
