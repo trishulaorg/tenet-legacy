@@ -2,12 +2,10 @@ import React from 'react'
 import { observer } from 'mobx-react'
 
 export const PageLayout: React.FC<{ size: number; displayName: string }> = (props) => {
-  let style
-  if (props.displayName === 'Main') {
-    style = `w-full md:w-${props.size}/3`
-  } else {
-    style = `hidden md:block md:w-${props.size}/3`
-  }
+  const style =
+    props.displayName === 'Main'
+      ? `w-full md:w-${props.size}/3`
+      : `hidden md:block md:w-${props.size}/3`
   return <div className={style}>{props.children}</div>
 }
 
