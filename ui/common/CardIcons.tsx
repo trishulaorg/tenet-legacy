@@ -23,8 +23,14 @@ export const CardIcons: React.FC<{
     <div className="flex justify-between">
       <div className="flex justify-start">
         {icons.map((icon, index) => {
-          const style =
-            index === 0 ? 'flex items-center opacity-50' : 'flex items-center opacity-50 pl-4'
+          let style
+          if (index === 0) {
+            style = 'flex items-center opacity-50'
+          } else if (index === 1) {
+            style = 'flex items-center opacity-50 pl-4'
+          } else {
+            style = 'flex items-center opacity-50 pl-4 hidden md:flex'
+          }
           return (
             <div className={style} key={`icon-${index}`}>
               <icon.name className="h-5 w-5" />
