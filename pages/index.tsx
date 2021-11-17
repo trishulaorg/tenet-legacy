@@ -7,7 +7,7 @@ import { PersonaState, UserState } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
-import { useGqlToken } from '../libs/cookies'
+import { getGqlToken } from '../libs/cookies'
 import { Layout } from '../ui/layouts/Layout'
 import { HomeTabList } from '../ui/home/HomeTabList'
 import { HomeTab } from '../ui/home/HomeTab'
@@ -15,7 +15,7 @@ import { getInstance } from '../libs/auth0'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
-  const token = useGqlToken()
+  const token = getGqlToken()
   user = token ? new UserState(token, [], 0) : undefined
 
   const [activities, setActivities] = useState<PostState[]>([])
@@ -36,34 +36,32 @@ const IndexPage: React.FC = () => {
     }
     f()
   }, [token])
+  const main: React.FC = () => (
+    <>
+      <HomeTabList>
+        <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={true}>
+          Home
+        </HomeTab>
+        <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
+          Activities
+        </HomeTab>
+        <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
+          Hot Topics
+        </HomeTab>
+      </HomeTabList>
+      <ul>
+        {activities.map((v, idx) => (
+          <ActivityCard key={idx} post={v} />
+        ))}
+      </ul>
+    </>
+  )
   return (
     <div className="bg-gray-600 bg-opacity-5">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header></Header>
       </HeaderStateContext.Provider>
-      <Layout
-        Main={() => (
-          <>
-            <HomeTabList>
-              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={true}>
-                Home
-              </HomeTab>
-              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
-                Activities
-              </HomeTab>
-              <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
-                Hot Topics
-              </HomeTab>
-            </HomeTabList>
-            <ul>
-              {activities.map((v, idx) => (
-                <ActivityCard key={idx} post={v} />
-              ))}
-            </ul>
-          </>
-        )}
-        Side={() => <div className="max-w-xs">test</div>}
-      />
+      <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
     </div>
   )
 }
