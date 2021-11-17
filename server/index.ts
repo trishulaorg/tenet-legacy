@@ -43,6 +43,9 @@ const typeDefs = gql`
     board(title: String!): Board
     activities: [Post]
   }
+  type Mutation {
+    createPersona(name: String!): Persona
+  }
 `
 
 const resolvers: IResolvers<void, ContextType> = {
@@ -95,6 +98,20 @@ const resolvers: IResolvers<void, ContextType> = {
       })
     },
   },
+  Mutation: {
+    createPersona: (_1, args: { name: string }, context) => {
+      if (!context.me) {
+        return
+      }
+      return context.prisma.persona.create({
+        data: {
+          userId: context.me.id,
+          name: args.name,
+          iconUrl: 'http://example.com',
+        },
+      })
+    },
+  },
 }
 
 type ContextType = {
@@ -104,7 +121,7 @@ type ContextType = {
 type ContextFunction = (args: ExpressContext) => Promise<ContextType>
 
 const context: ContextFunction = async ({ req }) => {
-  const token = req.headers.authorization
+  const token = req.headers.authorization?.substring('Bearer '.length)
   let me: User | null = null
   if (token && process.env.API_TOKEN_SECRET) {
     try {

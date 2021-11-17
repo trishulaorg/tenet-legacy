@@ -2,8 +2,8 @@ export interface APIResult<T> {
   data: T
 }
 
-export function fetchAPI<T>(query: string, token?: string): Promise<APIResult<T>> {
-  return fetch('/api/graphql', {
+export async function fetchAPI<T>(query: string, token?: string): Promise<APIResult<T>> {
+  const r = await fetch('/api/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -13,5 +13,6 @@ export function fetchAPI<T>(query: string, token?: string): Promise<APIResult<T>
     body: JSON.stringify({
       query,
     }),
-  }).then((r) => r.json())
+  })
+  return await r.json()
 }
