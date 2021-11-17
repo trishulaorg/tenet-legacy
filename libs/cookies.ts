@@ -1,4 +1,4 @@
-export function useCookie(): Map<string, string> {
+export function getCookies(): Map<string, string> {
   if (process.browser) {
     return new Map(
       document.cookie
@@ -10,7 +10,24 @@ export function useCookie(): Map<string, string> {
   return new Map()
 }
 
-export function useGqlToken(): string | undefined {
-  const cookies = useCookie()
+export function convertToString(cookies: Map<string, string>): string {
+  cookies.delete('gqltoken')
+  const kv: string[] = []
+  for (const v of cookies.entries()) {
+    kv.push(v.join('='))
+  }
+  return kv.join(';')
+}
+
+export function removeGqlCookie(): boolean {
+  if (process.browser) {
+    document.cookie = 'gqltoken=; max-age=0'
+    return true
+  }
+  return false
+}
+
+export function getGqlToken(): string | undefined {
+  const cookies = getCookies()
   return cookies.get('gqltoken')
 }

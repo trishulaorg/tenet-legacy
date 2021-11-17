@@ -3,7 +3,7 @@ import { observer } from 'mobx-react'
 import { HeaderStateContext } from '../../states/HeaderState'
 import { MenuIcon } from '@heroicons/react/solid'
 import { Switch } from '../common/Switch'
-
+import Link from 'next/link'
 export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
   return (
@@ -34,10 +34,23 @@ export const UserMenu: React.FC = observer(() => {
                     </ul>
                   </Switch>
                 </UserMenuItem>
-                <UserMenuItem onClick={() => state.closeMenu()}>Sign out</UserMenuItem>
+                <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/api/auth/logout">
+                    <a
+                      onClick={() => state.logOut()}
+                      onKeyDown={() => state.logOut()}
+                      role="link"
+                      tabIndex={0}
+                    >
+                      Sign out
+                    </a>
+                  </Link>
+                </UserMenuItem>
               </Switch>
               <Switch visibility={!state.isLoggedIn}>
-                <UserMenuItem onClick={() => state.closeMenu()}>Sign up</UserMenuItem>
+                <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/api/auth/login">Sign up</Link>
+                </UserMenuItem>
               </Switch>
             </UserMenuItems>
           </Switch>
