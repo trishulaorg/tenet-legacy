@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
+import { removeGqlCookie } from '../libs/cookies'
 
 import { UserState } from './UserState'
 
@@ -35,6 +36,7 @@ export class HeaderState {
   }
   logOut(): void {
     this.userState = undefined
+    removeGqlCookie()
   }
   get isLoggedIn(): boolean {
     return Boolean(this.userState)
