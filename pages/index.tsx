@@ -12,13 +12,26 @@ import { Layout } from '../ui/layouts/Layout'
 import { HomeTabList } from '../ui/home/HomeTabList'
 import { HomeTab } from '../ui/home/HomeTab'
 import { getInstance } from '../libs/auth0'
+import { useRouter } from 'next/router'
 
 const IndexPage: React.FC = () => {
   let user: UserState | undefined = undefined
   const token = getGqlToken()
+  const router = useRouter()
   user = token ? new UserState(token, [], 0) : undefined
 
   const [activities, setActivities] = useState<PostState[]>([])
+  useEffect(() => {
+    const f = async (): Promise<void> => {
+      if (user) {
+        await user.request()
+        if (!user.currentPersona) {
+          router.push('/onboarding')
+        }
+      }
+    }
+    f()
+  }, [token, router, user])
   useEffect(() => {
     const f = async (): Promise<void> => {
       const result = await fetchActivities(token)
@@ -28,7 +41,7 @@ const IndexPage: React.FC = () => {
             new PostState(
               v.title,
               v.content,
-              new PersonaState(v.persona.name, v.persona.iconUrl),
+              new PersonaState({ name: v.persona.name, iconUrl: v.persona.iconUrl }),
               Date.now()
             )
         )
