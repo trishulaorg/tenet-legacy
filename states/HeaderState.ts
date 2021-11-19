@@ -2,15 +2,15 @@ import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { removeGqlCookie } from '../libs/cookies'
 
-import { UserState } from './UserState'
+import { defaultUser, UserState } from './UserState'
 
 export class HeaderState {
-  userState?: UserState
+  userState: UserState
   menuVisibility = false
   personaListVisibility = false
   menuAnchorElement?: HTMLButtonElement
   constructor(userState?: UserState) {
-    this.userState = userState
+    this.userState = userState ?? defaultUser()
     makeAutoObservable(this)
   }
   toggleMenu(): void {
@@ -35,11 +35,11 @@ export class HeaderState {
     this.userState = userState
   }
   logOut(): void {
-    this.userState = undefined
+    this.userState = defaultUser()
     removeGqlCookie()
   }
   get isLoggedIn(): boolean {
-    return Boolean(this.userState)
+    return Boolean(this.userState.isValidUser)
   }
 }
 

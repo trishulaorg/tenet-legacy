@@ -3,7 +3,7 @@ import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { PersonaState, UserState } from '../states/UserState'
+import { defaultUser, PersonaState, UserState } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
@@ -15,17 +15,17 @@ import { getInstance } from '../libs/auth0'
 import { useRouter } from 'next/router'
 
 const IndexPage: React.FC = () => {
-  let user: UserState | undefined = undefined
   const token = getGqlToken()
   const router = useRouter()
-  user = token ? new UserState(token, [], 0) : undefined
+  let user = defaultUser()
+  if (token) user = new UserState(token, [], 0)
 
   const [activities, setActivities] = useState<PostState[]>([])
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
         await user.request()
-        if (!user.currentPersona) {
+        if (user.isValidUser && !user.currentPersona) {
           router.push('/onboarding')
         }
       }
