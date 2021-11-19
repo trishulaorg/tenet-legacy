@@ -4,6 +4,7 @@ import { SignInWithAuth0 } from '@auth0/nextjs-auth0/dist/instance'
 let instance: SignInWithAuth0
 
 export function getInstance(): SignInWithAuth0 {
+  console.error('VERCEL_URL ' + process.env.VERCEL_URL)
   if (instance) {
     return instance
   }
