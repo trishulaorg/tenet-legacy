@@ -1,23 +1,15 @@
 import { Header } from '../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
-import React, { useEffect } from 'react'
-import { UserState } from '../states/UserState'
+import React from 'react'
+import { defaultUser, UserState } from '../states/UserState'
 import { getGqlToken } from '../libs/cookies'
 import { Layout } from '../ui/layouts/Layout'
-import { useRouter } from 'next/router'
 import { PersonaCreateSteps } from '../ui/onboarding/PersonaCreateSteps'
 
 const OnboardingPage: React.FC = () => {
-  let user: UserState | undefined = undefined
   const token = getGqlToken()
-  user = token ? new UserState(token, [], 0) : undefined
-  const router = useRouter()
-
-  useEffect(() => {
-    if (user?.personas.length !== 0) {
-      router.push('/')
-    }
-  })
+  let user = defaultUser()
+  if (token) user = new UserState(token, [], 0)
 
   const main: React.FC = () => (
     <>
