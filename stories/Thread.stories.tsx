@@ -17,15 +17,27 @@ export default {
 
 const Template: Story<PostProps> = (args) => <Post {...args} />
 
-const post1 = new PostState('Post 1', 'Default Content', new PersonaState('test1'), Date.now())
-const post2 = new PostState('Thread 1', 'Thread Content', new PersonaState('test2'), Date.now())
-post2.addResponse(new PostState('Reply 1', 'Reply content', new PersonaState('test3'), Date.now()))
+const post1 = new PostState(
+  'Post 1',
+  'Default Content',
+  new PersonaState({ name: 'test1' }),
+  Date.now()
+)
+const post2 = new PostState(
+  'Thread 1',
+  'Thread Content',
+  new PersonaState({ name: 'test2' }),
+  Date.now()
+)
+post2.addResponse(
+  new PostState('Reply 1', 'Reply content', new PersonaState({ name: 'test3' }), Date.now())
+)
 post1.addResponse(post2)
 post1.addResponse(
-  new PostState('Thread 2', 'Thread Content', new PersonaState('test2'), Date.now())
+  new PostState('Thread 2', 'Thread Content', new PersonaState({ name: 'test2' }), Date.now())
 )
 post1.addResponse(
-  new PostState('Thread 3', 'Thread Content', new PersonaState('test3'), Date.now())
+  new PostState('Thread 3', 'Thread Content', new PersonaState({ name: 'test3' }), Date.now())
 )
 
 export const DefaultThread = Template.bind({})

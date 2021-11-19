@@ -18,7 +18,7 @@ export default {
 const post = new PostState(
   'Post Title',
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis ...',
-  new PersonaState('test1'),
+  new PersonaState({ name: 'test1' }),
   new Date(2020, 1, 1),
   20,
   30,
