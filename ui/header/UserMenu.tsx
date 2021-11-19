@@ -19,19 +19,21 @@ export const UserMenu: React.FC = observer(() => {
                 <UserMenuItem onClick={() => state.togglePersonaList()}>
                   {state.userState?.currentPersona?.name}
                   <Switch visibility={state.personaListVisibility}>
-                    <ul className="bg-white width-100">
-                      {state.userState?.personas.map((p, idx) => (
-                        <li key={idx} className="border-solid border-b-2">
-                          <button
-                            onClick={() => {
-                              state.userState && (state.userState.currentPersonaIndex = idx)
-                            }}
-                          >
-                            {p.name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                    <Switch visibility={!!state.userState && state.userState.personas.length > 0}>
+                      <ul className="bg-white width-100">
+                        {state.userState?.personas.map((p, idx) => (
+                          <li key={idx} className="border-solid border-b-2">
+                            <button
+                              onClick={() => {
+                                state.userState && (state.userState.currentPersonaIndex = idx)
+                              }}
+                            >
+                              {p.name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </Switch>
                   </Switch>
                 </UserMenuItem>
                 <UserMenuItem onClick={() => state.closeMenu()}>

@@ -6,19 +6,12 @@ import { getGqlToken } from '../libs/cookies'
 import { Layout } from '../ui/layouts/Layout'
 import { useRouter } from 'next/router'
 import { PersonaCreateSteps } from '../ui/onboarding/PersonaCreateSteps'
-import { fetchAPI } from '../libs/fetchAPI'
 
 const OnboardingPage: React.FC = () => {
   let user: UserState | undefined = undefined
   const token = getGqlToken()
   user = token ? new UserState(token, [], 0) : undefined
   const router = useRouter()
-  const query = `
-    Mutation {
-      
-    }
-  `
-  fetchAPI(query, token)
 
   useEffect(() => {
     if (user?.personas.length !== 0) {
