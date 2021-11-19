@@ -15,12 +15,12 @@ export class UserState {
     return this.token !== ''
   }
   async request(): Promise<void> {
-    await fetch('/api/graphql', {
+    const result = await fetch('/api/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        Authorization: this.token,
+        Authorization: 'Bearer ' + this.token,
       },
       body: JSON.stringify({
         query: `
@@ -34,21 +34,27 @@ export class UserState {
         }`,
       }),
     }).then((r) => r.json())
+    this.personas = result.data.me?.personas.map(
+      (v: { name: string; iconUrl: string }) => new PersonaState(v)
+    )
   }
-  get currentPersona(): PersonaState {
-    return this.personas[this.currentPersonaIndex]
+  get currentPersona(): PersonaState | undefined {
+    return this.personas ? this.personas[this.currentPersonaIndex] : undefined
   }
 }
 
 export class PersonaState {
   name: string
   iconUrl: string
-  constructor(name: string, iconUrl = '') {
-    this.name = name
-    this.iconUrl = iconUrl
+  constructor(data: { name: string; iconUrl?: string }) {
+    this.name = data.name
+    this.iconUrl = data.iconUrl ?? ''
     makeAutoObservable(this)
+  }
+  updateName(name: string): void {
+    this.name = name
   }
 }
 
 export const UserStateContext = createContext(new UserState('', [], 0))
-export const PersonaStateContext = createContext(new PersonaState(''))
+export const PersonaStateContext = createContext(new PersonaState({ name: '' }))
