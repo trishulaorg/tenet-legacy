@@ -47,18 +47,42 @@ export class PostState {
 }
 
 export class BoardState {
-  id?: number
-  title = ''
-  description = ''
-  posts: PostState[] = []
+  _id: number
+  _title = ''
+  _description = ''
+  _posts: PostState[] = []
   constructor(id?: number, opts?: { title: string; description: string; posts: PostState[] }) {
-    this.id = id
+    this._id = id ?? 0
     if (opts) {
-      this.title = opts.title
-      this.description = opts.description
-      this.posts = opts.posts
+      this._title = opts.title
+      this._description = opts.description
+      this._posts = opts.posts
     }
     makeAutoObservable(this)
+  }
+  get id(): number {
+    return this._id
+  }
+  set id(id: number) {
+    this._id = id
+  }
+  get description(): string {
+    return this._description
+  }
+  set description(desc: string) {
+    this._description = desc
+  }
+  get title(): string {
+    return this._title
+  }
+  set title(title: string) {
+    this._title = title
+  }
+  get posts(): PostState[] {
+    return this._posts
+  }
+  set posts(posts: PostState[]) {
+    this._posts = posts
   }
 }
 
