@@ -22,6 +22,7 @@ interface ResultT {
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
   const router = useRouter()
+  const { topic_id } = router.query
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
   const [context, setContext] = useState<BoardState>(new BoardState())
@@ -34,11 +35,10 @@ const IndexPage: React.FC = () => {
     }
     f()
   }, [token, router, user])
-  const title = 1 // wip
 
   const query = `
   query {
-    board(title: "${title}") {
+    board(title: "${topic_id}") {
       title,
       posts {
         title,
