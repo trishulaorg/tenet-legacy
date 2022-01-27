@@ -2,7 +2,7 @@ import { observer } from 'mobx-react'
 import router from 'next/router'
 import React, { FormEventHandler, useContext } from 'react'
 import { getGqlToken } from '../../libs/cookies'
-import { fetchAPI } from '../../libs/fetchAPI'
+import { fetcher } from '../../libs/fetchAPI'
 import { PersonaStateContext } from '../../states/UserState'
 
 export const PersonaCreateSteps: React.FC = observer(() => {
@@ -11,13 +11,13 @@ export const PersonaCreateSteps: React.FC = observer(() => {
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
     const query = `
-    mutation {
-      createPersona(name: "${persona.name}") {
+    mutation CreatePersona($name: String!) {
+      createPersona(name: $name) {
         name
       }
     }
     `
-    await fetchAPI(query, token)
+    await fetcher(query, { name: persona.name }, token)
     router.push('/')
   }
 
