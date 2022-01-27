@@ -1,4 +1,4 @@
-import { fetchAPI, APIResult } from './fetchAPI'
+import { fetcher } from './fetchAPI'
 
 export interface PersonaType {
   name: string
@@ -15,8 +15,8 @@ export interface ResultType {
   activities: ActivityType[]
 }
 
-export function fetchActivities(token?: string): Promise<APIResult<ResultType>> {
-  return fetchAPI(
+export function fetchActivities(token?: string): Promise<ResultType> {
+  return fetcher(
     `
     query {
       activities {
@@ -29,6 +29,7 @@ export function fetchActivities(token?: string): Promise<APIResult<ResultType>> 
       }
     }
     `,
+    {},
     token
   )
 }

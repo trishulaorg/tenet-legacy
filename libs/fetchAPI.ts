@@ -1,18 +1,26 @@
+import { request } from 'graphql-request'
+
 export interface APIResult<T> {
   data: T
 }
 
-export async function fetchAPI<T>(query: string, token?: string): Promise<APIResult<T>> {
-  const r = await fetch('/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${token ?? 'INVALID_TOKEN'}`,
-    },
-    body: JSON.stringify({
-      query,
-    }),
+export const ENDPOINT = '/api/graphql'
+
+export function rawFetcher<T>(args: {
+  url: string
+  document: string
+  token?: string
+  variables: Record<string, string>
+}): Promise<T> {
+  return request(args.url, args.document, args.variables, {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${args.token ?? 'INVALID_TOKEN'}`,
   })
-  return await r.json()
 }
+
+export const fetcher = <T>(
+  document: string,
+  variables: Record<string, string>,
+  token?: string
+): Promise<T> => rawFetcher<T>({ url: ENDPOINT, document, variables, token })
