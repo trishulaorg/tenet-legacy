@@ -4,7 +4,7 @@ export function getCookies(): Map<string, string> {
       document.cookie
         .split(';')
         .filter((v) => v.trim())
-        .map((v) => v.split('=') as [string, string])
+        .map((v) => v.split('=').map((v) => v.trim()) as [string, string])
     )
   }
   return new Map()

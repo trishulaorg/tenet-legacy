@@ -36,7 +36,7 @@ const IndexPage: React.FC = () => {
     const f = async (): Promise<void> => {
       const result = await fetchActivities(token)
       setActivities(
-        result.data.activities.map(
+        result.activities.map(
           (v) =>
             new PostState(
               v.title,
