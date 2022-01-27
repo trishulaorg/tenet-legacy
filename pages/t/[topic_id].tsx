@@ -7,7 +7,8 @@ import { getGqlToken } from '../../libs/cookies'
 import { Layout } from '../../ui/layouts/Layout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { fetchAPI } from '../../libs/fetchAPI'
+import { fetcher } from '../../libs/fetchAPI'
+import useSWR from 'swr'
 
 interface ResultT {
   board: {
@@ -36,9 +37,9 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
 
-  const query = `
-  query {
-    board(title: "${topic_id}") {
+  const document = `
+  query Board($topicId: String!) {
+    board(title: $topicId) {
       title,
       posts {
         title,
@@ -47,21 +48,27 @@ const IndexPage: React.FC = () => {
     }
   } 
   `
+  const { data } = useSWR<ResultT>(document, (document) =>
+    fetcher(document, { topicId: topic_id as string }, token)
+  )
+
   useEffect(() => {
     const f = async (): Promise<void> => {
-      const result = await fetchAPI<ResultT>(query, token)
-      setContext(
-        new BoardState(0, {
-          title: result.data.board.title,
-          description: 'WIP',
-          posts: result.data.board.posts.map(
-            (v) => new PostState(v.title, v.content, new PersonaState({ name: 'WIP' }), new Date())
-          ),
-        })
-      )
+      if (data) {
+        setContext(
+          new BoardState(0, {
+            title: data.board.title,
+            description: 'WIP',
+            posts: data.board.posts.map(
+              (v) =>
+                new PostState(v.title, v.content, new PersonaState({ name: 'WIP' }), new Date())
+            ),
+          })
+        )
+      }
     }
     f()
-  }, [token, query])
+  }, [token, document, data])
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
