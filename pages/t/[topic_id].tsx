@@ -82,6 +82,15 @@ const IndexPage: React.FC = () => {
         <Header></Header>
       </HeaderStateContext.Provider>
       <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+      <style global jsx>{`
+        html,
+        body,
+        body > div:first-child,
+        div#__next,
+        div#__next > div {
+          height: 100%;
+        }
+      `}</style>
     </div>
   )
 }
