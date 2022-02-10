@@ -1,4 +1,4 @@
-import { ApolloServer, gql, IResolvers } from 'apollo-server'
+import { ApolloServer, gql } from 'apollo-server'
 import { PrismaClient, User } from '@prisma/client'
 import { ExpressContext } from 'apollo-server-express/dist/index'
 import jwt from 'jsonwebtoken'
@@ -48,7 +48,7 @@ const typeDefs = gql`
   }
 `
 
-const resolvers: IResolvers<void, ContextType> = {
+const resolvers: ConstructorParameters<typeof ApolloServer>[0]['resolvers'] = {
   Query: {
     me: (_1, _2, context) => {
       return context.me
