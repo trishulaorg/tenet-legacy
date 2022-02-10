@@ -17,11 +17,21 @@ const OnboardingPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-600 bg-opacity-5">
+    <div className="bg-gray-600 h-full bg-opacity-5">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header></Header>
       </HeaderStateContext.Provider>
       <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+
+      <style global jsx>{`
+        html,
+        body,
+        body > div:first-child,
+        div#__next,
+        div#__next > div {
+          height: 100%;
+        }
+      `}</style>
     </div>
   )
 }
