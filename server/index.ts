@@ -35,6 +35,13 @@ const typeDefs = gql`
     content: String
     persona: Persona
   }
+  enum ContentType {
+    TEXT
+    LINK
+    IMAGE
+    VIDEO
+    EMOJI
+  }
   type Query {
     me: User
     persona(name: String!): Persona
@@ -44,7 +51,23 @@ const typeDefs = gql`
     activities: [Post]
   }
   type Mutation {
-    createPersona(name: String!): Persona
+    createPersona(name: String!, iconPath: String): Persona
+    createBoard(title: String!, description: String!): Board
+    createPost(
+      title: String!
+      content: String!
+      contentType: String!
+      personaId: ID!
+      boardId: ID!
+    ): Post
+    createThread(title: String!, content: String!, contentType: ContentType!, boardId: ID!): Thread
+    createReply(
+      title: String!
+      content: String!
+      contentType: ContentType!
+      threadId: ID!
+      postId: ID!
+    ): Reply
   }
 `
 
