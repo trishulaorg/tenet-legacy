@@ -1,5 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server'
-import { PrismaClient, User } from '@prisma/client'
+import { ContentType, PrismaClient, User } from '@prisma/client'
 import { ExpressContext } from 'apollo-server-express/dist/index'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
@@ -48,7 +48,18 @@ const typeDefs = gql`
   }
 `
 
-const resolvers: ConstructorParameters<typeof ApolloServer>[0]['resolvers'] = {
+type IResolver<Root = unknown, Context = unknown, Args = unknown, ResultT = unknown> = (
+  parent: Root,
+  args: Args,
+  context: Context
+) => ResultT
+
+type IResolvers<Context> = {
+  Query: Record<string, IResolver<any, Context, any, any>>
+  Mutation: Record<string, IResolver<any, Context, any, any>>
+}
+
+const resolvers: IResolvers<ContextType> = {
   Query: {
     me: (_1, _2, context) => {
       return context.me
@@ -99,7 +110,7 @@ const resolvers: ConstructorParameters<typeof ApolloServer>[0]['resolvers'] = {
     },
   },
   Mutation: {
-    createPersona: (_1, args: { name: string }, context) => {
+    createPersona: (_1, args: { name: string; iconPath?: string }, context) => {
       if (!context.me) {
         return
       }
@@ -107,7 +118,84 @@ const resolvers: ConstructorParameters<typeof ApolloServer>[0]['resolvers'] = {
         data: {
           userId: context.me.id,
           name: args.name,
-          iconUrl: 'http://example.com',
+          iconUrl: args.iconPath ?? 'http://example.com',
+        },
+      })
+    },
+    createBoard: (_1, args: { title: string; description: string }, context) => {
+      if (!context.me) {
+        return
+      }
+      return context.prisma.board.create({
+        data: {
+          title: args.title,
+          description: args.description,
+        },
+      })
+    },
+    createPost: (
+      _1,
+      args: { title: string; content: string; contentType: ContentType; boardId: number },
+      context
+    ) => {
+      if (!context.me) {
+        return
+      }
+      return context.prisma.post.create({
+        data: {
+          title: args.title,
+          content: args.content,
+          contentType: args.contentType,
+          personaId: context.me.id,
+          boardId: args.boardId,
+        },
+      })
+    },
+    createThread: (
+      _1,
+      args: {
+        title: string
+        content: string
+        contentType: ContentType
+        boardId: number
+        postId: number
+      },
+      context
+    ) => {
+      if (!context.me) {
+        return
+      }
+      return context.prisma.thread.create({
+        data: {
+          content: args.content,
+          contentType: args.contentType,
+          personaId: context.me.id,
+          boardId: args.boardId,
+          postId: args.postId,
+        },
+      })
+    },
+    createReply: (
+      _1,
+      args: {
+        title: string
+        content: string
+        contentType: ContentType
+        threadId: number
+        postId: number
+      },
+      context
+    ) => {
+      if (!context.me) {
+        return
+      }
+      return context.prisma.reply.create({
+        data: {
+          content: args.content,
+          contentType: args.contentType,
+          personaId: context.me.id,
+          threadId: args.threadId,
+          postId: args.postId,
         },
       })
     },
@@ -118,6 +206,7 @@ type ContextType = {
   me: User | null
   prisma: typeof prisma
 }
+
 type ContextFunction = (args: ExpressContext) => Promise<ContextType>
 
 const context: ContextFunction = async ({ req }) => {
