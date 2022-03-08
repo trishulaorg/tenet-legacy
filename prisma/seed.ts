@@ -42,7 +42,6 @@ async function main(): Promise<void> {
     await prisma.reply.create({
       data: {
         personaId: persona.id,
-        postId: post.id,
         threadId: thread.id,
         content: 'Test',
         contentType: 'TEXT',
