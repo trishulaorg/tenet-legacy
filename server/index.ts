@@ -60,14 +60,14 @@ const typeDefs = gql`
       personaId: ID!
       boardId: ID!
     ): Post
-    createThread(title: String!, content: String!, contentType: ContentType!, boardId: ID!): Thread
-    createReply(
+    createThread(
       title: String!
       content: String!
       contentType: ContentType!
-      threadId: ID!
+      boardId: ID!
       postId: ID!
-    ): Reply
+    ): Thread
+    createReply(title: String!, content: String!, contentType: ContentType!, threadId: ID!): Reply
   }
 `
 
@@ -145,23 +145,50 @@ const resolvers: IResolvers<ContextType> = {
         },
       })
     },
-    createBoard: (_1, args: { title: string; description: string }, context) => {
+    createBoard: async (
+      _1,
+      args: { title: string; description: string; personaId: number },
+      context
+    ) => {
       if (!context.me) {
+        return
+      }
+      const currentPersona = await context.prisma.persona.findFirst({
+        where: { userId: context.me.id, id: args.personaId },
+      })
+      if (!currentPersona) {
         return
       }
       return context.prisma.board.create({
         data: {
           title: args.title,
           description: args.description,
+          moderators: {
+            connect: {
+              id: currentPersona.id,
+            },
+          },
         },
       })
     },
-    createPost: (
+    createPost: async (
       _1,
-      args: { title: string; content: string; contentType: ContentType; boardId: number },
+      args: {
+        title: string
+        content: string
+        contentType: ContentType
+        boardId: number
+        personaId: number
+      },
       context
     ) => {
       if (!context.me) {
+        return
+      }
+      const currentPersona = await context.prisma.persona.findFirst({
+        where: { userId: context.me.id, id: args.personaId },
+      })
+      if (!currentPersona) {
         return
       }
       return context.prisma.post.create({
@@ -169,12 +196,20 @@ const resolvers: IResolvers<ContextType> = {
           title: args.title,
           content: args.content,
           contentType: args.contentType,
-          personaId: context.me.id,
-          boardId: args.boardId,
+          persona: {
+            connect: {
+              id: currentPersona.id,
+            },
+          },
+          board: {
+            connect: {
+              id: args.boardId,
+            },
+          },
         },
       })
     },
-    createThread: (
+    createThread: async (
       _1,
       args: {
         title: string
@@ -182,43 +217,75 @@ const resolvers: IResolvers<ContextType> = {
         contentType: ContentType
         boardId: number
         postId: number
+        personaId: number
       },
       context
     ) => {
       if (!context.me) {
+        return
+      }
+      const currentPersona = await context.prisma.persona.findFirst({
+        where: { userId: context.me.id, id: args.personaId },
+      })
+      if (!currentPersona) {
         return
       }
       return context.prisma.thread.create({
         data: {
           content: args.content,
           contentType: args.contentType,
-          personaId: context.me.id,
-          boardId: args.boardId,
-          postId: args.postId,
+          persona: {
+            connect: {
+              id: args.personaId,
+            },
+          },
+          board: {
+            connect: {
+              id: args.boardId,
+            },
+          },
+          Post: {
+            connect: {
+              id: args.postId,
+            },
+          },
         },
       })
     },
-    createReply: (
+    createReply: async (
       _1,
       args: {
         title: string
         content: string
         contentType: ContentType
         threadId: number
-        postId: number
+        personaId: number
       },
       context
     ) => {
       if (!context.me) {
         return
       }
+      const currentPersona = await context.prisma.persona.findFirst({
+        where: { userId: context.me.id, id: args.personaId },
+      })
+      if (!currentPersona) {
+        return
+      }
       return context.prisma.reply.create({
         data: {
           content: args.content,
           contentType: args.contentType,
-          personaId: context.me.id,
-          threadId: args.threadId,
-          postId: args.postId,
+          persona: {
+            connect: {
+              id: args.personaId,
+            },
+          },
+          thread: {
+            connect: {
+              id: args.threadId,
+            },
+          },
         },
       })
     },

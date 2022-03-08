@@ -100,7 +100,6 @@ model Reply {
   id          Int         @id @default(autoincrement())
   contentType ContentType
   content     String
-  postId      Int
   thread      Thread      @relation(fields: [threadId], references: [id])
   threadId    Int
   persona     Persona     @relation(fields: [personaId], references: [id])
