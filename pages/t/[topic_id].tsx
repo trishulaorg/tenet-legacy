@@ -86,8 +86,7 @@ const IndexPage: React.FC = () => {
         html,
         body,
         body > div:first-child,
-        div#__next,
-        div#__next > div {
+        div#__next {
           height: 100%;
         }
       `}</style>
