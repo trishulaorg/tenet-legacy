@@ -4,13 +4,15 @@ export interface APIResult<T> {
   data: T
 }
 
+export type Variables = Record<string, string>
+
 export const ENDPOINT = '/api/graphql'
 
 export function rawFetcher<T>(args: {
   url: string
   document: string
   token?: string
-  variables: Record<string, string>
+  variables: Variables
 }): Promise<T> {
   return request(args.url, args.document, args.variables, {
     'Content-Type': 'application/json',
