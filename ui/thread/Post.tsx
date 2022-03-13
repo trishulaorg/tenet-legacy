@@ -31,7 +31,11 @@ export const Post: React.FC<PostProps> = observer((props) => {
         <CreatedAt created={props.post.createdAt} />
       </CardMeta>
       <div className="pb-5" />
-      <CommentInput />
+      <CommentInput
+        onSubmit={() => {
+          /* noop */
+        }}
+      />
       <div className="pt-8 pb-2 border-b-2 border-black border-opacity-10">Sort by BEST</div>
       <div className="pb-8" />
       {props.post.hasRepsponse ? (
