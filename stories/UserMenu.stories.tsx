@@ -2,9 +2,8 @@ import React from 'react'
 import { Story, Meta } from '@storybook/react'
 
 import { UserMenu } from '../ui/header/UserMenu'
-import { HeaderState } from '../states/HeaderState'
-import { HeaderStateContext } from '../ui/header/Header'
-import { UserState } from '../states/UserState'
+import { HeaderState, HeaderStateContext } from '../states/HeaderState'
+import { PersonaState, UserState } from '../states/UserState'
 
 export default {
   title: 'Header/UserMenu',
@@ -19,8 +18,15 @@ const Template: Story<StoryArgs> = (args) => {
   const staticState = new HeaderState()
   staticState.menuVisibility = true
   if (args.loggedIn) {
-    const userState = new UserState()
-    userState.name = 'exampleuser'
+    const userState = new UserState(
+      'dummy',
+      [
+        new PersonaState({ id: -1, name: 'Persona 1' }),
+        new PersonaState({ id: -1, name: 'Persona 2' }),
+        new PersonaState({ id: -1, name: 'Persona 3' }),
+      ],
+      0
+    )
     staticState.logIn(userState)
   }
   return (

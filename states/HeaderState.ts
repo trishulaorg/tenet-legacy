@@ -1,34 +1,46 @@
 import { makeAutoObservable } from 'mobx'
+import { createContext } from 'react'
+import { removeGqlCookie } from '../libs/cookies'
 
-import { UserState } from './UserState'
+import { defaultUser, UserState } from './UserState'
 
 export class HeaderState {
-  userState
+  userState: UserState
   menuVisibility = false
+  personaListVisibility = false
   menuAnchorElement?: HTMLButtonElement
   constructor(userState?: UserState) {
-    this.userState = userState
+    this.userState = userState ?? defaultUser()
     makeAutoObservable(this)
   }
-  toggleMenu(menuAnchorElement: HTMLButtonElement): void {
+  toggleMenu(): void {
     this.menuVisibility = !this.menuVisibility
-    this.menuAnchorElement = this.menuVisibility ? menuAnchorElement : undefined
   }
   closeMenu(): void {
     this.menuVisibility = false
-    this.menuAnchorElement = undefined
   }
-  openMenu(menuAnchorElement: HTMLButtonElement): void {
+  openMenu(): void {
     this.menuVisibility = true
-    this.menuAnchorElement = menuAnchorElement
+  }
+  togglePersonaList(): void {
+    this.personaListVisibility = !this.personaListVisibility
+  }
+  openPersonaList(): void {
+    this.personaListVisibility = true
+  }
+  closePersonaList(): void {
+    this.personaListVisibility = false
   }
   logIn(userState: UserState): void {
     this.userState = userState
   }
   logOut(): void {
-    this.userState = undefined
+    this.userState = defaultUser()
+    removeGqlCookie()
   }
   get isLoggedIn(): boolean {
-    return Boolean(this.userState)
+    return Boolean(this.userState.isValidUser)
   }
 }
+
+export const HeaderStateContext = createContext(new HeaderState())

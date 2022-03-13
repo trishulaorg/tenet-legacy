@@ -6,6 +6,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
+COPY .env ./
+
 COPY prisma ./
 
 RUN npm install
@@ -13,5 +15,3 @@ RUN npm install
 COPY . .
 
 EXPOSE 4000
-
-CMD [ "npm", "run", "api" ]

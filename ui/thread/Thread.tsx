@@ -1,40 +1,42 @@
-import { Paper, Typography } from '@material-ui/core'
-import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import { observer } from 'mobx-react'
 import React from 'react'
+import { PostState } from '../../states/PostState'
+
+import { Reply } from './Reply'
+import { Author } from '../common/Author'
+import { CardContent } from '../common/CardContent'
+import { CardIcons } from '../common/CardIcons'
+import { CardMeta } from '../common/CardMeta'
+import { CreatedAt } from '../common/CreatedAt'
 
 export interface ThreadProps {
-  title: string
-  content: string
-  author: string
+  posts: PostState[]
 }
 
-const theme = createTheme({
-  typography: {
-    h1: {
-      fontSize: 20,
-    },
-    body1: {
-      fontSize: 16,
-    },
-  },
-  overrides: {
-    MuiPaper: {
-      root: {
-        padding: 14,
-      },
-    },
-  },
-})
-
-export const Thread: React.FC<ThreadProps> = (props) => {
+export const Thread: React.FC<ThreadProps> = observer((props) => {
   return (
-    <ThemeProvider theme={theme}>
-      <Paper>
-        <Typography variant="h1" component="h2">
-          {props.title}
-        </Typography>
-        <Typography variant="body1">{props.content}</Typography>
-      </Paper>
-    </ThemeProvider>
+    <ul className="pl-4">
+      {props.posts.map((v, i) => {
+        return (
+          <li key={i} className="py-4">
+            <Author name={v.author.name} iconUrl={v.author.iconUrl} />
+            <div className="ml-2 border-gray-200	border-l-4">
+              <CardContent content={v.content} isPost={false} />
+              <CardMeta isPost={false}>
+                <CardIcons
+                  commentNumber={v.responseNumber}
+                  upvote={v.upvote}
+                  downvote={v.downvote}
+                  isPost={false}
+                />
+                <div className="pb-2" />
+                <CreatedAt created={v.createdAt} />
+              </CardMeta>
+              {v.hasRepsponse ? <Reply posts={v.responses} /> : undefined}
+            </div>
+          </li>
+        )
+      })}
+    </ul>
   )
-}
+})
