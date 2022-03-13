@@ -1,23 +1,15 @@
+import Link from 'next/link'
 import React from 'react'
-import { Typography, makeStyles } from '@material-ui/core'
+import { SvgLogo } from '../common/SvgLogo'
 
-export type TitleProps = {
-  value?: string
-}
-
-const useStyles = makeStyles({
-  root: {
-    fontSize: '1.7em',
-  },
-})
-
-export const Title: React.FC<TitleProps> = (props) => {
-  const styles = useStyles()
+export const Title: React.FC = () => {
   return (
-    <>
-      <Typography variant="h1" className={styles.root}>
-        {props.value ?? 'Tenet'}
-      </Typography>
-    </>
+    <h1 className="flex-1 text-7xl text-gray-50 my-auto">
+      <Link href="/">
+        <a>
+          <SvgLogo />
+        </a>
+      </Link>
+    </h1>
   )
 }
