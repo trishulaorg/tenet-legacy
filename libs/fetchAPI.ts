@@ -23,6 +23,6 @@ export function rawFetcher<T>(args: {
 
 export const fetcher = <T>(
   document: string,
-  variables: Record<string, string>,
+  variables: Record<string, any>,
   token?: string
 ): Promise<T> => rawFetcher<T>({ url: ENDPOINT, document, variables, token })

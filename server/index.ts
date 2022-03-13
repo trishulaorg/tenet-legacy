@@ -13,25 +13,33 @@ const typeDefs = gql`
     personas: [Persona]
   }
   type Persona {
+    id: Int
     name: String
     iconUrl: String
   }
   type Board {
+    id: Int
     title: String
     posts: [Post]
   }
   type Post {
+    id: Int
+    boardId: Int
     title: String
     content: String
     threads: [Thread]
     persona: Persona
   }
   type Thread {
+    id: Int
+    boardId: Int
     content: String
     replies: [Reply]
     persona: Persona
   }
   type Reply {
+    id: Int
+    boardId: Int
     content: String
     persona: Persona
   }
@@ -64,8 +72,9 @@ const typeDefs = gql`
       title: String!
       content: String!
       contentType: ContentType!
-      boardId: ID!
-      postId: ID!
+      boardId: Int!
+      postId: Int!
+      personaId: Int!
     ): Thread
     createReply(title: String!, content: String!, contentType: ContentType!, threadId: ID!): Reply
   }
@@ -124,10 +133,11 @@ const resolvers: IResolvers<ContextType> = {
         },
       })
     },
-    activities: (_1, _2, context) => {
+    activities: async (_1, _2, context) => {
       return context.prisma.post.findMany({
         include: {
           persona: true,
+          threads: true,
         },
       })
     },

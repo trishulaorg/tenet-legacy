@@ -12,8 +12,11 @@ import useSWR from 'swr'
 
 interface ResultT {
   board: {
+    id: number
     title: string
     posts: {
+      id: number
+      boardId: number
       title: string
       content: string
     }[]
@@ -61,7 +64,14 @@ const IndexPage: React.FC = () => {
             description: 'WIP',
             posts: data.board.posts.map(
               (v) =>
-                new PostState(v.title, v.content, new PersonaState({ name: 'WIP' }), new Date())
+                new PostState(
+                  v.id,
+                  v.boardId,
+                  v.title,
+                  v.content,
+                  new PersonaState({ id: -1, name: 'WIP' }),
+                  new Date()
+                )
             ),
           })
         )

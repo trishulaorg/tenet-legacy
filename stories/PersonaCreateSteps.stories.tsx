@@ -11,7 +11,7 @@ export default {
 
 const Template: Story = () => {
   return (
-    <PersonaStateContext.Provider value={new PersonaState({ name: 'Test' })}>
+    <PersonaStateContext.Provider value={new PersonaState({ id: 1, name: 'Test' })}>
       <PersonaCreateSteps />
     </PersonaStateContext.Provider>
   )

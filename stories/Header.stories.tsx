@@ -18,9 +18,9 @@ const Template: Story = (args) => {
           new UserState(
             'dummy',
             [
-              new PersonaState({ name: 'Persona 1' }),
-              new PersonaState({ name: 'Persona 2' }),
-              new PersonaState({ name: 'Persona 3' }),
+              new PersonaState({ id: 0, name: 'Persona 1' }),
+              new PersonaState({ id: 1, name: 'Persona 2' }),
+              new PersonaState({ id: 2, name: 'Persona 3' }),
             ],
             0
           )
