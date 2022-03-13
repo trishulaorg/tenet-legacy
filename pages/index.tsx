@@ -3,7 +3,7 @@ import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, PersonaState, UserState } from '../states/UserState'
+import { defaultUser, PersonaState, UserState, UserStateContext } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
@@ -71,10 +71,12 @@ const IndexPage: React.FC = () => {
   )
   return (
     <div className="bg-gray-600 bg-opacity-5">
-      <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header></Header>
-      </HeaderStateContext.Provider>
-      <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+      <UserStateContext.Provider value={user}>
+        <HeaderStateContext.Provider value={new HeaderState(user)}>
+          <Header></Header>
+        </HeaderStateContext.Provider>
+        <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+      </UserStateContext.Provider>
       <style global jsx>{`
         html,
         body,

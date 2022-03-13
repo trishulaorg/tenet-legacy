@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { UserStateContext } from '../../states/UserState'
 
 export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (props) => {
   const [comment, setComment] = useState('')
+  const userState = useContext(UserStateContext)
 
   return (
     <div>
-      <p className="pb-2">Comments as userName</p>
+      <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>
       <textarea
         className="w-full leading-6 p-4 border-2 border-black border-opacity-10 rounded-t-lg block"
         rows={4}
