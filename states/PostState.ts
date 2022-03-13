@@ -5,6 +5,8 @@ import { PersonaState } from './UserState'
 export class PostState {
   private children: PostState[] = []
   private parent?: PostState
+  id: number
+  boardId: number
   title: string
   content: string
   author: PersonaState
@@ -12,6 +14,8 @@ export class PostState {
   downvote: number
   createdAt: Date | number
   constructor(
+    id: number,
+    boardId: number,
     title: string,
     content: string,
     author: PersonaState,
@@ -21,6 +25,8 @@ export class PostState {
     children?: PostState[],
     parent?: PostState
   ) {
+    this.id = id
+    this.boardId = boardId
     this.title = title
     this.content = content
     this.author = author

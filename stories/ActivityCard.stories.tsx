@@ -16,9 +16,11 @@ export default {
 } as Meta
 
 const post = new PostState(
+  -1,
+  -1,
   'Post Title',
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis ...',
-  new PersonaState({ name: 'test1' }),
+  new PersonaState({ id: -1, name: 'test1' }),
   new Date(2020, 1, 1),
   20,
   30,

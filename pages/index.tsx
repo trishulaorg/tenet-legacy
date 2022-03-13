@@ -39,10 +39,29 @@ const IndexPage: React.FC = () => {
         result.activities.map(
           (v) =>
             new PostState(
+              v.id,
+              v.boardId,
               v.title,
               v.content,
-              new PersonaState({ name: v.persona.name, iconUrl: v.persona.iconUrl }),
-              Date.now()
+              new PersonaState({
+                id: v.persona.id,
+                name: v.persona.name,
+                iconUrl: v.persona.iconUrl,
+              }),
+              Date.now(),
+              0,
+              0,
+              v.threads.map(
+                (w: any) =>
+                  new PostState(
+                    w.id,
+                    v.boardId,
+                    '',
+                    '',
+                    new PersonaState({ id: -1, name: '' }),
+                    Date.now()
+                  )
+              )
             )
         )
       )
