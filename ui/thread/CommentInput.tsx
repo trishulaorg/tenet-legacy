@@ -14,14 +14,12 @@ export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (
         placeholder="What did you think?"
       />
       <div className="bg-black bg-opacity-10  px-4 py-2 rounded-b-lg flex justify-end">
-        <a href="#">
-          <button
-            className="bg-gray-600 text-white rounded-lg px-4 py-2 w-min"
-            onClick={() => props.onSubmit(comment)}
-          >
-            Comment
-          </button>
-        </a>
+        <button
+          className="bg-gray-600 text-white rounded-lg px-4 py-2 w-min"
+          onClick={() => props.onSubmit(comment)}
+        >
+          Comment
+        </button>
       </div>
     </div>
   )
