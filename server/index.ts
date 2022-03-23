@@ -137,7 +137,11 @@ const resolvers: IResolvers<ContextType> = {
       return context.prisma.post.findMany({
         include: {
           persona: true,
-          threads: true,
+          threads: {
+            include: {
+              persona: true,
+            },
+          },
         },
       })
     },

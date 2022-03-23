@@ -57,8 +57,8 @@ const IndexPage: React.FC = () => {
                     w.id,
                     v.boardId,
                     '',
-                    '',
-                    new PersonaState({ id: -1, name: '' }),
+                    w.content,
+                    new PersonaState({ id: -1, name: w.persona.name }),
                     Date.now()
                   )
               )
@@ -75,9 +75,6 @@ const IndexPage: React.FC = () => {
           Home
         </HomeTab>
         <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
-          Activities
-        </HomeTab>
-        <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
           Hot Topics
         </HomeTab>
       </HomeTabList>
@@ -89,7 +86,7 @@ const IndexPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-600 bg-opacity-5">
+    <div className="bg-gray-100">
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header></Header>

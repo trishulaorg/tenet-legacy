@@ -11,7 +11,7 @@ export const UserMenu: React.FC = observer(() => {
       <div className="flex-initial mx-3 my-auto flex items-center justify-center">
         <div className="my-auto">
           <button onClick={() => state.toggleMenu()}>
-            <MenuIcon className="h-5 w-5 text-white" />{' '}
+            <MenuIcon className="h-5 w-5 text-slate-700" />{' '}
           </button>
           <Switch visibility={state.menuVisibility}>
             <UserMenuItems>
