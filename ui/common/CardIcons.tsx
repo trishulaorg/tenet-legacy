@@ -28,7 +28,7 @@ export const CardIcons: React.FC<{
     { name: ThumbDownIcon, text: `${props.downvote}`, onClick: props.downvoteCallback },
     {
       name: AnnotationIcon,
-      text: props.isPost ? `${props.commentNumber} Comment` : 'reply',
+      text: `${props.commentNumber} Comments`,
       onClick: props.replyCallback,
     },
     { name: ShareIcon, text: 'Share', onClick: props.shareCallback },
@@ -38,7 +38,9 @@ export const CardIcons: React.FC<{
       <div className="flex justify-start">
         {icons.map((icon, index) => {
           const iconStyle =
-            index === 0 ? 'flex items-center opacity-50' : 'flex items-center opacity-50 pl-4'
+            index === 0
+              ? 'flex items-center opacity-50 hover:text-rose-800'
+              : 'flex items-center opacity-50 pl-4 hover:text-rose-800'
           const textStyle = index < 2 ? 'pl-1' : 'pl-1 hidden md:block'
           return (
             <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
@@ -48,7 +50,7 @@ export const CardIcons: React.FC<{
           )
         })}
       </div>
-      <div className="flex items-center opacity-50 pr-5">
+      <div className="flex items-center opacity-50 pr-5 hover:text-rose-800">
         <TrashIcon className="h-5 w-5" />
         <p className="pl-1">remove</p>
       </div>
