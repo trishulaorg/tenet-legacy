@@ -59,7 +59,22 @@ const IndexPage: React.FC = () => {
                     '',
                     w.content,
                     new PersonaState({ id: -1, name: w.persona.name }),
-                    Date.now()
+                    Date.now(),
+                    0,
+                    0,
+                    w.replies.map(
+                      (x: any) =>
+                        new PostState(
+                          x.id,
+                          v.boardId,
+                          '',
+                          x.content,
+                          new PersonaState({ id: -1, name: x.persona.name }),
+                          Date.now(),
+                          0,
+                          0
+                        )
+                    )
                   )
               )
             )
