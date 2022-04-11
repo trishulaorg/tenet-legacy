@@ -140,6 +140,11 @@ const resolvers: IResolvers<ContextType> = {
           threads: {
             include: {
               persona: true,
+              replies: {
+                include: {
+                  persona: true,
+                },
+              },
             },
           },
         },
