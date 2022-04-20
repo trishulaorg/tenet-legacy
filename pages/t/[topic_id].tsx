@@ -41,18 +41,39 @@ const IndexPage: React.FC = () => {
   }, [token, router, user])
 
   const document = `
-  query Board($topicId: String!) {
-    board(title: $topicId) {
-      title,
+  query Board($topicId: Int!) {
+    board(id: $topicId) {
       posts {
-        title,
-        content,
+        id
+        boardId
+        title
+        content
+        persona {
+          name
+          iconUrl
+        }
+        threads {
+          id
+          content
+          persona {
+            name
+            iconUrl
+          }
+          replies {
+            id
+            content
+            persona {
+              name
+              iconUrl
+            }
+          }
+        }
       }
     }
   } 
   `
   const { data } = useSWR<ResultT>(document, (document) =>
-    fetcher(document, { topicId: topic_id as string }, token)
+    fetcher(document, { topicId: Number(topic_id) }, token)
   )
 
   useEffect(() => {
@@ -63,14 +84,46 @@ const IndexPage: React.FC = () => {
             title: data.board.title,
             description: 'WIP',
             posts: data.board.posts.map(
-              (v) =>
+              (v: any) =>
                 new PostState(
                   v.id,
                   v.boardId,
                   v.title,
                   v.content,
-                  new PersonaState({ id: -1, name: 'WIP' }),
-                  new Date()
+                  new PersonaState({
+                    id: v.persona.id,
+                    name: v.persona.name,
+                    iconUrl: v.persona.iconUrl,
+                  }),
+                  Date.now(),
+                  0,
+                  0,
+                  v.threads.map(
+                    (w: any) =>
+                      new PostState(
+                        w.id,
+                        v.boardId,
+                        '',
+                        w.content,
+                        new PersonaState({ id: -1, name: w.persona.name }),
+                        Date.now(),
+                        0,
+                        0,
+                        w.replies.map(
+                          (x: any) =>
+                            new PostState(
+                              x.id,
+                              v.boardId,
+                              '',
+                              x.content,
+                              new PersonaState({ id: -1, name: x.persona.name }),
+                              Date.now(),
+                              0,
+                              0
+                            )
+                        )
+                      )
+                  )
                 )
             ),
           })
