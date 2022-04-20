@@ -17,7 +17,7 @@ const OnboardingPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-600 h-full bg-opacity-5">
+    <div className="bg-gray-100 h-full">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header></Header>
       </HeaderStateContext.Provider>
