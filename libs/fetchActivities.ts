@@ -34,6 +34,19 @@ export function fetchActivities(token?: string): Promise<ResultType> {
         }
         threads {
           id
+          content
+          persona {
+            name
+            iconUrl
+          }
+          replies {
+            id
+            content
+            persona {
+              name
+              iconUrl
+            }
+          }
         }
       }
     }

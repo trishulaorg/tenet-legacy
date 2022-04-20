@@ -11,6 +11,8 @@ import { CreatedAt } from '../common/CreatedAt'
 import { CommentInput } from '../thread/CommentInput'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
+import { Thread } from '../thread/Thread'
+import Link from 'next/link'
 
 interface ActivityCardProps {
   post: PostState
@@ -47,7 +49,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
     )
   }
   return (
-    <div className="max-w-2xl rounded-lg p-4 bg-white mb-5">
+    <div className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700">
       <CardTitle title={post.title} />
       <Author name={post.author.name} iconUrl={post.author.iconUrl} /> {/* TODO: replace iconUrl */}
       <CardContent content={post.content} />
@@ -62,7 +64,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         />
         <div className="pb-2"></div>
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
+        <Thread posts={post.responses}></Thread>
         <CreatedAt created={post.createdAt} />
+        <Link href={`/t/${post.boardId}`}>Show board</Link>
       </CardMeta>
     </div>
   )
