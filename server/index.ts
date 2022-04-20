@@ -55,7 +55,7 @@ const typeDefs = gql`
     persona(name: String!): Persona
     personas(names: [String]!): [Persona]
     removeUser(name: String!): Boolean
-    board(title: String!): Board
+    board(id: Int!): Board
     activities: [Post]
   }
   type Mutation {
@@ -115,17 +115,23 @@ const resolvers: IResolvers<ContextType> = {
     removeUser: () => {
       return false // need to check tokens. wip.
     },
-    board: (_1, args: { title: string }, context) => {
+    board: (_1, args: { id: number }, context) => {
       return context.prisma.board.findFirst({
         where: {
-          title: args.title,
+          id: args.id,
         },
         include: {
           posts: {
             include: {
+              persona: true,
               threads: {
                 include: {
-                  replies: true,
+                  persona: true,
+                  replies: {
+                    include: {
+                      persona: true,
+                    },
+                  },
                 },
               },
             },

@@ -12,6 +12,7 @@ import { CommentInput } from '../thread/CommentInput'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import { Thread } from '../thread/Thread'
+import Link from 'next/link'
 
 interface ActivityCardProps {
   post: PostState
@@ -65,6 +66,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
         <Thread posts={post.responses}></Thread>
         <CreatedAt created={post.createdAt} />
+        <Link href={`/t/${post.boardId}`}>Show board</Link>
       </CardMeta>
     </div>
   )
