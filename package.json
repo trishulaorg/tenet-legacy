@@ -11,9 +11,7 @@
     "pages"
   ],
   "scripts": {
-    "preapi:dev": "npm run migrate:test",
-    "api:dev": "NODE_ENV=development nodemon --exec 'cd server && npx tsc && node dist/server/index.js' --watch ./server/ --ignore ./server/dist/ --ext ts,tsx,js,jsx",
-    "api": "NODE_ENV=production cd server && node dist/server/index.js",
+    "vercel-build": "prisma generate",
     "dev": "NODE_ENV=development next dev",
     "build": "NODE_ENV=production cd server && tsc",
     "migrate:test": "prisma migrate dev --name init && npm run seed:test || exit 0",
@@ -75,6 +73,7 @@
     "@auth0/nextjs-auth0": "^1.7.0",
     "@prisma/client": "^3.9.1",
     "apollo-server": "^3.6.3",
+    "apollo-server-micro": "^3.7.0",
     "autoprefixer": "^10.4.2",
     "date-fns": "^2.28.0",
     "dotenv": "^16.0.0",
@@ -91,6 +90,6 @@
     "swr": "^1.2.1"
   },
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   }
 }
