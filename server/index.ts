@@ -50,6 +50,11 @@ const typeDefs = gql`
     VIDEO
     EMOJI
   }
+  type SearchResult {
+    kind: String
+    id: Int
+    title: String
+  }
   type Query {
     me: User
     persona(name: String!): Persona
@@ -57,6 +62,7 @@ const typeDefs = gql`
     removeUser(name: String!): Boolean
     board(id: Int!): Board
     activities: [Post]
+    search(query: String!): [SearchResult]
   }
   type Mutation {
     createPersona(name: String!, iconPath: String): Persona
@@ -155,6 +161,20 @@ const resolvers: IResolvers<ContextType> = {
           },
         },
       })
+    },
+    search: async (_1, args: { query: string }, context) => {
+      const result = await context.prisma.board.findMany({
+        where: {
+          title: {
+            startsWith: args.query,
+          },
+        },
+      })
+      return result.map((x) => ({
+        kind: 'board',
+        title: x.title,
+        id: x.id,
+      }))
     },
   },
   Mutation: {
