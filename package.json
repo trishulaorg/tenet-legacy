@@ -11,7 +11,7 @@
     "pages"
   ],
   "scripts": {
-    "preapi:dev": "npm run migrate:test",
+    "vercel-build": "prisma generate",
     "dev": "NODE_ENV=development next dev",
     "build": "NODE_ENV=production cd server && tsc",
     "migrate:test": "prisma migrate dev --name init && npm run seed:test || exit 0",
