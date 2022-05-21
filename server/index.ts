@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { gql } from 'apollo-server-micro'
 import { ContentType, PrismaClient, User } from '@prisma/client'
 import { ExpressContext } from 'apollo-server-express/dist/index'
 import jwt from 'jsonwebtoken'
@@ -8,7 +8,7 @@ dotenv.config()
 
 const prisma = new PrismaClient()
 
-const typeDefs = gql`
+export const typeDefs = gql`
   type User {
     personas: [Persona]
   }
@@ -97,7 +97,7 @@ type IResolvers<Context> = {
   Mutation: Record<string, IResolver<any, Context, any, any>>
 }
 
-const resolvers: IResolvers<ContextType> = {
+export const resolvers: IResolvers<ContextType> = {
   Query: {
     me: (_1, _2, context) => {
       return context.me
@@ -344,7 +344,7 @@ type ContextType = {
 
 type ContextFunction = (args: ExpressContext) => Promise<ContextType>
 
-const context: ContextFunction = async ({ req }) => {
+export const context: ContextFunction = async ({ req }) => {
   const token = req.headers.authorization?.substring('Bearer '.length)
   let me: User | null = null
   if (token && process.env.API_TOKEN_SECRET) {
@@ -371,12 +371,3 @@ const context: ContextFunction = async ({ req }) => {
     prisma,
   }
 }
-
-const main: () => void = () => {
-  const server = new ApolloServer({ typeDefs, resolvers, context })
-  server.listen(process.env.PORT || 4000).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`)
-  })
-}
-
-main()
