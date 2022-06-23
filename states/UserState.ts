@@ -14,7 +14,7 @@ export class UserState {
     makeAutoObservable(this)
   }
   get isValidUser(): boolean {
-    return this.requested
+    return this.requested && this.token !== 'INVALID_TOKEN'
   }
   set isValidUser(value: boolean) {
     this.requested = value
@@ -40,7 +40,8 @@ export class UserState {
         }`,
       }),
     }).then((r) => r.json())
-    this.isValidUser = !!result.me
+    this.isValidUser = !result.me
+    console.log(result.me)
     this.personas = result.data.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string }) => new PersonaState(v)
     )
