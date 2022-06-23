@@ -1,27 +1,14 @@
 import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, PersonaState, UserState, UserStateContext } from '../../states/UserState'
-import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
+import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
+import { BoardState, BoardStateContext, BoardType, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { Layout } from '../../ui/layouts/Layout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
 import { fetcher } from '../../libs/fetchAPI'
 import useSWR from 'swr'
-
-interface ResultT {
-  board: {
-    id: number
-    title: string
-    posts: {
-      id: number
-      boardId: number
-      title: string
-      content: string
-    }[]
-  }
-}
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -48,6 +35,7 @@ const IndexPage: React.FC = () => {
         boardId
         title
         content
+        createdAt
         persona {
           name
           iconUrl
@@ -55,11 +43,13 @@ const IndexPage: React.FC = () => {
         threads {
           id
           content
+          createdAt
           persona {
             name
             iconUrl
           }
           replies {
+            createdAt
             id
             content
             persona {
@@ -72,69 +62,19 @@ const IndexPage: React.FC = () => {
     }
   } 
   `
-  const { data } = useSWR<ResultT>(document, (document) =>
+  const { data } = useSWR<{ board: BoardType }>(document, (document) =>
     fetcher(document, { topicId: Number(topic_id) }, token)
   )
 
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (data) {
+        console.log(data)
         setContext(
           new BoardState(0, {
             title: data.board.title,
             description: 'WIP',
-            posts: data.board.posts.map(
-              (v: any) =>
-                new PostState(
-                  v.id,
-                  v.boardId,
-                  v.title,
-                  v.content,
-                  new PersonaState({
-                    id: v.persona.id,
-                    name: v.persona.name,
-                    iconUrl: v.persona.iconUrl,
-                    screenName: v.persona.screenName,
-                  }),
-                  Date.now(),
-                  0,
-                  0,
-                  v.threads.map(
-                    (w: any) =>
-                      new PostState(
-                        w.id,
-                        v.boardId,
-                        '',
-                        w.content,
-                        new PersonaState({
-                          id: -1,
-                          name: w.persona.name,
-                          screenName: w.persona.screenName,
-                        }),
-                        Date.now(),
-                        0,
-                        0,
-                        w.replies.map(
-                          (x: any) =>
-                            new PostState(
-                              x.id,
-                              v.boardId,
-                              '',
-                              x.content,
-                              new PersonaState({
-                                id: -1,
-                                name: x.persona.name,
-                                screenName: x.persona.screenName,
-                              }),
-                              Date.now(),
-                              0,
-                              0
-                            )
-                        )
-                      )
-                  )
-                )
-            ),
+            posts: data.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
           })
         )
       }

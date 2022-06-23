@@ -1,10 +1,12 @@
 import React from 'react'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, isValid, parseISO } from 'date-fns'
 
-export const CreatedAt: React.FC<{ created: Date | number }> = ({ created }) => {
+export const CreatedAt: React.FC<{ created: string }> = ({ created }) => {
+  const createdAt = parseISO(created)
+  const validDate = isValid(createdAt) ? createdAt : new Date()
   return (
     <div className="text-xs opacity-50">
-      Created at {formatDistanceToNow(created, { addSuffix: true })}
+      Created at {formatDistanceToNow(validDate, { addSuffix: true })}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, PersonaState, UserState, UserStateContext } from '../states/UserState'
+import { defaultUser, UserState, UserStateContext } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
@@ -35,60 +35,8 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const f = async (): Promise<void> => {
       const result = await fetchActivities(token)
-      setActivities(
-        result.activities.map(
-          (v) =>
-            new PostState(
-              v.id,
-              v.boardId,
-              v.title,
-              v.content,
-              new PersonaState({
-                id: v.persona.id,
-                name: v.persona.name,
-                iconUrl: v.persona.iconUrl,
-                screenName: v.persona.screenName,
-              }),
-              Date.now(),
-              0,
-              0,
-              v.threads.map(
-                (w: any) =>
-                  new PostState(
-                    w.id,
-                    v.boardId,
-                    '',
-                    w.content,
-                    new PersonaState({
-                      id: -1,
-                      name: w.persona.name,
-                      screenName: w.persona.screenName,
-                    }),
-                    Date.now(),
-                    0,
-                    0,
-                    w.replies.map(
-                      (x: any) =>
-                        new PostState(
-                          x.id,
-                          v.boardId,
-                          '',
-                          x.content,
-                          new PersonaState({
-                            id: -1,
-                            name: x.persona.name,
-                            screenName: w.persona.screenName,
-                          }),
-                          Date.now(),
-                          0,
-                          0
-                        )
-                    )
-                  )
-              )
-            )
-        )
-      )
+      setActivities(result.activities.map((v) => PostState.fromPostTypeJSON(v)))
+      console.log(result)
     }
     f()
   }, [token])

@@ -102,6 +102,7 @@ model Reply {
   id          Int         @id @default(autoincrement())
   contentType ContentType
   content     String
+  createdAt   DateTime    @default(now())
   thread      Thread      @relation(fields: [threadId], references: [id])
   threadId    Int
   persona     Persona     @relation(fields: [personaId], references: [id])

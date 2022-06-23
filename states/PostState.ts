@@ -2,6 +2,39 @@ import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { PersonaState } from './UserState'
 
+export interface PersonaType {
+  id: number
+  name: string
+  screenName: string
+  iconUrl: string
+}
+
+export interface BaseContentType {
+  id: number
+  boardId: number
+  title: string
+  content: string
+  persona: PersonaType
+  createdAt: string
+}
+
+export interface BoardType extends BaseContentType {
+  title: string
+  description: string
+  posts: PostType[]
+  persona: PersonaType
+}
+
+export interface PostType extends BaseContentType {
+  threads: ThreadType[]
+  persona: PersonaType
+}
+
+export interface ThreadType extends BaseContentType {
+  replies: BaseContentType[]
+  persona: PersonaType
+}
+
 export class PostState {
   private children: PostState[] = []
   private parent?: PostState
@@ -12,29 +45,29 @@ export class PostState {
   author: PersonaState
   upvote: number
   downvote: number
-  createdAt: Date | number
-  constructor(
-    id: number,
-    boardId: number,
-    title: string,
-    content: string,
-    author: PersonaState,
-    createdAt: Date | number,
-    upvote?: number,
-    downvote?: number,
-    children?: PostState[],
+  createdAt: string
+  constructor(data: {
+    id: number
+    boardId: number
+    title: string
+    content: string
+    author: PersonaState
+    createdAt: string
+    upvote?: number
+    downvote?: number
+    children?: PostState[]
     parent?: PostState
-  ) {
-    this.id = id
-    this.boardId = boardId
-    this.title = title
-    this.content = content
-    this.author = author
-    this.children = children ?? []
-    this.parent = parent
-    this.upvote = upvote ?? 0
-    this.downvote = downvote ?? 0
-    this.createdAt = createdAt
+  }) {
+    this.id = data.id
+    this.boardId = data.boardId
+    this.title = data.title
+    this.content = data.content
+    this.author = data.author
+    this.children = data.children ?? []
+    this.parent = data.parent
+    this.upvote = data.upvote ?? 0
+    this.downvote = data.downvote ?? 0
+    this.createdAt = data.createdAt
     makeAutoObservable(this)
   }
   addResponse(state: PostState): PostState {
@@ -49,6 +82,29 @@ export class PostState {
   }
   get hasRepsponse(): boolean {
     return this.children.length !== 0
+  }
+  static fromBoardTypeJSON(json: BoardType): PostState {
+    return new PostState({
+      ...json,
+      author: new PersonaState(json.persona),
+      children: json.posts.map((v) => this.fromPostTypeJSON(v)),
+    })
+  }
+  static fromPostTypeJSON(json: PostType): PostState {
+    return new PostState({
+      ...json,
+      author: new PersonaState(json.persona),
+      children: json.threads.map((v) => this.fromThreadTypeJSON(v)),
+    })
+  }
+  static fromThreadTypeJSON(json: ThreadType): PostState {
+    return new PostState({
+      ...json,
+      author: new PersonaState(json.persona),
+      children: json.replies.map(
+        (v) => new PostState({ ...v, author: new PersonaState(v.persona) })
+      ),
+    })
   }
 }
 
