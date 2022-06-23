@@ -14,6 +14,7 @@ export interface ActivityType {
   content: string
   persona: PersonaType
   threads: any
+  createdAt: string
 }
 
 export interface ResultType {
@@ -29,6 +30,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
         boardId
         title
         content
+        createdAt
         persona {
           screenName
           name
@@ -37,6 +39,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
         threads {
           id
           content
+          createdAt
           persona {
             screenName
             name
@@ -45,6 +48,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
           replies {
             id
             content
+            createdAt
             persona {
               screenName
               name

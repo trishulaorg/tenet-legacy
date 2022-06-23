@@ -9,6 +9,7 @@ dotenv.config()
 const prisma = new PrismaClient()
 
 export const typeDefs = gql`
+  scalar Date
   type User {
     personas: [Persona]
   }
@@ -22,6 +23,7 @@ export const typeDefs = gql`
     id: Int
     title: String
     posts: [Post]
+    createdAt: Date
   }
   type Post {
     id: Int
@@ -30,6 +32,7 @@ export const typeDefs = gql`
     content: String
     threads: [Thread]
     persona: Persona
+    createdAt: Date
   }
   type Thread {
     id: Int
@@ -37,12 +40,14 @@ export const typeDefs = gql`
     content: String
     replies: [Reply]
     persona: Persona
+    createdAt: Date
   }
   type Reply {
     id: Int
     boardId: Int
     content: String
     persona: Persona
+    createdAt: Date
   }
   enum ContentType {
     TEXT
