@@ -61,6 +61,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
           replyCallback={() => {
             setCommentVisibility(!commentVisibility)
           }}
+          showTrashIcon={props.post.author.name === userState.currentPersona?.name}
         />
         <div className="pb-2" />
         <CreatedAt created={props.post.createdAt} />

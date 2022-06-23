@@ -8,7 +8,7 @@ export function getInstance(): SignInWithAuth0 {
     return instance
   }
   instance = initAuth0({
-    baseURL: process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:8080',
+    baseURL: process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : 'http://localhost:3000',
   })
   return instance
 }

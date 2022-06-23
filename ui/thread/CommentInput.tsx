@@ -5,7 +5,7 @@ export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (
   const [comment, setComment] = useState('')
   const userState = useContext(UserStateContext)
 
-  return (
+  return userState.isValidUser ? (
     <div>
       <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>
       <textarea
@@ -24,5 +24,5 @@ export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (
         </button>
       </div>
     </div>
-  )
+  ) : null
 }

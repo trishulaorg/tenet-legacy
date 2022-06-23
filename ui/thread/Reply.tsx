@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react'
-import React from 'react'
+import React, { useContext } from 'react'
 import { PostState } from '../../states/PostState'
+import { UserStateContext } from '../../states/UserState'
 
 import { Author } from '../common/Author'
 import { CardContent } from '../common/CardContent'
@@ -13,6 +14,7 @@ export interface ReplyProps {
 }
 
 export const Reply: React.FC<ReplyProps> = observer((props) => {
+  const userState = useContext(UserStateContext)
   return (
     <ul className="pl-4">
       {props.posts.map((v, i) => {
@@ -27,6 +29,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
                   upvote={v.upvote}
                   downvote={v.downvote}
                   isPost={false}
+                  showTrashIcon={v.author.name === userState.currentPersona?.name}
                 />
                 <div className="pb-2" />
                 <CreatedAt created={v.createdAt} />

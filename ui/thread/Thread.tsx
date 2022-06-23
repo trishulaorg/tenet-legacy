@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react'
-import React from 'react'
+import React, { useContext } from 'react'
 import { PostState } from '../../states/PostState'
 
 import { Reply } from './Reply'
@@ -8,12 +8,14 @@ import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
+import { UserStateContext } from '../../states/UserState'
 
 export interface ThreadProps {
   posts: PostState[]
 }
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
+  const userState = useContext(UserStateContext)
   return (
     <ul className="pl-4">
       {props.posts.map((v, i) => {
@@ -28,6 +30,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                   upvote={v.upvote}
                   downvote={v.downvote}
                   isPost={false}
+                  showTrashIcon={v.author.name === userState.currentPersona?.name}
                 />
                 <div className="pb-2" />
                 <CreatedAt created={v.createdAt} />

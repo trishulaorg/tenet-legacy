@@ -5,14 +5,19 @@ export class UserState {
   _personas: PersonaState[]
   token
   currentPersonaIndex: number
+  requested: boolean
   constructor(token: string, personas: PersonaState[], currentPersonaIndex: number) {
     this.token = token
     this._personas = personas
     this.currentPersonaIndex = currentPersonaIndex
+    this.requested = false
     makeAutoObservable(this)
   }
   get isValidUser(): boolean {
-    return this.token !== 'INVALID_TOKEN'
+    return this.requested
+  }
+  set isValidUser(value: boolean) {
+    this.requested = value
   }
   async request(): Promise<void> {
     const result = await fetch('/api/graphql', {
@@ -35,6 +40,7 @@ export class UserState {
         }`,
       }),
     }).then((r) => r.json())
+    this.isValidUser = !!result.me
     this.personas = result.data.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string }) => new PersonaState(v)
     )
