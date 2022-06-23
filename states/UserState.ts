@@ -74,6 +74,9 @@ export class PersonaState {
   updateName(name: string): void {
     this.name = name
   }
+  updateScreenName(name: string): void {
+    this.screenName = name
+  }
 }
 
 export const UserStateContext = createContext(new UserState('', [], 0))
