@@ -1,7 +1,7 @@
 import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, PersonaState, UserState } from '../../states/UserState'
+import { defaultUser, PersonaState, UserState, UserStateContext } from '../../states/UserState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { Layout } from '../../ui/layouts/Layout'
@@ -141,10 +141,12 @@ const IndexPage: React.FC = () => {
   )
   return (
     <div className="bg-gray-100">
-      <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header></Header>
-      </HeaderStateContext.Provider>
-      <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+      <UserStateContext.Provider value={user}>
+        <HeaderStateContext.Provider value={new HeaderState(user)}>
+          <Header></Header>
+        </HeaderStateContext.Provider>
+        <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+      </UserStateContext.Provider>
       <style global jsx>{`
         html,
         body,

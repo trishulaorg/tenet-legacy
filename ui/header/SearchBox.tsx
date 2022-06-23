@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 export const SearchBox = () => {
   const router = useRouter()
   const [text, setText] = useState('')
-  const onClick = () => router.push(`/s/${text}`)
+  const onClick = () => text !== '' && router.push(`/s/${text}`)
   return (
     <div>
       <input
