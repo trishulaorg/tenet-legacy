@@ -13,6 +13,7 @@ async function main(): Promise<void> {
         userId: user.id,
         iconUrl: 'http://example.com/img/icon',
         name: 'Persona' + i,
+        screenName: 'Display Name of Persona' + i,
       },
     })
     const board = await prisma.board.create({

@@ -3,6 +3,7 @@ import { fetcher } from './fetchAPI'
 export interface PersonaType {
   id: number
   name: string
+  screenName: string
   iconUrl: string
 }
 
@@ -29,6 +30,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
         title
         content
         persona {
+          screenName
           name
           iconUrl
         }
@@ -36,6 +38,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
           id
           content
           persona {
+            screenName
             name
             iconUrl
           }
@@ -43,6 +46,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
             id
             content
             persona {
+              screenName
               name
               iconUrl
             }

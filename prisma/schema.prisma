@@ -20,6 +20,7 @@ model Persona {
   id               Int               @id @default(autoincrement())
   createdAt        DateTime          @default(now())
   name             String            @unique
+  screenName       String
   iconUrl          String
   followingBoards  Board[]           @relation("FollowingBoards", references: [id])
   modelatingBoards Board[]           @relation(references: [id])

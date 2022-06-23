@@ -12,7 +12,7 @@ export const PersonaCreateSteps: React.FC = observer(() => {
     e.preventDefault()
     const query = `
     mutation CreatePersona($name: String!) {
-      createPersona(name: $name) {
+      createPersona(screenName: $screenName, name: $name) {
         name
       }
     }
