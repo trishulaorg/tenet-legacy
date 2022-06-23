@@ -20,7 +20,11 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
       {props.posts.map((v, i) => {
         return (
           <li key={i} className="pt-4">
-            <Author name={v.author.name} iconUrl={v.author.iconUrl} />
+            <Author
+              screenName={v.author.screenName}
+              name={v.author.name}
+              iconUrl={v.author.iconUrl}
+            />
             <div className="ml-2 border-gray-200	border-l-4">
               <CardContent content={v.content} isPost={false} />
               <CardMeta isPost={false}>

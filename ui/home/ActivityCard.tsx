@@ -51,7 +51,12 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   return (
     <div className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700">
       <CardTitle title={post.title} />
-      <Author name={post.author.name} iconUrl={post.author.iconUrl} /> {/* TODO: replace iconUrl */}
+      <Author
+        screenName={post.author.screenName}
+        name={post.author.name}
+        iconUrl={post.author.iconUrl}
+      />{' '}
+      {/* TODO: replace iconUrl */}
       <CardContent content={post.content} />
       <CardMeta>
         <CardIcons
