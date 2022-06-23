@@ -34,6 +34,7 @@ export class UserState {
             personas {
               id
               name
+              screenName
               iconUrl
             }
           } 
@@ -43,7 +44,7 @@ export class UserState {
     this.isValidUser = !result.me
     console.log(result.me)
     this.personas = result.data.me?.personas?.map(
-      (v: { id: number; name: string; iconUrl: string }) => new PersonaState(v)
+      (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )
   }
   set personas(personas: PersonaState[] | undefined) {
@@ -62,8 +63,10 @@ export class PersonaState {
   name: string
   iconUrl: string
   id: number
-  constructor(data: { id: number; name: string; iconUrl?: string }) {
+  screenName: string
+  constructor(data: { id: number; name: string; screenName: string; iconUrl?: string }) {
     this.name = data.name
+    this.screenName = data.screenName
     this.iconUrl = data.iconUrl ?? ''
     this.id = data.id
     makeAutoObservable(this)
@@ -74,6 +77,8 @@ export class PersonaState {
 }
 
 export const UserStateContext = createContext(new UserState('', [], 0))
-export const PersonaStateContext = createContext(new PersonaState({ id: -1, name: '' }))
+export const PersonaStateContext = createContext(
+  new PersonaState({ id: -1, name: '', screenName: '' })
+)
 
 export const defaultUser: () => UserState = () => new UserState('INVALID_TOKEN', [], 0)

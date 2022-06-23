@@ -15,6 +15,7 @@ export const typeDefs = gql`
   type Persona {
     id: Int
     name: String
+    screenName: String
     iconUrl: String
   }
   type Board {
@@ -65,7 +66,7 @@ export const typeDefs = gql`
     search(query: String!): [SearchResult]
   }
   type Mutation {
-    createPersona(name: String!, iconPath: String): Persona
+    createPersona(screenName: String!, name: String!, iconPath: String): Persona
     createBoard(title: String!, description: String!): Board
     createPost(
       title: String!
@@ -178,7 +179,7 @@ export const resolvers: IResolvers<ContextType> = {
     },
   },
   Mutation: {
-    createPersona: (_1, args: { name: string; iconPath?: string }, context) => {
+    createPersona: (_1, args: { screenName: string; name: string; iconPath?: string }, context) => {
       if (!context.me) {
         return
       }
@@ -187,6 +188,7 @@ export const resolvers: IResolvers<ContextType> = {
           userId: context.me.id,
           name: args.name,
           iconUrl: args.iconPath ?? 'http://example.com',
+          screenName: args.screenName,
         },
       })
     },

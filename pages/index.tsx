@@ -47,6 +47,7 @@ const IndexPage: React.FC = () => {
                 id: v.persona.id,
                 name: v.persona.name,
                 iconUrl: v.persona.iconUrl,
+                screenName: v.persona.screenName,
               }),
               Date.now(),
               0,
@@ -58,7 +59,11 @@ const IndexPage: React.FC = () => {
                     v.boardId,
                     '',
                     w.content,
-                    new PersonaState({ id: -1, name: w.persona.name }),
+                    new PersonaState({
+                      id: -1,
+                      name: w.persona.name,
+                      screenName: w.persona.screenName,
+                    }),
                     Date.now(),
                     0,
                     0,
@@ -69,7 +74,11 @@ const IndexPage: React.FC = () => {
                           v.boardId,
                           '',
                           x.content,
-                          new PersonaState({ id: -1, name: x.persona.name }),
+                          new PersonaState({
+                            id: -1,
+                            name: x.persona.name,
+                            screenName: w.persona.screenName,
+                          }),
                           Date.now(),
                           0,
                           0
