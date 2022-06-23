@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext } from 'react'
+import React, { MouseEventHandler, useContext, useEffect, useRef } from 'react'
 import { observer } from 'mobx-react'
 import { HeaderStateContext } from '../../states/HeaderState'
 import { MenuIcon } from '@heroicons/react/solid'
@@ -63,8 +63,17 @@ export const UserMenu: React.FC = observer(() => {
 })
 
 export const UserMenuItems: React.FC = observer((props) => {
+  const state = useContext(HeaderStateContext)
+  const ref = useRef<HTMLDivElement>(null)
+  const mouseDownHandler = (ev: MouseEvent) => {
+    if (ref.current && !ref.current.contains(ev.target as HTMLElement)) state.closeMenu()
+  }
+  useEffect(() => {
+    document.addEventListener('mousedown', mouseDownHandler)
+    return () => document.removeEventListener('mousedown', mouseDownHandler)
+  }, [ref])
   return (
-    <div className="relative inline-block float-right">
+    <div className="relative inline-block float-right" ref={ref}>
       <ul className={`absolute right-0 z-10 bg-white w-48 rounded-sm border-2`}>
         {props.children}
       </ul>
