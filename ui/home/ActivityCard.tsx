@@ -35,7 +35,6 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   }
   `
   const onSubmit: (comment: string) => void = (comment: string) => {
-    console.log('string:' + comment)
     fetcher(
       document,
       {
@@ -47,6 +46,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
       },
       userState.token
     )
+    setCommentVisibility(false)
   }
   return (
     <div className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700">
@@ -59,8 +59,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
           upvote={post.upvote}
           downvote={post.downvote}
           replyCallback={() => {
-            setCommentVisibility(true)
+            setCommentVisibility(!commentVisibility)
           }}
+          showTrashIcon={post.author.name === userState.currentPersona?.name}
         />
         <div className="pb-2"></div>
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
