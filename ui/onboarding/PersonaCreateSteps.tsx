@@ -11,13 +11,13 @@ export const PersonaCreateSteps: React.FC = observer(() => {
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
     const query = `
-    mutation CreatePersona($name: String!) {
+    mutation CreatePersona($screenName: String!, $name: String!) {
       createPersona(screenName: $screenName, name: $name) {
         name
       }
     }
     `
-    await fetcher(query, { name: persona.name }, token)
+    await fetcher(query, { screenName: persona.screenName, name: persona.name }, token)
     router.push('/')
   }
 
