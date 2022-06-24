@@ -5,7 +5,7 @@ export const SearchBox = () => {
   const router = useRouter()
   const [text, setText] = useState('')
   const move = () => text !== '' && router.push(`/s/${text}`)
-  const onKeyUp: KeyboardEventHandler = (e) => {
+  const onKeyDown: KeyboardEventHandler = (e) => {
     if (e.code === 'Enter') move()
   }
   return (
@@ -15,7 +15,7 @@ export const SearchBox = () => {
         type="text"
         value={text}
         onChange={(e) => setText(e.currentTarget.value)}
-        onKeyUp={onKeyUp}
+        onKeyDown={onKeyDown}
       />
     </div>
   )
