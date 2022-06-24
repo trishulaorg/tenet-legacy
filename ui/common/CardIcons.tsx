@@ -10,6 +10,7 @@ import {
 interface IconListElement {
   name: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
   text: string
+  value?: number
   onClick?: React.MouseEventHandler
 }
 
@@ -25,14 +26,25 @@ export const CardIcons: React.FC<{
   showTrashIcon?: boolean
 }> = (props) => {
   const icons: IconListElement[] = [
-    { name: ThumbUpIcon, text: `${props.upvote}`, onClick: props.upvoteCallback },
-    { name: ThumbDownIcon, text: `${props.downvote}`, onClick: props.downvoteCallback },
+    {
+      name: ThumbUpIcon,
+      text: `${props.upvote}`,
+      value: props.upvote,
+      onClick: props.upvoteCallback,
+    },
+    {
+      name: ThumbDownIcon,
+      text: `${props.downvote}`,
+      value: props.downvote,
+      onClick: props.downvoteCallback,
+    },
     {
       name: AnnotationIcon,
-      text: `${props.commentNumber} Comments`,
+      text: `${props.commentNumber}`,
+      value: props.commentNumber,
       onClick: props.replyCallback,
     },
-    { name: ShareIcon, text: 'Share', onClick: props.shareCallback },
+    { name: ShareIcon, text: '', onClick: props.shareCallback },
   ]
   return (
     <div className="flex justify-between">
@@ -46,7 +58,9 @@ export const CardIcons: React.FC<{
           return (
             <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
               <icon.name className="h-5 w-5" />
-              <p className={textStyle}>{icon.text}</p>
+              {icon.value === undefined || icon.value > 0 ? (
+                <p className={textStyle}>{icon.text}</p>
+              ) : null}
             </button>
           )
         })}
