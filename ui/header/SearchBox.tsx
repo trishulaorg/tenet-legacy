@@ -1,10 +1,13 @@
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { KeyboardEventHandler, useState } from 'react'
 
 export const SearchBox = () => {
   const router = useRouter()
   const [text, setText] = useState('')
-  const onClick = () => text !== '' && router.push(`/s/${text}`)
+  const move = () => text !== '' && router.push(`/s/${text}`)
+  const onKeyDown: KeyboardEventHandler = (e) => {
+    if (e.code === 'Enter') move()
+  }
   return (
     <div>
       <input
@@ -12,10 +15,8 @@ export const SearchBox = () => {
         type="text"
         value={text}
         onChange={(e) => setText(e.currentTarget.value)}
+        onKeyDown={onKeyDown}
       />
-      <button className="border rounded px-2" onClick={onClick}>
-        Search
-      </button>
     </div>
   )
 }
