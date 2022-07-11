@@ -72,7 +72,7 @@ export const typeDefs = gql`
   }
   type Mutation {
     createPersona(screenName: String!, name: String!, iconPath: String): Persona
-    createBoard(title: String!, description: String!): Board
+    createBoard(title: String!, description: String!, personaId: Int!): Board
     createPost(
       title: String!
       content: String!
@@ -203,13 +203,18 @@ export const resolvers: IResolvers<ContextType> = {
       context
     ) => {
       if (!context.me) {
-        return
+        throw new Error('User is not authorized')
       }
       const currentPersona = await context.prisma.persona.findFirst({
-        where: { userId: context.me.id, id: args.personaId },
+        where: {
+          user: {
+            id: context.me.id,
+          },
+          id: args.personaId,
+        },
       })
       if (!currentPersona) {
-        return
+        throw new Error('Invalid persona id')
       }
       return context.prisma.board.create({
         data: {
