@@ -9,8 +9,6 @@ import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
 import { getGqlToken } from '../libs/cookies'
 import { Layout } from '../ui/layouts/Layout'
-import { HomeTabList } from '../ui/home/HomeTabList'
-import { HomeTab } from '../ui/home/HomeTab'
 import { getInstance } from '../libs/auth0'
 import { useRouter } from 'next/router'
 
@@ -42,14 +40,6 @@ const IndexPage: React.FC = () => {
   }, [token])
   const main: React.FC = () => (
     <>
-      <HomeTabList>
-        <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={true}>
-          Home
-        </HomeTab>
-        <HomeTab onClick={() => console.log('someReceiverWeWillDefine')} selected={false}>
-          Hot Topics
-        </HomeTab>
-      </HomeTabList>
       <ul>
         {activities.map((v, idx) => (
           <ActivityCard key={idx} post={v} />
