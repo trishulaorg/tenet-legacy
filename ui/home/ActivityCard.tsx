@@ -11,8 +11,8 @@ import { CreatedAt } from '../common/CreatedAt'
 import { CommentInput } from '../thread/CommentInput'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
-import { Thread } from '../thread/Thread'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 interface ActivityCardProps {
   post: PostState
@@ -21,6 +21,7 @@ interface ActivityCardProps {
 export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => {
   const [commentVisibility, setCommentVisibility] = useState(false)
   const userState = useContext(UserStateContext)
+  const router = useRouter()
   const document = `
   mutation CreateThread($title: String!, $content: String!, $post_id: Int!, $persona_id: Int!, $board_id: Int!) {
     createThread(
@@ -49,7 +50,13 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
     setCommentVisibility(false)
   }
   return (
-    <div className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700">
+    <div // eslint-disable-line jsx-a11y/no-static-element-interactions
+      className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer"
+      onClick={() => router.push(`/t/${post.id}`)}
+      onKeyDown={() => {
+        /* noop */
+      }}
+    >
       <CardTitle title={post.title} />
       <Author
         screenName={post.author.screenName}
@@ -70,7 +77,6 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         />
         <div className="pb-2"></div>
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
-        <Thread posts={post.responses}></Thread>
         <CreatedAt created={post.createdAt} />
         <Link href={`/t/${post.boardId}`}>Show board</Link>
       </CardMeta>
