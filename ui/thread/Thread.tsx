@@ -17,7 +17,7 @@ export interface ThreadProps {
 }
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
-  const [commentVisibility, setCommentVisibility] = useState(false)
+  const [commentVisibility, setCommentVisibility] = useState<Set<number>>(new Set())
   const userState = useContext(UserStateContext)
   const document = `
   mutation CreateReply($title: String!, $content: String!, $persona_id: Int!, $thread_id: Int!) {
@@ -42,7 +42,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       },
       userState.token
     )
-    setCommentVisibility(false)
+    setCommentVisibility(new Set())
   }
   return (
     <ul className="pl-4">
@@ -62,14 +62,14 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                 downvote={v.downvote}
                 isPost={false}
                 replyCallback={() => {
-                  setCommentVisibility(!commentVisibility)
+                  setCommentVisibility(commentVisibility.has(v.id) ? new Set([]) : new Set([v.id]))
                 }}
                 showTrashIcon={v.author.name === userState.currentPersona?.name}
               />
               <div className="pb-2" />
               <CreatedAt created={v.createdAt} />
             </CardMeta>
-            {commentVisibility ? (
+            {commentVisibility.has(v.id) ? (
               <CommentInput onSubmit={(comment) => onSubmit(comment, v)} />
             ) : undefined}
             {v.hasRepsponse ? <Reply posts={v.responses} /> : undefined}
