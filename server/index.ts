@@ -88,7 +88,13 @@ export const typeDefs = gql`
       postId: Int!
       personaId: Int!
     ): Thread
-    createReply(title: String!, content: String!, contentType: ContentType!, threadId: ID!): Reply
+    createReply(
+      title: String!
+      content: String!
+      contentType: ContentType!
+      threadId: Int!
+      personaId: Int!
+    ): Reply
   }
 `
 
