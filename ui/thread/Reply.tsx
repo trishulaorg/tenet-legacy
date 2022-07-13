@@ -33,6 +33,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
                   upvote={v.upvote}
                   downvote={v.downvote}
                   isPost={false}
+                  showCommentNumber={false}
                   showTrashIcon={v.author.name === userState.currentPersona?.name}
                 />
                 <div className="pb-2" />

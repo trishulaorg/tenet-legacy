@@ -12,6 +12,7 @@ interface IconListElement {
   text: string
   value?: number
   onClick?: React.MouseEventHandler
+  isVisible: boolean
 }
 
 export const CardIcons: React.FC<{
@@ -24,27 +25,32 @@ export const CardIcons: React.FC<{
   replyCallback?: () => void
   shareCallback?: () => void
   showTrashIcon?: boolean
+  showCommentNumber?: boolean
 }> = (props) => {
+  const showCommentNumber = props.showCommentNumber !== false
   const icons: IconListElement[] = [
     {
       name: ThumbUpIcon,
       text: `${props.upvote}`,
       value: props.upvote,
       onClick: props.upvoteCallback,
+      isVisible: true,
     },
     {
       name: ThumbDownIcon,
       text: `${props.downvote}`,
       value: props.downvote,
       onClick: props.downvoteCallback,
+      isVisible: true,
     },
     {
       name: AnnotationIcon,
       text: `${props.commentNumber}`,
       value: props.commentNumber,
       onClick: props.replyCallback,
+      isVisible: showCommentNumber,
     },
-    { name: ShareIcon, text: '', onClick: props.shareCallback },
+    { name: ShareIcon, text: '', onClick: props.shareCallback, isVisible: true },
   ]
   return (
     <div className="flex justify-between">
@@ -56,12 +62,16 @@ export const CardIcons: React.FC<{
               : 'flex items-center opacity-50 pl-4 hover:text-rose-800'
           const textStyle = index < 2 ? 'pl-1' : 'pl-1 hidden md:block'
           return (
-            <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
-              <icon.name className="h-5 w-5" />
-              {icon.value === undefined || icon.value > 0 ? (
-                <p className={textStyle}>{icon.text}</p>
+            <>
+              {icon.isVisible ? (
+                <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
+                  <icon.name className="h-5 w-5" />
+                  {icon.value === undefined || icon.value > 0 ? (
+                    <p className={textStyle}>{icon.text}</p>
+                  ) : null}
+                </button>
               ) : null}
-            </button>
+            </>
           )
         })}
       </div>
