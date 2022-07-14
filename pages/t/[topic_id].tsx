@@ -30,6 +30,7 @@ const IndexPage: React.FC = () => {
   const document = `
   query Board($topicId: Int!) {
     board(id: $topicId) {
+      id
       title
       posts {
         id
@@ -70,11 +71,10 @@ const IndexPage: React.FC = () => {
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (data) {
-        console.log(data)
         setContext(
-          new BoardState(0, {
+          new BoardState(data.board.id, {
             title: data.board.title,
-            description: 'WIP',
+            description: data.board.description,
             posts: data.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
           })
         )

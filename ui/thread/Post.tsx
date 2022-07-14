@@ -49,7 +49,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
     setCommentVisibility(false)
   }
   return (
-    <div className="max-w-2xl rounded-lg p-4 bg-white">
+    <div className="rounded-lg p-4 bg-white">
       <CardTitle title={props.post.title} />
       <Author
         screenName={props.post.author.screenName}

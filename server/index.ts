@@ -77,8 +77,8 @@ export const typeDefs = gql`
       title: String!
       content: String!
       contentType: String!
-      personaId: ID!
-      boardId: ID!
+      personaId: Int!
+      boardId: Int!
     ): Post
     createThread(
       title: String!
@@ -152,6 +152,9 @@ export const resolvers: IResolvers<ContextType> = {
                   },
                 },
               },
+            },
+            orderBy: {
+              createdAt: 'desc',
             },
           },
         },
