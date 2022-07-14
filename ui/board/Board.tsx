@@ -5,13 +5,17 @@ import { Post } from '../thread/Post'
 
 export const Board: React.FC = observer(() => {
   const state = useContext(BoardStateContext)
+  console.log(state)
   return (
-    <ul>
-      {state.posts.map((p, idx) => (
-        <li key={idx} className="mb-5">
-          <Post post={p} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <h1 className="my-4 text-slate-600 text-2xl">#{state.title}</h1>
+      <ul>
+        {state.posts.map((p, idx) => (
+          <li key={idx} className="mb-5">
+            <Post post={p} />
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 })

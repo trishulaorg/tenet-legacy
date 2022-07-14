@@ -30,6 +30,7 @@ const IndexPage: React.FC = () => {
   const document = `
   query Board($topicId: Int!) {
     board(id: $topicId) {
+      title
       posts {
         id
         boardId
