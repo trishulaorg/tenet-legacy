@@ -1,4 +1,6 @@
 import { fetcher } from './fetchAPI'
+import { gql } from 'graphql-request'
+import type { ThreadType } from '../states/PostState'
 
 export interface PersonaType {
   id: number
@@ -13,7 +15,7 @@ export interface ActivityType {
   title: string
   content: string
   persona: PersonaType
-  threads: any
+  threads: ThreadType[]
   createdAt: string
 }
 
@@ -23,21 +25,12 @@ export interface ResultType {
 
 export function fetchActivities(token?: string): Promise<ResultType> {
   return fetcher(
-    `
-    query {
-      activities {
-        id
-        boardId
-        title
-        content
-        createdAt
-        persona {
-          screenName
-          name
-          iconUrl
-        }
-        threads {
+    gql`
+      query {
+        activities {
           id
+          boardId
+          title
           content
           createdAt
           persona {
@@ -45,7 +38,7 @@ export function fetchActivities(token?: string): Promise<ResultType> {
             name
             iconUrl
           }
-          replies {
+          threads {
             id
             content
             createdAt
@@ -54,10 +47,19 @@ export function fetchActivities(token?: string): Promise<ResultType> {
               name
               iconUrl
             }
+            replies {
+              id
+              content
+              createdAt
+              persona {
+                screenName
+                name
+                iconUrl
+              }
+            }
           }
         }
       }
-    }
     `,
     {},
     token

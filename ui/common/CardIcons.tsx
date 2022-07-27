@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
   AnnotationIcon,
   ShareIcon,
@@ -11,7 +11,7 @@ interface IconListElement {
   name: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
   text: string
   value?: number
-  onClick?: React.MouseEventHandler
+  onClick: React.MouseEventHandler | undefined
   isVisible: boolean
 }
 
@@ -62,7 +62,7 @@ export const CardIcons: React.FC<{
               : 'flex items-center opacity-50 pl-4 hover:text-rose-800'
           const textStyle = index < 2 ? 'pl-1' : 'pl-1 hidden md:block'
           return (
-            <>
+            <Fragment key={index}>
               {icon.isVisible ? (
                 <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
                   <icon.name className="h-5 w-5" />
@@ -71,7 +71,7 @@ export const CardIcons: React.FC<{
                   ) : null}
                 </button>
               ) : null}
-            </>
+            </Fragment>
           )
         })}
       </div>
