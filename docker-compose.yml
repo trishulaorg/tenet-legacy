@@ -1,43 +1,8 @@
 version: '3'
 services:
-  web:
-    build: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./pages:/usr/src/app/pages
-      - ./states:/usr/src/app/states
-      - ./ui:/usr/src/app/ui
-      - ./libs:/usr/src/app/libs
-    command: ["npm", "run", "dev"]
-  api:
-    build:
-      context: ./
-      dockerfile: ./server/Dockerfile
-    ports:
-      - "4000:4000"
-    depends_on:
-      - db
-    volumes:
-      - ./server:/usr/src/app/server
-    command: ["npm", "run", "api:dev"]
   db:
-    image: postgres:13-alpine
+    image: mysql:8-debian
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-  nginx:
-    build:
-      context: ./
-      dockerfile: ./nginx/Dockerfile
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "8080:80"
-    depends_on:
-      - api
-      - web
-
-
+      MYSQL_ROOT_PASSWORD: rJ9g118VOoyWI2prVdUJ

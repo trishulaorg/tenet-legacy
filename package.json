@@ -14,7 +14,7 @@
     "vercel-build": "prisma generate",
     "dev": "NODE_ENV=development next dev",
     "build": "NODE_ENV=production cd server && tsc",
-    "migrate:test": "prisma migrate dev --name init && npm run seed:test || exit 0",
+    "migrate:test": "prisma migrate dev --name init",
     "seed:test": "prisma db seed",
     "start": "NODE_ENV=production next start",
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
