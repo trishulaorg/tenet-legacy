@@ -16,7 +16,7 @@ export const Layout: React.FC<{ Main: React.FC; Side: React.FC }> = observer(({ 
         <PageLayout size={2} displayName={'Main'}>
           <Main />
         </PageLayout>
-        <div className="hidden md:block md:pl-5"></div>
+        <div className="hidden md:block md:pl-5" />
         <PageLayout size={1} displayName={'Side'}>
           <Side />
         </PageLayout>

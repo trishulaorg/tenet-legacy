@@ -9,6 +9,7 @@ import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
 import { fetcher } from '../../libs/fetchAPI'
 import useSWR from 'swr'
+import { gql } from 'graphql-request'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -27,42 +28,42 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
 
-  const document = `
-  query Board($topicId: Int!) {
-    board(id: $topicId) {
-      id
-      title
-      posts {
+  const document = gql`
+    query Board($topicId: Int!) {
+      board(id: $topicId) {
         id
-        boardId
         title
-        content
-        createdAt
-        persona {
-          name
-          iconUrl
-        }
-        threads {
+        posts {
           id
+          boardId
+          title
           content
           createdAt
           persona {
             name
             iconUrl
           }
-          replies {
-            createdAt
+          threads {
             id
             content
+            createdAt
             persona {
               name
               iconUrl
+            }
+            replies {
+              createdAt
+              id
+              content
+              persona {
+                name
+                iconUrl
+              }
             }
           }
         }
       }
     }
-  } 
   `
   const { data } = useSWR<{ board: BoardType }>(document, (document) =>
     fetcher(document, { topicId: Number(topic_id) }, token)
@@ -85,7 +86,7 @@ const IndexPage: React.FC = () => {
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
-        <Board></Board>
+        <Board />
       </BoardStateContext.Provider>
     </>
   )
@@ -93,7 +94,7 @@ const IndexPage: React.FC = () => {
     <div className="bg-gray-100">
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header></Header>
+          <Header />
         </HeaderStateContext.Provider>
         <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
