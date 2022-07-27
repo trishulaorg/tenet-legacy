@@ -1,7 +1,6 @@
-import { gql } from 'graphql-request'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import useSWR from 'swr'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
@@ -9,6 +8,7 @@ import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import { defaultUser, UserState } from '../../states/UserState'
 import { Header } from '../../ui/header/Header'
 import { Layout } from '../../ui/layouts/Layout'
+import { gql } from 'apollo-server-micro'
 
 const SearchResultList: React.FC = (props) => {
   return <ul>{props.children}</ul>
@@ -74,7 +74,7 @@ const IndexPage: React.FC = () => {
   return (
     <div className="bg-gray-100">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header></Header>
+        <Header />
       </HeaderStateContext.Provider>
       <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       <style global jsx>{`

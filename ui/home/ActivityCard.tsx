@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
-import { PostState } from '../../states/PostState'
+import type { PostState } from '../../states/PostState'
 
 import { Author } from '../common/Author'
 import { CardTitle } from '../common/CardTitle'
@@ -13,6 +13,7 @@ import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { gql } from 'graphql-request'
 
 interface ActivityCardProps {
   post: PostState
@@ -22,21 +23,28 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   const [commentVisibility, setCommentVisibility] = useState(false)
   const userState = useContext(UserStateContext)
   const router = useRouter()
-  const document = `
-  mutation CreateThread($title: String!, $content: String!, $post_id: Int!, $persona_id: Int!, $board_id: Int!) {
-    createThread(
-      title: $title
-      content: $content
-      contentType: TEXT
-      personaId: $persona_id
-      boardId: $board_id
-      postId: $post_id) {
-      id
+  const document = gql`
+    mutation CreateThread(
+      $title: String!
+      $content: String!
+      $post_id: Int!
+      $persona_id: Int!
+      $board_id: Int!
+    ) {
+      createThread(
+        title: $title
+        content: $content
+        contentType: TEXT
+        personaId: $persona_id
+        boardId: $board_id
+        postId: $post_id
+      ) {
+        id
+      }
     }
-  }
   `
-  const onSubmit: (comment: string) => void = (comment: string) => {
-    fetcher(
+  const onSubmit: (comment: string) => void = async (comment: string) => {
+    await fetcher(
       document,
       {
         title: 'dummy',
@@ -75,7 +83,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
           }}
           showTrashIcon={post.author.name === userState.currentPersona?.name}
         />
-        <div className="pb-2"></div>
+        <div className="pb-2" />
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
         <CreatedAt created={post.createdAt} />
         <Link href={`/t/${post.boardId}`}>Show board</Link>

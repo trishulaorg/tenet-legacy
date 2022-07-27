@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react'
 import React, { useContext } from 'react'
-import { PostState } from '../../states/PostState'
+import type { PostState } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 
 import { Author } from '../common/Author'

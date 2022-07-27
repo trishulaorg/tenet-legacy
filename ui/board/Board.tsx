@@ -4,30 +4,31 @@ import { fetcher } from '../../libs/fetchAPI'
 import { BoardStateContext } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { Post } from '../thread/Post'
+import { gql } from 'graphql-request'
 
 export const Board: React.FC = observer(() => {
   const state = useContext(BoardStateContext)
   const user = useContext(UserStateContext)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const document = `
-  mutation CreatePost($title: String!, $content: String!, $persona_id: Int!, $board_id: Int!) {
-    createPost(
-      title: $title
-      content: $content
-      contentType: "TEXT"
-      personaId: $persona_id
-      boardId: $board_id
+  const document = gql`
+    mutation CreatePost($title: String!, $content: String!, $persona_id: Int!, $board_id: Int!) {
+      createPost(
+        title: $title
+        content: $content
+        contentType: "TEXT"
+        personaId: $persona_id
+        boardId: $board_id
       ) {
-      id
+        id
+      }
     }
-  }
   `
   console.log(state)
-  const onClick: FormEventHandler = (e) => {
+  const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
 
-    fetcher(
+    await fetcher(
       document,
       {
         title,
@@ -53,7 +54,7 @@ export const Board: React.FC = observer(() => {
                 value={title}
                 onChange={(e) => setTitle(e.currentTarget.value)}
                 className="w-full leading-6 p-1 border-2 border-black border-opacity-10 rounded-t-lg block"
-              ></input>
+              />
             </label>
             <label>
               <div>Content</div>

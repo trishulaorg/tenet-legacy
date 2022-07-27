@@ -1,5 +1,5 @@
-import { AppProps } from 'next/app'
-import { ReactElement } from 'react'
+import type { AppProps } from 'next/app'
+import type { ReactElement } from 'react'
 import { UserProvider } from '@auth0/nextjs-auth0'
 import '../styles/global.css'
 
