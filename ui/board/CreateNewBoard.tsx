@@ -3,6 +3,7 @@ import React, { FormEventHandler, useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
+import { gql } from 'graphql-request'
 
 interface ResultT {
   id: number
@@ -20,12 +21,12 @@ export const CreateNewBoard: React.FC = () => {
     if (!persona) {
       return
     }
-    const query = `
-    mutation CreateBoard($title: String!, $description: String!, $personaId: Int!) {
-      createBoard(title: $title, description: $description, personaId: $personaId) {
-        id
+    const query = gql`
+      mutation CreateBoard($title: String!, $description: String!, $personaId: Int!) {
+        createBoard(title: $title, description: $description, personaId: $personaId) {
+          id
+        }
       }
-    }
     `
     try {
       await fetcher<ResultT>(
@@ -50,7 +51,7 @@ export const CreateNewBoard: React.FC = () => {
               className="flex-1 rounded border border-slate-300"
               onChange={(e) => setName(e.currentTarget.value)}
               value={name}
-            ></input>
+            />
           </label>
         </div>
         <div className="p-1">
@@ -60,7 +61,7 @@ export const CreateNewBoard: React.FC = () => {
               className="flex-1 border rounded-sm border border-slate-300"
               onChange={(e) => setDesc(e.currentTarget.value)}
               value={desc}
-            ></textarea>
+            />
           </label>
         </div>
         <button

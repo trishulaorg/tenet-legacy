@@ -1,3 +1,4 @@
+// @ts-expect-error we need side effect
 import { GetServerSideProps } from 'next'
 import { Header } from '../../ui/header/Header'
 import jwt from 'jsonwebtoken'
@@ -21,7 +22,7 @@ const IndexPage: React.FC = () => {
       if (user) {
         await user.request()
         if (user.isValidUser && !user.currentPersona) {
-          router.push('/onboarding')
+          await router.push('/onboarding')
         }
       }
     }
@@ -29,14 +30,14 @@ const IndexPage: React.FC = () => {
   }, [token, router, user])
   const main: React.FC = () => (
     <>
-      <CreateNewBoard></CreateNewBoard>
+      <CreateNewBoard />
     </>
   )
   return (
     <div className="bg-gray-100">
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header></Header>
+          <Header />
         </HeaderStateContext.Provider>
         <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
@@ -54,12 +55,12 @@ const IndexPage: React.FC = () => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = getInstance().getSession(context.req, context.res)
-  if (!process.env.API_TOKEN_SECRET || !(session && session.user)) {
+  if (!process.env['API_TOKEN_SECRET'] || !(session && session.user)) {
     return {
       props: {},
     }
   }
-  const token = jwt.sign(JSON.stringify(session.user ?? ''), process.env.API_TOKEN_SECRET)
+  const token = jwt.sign(JSON.stringify(session.user ?? ''), process.env['API_TOKEN_SECRET'])
   context.res.setHeader('set-cookie', [`gqltoken=${token}`])
   return {
     props: {},

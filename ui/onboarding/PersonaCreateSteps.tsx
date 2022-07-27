@@ -4,6 +4,7 @@ import React, { FormEventHandler, useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { PersonaStateContext } from '../../states/UserState'
+import { gql } from 'graphql-request'
 
 interface ResultT {
   createPersona: { name: string; screenName: string }
@@ -15,17 +16,17 @@ export const PersonaCreateSteps: React.FC = observer(() => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
-    const query = `
-    mutation CreatePersona($screenName: String!, $name: String!) {
-      createPersona(screenName: $screenName, name: $name) {
-        name
-        screenName
+    const query = gql`
+      mutation CreatePersona($screenName: String!, $name: String!) {
+        createPersona(screenName: $screenName, name: $name) {
+          name
+          screenName
+        }
       }
-    }
     `
     try {
       await fetcher<ResultT>(query, { screenName: persona.screenName, name: persona.name }, token)
-      router.push('/')
+      await router.push('/')
     } catch (e) {
       setErrorMsg('This ID has already been taken')
     }

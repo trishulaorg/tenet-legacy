@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react'
 import React, { useContext, useState } from 'react'
-import { PostState } from '../../states/PostState'
+import type { PostState } from '../../states/PostState'
 
 import { Thread } from './Thread'
 import { CardTitle } from '../common/CardTitle'
@@ -12,6 +12,7 @@ import { CreatedAt } from '../common/CreatedAt'
 import { CommentInput } from './CommentInput'
 import { UserStateContext } from '../../states/UserState'
 import { fetcher } from '../../libs/fetchAPI'
+import { gql } from 'graphql-request'
 
 export interface PostProps {
   post: PostState
@@ -20,22 +21,29 @@ export interface PostProps {
 export const Post: React.FC<PostProps> = observer((props) => {
   const [commentVisibility, setCommentVisibility] = useState(false)
   const userState = useContext(UserStateContext)
-  const document = `
-  mutation CreateThread($title: String!, $content: String!, $post_id: Int!, $persona_id: Int!, $board_id: Int!) {
-    createThread(
-      title: $title
-      content: $content
-      contentType: TEXT
-      personaId: $persona_id
-      boardId: $board_id
-      postId: $post_id) {
-      id
+  const document = gql`
+    mutation CreateThread(
+      $title: String!
+      $content: String!
+      $post_id: Int!
+      $persona_id: Int!
+      $board_id: Int!
+    ) {
+      createThread(
+        title: $title
+        content: $content
+        contentType: TEXT
+        personaId: $persona_id
+        boardId: $board_id
+        postId: $post_id
+      ) {
+        id
+      }
     }
-  }
   `
-  const onSubmit: (comment: string) => void = (comment: string) => {
+  const onSubmit: (comment: string) => void = async (comment: string) => {
     console.log('string:' + comment)
-    fetcher(
+    await fetcher(
       document,
       {
         title: 'dummy',
