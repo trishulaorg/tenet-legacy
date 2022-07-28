@@ -3,7 +3,8 @@ import React, { FormEventHandler, useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
-import { gql } from 'graphql-request'
+import { ClientError, gql } from 'graphql-request'
+import { isUniqueConstraintError } from '../../server/errorResolver'
 
 interface ResultT {
   id: number
@@ -12,12 +13,14 @@ interface ResultT {
 export const CreateNewBoard: React.FC = () => {
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const user = useContext(UserStateContext)
   const persona = user.currentPersona
   const token = getGqlToken()
   const router = useRouter()
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
+    setErrorMessage('')
     if (!persona) {
       return
     }
@@ -34,9 +37,13 @@ export const CreateNewBoard: React.FC = () => {
         { title: name, description: desc, personaId: persona.id },
         token
       )
-      router.push('/')
-    } catch (e) {
-      console.log(e)
+      await router.push('/')
+    } catch (error) {
+      if (error instanceof ClientError) {
+        if (isUniqueConstraintError(error)) {
+          setErrorMessage('A Board with the title already exists!')
+        }
+      }
     }
   }
   return (
@@ -45,13 +52,16 @@ export const CreateNewBoard: React.FC = () => {
       <form>
         <div className="p-1">
           <label className="flex">
-            <span className="w-40">Board Name</span>
-            <input
-              type="text"
-              className="flex-1 rounded border border-slate-300"
-              onChange={(e) => setName(e.currentTarget.value)}
-              value={name}
-            />
+            <span className="w-40 flex-shrink-0">Board Name</span>
+            <div className="flex flex-col w-full">
+              <input
+                type="text"
+                className="flex-1 rounded border border-slate-300 overflow-auto"
+                onChange={(e) => setName(e.currentTarget.value)}
+                value={name}
+              />
+              <div className={'text-red-600'}>{errorMessage}</div>
+            </div>
           </label>
         </div>
         <div className="p-1">
