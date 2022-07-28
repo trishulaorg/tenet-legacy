@@ -34,7 +34,7 @@ export const CreateNewBoard: React.FC = () => {
         { title: name, description: desc, personaId: persona.id },
         token
       )
-      router.push('/')
+      await router.push('/')
     } catch (e) {
       console.log(e)
     }
