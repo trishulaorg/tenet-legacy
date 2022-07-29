@@ -4,6 +4,11 @@ import type { ExpressContext } from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import type { IExecutableSchemaDefinition } from '@graphql-tools/schema'
+import {
+  defaultNotAuthenticatedErrorMessage,
+  NotAuthenticatedError,
+} from './errors/NotAuthenticatedError'
+import { defaultNotFoundErrorMessage, NotFoundError } from './errors/NotFoundError'
 
 dotenv.config()
 
@@ -190,7 +195,7 @@ export const resolvers: Exclude<IExecutableSchemaDefinition<ContextType>['resolv
         context
       ) => {
         if (!context.me) {
-          return
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         return context.prisma.persona.create({
           data: {
@@ -207,7 +212,7 @@ export const resolvers: Exclude<IExecutableSchemaDefinition<ContextType>['resolv
         context
       ) => {
         if (!context.me) {
-          throw new Error('User is not authorized')
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         const currentPersona = await context.prisma.persona.findFirst({
           where: {
@@ -218,7 +223,7 @@ export const resolvers: Exclude<IExecutableSchemaDefinition<ContextType>['resolv
           },
         })
         if (!currentPersona) {
-          throw new Error('Invalid persona id')
+          throw new NotFoundError('Invalid persona id')
         }
         return context.prisma.board.create({
           data: {
@@ -244,13 +249,13 @@ export const resolvers: Exclude<IExecutableSchemaDefinition<ContextType>['resolv
         context
       ) => {
         if (!context.me) {
-          return
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         const currentPersona = await context.prisma.persona.findFirst({
           where: { userId: context.me.id, id: args.personaId },
         })
         if (!currentPersona) {
-          return
+          throw new NotFoundError(defaultNotFoundErrorMessage('Persona', 'id', args.personaId))
         }
         return context.prisma.post.create({
           data: {
@@ -283,13 +288,13 @@ export const resolvers: Exclude<IExecutableSchemaDefinition<ContextType>['resolv
         context
       ) => {
         if (!context.me) {
-          return
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         const currentPersona = await context.prisma.persona.findFirst({
           where: { userId: context.me.id, id: args.personaId },
         })
         if (!currentPersona) {
-          return
+          throw new NotFoundError(defaultNotFoundErrorMessage('Persona', 'id', args.personaId))
         }
         return context.prisma.thread.create({
           data: {
@@ -325,13 +330,13 @@ export const resolvers: Exclude<IExecutableSchemaDefinition<ContextType>['resolv
         context
       ) => {
         if (!context.me) {
-          return
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         const currentPersona = await context.prisma.persona.findFirst({
           where: { userId: context.me.id, id: args.personaId },
         })
         if (!currentPersona) {
-          return
+          throw new NotFoundError(defaultNotFoundErrorMessage('Persona', 'id', args.personaId))
         }
         return context.prisma.reply.create({
           data: {
@@ -366,8 +371,8 @@ export const context: ContextFunction = async ({ req }) => {
   if (token && process.env['API_TOKEN_SECRET']) {
     try {
       const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
-      if (typeof decoded === 'string' || typeof decoded.sub === 'undefined') {
-        throw new Error('invalid auth token')
+      if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
+        throw new NotAuthenticatedError('invalid auth token')
       }
       me = await prisma.user.findFirst({
         where: { token: decoded.sub },
