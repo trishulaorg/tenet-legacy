@@ -2,23 +2,23 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main(): Promise<void> {
-  for (let i = 0; i < 100; i++) {
+  for (const i of [...Array(100)].map((_, index) => index)) {
     const user = await prisma.user.create({
       data: {
-        token: 'token' + i,
+        token: `token${i}`,
       },
     })
     const persona = await prisma.persona.create({
       data: {
         userId: user.id,
         iconUrl: 'http://example.com/img/icon',
-        name: 'Persona' + i,
-        screenName: 'Display Name of Persona' + i,
+        name: `Persona${i}`,
+        screenName: `Display Name of Persona${i}`,
       },
     })
     const board = await prisma.board.create({
       data: {
-        title: 'Test Board',
+        title: `Test Board ${i}`,
         description: 'This is a test board',
       },
     })
