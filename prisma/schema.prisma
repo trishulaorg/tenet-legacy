@@ -12,7 +12,7 @@ generator client {
 model User {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
-  token     String
+  token     String    @unique
   personas  Persona[]
 }
 
@@ -20,10 +20,10 @@ model Persona {
   id               Int               @id @default(autoincrement())
   createdAt        DateTime          @default(now())
   name             String            @unique
-  screenName       String
-  iconUrl          String
-  followingBoards  Board[]           @relation("FollowingBoards", references: [id])
-  modelatingBoards Board[]           @relation(references: [id])
+  screenName       String            @db.VarChar(50)
+  iconUrl          String            @db.Text
+  followingBoards  Board[]           @relation("FollowingBoards")
+  modelatingBoards Board[]           @relation()
   followingUsers   PersonaRelation[] @relation("destPersona")
   followedUsers    PersonaRelation[] @relation("srcPersona")
   votesOnComments  VoteOnComment[]
@@ -62,11 +62,11 @@ model VoteOnComment {
 
 model Board {
   id          Int       @id @default(autoincrement())
-  title       String
+  title       String    @unique  @db.VarChar(50)
   createdAt   DateTime  @default(now())
-  description String
-  moderators  Persona[] @relation(references: [id])
-  followedBy  Persona[] @relation("FollowingBoards", references: [id])
+  description String    @db.VarChar(2000)
+  moderators  Persona[] @relation()
+  followedBy  Persona[] @relation("FollowingBoards")
   posts       Post[]
   threads     Thread[]
 }
@@ -74,9 +74,9 @@ model Board {
 model Post {
   id          Int         @id @default(autoincrement())
   createdAt   DateTime    @default(now())
-  title       String
+  title       String      @db.VarChar(50)
   contentType ContentType
-  content     String // wip
+  content     String      @db.VarChar(2000)
   threads     Thread[]
   board       Board       @relation(fields: [boardId], references: [id])
   boardId     Int
@@ -87,7 +87,7 @@ model Post {
 model Thread {
   id          Int         @id @default(autoincrement())
   createdAt   DateTime    @default(now())
-  content     String
+  content     String      @db.VarChar(500)
   contentType ContentType
   replies     Reply[]
   board       Board       @relation(fields: [boardId], references: [id])
@@ -101,7 +101,7 @@ model Thread {
 model Reply {
   id          Int         @id @default(autoincrement())
   contentType ContentType
-  content     String
+  content     String      @db.VarChar(500)
   createdAt   DateTime    @default(now())
   thread      Thread      @relation(fields: [threadId], references: [id])
   threadId    Int
