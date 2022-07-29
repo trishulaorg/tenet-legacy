@@ -5,6 +5,7 @@ import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import { ClientError, gql } from 'graphql-request'
 import { isUniqueConstraintError } from '../../server/errorResolver'
+import { InputWithLabel } from '../form/InputWithLabel'
 
 interface ResultT {
   id: number
@@ -50,30 +51,18 @@ export const CreateNewBoard: React.FC = () => {
     <div>
       <h1 className="my-4 text-slate-600 text-2xl">Create new board</h1>
       <form>
-        <div className="p-1">
-          <label className="flex">
-            <span className="w-40 flex-shrink-0">Board Name</span>
-            <div className="flex flex-col w-full">
-              <input
-                type="text"
-                className="flex-1 rounded border border-slate-300 overflow-auto"
-                onChange={(e) => setName(e.currentTarget.value)}
-                value={name}
-              />
-              <div className={'text-red-600'}>{errorMessage}</div>
-            </div>
-          </label>
-        </div>
-        <div className="p-1">
-          <label className="flex">
-            <span className="w-40">Description</span>
+        <InputWithLabel value={name} setValue={setName} errorMessage={errorMessage} />
+        <InputWithLabel
+          value={desc}
+          setValue={setDesc}
+          inputElement={
             <textarea
               className="flex-1 border rounded-sm border border-slate-300"
               onChange={(e) => setDesc(e.currentTarget.value)}
               value={desc}
             />
-          </label>
-        </div>
+          }
+        />
         <button
           className="my-4 py-2 px-8 block text-white bg-teal-400 hover:bg-teal-600	rounded-xl border border-slate-300"
           onClick={onClick}
