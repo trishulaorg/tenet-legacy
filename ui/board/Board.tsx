@@ -5,6 +5,7 @@ import { BoardStateContext } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { Post } from '../thread/Post'
 import { gql } from 'graphql-request'
+import { Editor } from '../editor/Editor'
 
 export const Board: React.FC = observer(() => {
   const state = useContext(BoardStateContext)
@@ -58,13 +59,7 @@ export const Board: React.FC = observer(() => {
             </label>
             <label>
               <div>Content</div>
-              <textarea
-                className="w-full leading-6 p-4 border-2 border-black border-opacity-10 rounded-t-lg block"
-                rows={4}
-                value={content}
-                onChange={(e) => setContent(e.currentTarget.value)}
-                placeholder="What did you think?"
-              />
+              <Editor></Editor>
             </label>
 
             <button className="bg-gray-600 text-white rounded-lg px-4 py-2 w-min" onClick={onClick}>
