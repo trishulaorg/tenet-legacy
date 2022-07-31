@@ -91,13 +91,21 @@ const IndexPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-100 h-full">
+    <div className="bg-gray-100">
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
         <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
+      <style global jsx>{`
+        html,
+        body,
+        body > div:first-child,
+        div#__next {
+          height: 100%;
+        }
+      `}</style>
     </div>
   )
 }
