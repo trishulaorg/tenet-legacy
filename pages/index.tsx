@@ -48,7 +48,7 @@ const IndexPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-100">
+    <div className="bg-gray-100 h-full">
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
