@@ -3,8 +3,9 @@ import { HeaderState, HeaderStateContext } from '../states/HeaderState'
 import React from 'react'
 import { defaultUser, UserState } from '../states/UserState'
 import { getGqlToken } from '../libs/cookies'
-import { Layout } from '../ui/layouts/Layout'
+import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { PersonaCreateSteps } from '../ui/onboarding/PersonaCreateSteps'
+import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 
 const OnboardingPage: React.FC = () => {
   const token = getGqlToken()
@@ -17,21 +18,12 @@ const OnboardingPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-100 h-full">
+    <PageBaseLayout>
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header />
       </HeaderStateContext.Provider>
-      <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
-
-      <style global jsx>{`
-        html,
-        body,
-        body > div:first-child,
-        div#__next {
-          height: 100%;
-        }
-      `}</style>
-    </div>
+      <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+    </PageBaseLayout>
   )
 }
 
