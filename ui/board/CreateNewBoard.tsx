@@ -4,7 +4,7 @@ import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import { ClientError, gql } from 'graphql-request'
-import { isUniqueConstraintError } from '../../server/errorResolver'
+import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
 
 interface ResultT {
@@ -14,14 +14,16 @@ interface ResultT {
 export const CreateNewBoard: React.FC = () => {
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [titleErrorMessage, setTitleErrorMessage] = useState('')
+  const [descriptionErrorMessage, setDescriptionErrorMessage] = useState('')
   const user = useContext(UserStateContext)
   const persona = user.currentPersona
   const token = getGqlToken()
   const router = useRouter()
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
-    setErrorMessage('')
+    setTitleErrorMessage('')
+    setDescriptionErrorMessage('')
     if (!persona) {
       return
     }
@@ -40,9 +42,27 @@ export const CreateNewBoard: React.FC = () => {
       )
       await router.push('/')
     } catch (error) {
+      console.dir(error)
       if (error instanceof ClientError) {
+        const validationErrors = getValidationErrors(error)
+        validationErrors.forEach((zodIssue) => {
+          switch (zodIssue.path.join('')) {
+            case 'title':
+              setTitleErrorMessage(
+                titleErrorMessage ? zodIssue.message : titleErrorMessage + '\n' + zodIssue.message
+              )
+              break
+            case 'description':
+              setDescriptionErrorMessage(
+                titleErrorMessage ? zodIssue.message : titleErrorMessage + '\n' + zodIssue.message
+              )
+              break
+            default:
+              break
+          }
+        })
         if (isUniqueConstraintError(error)) {
-          setErrorMessage('A Board with the title already exists!')
+          setTitleErrorMessage('A Board with the title already exists!')
         }
       }
     }
@@ -51,10 +71,17 @@ export const CreateNewBoard: React.FC = () => {
     <div>
       <h1 className="my-4 text-slate-600 text-2xl">Create new board</h1>
       <form>
-        <InputWithLabel value={name} setValue={setName} errorMessage={errorMessage} />
         <InputWithLabel
+          label="Board Name"
+          value={name}
+          setValue={setName}
+          errorMessage={titleErrorMessage}
+        />
+        <InputWithLabel
+          label="Description"
           value={desc}
           setValue={setDesc}
+          errorMessage={descriptionErrorMessage}
           inputElement={
             <textarea
               className="flex-1 border rounded-sm border border-slate-300"

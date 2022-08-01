@@ -1,6 +1,7 @@
 import React from 'react'
 
 interface InputWithLabelProps {
+  label: string
   value: string
   setValue: (value: string) => void
   errorMessage?: string
@@ -8,6 +9,7 @@ interface InputWithLabelProps {
 }
 
 const InputWithLabel: React.FC<InputWithLabelProps> = ({
+  label,
   value,
   setValue,
   errorMessage = '',
@@ -22,7 +24,7 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
 }: InputWithLabelProps) => (
   <div className="p-1">
     <label className="flex">
-      <span className="w-40 flex-shrink-0">Board Name</span>
+      <span className="w-40 flex-shrink-0">{label}</span>
       <div className="flex flex-col w-full">
         {inputElement}
         <div className={'text-red-600'}>{errorMessage}</div>
