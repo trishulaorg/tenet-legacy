@@ -1,9 +1,10 @@
+import './configureZod'
+
 import type { ResolverType } from '../index'
 import { z } from 'zod'
 import { ContentType } from '@prisma/client'
-import './configureZod'
+import type { ZodString } from 'zod/lib/types'
 
-// @ts-expect-error https://github.com/colinhacks/zod/issues/635
 const validationSchema: {
   Query: {
     [KeyName in keyof ResolverType['Query']]: {
@@ -33,7 +34,10 @@ const validationSchema: {
     createPersona: z.object({
       screenName: z.string().describe('screenName'),
       name: z.string(),
-      iconPath: z.string().optional(),
+      /**
+       * https://github.com/colinhacks/zod/issues/635
+       */
+      iconPath: z.string().optional() as unknown as ZodString,
     }),
     createBoard: z.object({
       title: z.string().min(1).max(50),
