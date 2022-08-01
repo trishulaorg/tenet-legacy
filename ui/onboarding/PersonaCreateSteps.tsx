@@ -17,15 +17,19 @@ export const PersonaCreateSteps: React.FC = observer(() => {
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
     const query = gql`
-      mutation CreatePersona($screenName: String!, $name: String!) {
-        createPersona(screenName: $screenName, name: $name) {
+      mutation CreatePersona($screenName: String!, $name: String!, $iconPath: String!) {
+        createPersona(screenName: $screenName, name: $name, iconPath: $iconPath) {
           name
           screenName
         }
       }
     `
     try {
-      await fetcher<ResultT>(query, { screenName: persona.screenName, name: persona.name }, token)
+      await fetcher<ResultT>(
+        query,
+        { screenName: persona.screenName, name: persona.name, iconPath: '' },
+        token
+      )
       await router.push('/')
     } catch (e) {
       setErrorMsg('This ID has already been taken')
