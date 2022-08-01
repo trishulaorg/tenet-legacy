@@ -1,5 +1,3 @@
-import './configureZod'
-
 import type { ResolverType } from '../index'
 import { z } from 'zod'
 import { ContentType } from '@prisma/client'
@@ -40,8 +38,14 @@ const validationSchema: {
       iconPath: z.string().optional() as unknown as ZodString,
     }),
     createBoard: z.object({
-      title: z.string().min(1).max(50),
-      description: z.string().min(1).max(2000),
+      title: z
+        .string()
+        .min(1, 'Board name is required.')
+        .max(50, 'Maximum length of Board name is 50.'),
+      description: z
+        .string()
+        .min(1, 'Description is required.')
+        .max(2000, 'Maximum length of description is 2000.'),
       personaId: z.number(),
     }),
     createPost: z.object({
