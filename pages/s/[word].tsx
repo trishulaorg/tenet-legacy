@@ -7,8 +7,9 @@ import { fetcher } from '../../libs/fetchAPI'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import { defaultUser, UserState } from '../../states/UserState'
 import { Header } from '../../ui/header/Header'
-import { Layout } from '../../ui/layouts/Layout'
+import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { gql } from 'apollo-server-micro'
+import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 
 const SearchResultList: React.FC = (props) => {
   return <ul>{props.children}</ul>
@@ -51,7 +52,7 @@ const IndexPage: React.FC = () => {
     fetcher(document, { query: word }, token)
   )
   const main: React.FC = () => (
-    <>
+    <PageBaseLayout>
       <h1 className="text-xl">Search Result</h1>
       <SearchResultList>
         {data?.search.map((c, idx) => (
@@ -69,22 +70,14 @@ const IndexPage: React.FC = () => {
           </li>
         ))}
       </SearchResultList>
-    </>
+    </PageBaseLayout>
   )
   return (
     <div className="bg-gray-100">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header />
       </HeaderStateContext.Provider>
-      <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
-      <style global jsx>{`
-        html,
-        body,
-        body > div:first-child,
-        div#__next {
-          height: 100%;
-        }
-      `}</style>
+      <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
     </div>
   )
 }

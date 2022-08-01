@@ -6,10 +6,11 @@ import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
 import { getGqlToken } from '../../libs/cookies'
-import { Layout } from '../../ui/layouts/Layout'
+import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { getInstance } from '../../libs/auth0'
 import { useRouter } from 'next/router'
 import { CreateNewBoard } from '../../ui/board/CreateNewBoard'
+import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -34,22 +35,14 @@ const IndexPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-100">
+    <PageBaseLayout>
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
-        <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
-      <style global jsx>{`
-        html,
-        body,
-        body > div:first-child,
-        div#__next {
-          height: 100%;
-        }
-      `}</style>
-    </div>
+    </PageBaseLayout>
   )
 }
 
