@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
 import { BoardState, BoardStateContext, BoardType, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
-import { Layout } from '../../ui/layouts/Layout'
+import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
 import { fetcher } from '../../libs/fetchAPI'
 import useSWR from 'swr'
 import { gql } from 'graphql-request'
+import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -91,22 +92,14 @@ const IndexPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-100">
+    <PageBaseLayout>
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
-        <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
-      <style global jsx>{`
-        html,
-        body,
-        body > div:first-child,
-        div#__next {
-          height: 100%;
-        }
-      `}</style>
-    </div>
+    </PageBaseLayout>
   )
 }
 

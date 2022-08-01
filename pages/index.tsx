@@ -9,9 +9,10 @@ import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { fetchActivities } from '../libs/fetchActivities'
 import { getGqlToken } from '../libs/cookies'
-import { Layout } from '../ui/layouts/Layout'
+import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { getInstance } from '../libs/auth0'
 import { useRouter } from 'next/router'
+import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -48,22 +49,14 @@ const IndexPage: React.FC = () => {
     </>
   )
   return (
-    <div className="bg-gray-100 h-max">
+    <PageBaseLayout>
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
-        <Layout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
-      <style global jsx>{`
-        html,
-        body,
-        body > div:first-child,
-        div#__next {
-          height: 100%;
-        }
-      `}</style>
-    </div>
+    </PageBaseLayout>
   )
 }
 
