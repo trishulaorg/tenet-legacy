@@ -16,6 +16,6 @@ const getValidationErrors = (error: ClientError): ZodIssue[] =>
         typeof zodError === 'object' && zodError.name === 'ZodError'
     )
     .map((zodError) => zodError.issues)
-    ?.flat() || []
+    ?.flat() ?? []
 
 export { isUniqueConstraintError, getValidationErrors }
