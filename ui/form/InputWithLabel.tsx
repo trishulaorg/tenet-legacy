@@ -1,4 +1,5 @@
 import React from 'react'
+import { ErrorMessage } from './ErrorMessage'
 
 interface InputWithLabelProps {
   label: string
@@ -27,7 +28,7 @@ const InputWithLabel: React.FC<InputWithLabelProps> = ({
       <span className="w-40 flex-shrink-0">{label}</span>
       <div className="flex flex-col w-full">
         {inputElement}
-        <div className={'text-red-600'}>{errorMessage}</div>
+        <ErrorMessage errorMessage={errorMessage} />
       </div>
     </label>
   </div>
