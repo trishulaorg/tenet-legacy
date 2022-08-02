@@ -19,7 +19,7 @@ model User {
 model Persona {
   id               Int               @id @default(autoincrement())
   createdAt        DateTime          @default(now())
-  name             String            @unique
+  name             String            @unique @db.VarChar(25)
   screenName       String            @db.VarChar(50)
   iconUrl          String            @db.Text
   followingBoards  Board[]           @relation("FollowingBoards")

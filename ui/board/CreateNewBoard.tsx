@@ -42,7 +42,6 @@ export const CreateNewBoard: React.FC = () => {
       )
       await router.push('/')
     } catch (error) {
-      console.dir(error)
       if (error instanceof ClientError) {
         const validationErrors = getValidationErrors(error)
         validationErrors.forEach((zodIssue) => {

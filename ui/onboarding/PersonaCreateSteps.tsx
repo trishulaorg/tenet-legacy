@@ -4,7 +4,9 @@ import React, { FormEventHandler, useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { PersonaStateContext } from '../../states/UserState'
-import { gql } from 'graphql-request'
+import { ClientError, gql } from 'graphql-request'
+import { ErrorMessage } from '../form/ErrorMessage'
+import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
 
 interface ResultT {
   createPersona: { name: string; screenName: string }
@@ -13,7 +15,8 @@ interface ResultT {
 export const PersonaCreateSteps: React.FC = observer(() => {
   const persona = useContext(PersonaStateContext)
   const token = getGqlToken()
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [personaScreenNameErrorMessage, setPersonaScreenNameErrorMessage] = useState('')
+  const [personaNameErrorMessage, setPersonaNameErrorMessage] = useState('')
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
     const query = gql`
@@ -31,8 +34,38 @@ export const PersonaCreateSteps: React.FC = observer(() => {
         token
       )
       await router.push('/')
-    } catch (e) {
-      setErrorMsg('This ID has already been taken')
+    } catch (error) {
+      if (error instanceof ClientError) {
+        const validationErrors = getValidationErrors(error)
+        validationErrors.forEach((zodIssue) => {
+          switch (zodIssue.path.join('')) {
+            case 'name':
+              setPersonaNameErrorMessage(
+                personaNameErrorMessage
+                  ? zodIssue.message
+                  : personaNameErrorMessage + '\n' + zodIssue.message
+              )
+              break
+            case 'screenName':
+              setPersonaScreenNameErrorMessage(
+                personaScreenNameErrorMessage
+                  ? zodIssue.message
+                  : personaScreenNameErrorMessage + '\n' + zodIssue.message
+              )
+              break
+            default:
+              break
+          }
+        })
+        if (isUniqueConstraintError(error)) {
+          const uniqueConstraintErrorMessage = 'This ID has already been taken'
+          setPersonaNameErrorMessage(
+            personaScreenNameErrorMessage
+              ? uniqueConstraintErrorMessage
+              : personaScreenNameErrorMessage + '\n' + uniqueConstraintErrorMessage
+          )
+        }
+      }
     }
   }
 
@@ -49,6 +82,7 @@ export const PersonaCreateSteps: React.FC = observer(() => {
             onChange={(e) => persona.updateName(e.target.value)}
             className="w-64 p-2 block rounded border border-slate-300"
           />
+          <ErrorMessage errorMessage={personaNameErrorMessage} />
         </label>
         <label>
           Your screen name
@@ -59,8 +93,8 @@ export const PersonaCreateSteps: React.FC = observer(() => {
             onChange={(e) => persona.updateScreenName(e.target.value)}
             className="w-64 p-2 block rounded border border-slate-300"
           />
+          <ErrorMessage errorMessage={personaScreenNameErrorMessage} />
         </label>
-        {errorMsg ? <div className="text-red-500 font-bold">Error: {errorMsg}</div> : null}
         <button
           onClick={(e) => createPersona(e)}
           className="my-4 py-2 px-8 block text-white bg-teal-400 hover:bg-teal-600	rounded-xl border border-slate-300"

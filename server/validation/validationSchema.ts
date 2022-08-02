@@ -30,8 +30,15 @@ const validationSchema: {
   },
   Mutation: {
     createPersona: z.object({
-      screenName: z.string().describe('screenName'),
-      name: z.string(),
+      screenName: z
+        .string()
+        .min(1, 'Persona screen name is required.')
+        .max(50, 'Maximum length of persona screen name is 50.'),
+      name: z
+        .string()
+        .min(1, 'Persona id is required.')
+        .max(25, 'Maximum length of persona id is 25.')
+        .regex(/^[a-zA-Z0-9]*$/, 'Persona id can only contain alphabet or number.'),
       /**
        * https://github.com/colinhacks/zod/issues/635
        */
@@ -41,7 +48,7 @@ const validationSchema: {
       title: z
         .string()
         .min(1, 'Board name is required.')
-        .max(50, 'Maximum length of Board name is 50.'),
+        .max(50, 'Maximum length of board name is 50.'),
       description: z
         .string()
         .min(1, 'Description is required.')
