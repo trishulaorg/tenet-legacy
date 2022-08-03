@@ -2,53 +2,16 @@ import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
-import { BoardState, BoardStateContext, BoardType, PostState } from '../../states/PostState'
+import type { BoardType } from '../../states/PostState'
+import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
 import { fetcher } from '../../libs/fetchAPI'
 import useSWR from 'swr'
-import { gql } from 'graphql-request'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-
-const getBoardDocument = gql`
-  query Board($topicId: Int!) {
-    board(id: $topicId) {
-      id
-      title
-      posts {
-        id
-        boardId
-        title
-        content
-        createdAt
-        persona {
-          name
-          iconUrl
-        }
-        threads {
-          id
-          content
-          createdAt
-          persona {
-            name
-            iconUrl
-          }
-          replies {
-            createdAt
-            id
-            content
-            persona {
-              name
-              iconUrl
-            }
-          }
-        }
-      }
-    }
-  }
-`
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -71,7 +34,7 @@ const IndexPage: React.FC = () => {
   }, [token, router, user])
 
   const { data } = useSWR<{ board: BoardType }>(
-    () => (isReady ? getBoardDocument : null),
+    () => (isReady ? queryDocuments.Query.board : null),
     (document) => fetcher(document, { topicId: Number(topic_id) }, token)
   )
 
@@ -108,5 +71,4 @@ const IndexPage: React.FC = () => {
   )
 }
 
-export { getBoardDocument }
 export default IndexPage

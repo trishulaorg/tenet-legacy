@@ -1,9 +1,9 @@
-import type { ResolverType } from '../index'
 import { z } from 'zod'
 import { ContentType } from '@prisma/client'
 import type { ZodString } from 'zod/lib/types'
+import type { ResolverType } from '../graphql-schema/resolvers'
 
-const validationSchema: {
+type ValidationSchemaType = {
   Query: {
     [KeyName in keyof ResolverType['Query']]: {
       parse: (
@@ -18,7 +18,9 @@ const validationSchema: {
       ) => Parameters<ResolverType['Mutation'][KeyName]>[1]
     }
   }
-} = {
+}
+
+const validationSchema: ValidationSchemaType = {
   Query: {
     me: z.any(),
     persona: z.object({ name: z.string() }),

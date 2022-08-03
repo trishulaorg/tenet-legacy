@@ -8,8 +8,8 @@ import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import { defaultUser, UserState } from '../../states/UserState'
 import { Header } from '../../ui/header/Header'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
-import { gql } from 'apollo-server-micro'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 const SearchResultList: React.FC = (props) => {
   return <ul>{props.children}</ul>
@@ -41,18 +41,8 @@ const IndexPage: React.FC = () => {
     query: { word },
   } = router
 
-  const document = gql`
-    query Search($query: String!) {
-      search(query: $query) {
-        kind
-        id
-        title
-      }
-    }
-  `
-
   const { data } = useSWR<ResultT>(
-    () => (isReady ? document : null),
+    () => (isReady ? queryDocuments.Query.search : null),
     (document) => fetcher(document, { query: word }, token)
   )
   const main: React.FC = () => (

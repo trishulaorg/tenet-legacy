@@ -1,5 +1,4 @@
-// @ts-expect-error we need side effect
-import { GetServerSideProps } from 'next'
+import type { GetServerSideProps } from 'next'
 import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'

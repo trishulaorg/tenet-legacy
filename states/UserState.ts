@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
-import { gql } from 'graphql-request'
+import { queryDocuments } from '../server/graphql-schema/queryDocuments'
 
 export class UserState {
   _personas: PersonaState[]
@@ -29,18 +29,7 @@ export class UserState {
         Authorization: 'Bearer ' + this.token,
       },
       body: JSON.stringify({
-        query: gql`
-          query {
-            me {
-              personas {
-                id
-                name
-                screenName
-                iconUrl
-              }
-            }
-          }
-        `,
+        query: queryDocuments.Query.me,
       }),
     }).then((r) => r.json())
     this.isValidUser = !result.me

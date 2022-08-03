@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import React, { KeyboardEventHandler, useState } from 'react'
+import type { KeyboardEventHandler } from 'react'
+import React, { useState } from 'react'
 
 import { SearchIcon } from '@heroicons/react/solid'
 export const SearchBox: React.FC = () => {
