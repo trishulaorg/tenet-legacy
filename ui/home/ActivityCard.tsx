@@ -13,7 +13,7 @@ import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { gql } from 'graphql-request'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 interface ActivityCardProps {
   post: PostState
@@ -23,29 +23,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   const [commentVisibility, setCommentVisibility] = useState(false)
   const userState = useContext(UserStateContext)
   const router = useRouter()
-  const document = gql`
-    mutation CreateThread(
-      $title: String!
-      $content: String!
-      $post_id: Int!
-      $persona_id: Int!
-      $board_id: Int!
-    ) {
-      createThread(
-        title: $title
-        content: $content
-        contentType: TEXT
-        personaId: $persona_id
-        boardId: $board_id
-        postId: $post_id
-      ) {
-        id
-      }
-    }
-  `
   const onSubmit: (comment: string) => void = async (comment: string) => {
     await fetcher(
-      document,
+      queryDocuments.Mutation.createThread,
       {
         title: 'dummy',
         content: comment,

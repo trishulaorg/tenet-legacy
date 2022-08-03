@@ -1,4 +1,5 @@
-import React, { MouseEventHandler, useContext, useEffect, useRef } from 'react'
+import type { MouseEventHandler } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { observer } from 'mobx-react'
 import { HeaderStateContext } from '../../states/HeaderState'
 import { MenuIcon } from '@heroicons/react/solid'

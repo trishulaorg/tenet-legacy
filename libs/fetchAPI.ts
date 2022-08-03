@@ -1,4 +1,5 @@
-import { request, Variables } from 'graphql-request'
+import type { Variables } from 'graphql-request'
+import { request } from 'graphql-request'
 
 export interface APIResult<T> {
   data: T
