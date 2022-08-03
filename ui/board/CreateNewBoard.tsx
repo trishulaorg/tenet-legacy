@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router'
-import React, { FormEventHandler, useContext, useState } from 'react'
+import type { FormEventHandler } from 'react'
+import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
-import { ClientError, gql } from 'graphql-request'
+import { ClientError } from 'graphql-request'
 import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 interface ResultT {
   id: number
@@ -27,16 +29,9 @@ export const CreateNewBoard: React.FC = () => {
     if (!persona) {
       return
     }
-    const query = gql`
-      mutation CreateBoard($title: String!, $description: String!, $personaId: Int!) {
-        createBoard(title: $title, description: $description, personaId: $personaId) {
-          id
-        }
-      }
-    `
     try {
       await fetcher<ResultT>(
-        query,
+        queryDocuments.Mutation.createBoard,
         { title: name, description: desc, personaId: persona.id },
         token
       )

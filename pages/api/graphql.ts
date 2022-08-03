@@ -1,7 +1,9 @@
 import { ApolloServer } from 'apollo-server-micro'
-import { typeDefs, resolvers, context } from '../../server'
+import { context } from '../../server'
 import Cors from 'micro-cors'
 import type { RequestHandler } from 'micro'
+import { typeDefs } from '../../server/graphql-schema/typeDefs'
+import { resolvers } from '../../server/graphql-schema/resolvers'
 
 const cors = Cors()
 

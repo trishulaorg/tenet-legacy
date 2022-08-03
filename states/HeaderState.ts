@@ -2,7 +2,8 @@ import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { removeGqlCookie } from '../libs/cookies'
 
-import { defaultUser, UserState } from './UserState'
+import type { UserState } from './UserState'
+import { defaultUser } from './UserState'
 
 export class HeaderState {
   userState: UserState

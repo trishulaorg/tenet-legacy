@@ -1,12 +1,14 @@
 import { observer } from 'mobx-react'
 import router from 'next/router'
-import React, { FormEventHandler, useContext, useState } from 'react'
+import type { FormEventHandler } from 'react'
+import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher } from '../../libs/fetchAPI'
 import { PersonaStateContext } from '../../states/UserState'
-import { ClientError, gql } from 'graphql-request'
+import { ClientError } from 'graphql-request'
 import { ErrorMessage } from '../form/ErrorMessage'
 import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 interface ResultT {
   createPersona: { name: string; screenName: string }
@@ -19,17 +21,9 @@ export const PersonaCreateSteps: React.FC = observer(() => {
   const [personaNameErrorMessage, setPersonaNameErrorMessage] = useState('')
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
-    const query = gql`
-      mutation CreatePersona($screenName: String!, $name: String!, $iconPath: String!) {
-        createPersona(screenName: $screenName, name: $name, iconPath: $iconPath) {
-          name
-          screenName
-        }
-      }
-    `
     try {
       await fetcher<ResultT>(
-        query,
+        queryDocuments.Mutation.createPersona,
         { screenName: persona.screenName, name: persona.name, iconPath: '' },
         token
       )
