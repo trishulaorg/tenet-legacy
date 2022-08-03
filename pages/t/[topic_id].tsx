@@ -12,10 +12,51 @@ import useSWR from 'swr'
 import { gql } from 'graphql-request'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 
+const getBoardDocument = gql`
+  query Board($topicId: Int!) {
+    board(id: $topicId) {
+      id
+      title
+      posts {
+        id
+        boardId
+        title
+        content
+        createdAt
+        persona {
+          name
+          iconUrl
+        }
+        threads {
+          id
+          content
+          createdAt
+          persona {
+            name
+            iconUrl
+          }
+          replies {
+            createdAt
+            id
+            content
+            persona {
+              name
+              iconUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`
+
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
   const router = useRouter()
-  const { topic_id } = router.query
+  const {
+    isReady,
+    query: { topic_id },
+  } = router
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
   const [context, setContext] = useState<BoardState>(new BoardState())
@@ -29,45 +70,9 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
 
-  const document = gql`
-    query Board($topicId: Int!) {
-      board(id: $topicId) {
-        id
-        title
-        posts {
-          id
-          boardId
-          title
-          content
-          createdAt
-          persona {
-            name
-            iconUrl
-          }
-          threads {
-            id
-            content
-            createdAt
-            persona {
-              name
-              iconUrl
-            }
-            replies {
-              createdAt
-              id
-              content
-              persona {
-                name
-                iconUrl
-              }
-            }
-          }
-        }
-      }
-    }
-  `
-  const { data } = useSWR<{ board: BoardType }>(document, (document) =>
-    fetcher(document, { topicId: Number(topic_id) }, token)
+  const { data } = useSWR<{ board: BoardType }>(
+    () => (isReady ? getBoardDocument : null),
+    (document) => fetcher(document, { topicId: Number(topic_id) }, token)
   )
 
   useEffect(() => {
@@ -83,7 +88,7 @@ const IndexPage: React.FC = () => {
       }
     }
     f()
-  }, [token, document, data])
+  }, [token, data])
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
@@ -103,4 +108,5 @@ const IndexPage: React.FC = () => {
   )
 }
 
+export { getBoardDocument }
 export default IndexPage

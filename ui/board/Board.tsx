@@ -5,6 +5,8 @@ import { BoardStateContext } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { Post } from '../thread/Post'
 import { gql } from 'graphql-request'
+import { mutate } from 'swr'
+import { getBoardDocument } from '../../pages/t/[topic_id]'
 
 export const Board: React.FC = observer(() => {
   const state = useContext(BoardStateContext)
@@ -38,6 +40,7 @@ export const Board: React.FC = observer(() => {
       },
       user.token
     )
+    await mutate(getBoardDocument)
   }
   return (
     <div>
