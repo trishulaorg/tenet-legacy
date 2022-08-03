@@ -36,7 +36,10 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, user])
   const router = useRouter()
-  const { word } = router.query
+  const {
+    isReady,
+    query: { word },
+  } = router
 
   const document = gql`
     query Search($query: String!) {
@@ -48,8 +51,9 @@ const IndexPage: React.FC = () => {
     }
   `
 
-  const { data } = useSWR<ResultT>(document, (document) =>
-    fetcher(document, { query: word }, token)
+  const { data } = useSWR<ResultT>(
+    () => (isReady ? document : null),
+    (document) => fetcher(document, { query: word }, token)
   )
   const main: React.FC = () => (
     <PageBaseLayout>
