@@ -13,6 +13,8 @@ import { CommentInput } from './CommentInput'
 import { UserStateContext } from '../../states/UserState'
 import { fetcher } from '../../libs/fetchAPI'
 import { gql } from 'graphql-request'
+import { mutate } from 'swr'
+import { getBoardDocument } from '../../pages/t/[topic_id]'
 
 export interface PostProps {
   post: PostState
@@ -54,6 +56,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
       },
       userState.token
     )
+    await mutate(getBoardDocument)
     setCommentVisibility(false)
   }
   return (

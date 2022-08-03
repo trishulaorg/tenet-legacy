@@ -12,6 +12,8 @@ import { UserStateContext } from '../../states/UserState'
 import { fetcher } from '../../libs/fetchAPI'
 import { CommentInput } from './CommentInput'
 import { gql } from 'graphql-request'
+import { mutate } from 'swr'
+import { getBoardDocument } from '../../pages/t/[topic_id]'
 
 export interface ThreadProps {
   posts: PostState[]
@@ -44,6 +46,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       },
       userState.token
     )
+    await mutate(getBoardDocument)
     setCommentVisibility(new Set())
   }
   return (
