@@ -1,35 +1,23 @@
 import { observer } from 'mobx-react'
-import React, { FormEventHandler, useContext, useState } from 'react'
+import type { FormEventHandler } from 'react'
+import React, { useContext, useState } from 'react'
 import { fetcher } from '../../libs/fetchAPI'
 import { BoardStateContext } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { Post } from '../thread/Post'
-import { gql } from 'graphql-request'
+import { mutate } from 'swr'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 export const Board: React.FC = observer(() => {
   const state = useContext(BoardStateContext)
   const user = useContext(UserStateContext)
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const document = gql`
-    mutation CreatePost($title: String!, $content: String!, $persona_id: Int!, $board_id: Int!) {
-      createPost(
-        title: $title
-        content: $content
-        contentType: "TEXT"
-        personaId: $persona_id
-        boardId: $board_id
-      ) {
-        id
-      }
-    }
-  `
-  console.log(state)
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
 
     await fetcher(
-      document,
+      queryDocuments.Mutation.createPost,
       {
         title,
         content,
@@ -38,6 +26,7 @@ export const Board: React.FC = observer(() => {
       },
       user.token
     )
+    await mutate(queryDocuments.Query.board)
   }
   return (
     <div>

@@ -11,7 +11,8 @@ import { CreatedAt } from '../common/CreatedAt'
 import { UserStateContext } from '../../states/UserState'
 import { fetcher } from '../../libs/fetchAPI'
 import { CommentInput } from './CommentInput'
-import { gql } from 'graphql-request'
+import { mutate } from 'swr'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 export interface ThreadProps {
   posts: PostState[]
@@ -20,22 +21,9 @@ export interface ThreadProps {
 export const Thread: React.FC<ThreadProps> = observer((props) => {
   const [commentVisibility, setCommentVisibility] = useState<Set<number>>(new Set())
   const userState = useContext(UserStateContext)
-  const document = gql`
-    mutation CreateReply($title: String!, $content: String!, $persona_id: Int!, $thread_id: Int!) {
-      createReply(
-        title: $title
-        content: $content
-        contentType: TEXT
-        personaId: $persona_id
-        threadId: $thread_id
-      ) {
-        id
-      }
-    }
-  `
   const onSubmit: (comment: string, thread: PostState) => void = async (comment, thread) => {
     await fetcher(
-      document,
+      queryDocuments.Mutation.createReply,
       {
         title: 'dummy',
         content: comment,
@@ -44,6 +32,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       },
       userState.token
     )
+    await mutate(queryDocuments.Query.board)
     setCommentVisibility(new Set())
   }
   return (

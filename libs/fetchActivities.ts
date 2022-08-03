@@ -1,6 +1,6 @@
 import { fetcher } from './fetchAPI'
-import { gql } from 'graphql-request'
 import type { ThreadType } from '../states/PostState'
+import { queryDocuments } from '../server/graphql-schema/queryDocuments'
 
 export interface PersonaType {
   id: number
@@ -24,44 +24,5 @@ export interface ResultType {
 }
 
 export function fetchActivities(token?: string): Promise<ResultType> {
-  return fetcher(
-    gql`
-      query {
-        activities {
-          id
-          boardId
-          title
-          content
-          createdAt
-          persona {
-            screenName
-            name
-            iconUrl
-          }
-          threads {
-            id
-            content
-            createdAt
-            persona {
-              screenName
-              name
-              iconUrl
-            }
-            replies {
-              id
-              content
-              createdAt
-              persona {
-                screenName
-                name
-                iconUrl
-              }
-            }
-          }
-        }
-      }
-    `,
-    {},
-    token
-  )
+  return fetcher(queryDocuments.Query.activities, {}, token)
 }

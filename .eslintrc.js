@@ -52,6 +52,9 @@ module.exports = {
           },
         ],
 
+        // ESLint has automatic fix for explicit type import
+        '@typescript-eslint/consistent-type-imports': 'error',
+
         // prettier configuration
         'prettier/prettier': ['warn', {}, { usePrettierrc: true }], // Includes .prettierrc.js rules
       },

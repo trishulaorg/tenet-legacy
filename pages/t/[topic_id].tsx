@@ -2,20 +2,24 @@ import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
-import { BoardState, BoardStateContext, BoardType, PostState } from '../../states/PostState'
+import type { BoardType } from '../../states/PostState'
+import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
 import { fetcher } from '../../libs/fetchAPI'
 import useSWR from 'swr'
-import { gql } from 'graphql-request'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
+import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
   const router = useRouter()
-  const { topic_id } = router.query
+  const {
+    isReady,
+    query: { topic_id },
+  } = router
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
   const [context, setContext] = useState<BoardState>(new BoardState())
@@ -29,45 +33,9 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
 
-  const document = gql`
-    query Board($topicId: Int!) {
-      board(id: $topicId) {
-        id
-        title
-        posts {
-          id
-          boardId
-          title
-          content
-          createdAt
-          persona {
-            name
-            iconUrl
-          }
-          threads {
-            id
-            content
-            createdAt
-            persona {
-              name
-              iconUrl
-            }
-            replies {
-              createdAt
-              id
-              content
-              persona {
-                name
-                iconUrl
-              }
-            }
-          }
-        }
-      }
-    }
-  `
-  const { data } = useSWR<{ board: BoardType }>(document, (document) =>
-    fetcher(document, { topicId: Number(topic_id) }, token)
+  const { data } = useSWR<{ board: BoardType }>(
+    () => (isReady ? queryDocuments.Query.board : null),
+    (document) => fetcher(document, { topicId: Number(topic_id) }, token)
   )
 
   useEffect(() => {
@@ -83,7 +51,7 @@ const IndexPage: React.FC = () => {
       }
     }
     f()
-  }, [token, document, data])
+  }, [token, data])
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
