@@ -22,7 +22,9 @@ const IndexPage: React.FC = () => {
   } = router
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
+
   const contentGraphqlQueryDocument = queryDocuments.Query.board
+
   const [context, setContext] = useState<BoardState>(
     new BoardState('', contentGraphqlQueryDocument)
   )
