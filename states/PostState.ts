@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { PersonaState } from './UserState'
+import { queryDocuments } from '../server/graphql-schema/queryDocuments'
 
 export interface PersonaType {
   id: number
@@ -10,8 +11,8 @@ export interface PersonaType {
 }
 
 export interface BaseContentType {
-  id: number
-  boardId: number
+  id: string
+  boardId: string
   title: string
   content: string
   persona: PersonaType
@@ -26,6 +27,7 @@ export interface BoardType extends BaseContentType {
 }
 
 export interface PostType extends BaseContentType {
+  board: Pick<BoardType, 'id' | 'title' | 'description'>
   threads: ThreadType[]
   persona: PersonaType
 }
@@ -38,8 +40,8 @@ export interface ThreadType extends BaseContentType {
 export class PostState {
   private readonly children: PostState[] = []
   protected parent: PostState | undefined
-  id: number
-  boardId: number
+  id: string
+  boardId: string
   title: string
   content: string
   author: PersonaState
@@ -47,8 +49,8 @@ export class PostState {
   downvote: number
   createdAt: string
   constructor(data: {
-    id: number
-    boardId: number
+    id: string
+    boardId: string
     title: string
     content: string
     author: PersonaState
@@ -109,12 +111,18 @@ export class PostState {
 }
 
 export class BoardState {
-  _id: number
-  _title = ''
-  _description = ''
-  _posts: PostState[] = []
-  constructor(id?: number, opts?: { title: string; description: string; posts: PostState[] }) {
-    this._id = id ?? 0
+  private readonly _id: string
+  private readonly _title: string = ''
+  private readonly _description: string = ''
+  private readonly _posts: PostState[] = []
+  private readonly _fetcherDocument: string
+  constructor(
+    id: string,
+    fetcherDocument: string,
+    opts?: { title: string; description: string; posts: PostState[] }
+  ) {
+    this._id = id
+    this._fetcherDocument = fetcherDocument
     if (opts) {
       this._title = opts.title
       this._description = opts.description
@@ -122,30 +130,21 @@ export class BoardState {
     }
     makeAutoObservable(this)
   }
-  get id(): number {
+  get id(): string {
     return this._id
   }
-  set id(id: number) {
-    this._id = id
+  get fetcherDocument(): string {
+    return this._fetcherDocument
   }
   get description(): string {
     return this._description
   }
-  set description(desc: string) {
-    this._description = desc
-  }
   get title(): string {
     return this._title
-  }
-  set title(title: string) {
-    this._title = title
   }
   get posts(): PostState[] {
     return this._posts
   }
-  set posts(posts: PostState[]) {
-    this._posts = posts
-  }
 }
 
-export const BoardStateContext = createContext(new BoardState())
+export const BoardStateContext = createContext(new BoardState('', queryDocuments.Query.board))

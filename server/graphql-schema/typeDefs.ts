@@ -12,14 +12,15 @@ const typeDefs = gql`
     iconUrl: String
   }
   type Board {
-    id: Int
+    id: String
     title: String
     posts: [Post]
     createdAt: Date
   }
   type Post {
-    id: Int
-    boardId: Int
+    id: String
+    boardId: String
+    board: Board
     title: String
     content: String
     threads: [Thread]
@@ -27,16 +28,16 @@ const typeDefs = gql`
     createdAt: Date
   }
   type Thread {
-    id: Int
-    boardId: Int
+    id: String
+    boardId: String
     content: String
     replies: [Reply]
     persona: Persona
     createdAt: Date
   }
   type Reply {
-    id: Int
-    boardId: Int
+    id: String
+    boardId: String
     content: String
     persona: Persona
     createdAt: Date
@@ -50,7 +51,7 @@ const typeDefs = gql`
   }
   type SearchResult {
     kind: String
-    id: Int
+    id: String
     title: String
   }
   type Query {
@@ -58,7 +59,8 @@ const typeDefs = gql`
     persona(name: String!): Persona
     personas(names: [String]!): [Persona]
     removeUser(name: String!): Boolean
-    board(id: Int!): Board
+    board(id: String!): Board
+    post(id: String!): Post
     activities: [Post]
     search(query: String!): [SearchResult]
   }
@@ -70,21 +72,21 @@ const typeDefs = gql`
       content: String!
       contentType: String!
       personaId: Int!
-      boardId: Int!
+      boardId: String!
     ): Post
     createThread(
       title: String!
       content: String!
       contentType: ContentType!
-      boardId: Int!
-      postId: Int!
+      boardId: String!
+      postId: String!
       personaId: Int!
     ): Thread
     createReply(
       title: String!
       content: String!
       contentType: ContentType!
-      threadId: Int!
+      threadId: String!
       personaId: Int!
     ): Reply
   }

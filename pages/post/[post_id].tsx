@@ -2,7 +2,7 @@ import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
-import type { BoardType } from '../../states/PostState'
+import type { PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
@@ -13,16 +13,18 @@ import useSWR from 'swr'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
-const IndexPage: React.FC = () => {
+const PostPage: React.FC = () => {
   const token = getGqlToken()
   const router = useRouter()
   const {
     isReady,
-    query: { topic_id },
+    query: { post_id },
   } = router
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
-  const contentGraphqlQueryDocument = queryDocuments.Query.board
+
+  const contentGraphqlQueryDocument = queryDocuments.Query.post
+
   const [context, setContext] = useState<BoardState>(
     new BoardState('', contentGraphqlQueryDocument)
   )
@@ -36,18 +38,18 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
 
-  const { data } = useSWR<{ board: BoardType }>(
+  const { data } = useSWR<{ post: PostType }>(
     () => (isReady ? contentGraphqlQueryDocument : null),
-    (document) => fetcher(document, { topicId: topic_id }, token)
+    (document) => fetcher(document, { id: post_id }, token)
   )
 
   useEffect(() => {
     if (data) {
       setContext(
-        new BoardState(data.board.id, contentGraphqlQueryDocument, {
-          title: data.board.title,
-          description: data.board.description,
-          posts: data.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
+        new BoardState(data.post.board.id, contentGraphqlQueryDocument, {
+          title: data.post.board.title,
+          description: data.post.board.description,
+          posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
         })
       )
     }
@@ -55,7 +57,7 @@ const IndexPage: React.FC = () => {
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
-        <Board />
+        <Board showPostCreate={false} />
       </BoardStateContext.Provider>
     </>
   )
@@ -71,4 +73,4 @@ const IndexPage: React.FC = () => {
   )
 }
 
-export default IndexPage
+export default PostPage

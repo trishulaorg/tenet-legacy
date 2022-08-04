@@ -5,6 +5,7 @@ import {
   NotAuthenticatedError,
 } from '../errors/NotAuthenticatedError'
 import { defaultNotFoundErrorMessage, NotFoundError } from '../errors/NotFoundError'
+import { ulid } from 'ulid'
 
 const resolversWithoutValidator = {
   Query: {
@@ -31,7 +32,28 @@ const resolversWithoutValidator = {
       console.log(args)
       return false // need to check tokens. wip.
     },
-    board: (_source: never, args: { id: number }, context: ContextType) => {
+    post: (_source: never, args: { id: string }, context: ContextType) => {
+      return context.prisma.post.findFirst({
+        where: {
+          id: args.id,
+        },
+        include: {
+          board: true,
+          persona: true,
+          threads: {
+            include: {
+              persona: true,
+              replies: {
+                include: {
+                  persona: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    },
+    board: (_source: never, args: { id: string }, context: ContextType) => {
       return context.prisma.board.findFirst({
         where: {
           id: args.id,
@@ -61,6 +83,7 @@ const resolversWithoutValidator = {
     activities: async (_source: never, _args: Record<string, never>, context: ContextType) => {
       return context.prisma.post.findMany({
         include: {
+          board: true,
           persona: true,
           threads: {
             include: {
@@ -129,6 +152,7 @@ const resolversWithoutValidator = {
       }
       return context.prisma.board.create({
         data: {
+          id: ulid(),
           title: args.title,
           description: args.description,
           moderators: {
@@ -145,7 +169,7 @@ const resolversWithoutValidator = {
         title: string
         content: string
         contentType: ContentType
-        boardId: number
+        boardId: string
         personaId: number
       },
       context: ContextType
@@ -161,6 +185,7 @@ const resolversWithoutValidator = {
       }
       return context.prisma.post.create({
         data: {
+          id: ulid(),
           title: args.title,
           content: args.content,
           contentType: args.contentType,
@@ -182,8 +207,8 @@ const resolversWithoutValidator = {
       args: {
         content: string
         contentType: ContentType
-        boardId: number
-        postId: number
+        boardId: string
+        postId: string
         personaId: number
       },
       context: ContextType
@@ -199,6 +224,7 @@ const resolversWithoutValidator = {
       }
       return context.prisma.thread.create({
         data: {
+          id: ulid(),
           content: args.content,
           contentType: args.contentType,
           persona: {
@@ -224,7 +250,7 @@ const resolversWithoutValidator = {
       args: {
         content: string
         contentType: ContentType
-        threadId: number
+        threadId: string
         personaId: number
       },
       context: ContextType
@@ -240,6 +266,7 @@ const resolversWithoutValidator = {
       }
       return context.prisma.reply.create({
         data: {
+          id: ulid(),
           content: args.content,
           contentType: args.contentType,
           persona: {
