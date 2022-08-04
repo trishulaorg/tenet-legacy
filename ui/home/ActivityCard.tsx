@@ -40,7 +40,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   return (
     <div // eslint-disable-line jsx-a11y/no-static-element-interactions
       className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer"
-      onClick={() => router.push(`/t/${post.id}`)}
+      onClick={() => router.push(`/post/${post.id}`)}
       onKeyDown={() => {
         /* noop */
       }}

@@ -7,8 +7,13 @@ import { UserStateContext } from '../../states/UserState'
 import { Post } from '../thread/Post'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
+import { ulid } from 'ulid'
 
-export const Board: React.FC = observer(() => {
+interface BoardProps {
+  showPostCreate?: boolean
+}
+
+export const Board: React.FC<BoardProps> = observer(({ showPostCreate = true }) => {
   const state = useContext(BoardStateContext)
   const user = useContext(UserStateContext)
   const [title, setTitle] = useState('')
@@ -19,6 +24,7 @@ export const Board: React.FC = observer(() => {
     await fetcher(
       queryDocuments.Mutation.createPost,
       {
+        id: ulid(),
         title,
         content,
         persona_id: user.currentPersona?.id ?? -1,
@@ -26,15 +32,15 @@ export const Board: React.FC = observer(() => {
       },
       user.token
     )
-    await mutate(queryDocuments.Query.board)
+    await mutate(state.fetcherDocument)
   }
   return (
     <div>
       <h1 className="my-4 text-slate-600 text-2xl">#{state.title}</h1>
       <div>
-        <h2 className="my-2 text-slate-600 text-1xl">Create New Post</h2>
-        {user.isValidUser ? (
+        {showPostCreate === true && user.isValidUser ? (
           <form className="py-4">
+            <h2 className="my-2 text-slate-600 text-1xl">Create New Post</h2>
             <label>
               <div>Title</div>
               <input
@@ -55,7 +61,6 @@ export const Board: React.FC = observer(() => {
                 placeholder="What did you think?"
               />
             </label>
-
             <button className="bg-gray-600 text-white rounded-lg px-4 py-2 w-min" onClick={onClick}>
               Comment
             </button>
