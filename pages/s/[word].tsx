@@ -57,7 +57,7 @@ const IndexPage: React.FC = () => {
             <div className="w-8 text-slate-400">#{idx + 1}</div>
             <div className="flex-1 text-slate-700">
               <div className="text-2xl	text-slate-900">
-                <Link href={`/t/${c.id}`}>{c.title}</Link>
+                <Link href={`/board/${c.id}`}>{c.title}</Link>
               </div>
               <div className="">Kind: {c.kind}</div>
             </div>

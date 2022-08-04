@@ -18,7 +18,7 @@ const IndexPage: React.FC = () => {
   const router = useRouter()
   const {
     isReady,
-    query: { topic_id },
+    query: { board_id },
   } = router
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
@@ -38,7 +38,7 @@ const IndexPage: React.FC = () => {
 
   const { data } = useSWR<{ board: BoardType }>(
     () => (isReady ? contentGraphqlQueryDocument : null),
-    (document) => fetcher(document, { topicId: topic_id }, token)
+    (document) => fetcher(document, { topicId: board_id }, token)
   )
 
   useEffect(() => {
