@@ -40,7 +40,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   return (
     <div // eslint-disable-line jsx-a11y/no-static-element-interactions
       className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer"
-      onClick={() => router.push(`/t/${post.id}`)}
+      onClick={() => router.push(`/p/${post.id}`)}
       onKeyDown={() => {
         /* noop */
       }}
@@ -66,7 +66,10 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         <div className="pb-2" />
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
         <CreatedAt created={post.createdAt} />
-        <Link href={`/t/${post.boardId}`}>Show board</Link>
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */}
+        <span onClick={(e) => e.stopPropagation()}>
+          <Link href={`/b/${post.boardId}`}>Show board</Link>
+        </span>
       </CardMeta>
     </div>
   )

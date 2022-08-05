@@ -1,5 +1,5 @@
 import { fetcher } from './fetchAPI'
-import type { ThreadType } from '../states/PostState'
+import type { BoardType, ThreadType } from '../states/PostState'
 import { queryDocuments } from '../server/graphql-schema/queryDocuments'
 
 export interface PersonaType {
@@ -10,8 +10,9 @@ export interface PersonaType {
 }
 
 export interface ActivityType {
-  id: number
-  boardId: number
+  id: string
+  board: BoardType
+  boardId: string
   title: string
   content: string
   persona: PersonaType

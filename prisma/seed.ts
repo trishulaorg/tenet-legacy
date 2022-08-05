@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { ulid } from 'ulid'
 const prisma = new PrismaClient()
 
 async function main(): Promise<void> {
@@ -18,12 +19,14 @@ async function main(): Promise<void> {
     })
     const board = await prisma.board.create({
       data: {
+        id: ulid(),
         title: `Test Board ${i}`,
         description: 'This is a test board',
       },
     })
     const post = await prisma.post.create({
       data: {
+        id: ulid(),
         personaId: persona.id,
         boardId: board.id,
         title: 'Test Post',
@@ -33,6 +36,7 @@ async function main(): Promise<void> {
     })
     const thread = await prisma.thread.create({
       data: {
+        id: ulid(),
         personaId: persona.id,
         boardId: board.id,
         postId: post.id,
@@ -42,6 +46,7 @@ async function main(): Promise<void> {
     })
     await prisma.reply.create({
       data: {
+        id: ulid(),
         personaId: persona.id,
         threadId: thread.id,
         content: 'Test',
