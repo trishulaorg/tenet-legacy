@@ -46,7 +46,7 @@ const queryDocuments: {
       }
     `,
     board: gql`
-      query Board($topicId: Int!) {
+      query Board($topicId: String!) {
         board(id: $topicId) {
           id
           title
@@ -94,6 +94,43 @@ const queryDocuments: {
         }
       }
     `,
+    post: gql`
+      query Post($id: String!) {
+        post(id: $id) {
+          id
+          boardId
+          board {
+            id
+            title
+          }
+          title
+          content
+          createdAt
+          persona {
+            name
+            iconUrl
+          }
+          threads {
+            id
+            content
+            createdAt
+            persona {
+              name
+              iconUrl
+            }
+            replies {
+              createdAt
+              id
+              content
+              persona {
+                name
+                iconUrl
+              }
+            }
+          }
+        }
+      }
+    `,
     search: gql`
       query Search($query: String!) {
         search(query: $query) {
@@ -121,7 +158,12 @@ const queryDocuments: {
       }
     `,
     createPost: gql`
-      mutation CreatePost($title: String!, $content: String!, $persona_id: Int!, $board_id: Int!) {
+      mutation CreatePost(
+        $title: String!
+        $content: String!
+        $persona_id: Int!
+        $board_id: String!
+      ) {
         createPost(
           title: $title
           content: $content
@@ -138,7 +180,7 @@ const queryDocuments: {
         $title: String!
         $content: String!
         $persona_id: Int!
-        $thread_id: Int!
+        $thread_id: String!
       ) {
         createReply(
           title: $title
@@ -155,9 +197,9 @@ const queryDocuments: {
       mutation CreateThread(
         $title: String!
         $content: String!
-        $post_id: Int!
+        $post_id: String!
         $persona_id: Int!
-        $board_id: Int!
+        $board_id: String!
       ) {
         createThread(
           title: $title

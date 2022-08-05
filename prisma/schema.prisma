@@ -61,7 +61,7 @@ model VoteOnComment {
 }
 
 model Board {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @db.VarChar(26)
   title       String    @unique  @db.VarChar(50)
   createdAt   DateTime  @default(now())
   description String    @db.VarChar(2000)
@@ -72,39 +72,39 @@ model Board {
 }
 
 model Post {
-  id          Int         @id @default(autoincrement())
+  id          String      @id @db.VarChar(26)
   createdAt   DateTime    @default(now())
   title       String      @db.VarChar(50)
   contentType ContentType
   content     String      @db.VarChar(2000)
   threads     Thread[]
   board       Board       @relation(fields: [boardId], references: [id])
-  boardId     Int
+  boardId     String
   persona     Persona     @relation(fields: [personaId], references: [id])
   personaId   Int
 }
 
 model Thread {
-  id          Int         @id @default(autoincrement())
+  id          String      @id @db.VarChar(26)
   createdAt   DateTime    @default(now())
   content     String      @db.VarChar(500)
   contentType ContentType
   replies     Reply[]
   board       Board       @relation(fields: [boardId], references: [id])
-  boardId     Int
-  postId      Int
+  boardId     String
+  postId      String
   Post        Post        @relation(fields: [postId], references: [id])
   persona     Persona     @relation(fields: [personaId], references: [id])
   personaId   Int
 }
 
 model Reply {
-  id          Int         @id @default(autoincrement())
+  id          String    @id @db.VarChar(26)
   contentType ContentType
   content     String      @db.VarChar(500)
   createdAt   DateTime    @default(now())
   thread      Thread      @relation(fields: [threadId], references: [id])
-  threadId    Int
+  threadId    String
   persona     Persona     @relation(fields: [personaId], references: [id])
   personaId   Int
 }
