@@ -22,7 +22,7 @@ const IndexPage: React.FC = () => {
       if (user) {
         await user.request()
         if (user.isValidUser && !user.currentPersona) {
-          await router.push('/onboarding')
+          await router.push('/persona/onboarding')
         }
       }
     }
