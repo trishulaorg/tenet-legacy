@@ -316,11 +316,14 @@ export const resolversWithoutValidator = {
         throw new BadRequestError('No file data is supplied.')
       }
 
-      if (!fileObject.filename.match(/^.*\.(jpg|png|gif|svg|bmp)$/i)) {
-        throw new BadRequestError('Please upload Image files.')
+      const filenameMatch = fileObject.filename.match(/^.*\.(jpg|png|svg|bmp)$/i)
+      if (!filenameMatch) {
+        throw new BadRequestError('Please upload Image file.')
       }
+      const [, fileExtension] = filenameMatch
+      const fileKey = `personaIcon/${ulid()}.${fileExtension}`
+
       const { createReadStream, mimetype } = fileObject
-      const fileKey = ulid() + '.png'
       const stream = createReadStream()
       const chunks: Buffer[] = []
       const buffer = await new Promise<Buffer>((resolve, reject) => {
@@ -328,6 +331,11 @@ export const resolversWithoutValidator = {
         stream.on('error', (err) => reject(err))
         stream.on('end', () => resolve(Buffer.concat(chunks)))
       })
+
+      if (buffer.length > 5 * 1000 * 1000) {
+        throw new BadRequestError('Icon filesize exceeds the limit. (< 5MB)')
+      }
+
       const fileUrl = await uploadFileToS3(fileKey, buffer, mimetype, true)
 
       await context.prisma.persona.update({

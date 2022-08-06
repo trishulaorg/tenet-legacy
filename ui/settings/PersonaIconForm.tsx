@@ -3,9 +3,7 @@ import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { UserStateContext } from '../../states/UserState'
-import type { ClientError } from 'graphql-request'
 import { ErrorMessage } from '../form/ErrorMessage'
-import { getValidationErrors } from '../../server/errorResolver'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import gql from 'graphql-tag'
 import { ApolloClient, ApolloError, InMemoryCache } from '@apollo/client'
@@ -15,8 +13,8 @@ import { SuccessMessage } from '../form/SuccessMessage'
 const PersonaIconForm: React.FC = observer(() => {
   const userState = useContext(UserStateContext)
   const token = getGqlToken()
-  const [personaIconErrorMessage, setPersonaIconErrorMessage] = useState('')
-  const [personaIconSuccessMessage, setPersonaIconSuccessMessage] = useState('')
+  const [personaIconErrorMessage, setPersonaIconErrorMessage] = useState<string | null>(null)
+  const [personaIconSuccessMessage, setPersonaIconSuccessMessage] = useState<string | null>(null)
   const [files, setFile] = useState<{ [index: number]: File }>([])
 
   const onIconSet = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -28,8 +26,8 @@ const PersonaIconForm: React.FC = observer(() => {
 
   const setPersonaIcon: FormEventHandler = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault()
-    setPersonaIconSuccessMessage('')
-    setPersonaIconErrorMessage('')
+    setPersonaIconSuccessMessage(null)
+    setPersonaIconErrorMessage(null)
     try {
       const uploadClient = new ApolloClient({
         uri: '/api/graphql',
@@ -50,25 +48,7 @@ const PersonaIconForm: React.FC = observer(() => {
     } catch (error) {
       console.dir(error)
       if (error instanceof ApolloError) {
-        error.clientErrors.forEach((e) => {
-          const validationErrors = getValidationErrors(e as ClientError)
-          validationErrors.forEach((zodIssue) => {
-            switch (zodIssue.path.join('')) {
-              case 'name':
-                setPersonaIconErrorMessage(
-                  personaIconErrorMessage
-                    ? zodIssue.message
-                    : personaIconErrorMessage + '\n' + zodIssue.message
-                )
-                break
-              default:
-                break
-            }
-          })
-        })
-        if (personaIconErrorMessage === '') {
-          setPersonaIconErrorMessage(error.message)
-        }
+        setPersonaIconErrorMessage(error.message)
       }
     }
   }
@@ -83,8 +63,10 @@ const PersonaIconForm: React.FC = observer(() => {
           multiple={false}
           accept="image/png, image/jpeg, image/gif, image/bmp, image/svg+xml"
         />
-        <ErrorMessage errorMessage={personaIconErrorMessage} />
-        <SuccessMessage successMessage={personaIconSuccessMessage} />
+
+        {personaIconErrorMessage && <ErrorMessage errorMessage={personaIconErrorMessage} />}
+        {personaIconSuccessMessage && <SuccessMessage successMessage={personaIconSuccessMessage} />}
+
         <button
           onClick={(e) => setPersonaIcon(e)}
           className="my-4 py-2 px-8 block text-white bg-teal-400 hover:bg-teal-600	rounded-xl border border-slate-300"

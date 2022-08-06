@@ -6,8 +6,11 @@ import { SearchIcon } from '@heroicons/react/solid'
 export const SearchBox: React.FC = () => {
   const router = useRouter()
   const [text, setText] = useState('')
-  const submitSearch = async (): Promise<boolean> =>
-    text !== '' && (await router.push(`/s/${text}`))
+  const submitSearch = async (): Promise<void> => {
+    if (text !== '') {
+      await router.push(`/s/${text}`)
+    }
+  }
   const onKeyDown: KeyboardEventHandler = async (e) => {
     if (e.code === 'Enter') await submitSearch()
   }
