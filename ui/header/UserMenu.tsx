@@ -26,7 +26,9 @@ export const UserMenu: React.FC = observer(() => {
                           <li key={idx} className="border-solid border-b-2">
                             <button
                               onClick={() => {
-                                state.userState && (state.userState.currentPersonaIndex = idx)
+                                if (state.userState) {
+                                  state.userState.currentPersonaIndex = idx
+                                }
                               }}
                             >
                               {p.name}

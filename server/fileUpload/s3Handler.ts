@@ -31,7 +31,9 @@ const uploadFileToS3 = async (
     ContentType: contentType,
   }
 
-  publicRead && Object.assign(params, { ACL: 'public-read' })
+  if (publicRead) {
+    Object.assign(params, { ACL: 'public-read' })
+  }
 
   await s3Client.putObject(params)
 
