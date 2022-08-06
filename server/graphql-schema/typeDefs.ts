@@ -2,6 +2,14 @@ import { gql } from 'apollo-server-micro'
 
 const typeDefs = gql`
   scalar Date
+
+  scalar Upload
+  type File {
+    filename: String!
+    mimetype: String!
+    encoding: String!
+  }
+
   type User {
     personas: [Persona]
   }
@@ -89,6 +97,7 @@ const typeDefs = gql`
       threadId: String!
       personaId: Int!
     ): Reply
+    setPersonaIcon(personaId: Int!, file: Upload!): File!
   }
 `
 
