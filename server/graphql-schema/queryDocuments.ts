@@ -213,6 +213,13 @@ const queryDocuments: {
         }
       }
     `,
+    setPersonaIcon: gql`
+      mutation setPersonaIcon($personaId: Int!, $file: Upload!) {
+        setPersonaIcon(personaId: $personaId, file: $file) {
+          filename
+        }
+      }
+    `,
   },
 } as const
 

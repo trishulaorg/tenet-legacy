@@ -12,7 +12,7 @@ async function main(): Promise<void> {
     const persona = await prisma.persona.create({
       data: {
         userId: user.id,
-        iconUrl: 'http://example.com/img/icon',
+        iconUrl: 'https://picsum.photos/20',
         name: `Persona${i}`,
         screenName: `Display Name of Persona${i}`,
       },

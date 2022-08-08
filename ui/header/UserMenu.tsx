@@ -26,7 +26,9 @@ export const UserMenu: React.FC = observer(() => {
                           <li key={idx} className="border-solid border-b-2">
                             <button
                               onClick={() => {
-                                state.userState && (state.userState.currentPersonaIndex = idx)
+                                if (state.userState) {
+                                  state.userState.currentPersonaIndex = idx
+                                }
                               }}
                             >
                               {p.name}
@@ -50,9 +52,14 @@ export const UserMenu: React.FC = observer(() => {
                   </Link>
                 </UserMenuItem>
               </Switch>
+              <Switch visibility={state.isLoggedIn}>
+                <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/persona/settings/icon">Change Persona Icon</Link>
+                </UserMenuItem>
+              </Switch>
               <Switch visibility={!state.isLoggedIn}>
                 <UserMenuItem onClick={() => state.closeMenu()}>
-                  <Link href="/api/auth/login">Sign up</Link>
+                  <Link href="/api/auth/login">Sign in / Sign up</Link>
                 </UserMenuItem>
               </Switch>
             </UserMenuItems>

@@ -89,6 +89,11 @@ export const PersonaCreateSteps: React.FC = observer(() => {
           />
           <ErrorMessage errorMessage={personaScreenNameErrorMessage} />
         </label>
+        <label>
+          Icon
+          <input type="file" />
+          <ErrorMessage errorMessage={''} />
+        </label>
         <button
           onClick={(e) => createPersona(e)}
           className="my-4 py-2 px-8 block text-white bg-teal-400 hover:bg-teal-600	rounded-xl border border-slate-300"
