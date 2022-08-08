@@ -6,7 +6,7 @@ import { PostFormStateContext } from '../../states/PostFormState'
 export const PostFormInner: React.FC = observer(() => {
   const [content, setContent] = useState('')
   const state = useContext(PostFormStateContext)
-  return (
+  return state.replyTo ? (
     <div className="sticky bottom-0 shadow-2xl">
       <div
         className="w-full leading-6 border-t-2 border-black border-opacity-10 rounded-t-lg block bg-white
@@ -31,7 +31,7 @@ export const PostFormInner: React.FC = observer(() => {
         </button>
       </div>
     </div>
-  )
+  ) : null
 })
 export const PostForm: React.FC = () => {
   return <PostFormInner />
