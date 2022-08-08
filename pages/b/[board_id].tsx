@@ -12,6 +12,7 @@ import { fetcher } from '../../libs/fetchAPI'
 import useSWR from 'swr'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
+import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -64,10 +65,12 @@ const IndexPage: React.FC = () => {
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
-        <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header />
-        </HeaderStateContext.Provider>
-        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PostFormStateContext.Provider value={new PostFormState({})}>
+          <HeaderStateContext.Provider value={new HeaderState(user)}>
+            <Header />
+          </HeaderStateContext.Provider>
+          <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        </PostFormStateContext.Provider>
       </UserStateContext.Provider>
     </PageBaseLayout>
   )

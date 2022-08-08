@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import type { PostState } from '../../states/PostState'
 
 import { Thread } from './Thread'
@@ -9,24 +9,23 @@ import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
-import { CommentInput } from './CommentInput'
 import { UserStateContext } from '../../states/UserState'
 import { fetcher } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
+import { PostFormStateContext } from '../../states/PostFormState'
 
 export interface PostProps {
   post: PostState
 }
 
 export const Post: React.FC<PostProps> = observer((props) => {
-  const [commentVisibility, setCommentVisibility] = useState(false)
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
-  const onSubmit: (comment: string) => void = async (comment: string) => {
-    console.log('string:' + comment)
+  const postForm = useContext(PostFormStateContext)
+  const onSubmit: (comment: string) => void = async (comment) => {
     await fetcher(
       queryDocuments.Mutation.createThread,
       {
@@ -40,7 +39,6 @@ export const Post: React.FC<PostProps> = observer((props) => {
       userState.token
     )
     await mutate(boardState.fetcherDocument)
-    setCommentVisibility(false)
   }
   return (
     <div className="rounded-lg p-4 bg-white">
@@ -57,7 +55,8 @@ export const Post: React.FC<PostProps> = observer((props) => {
           upvote={props.post.upvote}
           downvote={props.post.downvote}
           replyCallback={() => {
-            setCommentVisibility(!commentVisibility)
+            postForm.replyTo = props.post
+            postForm.onSubmit = onSubmit
           }}
           showTrashIcon={props.post.author.name === userState.currentPersona?.name}
         />
@@ -65,9 +64,6 @@ export const Post: React.FC<PostProps> = observer((props) => {
         <CreatedAt created={props.post.createdAt} />
       </CardMeta>
       <div className="pb-5" />
-      {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
-      <div className="pt-8 pb-2 border-b-2 border-black border-opacity-10">Sort by BEST</div>
-      <div className="pb-8" />
       {props.post.hasRepsponse ? (
         <Thread posts={props.post.responses} />
       ) : (
