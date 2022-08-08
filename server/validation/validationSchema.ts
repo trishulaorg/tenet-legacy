@@ -78,6 +78,7 @@ const validationSchema: ValidationSchemaType = {
       threadId: z.string().min(26).max(26),
       personaId: z.number(),
     }),
+    setPersonaIcon: z.any(),
   },
 } as const
 
