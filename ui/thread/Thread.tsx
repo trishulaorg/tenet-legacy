@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react'
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import type { PostState } from '../../states/PostState'
 
 import { Reply } from './Reply'
@@ -10,20 +10,20 @@ import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { UserStateContext } from '../../states/UserState'
 import { fetcher } from '../../libs/fetchAPI'
-import { CommentInput } from './CommentInput'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
+import { PostFormStateContext } from '../../states/PostFormState'
 
 export interface ThreadProps {
   posts: PostState[]
 }
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
-  const [commentVisibility, setCommentVisibility] = useState<Set<string>>(new Set())
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
+  const postForm = useContext(PostFormStateContext)
   const onSubmit: (comment: string, thread: PostState) => void = async (comment, thread) => {
     await fetcher(
       queryDocuments.Mutation.createReply,
@@ -37,7 +37,6 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       userState.token
     )
     await mutate(boardState.fetcherDocument)
-    setCommentVisibility(new Set())
   }
   return (
     <ul className="pl-4">
@@ -57,16 +56,14 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                 downvote={v.downvote}
                 isPost={false}
                 replyCallback={() => {
-                  setCommentVisibility(commentVisibility.has(v.id) ? new Set([]) : new Set([v.id]))
+                  postForm.replyTo = v
+                  postForm.onSubmit = (comment: string) => onSubmit(comment, v)
                 }}
                 showTrashIcon={v.author.name === userState.currentPersona?.name}
               />
               <div className="pb-2" />
               <CreatedAt created={v.createdAt} />
             </CardMeta>
-            {commentVisibility.has(v.id) ? (
-              <CommentInput onSubmit={(comment) => onSubmit(comment, v)} />
-            ) : undefined}
             {v.hasRepsponse ? <Reply posts={v.responses} /> : undefined}
           </div>
         </li>
