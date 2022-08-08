@@ -8,6 +8,7 @@ import { Post } from '../thread/Post'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { ulid } from 'ulid'
+import { PostForm } from '../common/PostForm'
 
 interface BoardProps {
   showPostCreate?: boolean
@@ -74,6 +75,7 @@ export const Board: React.FC<BoardProps> = observer(({ showPostCreate = true }) 
           </li>
         ))}
       </ul>
+      <PostForm />
     </div>
   )
 })
