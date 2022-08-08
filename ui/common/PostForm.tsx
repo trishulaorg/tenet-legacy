@@ -1,13 +1,15 @@
 import { PlusCircleIcon } from '@heroicons/react/solid'
 import { observer } from 'mobx-react'
 import React, { useContext, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { PostFormStateContext } from '../../states/PostFormState'
 
 export const PostFormInner: React.FC = observer(() => {
   const [content, setContent] = useState('')
+  const {getRootProps, getInputProps} = useDropzone({noClick: true})
   const state = useContext(PostFormStateContext)
   return state.replyTo ? (
-    <div className="sticky bottom-0 shadow-2xl">
+    <div className="sticky bottom-0 shadow-2xl" {...getRootProps()}>
       <div
         className="w-full leading-6 border-t-2 border-black border-opacity-10 rounded-t-lg block bg-white
     "
@@ -29,6 +31,7 @@ export const PostFormInner: React.FC = observer(() => {
         >
           <PlusCircleIcon height="40" />
         </button>
+        <input {...getInputProps()}></input>
       </div>
     </div>
   ) : null
