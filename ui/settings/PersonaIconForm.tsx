@@ -61,7 +61,7 @@ const PersonaIconForm: React.FC = observer(() => {
           type="file"
           onChange={onIconSet}
           multiple={false}
-          accept="image/png, image/jpeg, image/gif, image/bmp, image/svg+xml"
+          accept="image/png, image/jpeg, image/gif, image/svg+xml"
         />
 
         {personaIconErrorMessage && <ErrorMessage errorMessage={personaIconErrorMessage} />}
