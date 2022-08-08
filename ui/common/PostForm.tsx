@@ -12,9 +12,9 @@ export const PostFormInner: React.FC = observer(() => {
         className="w-full leading-6 border-t-2 border-black border-opacity-10 rounded-t-lg block bg-white
     "
       >
-        <div className="mt-2 ml-2 p-2 border-l-2 border-gray-200">
-          {state.replyTo?.content ?? 'aaaa'}
-        </div>
+        {state.replyTo ? (
+          <div className="mt-2 ml-2 p-2 border-l-2 border-gray-200">{state.replyTo?.content}</div>
+        ) : null}
 
         <textarea
           className="w-full p-4"
