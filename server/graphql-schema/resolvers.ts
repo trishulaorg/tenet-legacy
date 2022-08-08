@@ -316,7 +316,7 @@ export const resolversWithoutValidator = {
         throw new BadRequestError('No file data is supplied.')
       }
 
-      const filenameMatch = fileObject.filename.match(/^.*\.(jpg|png|svg|bmp)$/i)
+      const filenameMatch = fileObject.filename.match(/^.*\.(jpeg|jpg|png|svg)$/i)
       if (!filenameMatch) {
         throw new BadRequestError('Please upload Image file.')
       }
