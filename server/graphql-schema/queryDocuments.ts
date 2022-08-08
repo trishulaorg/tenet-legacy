@@ -57,6 +57,7 @@ const queryDocuments: {
             content
             createdAt
             persona {
+              screenName
               name
               iconUrl
             }
@@ -65,6 +66,7 @@ const queryDocuments: {
               content
               createdAt
               persona {
+                screenName
                 name
                 iconUrl
               }
@@ -73,6 +75,7 @@ const queryDocuments: {
                 id
                 content
                 persona {
+                  screenName
                   name
                   iconUrl
                 }
@@ -107,6 +110,7 @@ const queryDocuments: {
           content
           createdAt
           persona {
+            screenName
             name
             iconUrl
           }
@@ -115,6 +119,7 @@ const queryDocuments: {
             content
             createdAt
             persona {
+              screenName
               name
               iconUrl
             }
@@ -123,6 +128,7 @@ const queryDocuments: {
               id
               content
               persona {
+                screenName
                 name
                 iconUrl
               }
