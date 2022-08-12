@@ -55,6 +55,7 @@ const queryDocuments: {
             boardId
             title
             content
+            imageUrls
             createdAt
             persona {
               screenName
@@ -64,6 +65,7 @@ const queryDocuments: {
             threads {
               id
               content
+              imageUrls
               createdAt
               persona {
                 screenName
@@ -74,6 +76,7 @@ const queryDocuments: {
                 createdAt
                 id
                 content
+                imageUrls
                 persona {
                   screenName
                   name
@@ -108,6 +111,7 @@ const queryDocuments: {
           }
           title
           content
+          imageUrls
           createdAt
           persona {
             screenName
@@ -117,6 +121,7 @@ const queryDocuments: {
           threads {
             id
             content
+            imageUrls
             createdAt
             persona {
               screenName
@@ -127,6 +132,7 @@ const queryDocuments: {
               createdAt
               id
               content
+              imageUrls
               persona {
                 screenName
                 name
@@ -216,6 +222,13 @@ const queryDocuments: {
           postId: $post_id
         ) {
           id
+        }
+      }
+    `,
+    putAttachedImage: gql`
+      mutation putAttachedImage($postId: String!, $files: [Upload]!) {
+        putAttachedImage(postId: $postId, files: $files) {
+          filename
         }
       }
     `,
