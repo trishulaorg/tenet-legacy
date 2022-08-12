@@ -48,6 +48,7 @@ export class PostState {
   upvote: number
   downvote: number
   createdAt: string
+  readonly imageUrls: string[]
   constructor(data: {
     id: string
     boardId: string
@@ -59,6 +60,7 @@ export class PostState {
     downvote?: number
     children?: PostState[]
     parent?: PostState
+    imageUrls?: string[]
   }) {
     this.id = data.id
     this.boardId = data.boardId
@@ -70,6 +72,7 @@ export class PostState {
     this.upvote = data.upvote ?? 0
     this.downvote = data.downvote ?? 0
     this.createdAt = data.createdAt
+    this.imageUrls = data.imageUrls ?? []
     makeAutoObservable(this)
   }
   addResponse(state: PostState): PostState {
