@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getInstance } from '../../../libs/auth0'
 const audience = process.env['AUTH0_AUDIENCE']
 
-function getUrls(req: NextApiRequest) {
+function getUrls(req: NextApiRequest): { redirectUri: string; returnTo: string } {
   const host = req.headers['host']
   const protocol = process.env['VERCEL_URL'] ? 'https' : 'http'
   const redirectUri = `${protocol}://${host}/api/auth/callback`

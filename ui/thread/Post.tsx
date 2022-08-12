@@ -10,12 +10,13 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { UserStateContext } from '../../states/UserState'
-import { fetcher } from '../../libs/fetchAPI'
+import { fetcher, mutator } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
+import gql from 'graphql-tag'
 
 export interface PostProps {
   post: PostState
@@ -25,8 +26,11 @@ export const Post: React.FC<PostProps> = observer((props) => {
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
-  const onSubmit: (comment: string) => void = async (comment) => {
-    await fetcher(
+
+  const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
+    const {
+      createThread: { id },
+    } = await fetcher(
       queryDocuments.Mutation.createThread,
       {
         id: ulid(),
@@ -36,6 +40,11 @@ export const Post: React.FC<PostProps> = observer((props) => {
         post_id: props.post.id,
         board_id: props.post.boardId,
       },
+      userState.token
+    )
+    await mutator(
+      gql(queryDocuments.Mutation.putAttachedImage),
+      { postId: id, files: files },
       userState.token
     )
     await mutate(boardState.fetcherDocument)
@@ -48,7 +57,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
         name={props.post.author.name}
         iconUrl={props.post.author.iconUrl}
       />
-      <CardContent content={props.post.content} />
+      <CardContent content={props.post.content} imageUrls={props.post.imageUrls} />
       <CardMeta>
         <CardIcons
           commentNumber={props.post.responseNumber}

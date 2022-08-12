@@ -26,7 +26,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
               iconUrl={v.author.iconUrl}
             />
             <div className="ml-2 border-gray-200	border-l-4">
-              <CardContent content={v.content} isPost={false} />
+              <CardContent content={v.content} isPost={false} imageUrls={v.imageUrls} />
               <CardMeta isPost={false}>
                 <CardIcons
                   commentNumber={v.responseNumber}
