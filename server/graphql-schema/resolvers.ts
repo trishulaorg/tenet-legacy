@@ -390,7 +390,7 @@ export const resolversWithoutValidator = {
         throw new NotAuthenticatedError('Not Authenticated.')
       }
       const fileUrls = await Promise.all(
-        files.map(async (file) => uploadImageFileToS3(file, 'personaIcon'))
+        files.map(async (file) => uploadImageFileToS3(file, 'attachedImage'))
       )
       await context.prisma.uploadedImage.createMany({
         data: fileUrls.map((fileUrl) => ({
