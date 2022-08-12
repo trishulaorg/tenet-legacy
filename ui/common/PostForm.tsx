@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import { PostFormStateContext } from '../../states/PostFormState'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { ErrorMessage } from '../form/ErrorMessage'
+import { ImageWithCloseButton } from '../form/ImageWithCloseButton'
 
 export const PostFormInner: React.FC = observer(() => {
   const [content, setContent] = useState('')
@@ -37,10 +38,18 @@ export const PostFormInner: React.FC = observer(() => {
     })
     setFiles((prevState) => [...prevState, ...validImageFiles])
   }
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const removeFile = (fileToRemove: File): void => {
+    const newFiles = files.filter((file) => file !== fileToRemove)
+    console.dir(newFiles)
+    setFiles(newFiles)
+  }
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     noClick: true,
     onDrop,
     multiple: true,
+    accept: {
+      'image/*': ['.png', '.gif', '.jpeg', '.jpg'],
+    },
   })
   return state.replyTo ? (
     <div className="sticky bottom-0 shadow-2xl" {...getRootProps()}>
@@ -57,25 +66,29 @@ export const PostFormInner: React.FC = observer(() => {
           placeholder="What did you think?"
         />
 
-        {files.map((file, index) => (
-          <img
-            className={'w-max-20 h-20 mx-2 my-3 float-left'}
-            src={URL.createObjectURL(file)}
-            key={'uploaded-' + index}
-            alt={'uploaded-' + index}
-          />
-        ))}
+        <div className={'flex'}>
+          {files.map((file, index) => (
+            <ImageWithCloseButton
+              file={file}
+              alt={'uploaded-' + index + file.name}
+              key={'uploaded-' + index + file.name}
+              onDeleteClick={() => removeFile(file)}
+            />
+          ))}
+        </div>
         {isDragActive ? (
-          <p className={'clear-left'}>Drop the files here ...</p>
+          <p className={'clear-left'}>Drop the Image here ...</p>
         ) : (
-          <p className={'clear-left'}>You can drag and drop image here to attach.</p>
+          <p className={'clear-left'}>
+            <button onClick={open}>Click here or Drop Image.</button>
+          </p>
         )}
         {uploadErrors.map((error, index) => (
           <ErrorMessage errorMessage={error.message} key={index} />
         ))}
         <button
           className="absolute bottom-0 right-0 text-green-400 clear-both"
-          onClick={() => state.onSubmit(content)}
+          onClick={() => state.onSubmit(content, files)}
         >
           <PlusCircleIcon height="40" />
         </button>

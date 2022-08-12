@@ -6,10 +6,10 @@ import {
 } from '../errors/NotAuthenticatedError'
 import { defaultNotFoundErrorMessage, NotFoundError } from '../errors/NotFoundError'
 import { ulid } from 'ulid'
-import { uploadFileToS3 } from '../fileUpload/s3Handler'
 import type { Upload } from 'graphql-upload'
 import { NotAuthorizedError } from '../errors/NotAuthorizedError'
-import { BadRequestError } from '../errors/BadRequest/BadRequestError'
+import { uploadImageFileToS3 } from '../fileUpload/uploadImageFileToS3'
+import { ZodSchema } from 'zod'
 
 export const resolversWithoutValidator = {
   Query: {
@@ -36,8 +36,8 @@ export const resolversWithoutValidator = {
       console.log(args)
       return false // need to check tokens. wip.
     },
-    post: (_source: never, args: { id: string }, context: ContextType) => {
-      return context.prisma.post.findFirst({
+    post: async (_source: never, args: { id: string }, context: ContextType) => {
+      const post = await context.prisma.post.findFirst({
         where: {
           id: args.id,
         },
@@ -56,9 +56,54 @@ export const resolversWithoutValidator = {
           },
         },
       })
+
+      if (post === null) {
+        return post
+      }
+
+      const imageParentIds = [post]
+        .map((p) => [
+          p.id,
+          p.threads.map((thread) => thread.id),
+          p.threads.map((thread) => thread.replies.map((reply) => reply.id)),
+        ])
+        .flat()
+        .flat()
+        .flat()
+      const uploadedImages = await context.prisma.uploadedImage.findMany({
+        where: {
+          parentId: {
+            in: imageParentIds,
+          },
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      })
+
+      Object.assign(post, {
+        imageUrls: uploadedImages
+          .filter((uploadedImage) => uploadedImage.parentId === post.id)
+          .map((uploadedImage) => uploadedImage.fileUrl),
+      })
+      post.threads.forEach((thread) => {
+        Object.assign(thread, {
+          imageUrls: uploadedImages
+            .filter((uploadedImage) => uploadedImage.parentId === thread.id)
+            .map((uploadedImage) => uploadedImage.fileUrl),
+        })
+        thread.replies.forEach((reply) =>
+          Object.assign(reply, {
+            imageUrls: uploadedImages
+              .filter((uploadedImage) => uploadedImage.parentId === reply.id)
+              .map((uploadedImage) => uploadedImage.fileUrl),
+          })
+        )
+      })
+      return post
     },
-    board: (_source: never, args: { id: string }, context: ContextType) => {
-      return context.prisma.board.findFirst({
+    board: async (_source: never, args: { id: string }, context: ContextType) => {
+      const board = await context.prisma.board.findFirst({
         where: {
           id: args.id,
         },
@@ -83,6 +128,50 @@ export const resolversWithoutValidator = {
           },
         },
       })
+      if (board === null) {
+        return board
+      }
+      const imageParentIds = board.posts
+        .map((post) => [
+          post.id,
+          post.threads.map((thread) => thread.id),
+          post.threads.map((thread) => thread.replies.map((reply) => reply.id)),
+        ])
+        .flat()
+        .flat()
+        .flat()
+      const uploadedImages = await context.prisma.uploadedImage.findMany({
+        where: {
+          parentId: {
+            in: imageParentIds,
+          },
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      })
+      board.posts.forEach((post) => {
+        Object.assign(post, {
+          imageUrls: uploadedImages
+            .filter((uploadedImage) => uploadedImage.parentId === post.id)
+            .map((uploadedImage) => uploadedImage.fileUrl),
+        })
+        post.threads.forEach((thread) => {
+          Object.assign(thread, {
+            imageUrls: uploadedImages
+              .filter((uploadedImage) => uploadedImage.parentId === thread.id)
+              .map((uploadedImage) => uploadedImage.fileUrl),
+          })
+          thread.replies.forEach((reply) =>
+            Object.assign(reply, {
+              imageUrls: uploadedImages
+                .filter((uploadedImage) => uploadedImage.parentId === reply.id)
+                .map((uploadedImage) => uploadedImage.fileUrl),
+            })
+          )
+        })
+      })
+      return board
     },
     activities: async (_source: never, _args: Record<string, never>, context: ContextType) => {
       return context.prisma.post.findMany({
@@ -286,6 +375,32 @@ export const resolversWithoutValidator = {
         },
       })
     },
+    putAttachedImage: async (
+      _source: never,
+      {
+        files,
+        postId,
+      }: {
+        files: Upload[]
+        postId: string
+      },
+      context: ContextType
+    ) => {
+      if (typeof context.me?.id === 'undefined' || context.me.id < 1) {
+        throw new NotAuthenticatedError('Not Authenticated.')
+      }
+      const fileUrls = await Promise.all(
+        files.map(async (file) => uploadImageFileToS3(file, 'personaIcon'))
+      )
+      await context.prisma.uploadedImage.createMany({
+        data: fileUrls.map((fileUrl) => ({
+          id: ulid(),
+          parentId: postId,
+          fileUrl,
+        })),
+      })
+      return fileUrls.map((fileUrl) => ({ filename: fileUrl }))
+    },
     setPersonaIcon: async (
       _source: never,
       {
@@ -305,38 +420,14 @@ export const resolversWithoutValidator = {
           user: true,
         },
       })
-      const fileObject = await file.file
+
       if (typeof context.me?.id === 'undefined' || context.me.id < 1) {
         throw new NotAuthenticatedError('Not Authenticated.')
       }
       if (context.me.id !== (await persona.user())?.id) {
         throw new NotAuthorizedError('You do not have permission to edit Persona of the User.')
       }
-      if (typeof fileObject === 'undefined') {
-        throw new BadRequestError('No file data is supplied.')
-      }
-
-      const filenameMatch = fileObject.filename.match(/^.*\.(jpeg|jpg|png|svg)$/i)
-      if (!filenameMatch) {
-        throw new BadRequestError('Please upload Image file.')
-      }
-      const [, fileExtension] = filenameMatch
-      const fileKey = `personaIcon/${ulid()}.${fileExtension}`
-
-      const { createReadStream, mimetype } = fileObject
-      const stream = createReadStream()
-      const chunks: Buffer[] = []
-      const buffer = await new Promise<Buffer>((resolve, reject) => {
-        stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)))
-        stream.on('error', (err) => reject(err))
-        stream.on('end', () => resolve(Buffer.concat(chunks)))
-      })
-
-      if (buffer.length > 5 * 1000 * 1000) {
-        throw new BadRequestError('Icon filesize exceeds the limit. (< 5MB)')
-      }
-
-      const fileUrl = await uploadFileToS3(fileKey, buffer, mimetype, true)
+      const fileUrl = await uploadImageFileToS3(file, 'personaIcon')
 
       await context.prisma.persona.update({
         where: {
@@ -347,7 +438,7 @@ export const resolversWithoutValidator = {
         },
       })
       return {
-        filename: fileKey,
+        filename: fileUrl,
       }
     },
   },
@@ -373,8 +464,18 @@ function validateArgs<
         args: unknown,
         ...rest: ContextType[]
       ) => {
-        // @ts-expect-error typescript cannot correctly type mapped object
-        validationSchema[resolverType][key].parse(args)
+        const schemas = validationSchema[resolverType]
+        if (key in schemas) {
+          type Keys = keyof typeof validationSchema[typeof resolverType]
+          const schema = validationSchema[resolverType][key as Keys] as unknown
+          if (schema instanceof ZodSchema) {
+            schema.parse(args)
+          } else {
+            throw new Error(`Validator for ${resolverType}/${key} is not properly set up.`)
+          }
+        } else {
+          throw new Error(`No validator for ${resolverType}/${key} found.`)
+        }
         return resolver.apply(null, [_, args, ...rest])
       }
       return [key, resolverWithValidation] as const
@@ -388,7 +489,7 @@ function validateArgs<
 export const resolvers = {
   Query: validateArgs(resolversWithoutValidator.Query),
   Mutation: validateArgs(resolversWithoutValidator.Mutation),
-} as typeof resolversWithoutValidator
+}
 export type ContextType = {
   me: User | null
   prisma: PrismaClient
