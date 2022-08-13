@@ -18,7 +18,7 @@
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "module": "esnext",
+    "module": "nodenext",
     "moduleResolution": "node",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
