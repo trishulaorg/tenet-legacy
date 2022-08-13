@@ -6,7 +6,8 @@ import { SearchIcon } from '@heroicons/react/solid'
 export const SearchBoxTextField: React.FC<{
   query: string
   onChange: React.ChangeEventHandler<HTMLInputElement>
-}> = ({ query, onChange }) => {
+  onFocus: React.FocusEventHandler
+}> = ({ query, onChange, onFocus }) => {
   const router = useRouter()
   const submitSearch = async (): Promise<void> => {
     if (query !== '') {
@@ -23,6 +24,7 @@ export const SearchBoxTextField: React.FC<{
         value={query}
         onChange={onChange}
         onKeyDown={onKeyDown}
+        onFocus={onFocus}
         className="flex-1 outline-0"
       />
       <button onClick={submitSearch}>
