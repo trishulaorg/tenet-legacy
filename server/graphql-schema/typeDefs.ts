@@ -34,6 +34,7 @@ const typeDefs = gql`
     threads: [Thread]
     persona: Persona
     createdAt: Date
+    imageUrls: [String]
   }
   type Thread {
     id: String
@@ -42,6 +43,7 @@ const typeDefs = gql`
     replies: [Reply]
     persona: Persona
     createdAt: Date
+    imageUrls: [String]
   }
   type Reply {
     id: String
@@ -49,6 +51,7 @@ const typeDefs = gql`
     content: String
     persona: Persona
     createdAt: Date
+    imageUrls: [String]
   }
   enum ContentType {
     TEXT
@@ -97,7 +100,8 @@ const typeDefs = gql`
       threadId: String!
       personaId: Int!
     ): Reply
-    setPersonaIcon(personaId: Int!, file: Upload!): File!
+    putAttachedImage(postId: String!, files: [Upload]!): [File]!
+    setPersonaIcon(personaId: Int!, file: Upload!): File
   }
 `
 

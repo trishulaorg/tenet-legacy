@@ -10,7 +10,9 @@ import { InputWithLabel } from '../form/InputWithLabel'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 interface ResultT {
-  id: number
+  createBoard: {
+    id: string
+  }
 }
 
 export const CreateNewBoard: React.FC = () => {
@@ -30,12 +32,14 @@ export const CreateNewBoard: React.FC = () => {
       return
     }
     try {
-      await fetcher<ResultT>(
+      const {
+        createBoard: { id },
+      } = await fetcher<ResultT>(
         queryDocuments.Mutation.createBoard,
         { title: name, description: desc, personaId: persona.id },
         token
       )
-      await router.push('/')
+      await router.push(`/b/${id}`)
     } catch (error) {
       if (error instanceof ClientError) {
         const validationErrors = getValidationErrors(error)

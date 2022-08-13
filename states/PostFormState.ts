@@ -3,10 +3,10 @@ import { createContext } from 'react'
 import type { PostState } from './PostState'
 
 export class PostFormState {
-  _replyTo: PostState | undefined
-  _onSubmit: (comment: string) => void
+  private _replyTo: PostState | undefined
+  private _onSubmit: (comment: string, files: File[]) => void
 
-  constructor(args: { replyTo?: PostState; onSubmit?: (comment: string) => void }) {
+  constructor(args: { replyTo?: PostState; onSubmit?: (comment: string, files: File[]) => void }) {
     this._replyTo = args.replyTo
     this._onSubmit =
       args.onSubmit ??
@@ -24,11 +24,11 @@ export class PostFormState {
     this._replyTo = value
   }
 
-  get onSubmit(): (comment: string) => void | undefined {
+  get onSubmit(): (comment: string, files: File[]) => void | undefined {
     return this._onSubmit
   }
 
-  set onSubmit(value: (comment: string) => void | undefined) {
+  set onSubmit(value: (comment: string, files: File[]) => void | undefined) {
     this._onSubmit = value
   }
   set type(value: PostState) {
