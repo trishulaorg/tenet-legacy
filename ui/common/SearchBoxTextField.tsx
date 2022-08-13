@@ -1,14 +1,16 @@
 import { useRouter } from 'next/router'
 import type { KeyboardEventHandler } from 'react'
-import React, { useState } from 'react'
+import React from 'react'
 
 import { SearchIcon } from '@heroicons/react/solid'
-export const SearchBox: React.FC = () => {
+export const SearchBoxTextField: React.FC<{
+  query: string
+  onChange: React.ChangeEventHandler<HTMLInputElement>
+}> = ({ query, onChange }) => {
   const router = useRouter()
-  const [text, setText] = useState('')
   const submitSearch = async (): Promise<void> => {
-    if (text !== '') {
-      await router.push(`/s/${text}`)
+    if (query !== '') {
+      await router.push(`/s/${query}`)
     }
   }
   const onKeyDown: KeyboardEventHandler = async (e) => {
@@ -18,8 +20,8 @@ export const SearchBox: React.FC = () => {
     <div className="border rounded flex">
       <input
         type="text"
-        value={text}
-        onChange={(e) => setText(e.currentTarget.value)}
+        value={query}
+        onChange={onChange}
         onKeyDown={onKeyDown}
         className="flex-1 outline-0"
       />
