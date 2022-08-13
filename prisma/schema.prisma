@@ -5,7 +5,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["referentialIntegrity"]
 }
 
@@ -61,7 +61,7 @@ model VoteOnComment {
 }
 
 model Board {
-  id          String    @id @db.VarChar(26)
+  id          String    @id @db.Char(26)
   title       String    @unique  @db.VarChar(50)
   createdAt   DateTime  @default(now())
   description String    @db.VarChar(2000)
@@ -72,7 +72,7 @@ model Board {
 }
 
 model Post {
-  id          String      @id @db.VarChar(26)
+  id          String      @id @db.Char(26)
   createdAt   DateTime    @default(now())
   title       String      @db.VarChar(50)
   contentType ContentType
@@ -82,10 +82,11 @@ model Post {
   boardId     String
   persona     Persona     @relation(fields: [personaId], references: [id])
   personaId   Int
+  attachements PostAttachment[]
 }
 
 model Thread {
-  id          String      @id @db.VarChar(26)
+  id          String      @id @db.Char(26)
   createdAt   DateTime    @default(now())
   content     String      @db.VarChar(500)
   contentType ContentType
@@ -99,7 +100,7 @@ model Thread {
 }
 
 model Reply {
-  id          String    @id @db.VarChar(26)
+  id          String    @id @db.Char(26)
   contentType ContentType
   content     String      @db.VarChar(500)
   createdAt   DateTime    @default(now())
@@ -107,6 +108,19 @@ model Reply {
   threadId    String
   persona     Persona     @relation(fields: [personaId], references: [id])
   personaId   Int
+}
+
+model UploadedImage {
+  id          String    @id @db.Char(26)
+  parentId    String    @db.Char(26)
+  fileUrl     String    @db.Text
+}
+
+model PostAttachment {
+  id String @id @db.VarChar(26)
+  postId      String
+  post        Post @relation(fields: [postId], references: [id])
+  src String 
 }
 
 enum ContentType {

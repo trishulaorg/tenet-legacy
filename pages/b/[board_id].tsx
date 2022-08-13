@@ -39,10 +39,14 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
 
-  const { data } = useSWR<{ board: BoardType }>(
+  const { data, mutate } = useSWR<{ board: BoardType }>(
     () => (isReady ? contentGraphqlQueryDocument : null),
     (document) => fetcher(document, { topicId: board_id }, token)
   )
+
+  useEffect(() => {
+    mutate()
+  })
 
   useEffect(() => {
     if (data) {

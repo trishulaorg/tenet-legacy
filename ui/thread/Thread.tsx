@@ -9,12 +9,13 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { UserStateContext } from '../../states/UserState'
-import { fetcher } from '../../libs/fetchAPI'
+import { fetcher, mutator } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
+import gql from 'graphql-tag'
 
 export interface ThreadProps {
   posts: PostState[]
@@ -24,8 +25,14 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
-  const onSubmit: (comment: string, thread: PostState) => void = async (comment, thread) => {
-    await fetcher(
+  const onSubmit: (comment: string, files: File[], thread: PostState) => void = async (
+    comment,
+    files,
+    thread
+  ) => {
+    const {
+      createReply: { id },
+    } = await fetcher(
       queryDocuments.Mutation.createReply,
       {
         id: ulid(),
@@ -34,6 +41,11 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
         persona_id: userState.currentPersona?.id ?? -1,
         thread_id: thread.id,
       },
+      userState.token
+    )
+    await mutator(
+      gql(queryDocuments.Mutation.putAttachedImage),
+      { postId: id, files: files },
       userState.token
     )
     await mutate(boardState.fetcherDocument)
@@ -48,7 +60,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
             iconUrl={v.author.iconUrl}
           />
           <div className="ml-2 border-gray-200	border-l-4">
-            <CardContent content={v.content} isPost={false} />
+            <CardContent content={v.content} isPost={false} imageUrls={v.imageUrls} />
             <CardMeta isPost={false}>
               <CardIcons
                 commentNumber={v.responseNumber}
@@ -57,7 +69,8 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                 isPost={false}
                 replyCallback={() => {
                   postForm.replyTo = v
-                  postForm.onSubmit = (comment: string) => onSubmit(comment, v)
+                  postForm.onSubmit = (comment: string, files: File[]) =>
+                    onSubmit(comment, files, v)
                 }}
                 showTrashIcon={v.author.name === userState.currentPersona?.name}
               />

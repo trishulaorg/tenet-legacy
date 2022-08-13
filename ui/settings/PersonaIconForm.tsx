@@ -6,9 +6,9 @@ import { UserStateContext } from '../../states/UserState'
 import { ErrorMessage } from '../form/ErrorMessage'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import gql from 'graphql-tag'
-import { ApolloClient, ApolloError, InMemoryCache } from '@apollo/client'
-import { createUploadLink } from 'apollo-upload-client'
+import { ApolloError } from '@apollo/client'
 import { SuccessMessage } from '../form/SuccessMessage'
+import { mutator } from '../../libs/fetchAPI'
 
 const PersonaIconForm: React.FC = observer(() => {
   const userState = useContext(UserStateContext)
@@ -29,21 +29,11 @@ const PersonaIconForm: React.FC = observer(() => {
     setPersonaIconSuccessMessage(null)
     setPersonaIconErrorMessage(null)
     try {
-      const uploadClient = new ApolloClient({
-        uri: '/api/graphql',
-        cache: new InMemoryCache(),
-        link: createUploadLink({
-          uri: '/api/graphql',
-          headers: {
-            authorization: `Bearer ${token}`,
-            accept: 'application/json',
-          },
-        }),
-      })
-      await uploadClient.mutate({
-        mutation: gql(queryDocuments.Mutation.setPersonaIcon),
-        variables: { personaId: userState.currentPersona?.id ?? -1, file: files[0] },
-      })
+      await mutator(
+        gql(queryDocuments.Mutation.setPersonaIcon),
+        { personaId: userState.currentPersona?.id ?? -1, file: files[0] },
+        token ?? ''
+      )
       setPersonaIconSuccessMessage('New icon is Successfully set!')
     } catch (error) {
       console.dir(error)
