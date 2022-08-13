@@ -1,16 +1,14 @@
 import { ApolloServer } from 'apollo-server-micro'
-import { context } from '../../server'
 import Cors from 'micro-cors'
-import { typeDefs } from '../../server/graphql-schema/typeDefs'
-import { resolvers } from '../../server/graphql-schema/resolvers'
 // @ts-expect-error error of graphql-upload package
 import processRequest from 'graphql-upload/processRequest.mjs'
 import type { MicroRequest } from 'apollo-server-micro/dist/types'
 import type { ServerResponse } from 'http'
+import schema from '../../server/graphql-schema/nexus'
 
 const cors = Cors()
 
-const apolloServer = new ApolloServer({ typeDefs, resolvers, context })
+const apolloServer = new ApolloServer({ schema })
 
 const startServer = apolloServer.start()
 
