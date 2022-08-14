@@ -40,7 +40,7 @@ export const SearchBox: React.FC = () => {
     <div className="relative" ref={ref}>
       <SearchBoxTextField query={query} onChange={onChange} onFocus={() => setVisibility(true)} />
       {visibility ? (
-        <div className="absolute bg-white w-full rounded border">
+        <div className="absolute bg-white w-full rounded border z-10">
           <ul>
             {data?.search.slice(0, 10).map((v) => (
               <Link key={v.id} href={`/b/${v.id}`}>
@@ -48,9 +48,11 @@ export const SearchBox: React.FC = () => {
               </Link>
             ))}
           </ul>
-          <Link href={`/s/${query}`}>
-            <button className="px-4 pt-4 h-6">Show full results</button>
-          </Link>
+          {query !== '' ? (
+            <Link href={`/s/${query}`}>
+              <button className="px-4 pt-4 h-6">Show full results</button>
+            </Link>
+          ) : null}
           <Link href={`/o/cb`}>
             <button className="px-4 h-6">Create new board</button>
           </Link>
