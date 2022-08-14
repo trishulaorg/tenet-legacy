@@ -9,6 +9,7 @@ import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
+import type { TypingStateNotification } from '../../states/UserState'
 import { UserStateContext } from '../../states/UserState'
 import { fetcher, mutator } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
@@ -18,6 +19,9 @@ import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import gql from 'graphql-tag'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
+import { TypingMemberListLabel } from '../common/TypingMemberListLabel'
+import { parseISO, differenceInSeconds } from 'date-fns'
+import { useDebounce } from 'use-debounce'
 
 export interface PostProps {
   post: PostState
@@ -28,6 +32,23 @@ export const Post: React.FC<PostProps> = observer((props) => {
   const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
   const publishWritingStatus = usePublishWritingStatus()
+
+  const [debouncedMembers] = useDebounce(
+    [
+      ...new Set(
+        (userState.notifications as TypingStateNotification[])
+          .filter(
+            (v) =>
+              v.data.postId === props.post.id &&
+              v.channel === 'post' &&
+              v.eventName === 'typing' &&
+              differenceInSeconds(new Date(), parseISO(v.data.createdAt)) < 4
+          )
+          .map((v) => v.data.authorPersonaScreenName)
+      ),
+    ],
+    100
+  )
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
     const {
@@ -82,6 +103,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
       ) : (
         <div>No Comments Yet</div>
       )}
+      <TypingMemberListLabel members={debouncedMembers} />
     </div>
   )
 })

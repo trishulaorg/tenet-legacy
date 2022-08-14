@@ -503,16 +503,17 @@ export const resolversWithoutValidator = {
         useTLS: true,
       })
 
+      const author = await context.prisma.persona.findFirst({
+        where: {
+          id: personaId,
+        },
+      })
+
       pusher.trigger('post', 'typing', {
         postId,
         createdAt: formatISO(new Date()),
         authorPersonaId: personaId,
-      })
-
-      console.log('event', {
-        postId,
-        createdAt: formatISO(new Date()),
-        authorPersonaId: personaId,
+        authorPersonaScreenName: author?.screenName,
       })
 
       return post
