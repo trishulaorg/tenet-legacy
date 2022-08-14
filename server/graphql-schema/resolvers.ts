@@ -506,11 +506,13 @@ export const resolversWithoutValidator = {
       pusher.trigger('post', 'typing', {
         postId,
         createdAt: formatISO(new Date()),
+        authorPersonaId: personaId,
       })
 
       console.log('event', {
         postId,
         createdAt: formatISO(new Date()),
+        authorPersonaId: personaId,
       })
 
       return post

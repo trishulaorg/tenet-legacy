@@ -50,8 +50,8 @@ export const Post: React.FC<PostProps> = observer((props) => {
       userState.token
     )
     await mutate(boardState.fetcherDocument)
-    await publishWritingStatus(props.post.id)
   }
+
   return (
     <div className="rounded-lg p-4 bg-white">
       <CardTitle title={props.post.title} />
@@ -69,6 +69,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
           replyCallback={() => {
             postForm.replyTo = props.post
             postForm.onSubmit = onSubmit
+            postForm.onChange = () => publishWritingStatus(props.post.id)
           }}
           showTrashIcon={props.post.author.name === userState.currentPersona?.name}
         />
