@@ -10,7 +10,7 @@ import type { Upload } from 'graphql-upload'
 import { NotAuthorizedError } from '../errors/NotAuthorizedError'
 import { uploadImageFileToS3 } from '../fileUpload/uploadImageFileToS3'
 import { ZodSchema } from 'zod'
-import Pusher from 'pusher'
+import type Pusher from 'pusher'
 import { formatISO } from 'date-fns'
 
 export const resolversWithoutValidator = {
@@ -495,21 +495,13 @@ export const resolversWithoutValidator = {
        * Pusher integration
        */
 
-      const pusher = new Pusher({
-        appId: process.env['PUSHER_APP_ID']!,
-        key: process.env['PUSHER_KEY']!,
-        secret: process.env['PUSHER_SECRET']!,
-        cluster: process.env['PUSHER_CLUSTER']!,
-        useTLS: true,
-      })
-
       const author = await context.prisma.persona.findFirst({
         where: {
           id: personaId,
         },
       })
 
-      pusher.trigger('post', 'typing', {
+      context.pusher.trigger('post', 'typing', {
         postId,
         createdAt: formatISO(new Date()),
         authorPersonaId: personaId,
@@ -570,4 +562,5 @@ export const resolvers = {
 export type ContextType = {
   me: User | null
   prisma: PrismaClient
+  pusher: Pusher
 }

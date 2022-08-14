@@ -102,7 +102,7 @@ const typeDefs = gql`
     ): Reply
     putAttachedImage(postId: String!, files: [Upload]!): [File]!
     setPersonaIcon(personaId: Int!, file: Upload!): File
-    setTypingStateOnBoard(personaId: Int!, postId: String!): Board
+    setTypingStateOnBoard(personaId: Int!, postId: String!): Post
   }
 `
 

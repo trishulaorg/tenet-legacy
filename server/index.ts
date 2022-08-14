@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { NotAuthenticatedError } from './errors/NotAuthenticatedError'
 import type { ContextType } from './graphql-schema/resolvers'
+import Pusher from 'pusher'
 
 dotenv.config()
 
@@ -36,9 +37,16 @@ export const context: ContextFunction = async ({ req }) => {
       // do nothing. just ignore for now.
     }
   }
-
+  const pusher = new Pusher({
+    appId: process.env['PUSHER_APP_ID']!,
+    key: process.env['PUSHER_KEY']!,
+    secret: process.env['PUSHER_SECRET']!,
+    cluster: process.env['PUSHER_CLUSTER']!,
+    useTLS: true,
+  })
   return {
     me,
+    pusher,
     prisma,
   }
 }
