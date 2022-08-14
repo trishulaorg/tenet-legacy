@@ -239,6 +239,13 @@ const queryDocuments: {
         }
       }
     `,
+    setTypingStateOnBoard: gql`
+      mutation setTypingStateOnBoard($personaId: Int!, $postId: String!) {
+        setTypingStateOnBoard(personaId: $personaId, postId: $postId) {
+          id
+        }
+      }
+    `,
   },
 } as const
 

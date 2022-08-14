@@ -13,6 +13,7 @@ import useSWR from 'swr'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
+import { makePusher } from '../../libs/usePusher'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -30,11 +31,28 @@ const IndexPage: React.FC = () => {
     new BoardState('', contentGraphqlQueryDocument)
   )
 
+  const publishWritingStatus = (postId): void => {
+    fetcher(
+      queryDocuments.Mutation.setTypingStateOnBoard,
+      {
+        personaId: user.currentPersona?.id,
+        postId,
+      },
+      token
+    )
+  }
+
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
         await user.request()
       }
+
+      const pusher = await makePusher()
+      const channel = pusher.subscribe('post')
+      channel.bind('typing', function (data: { postId: string; createdAt: string }) {
+        alert(JSON.stringify(data))
+      })
     }
     f()
   }, [token, router, user])
@@ -46,7 +64,7 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     mutate()
-  })
+  }, [])
 
   useEffect(() => {
     if (data) {

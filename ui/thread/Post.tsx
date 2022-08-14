@@ -17,6 +17,7 @@ import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import gql from 'graphql-tag'
+import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 
 export interface PostProps {
   post: PostState
@@ -26,6 +27,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
+  const publishWritingStatus = usePublishWritingStatus()
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
     const {
@@ -48,6 +50,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
       userState.token
     )
     await mutate(boardState.fetcherDocument)
+    await publishWritingStatus(props.post.id)
   }
   return (
     <div className="rounded-lg p-4 bg-white">
@@ -74,7 +77,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
       </CardMeta>
       <div className="pb-5" />
       {props.post.hasRepsponse ? (
-        <Thread posts={props.post.responses} />
+        <Thread posts={props.post.responses} parent={props.post} />
       ) : (
         <div>No Comments Yet</div>
       )}

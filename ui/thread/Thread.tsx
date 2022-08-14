@@ -16,8 +16,10 @@ import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import gql from 'graphql-tag'
+import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 
 export interface ThreadProps {
+  parent: PostState
   posts: PostState[]
 }
 
@@ -25,6 +27,8 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
+  const publishWritingStatus = usePublishWritingStatus()
+
   const onSubmit: (comment: string, files: File[], thread: PostState) => void = async (
     comment,
     files,
@@ -49,6 +53,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       userState.token
     )
     await mutate(boardState.fetcherDocument)
+    await publishWritingStatus(props.parent.id)
   }
   return (
     <ul className="pl-4">
