@@ -10,6 +10,8 @@ import type { Upload } from 'graphql-upload'
 import { NotAuthorizedError } from '../errors/NotAuthorizedError'
 import { uploadImageFileToS3 } from '../fileUpload/uploadImageFileToS3'
 import { ZodSchema } from 'zod'
+import Pusher from 'pusher'
+import { formatISO } from 'date-fns'
 
 export const resolversWithoutValidator = {
   Query: {
@@ -440,6 +442,78 @@ export const resolversWithoutValidator = {
       return {
         filename: fileUrl,
       }
+    },
+    setTypingStateOnBoard: async (
+      _source: never,
+      {
+        personaId,
+        postId,
+      }: {
+        personaId: number
+        postId: string
+      },
+      context: ContextType
+    ) => {
+      if (!context.me) {
+        throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
+      }
+      const currentPersona = await context.prisma.persona.findFirst({
+        where: {
+          user: {
+            id: context.me.id,
+          },
+          id: personaId,
+        },
+      })
+      if (!currentPersona) {
+        throw new NotFoundError('Invalid persona id')
+      }
+      const post = await context.prisma.post.findFirst({
+        where: {
+          id: postId,
+        },
+        include: {
+          board: true,
+          persona: true,
+          threads: {
+            include: {
+              persona: true,
+              replies: {
+                include: {
+                  persona: true,
+                },
+              },
+            },
+          },
+        },
+      })
+
+      if (post === null) {
+        return post
+      }
+      /*
+       * Pusher integration
+       */
+
+      const pusher = new Pusher({
+        appId: process.env['PUSHER_APP_ID']!,
+        key: process.env['PUSHER_KEY']!,
+        secret: process.env['PUSHER_SECRET']!,
+        cluster: process.env['PUSHER_CLUSTER']!,
+        useTLS: true,
+      })
+
+      pusher.trigger('post', 'typing', {
+        postId,
+        createdAt: formatISO(new Date()),
+      })
+
+      console.log('event', {
+        postId,
+        createdAt: formatISO(new Date()),
+      })
+
+      return post
     },
   },
 } as const

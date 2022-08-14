@@ -13,7 +13,6 @@ import { getInstance } from '../libs/auth0'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
-import { makePusher } from '../libs/pusher'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -40,15 +39,6 @@ const IndexPage: React.FC = () => {
     }
     f()
   }, [token])
-  useEffect(() => {
-    const f = async () => {
-      const { pusher, channel } = await makePusher()
-      channel.bind("my-event", (data: any) => {
-        console.log('data', data)
-      })
-    }
-    f()
-  })
   const main: React.FC = () => (
     <>
       <ul>
