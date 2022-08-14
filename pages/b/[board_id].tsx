@@ -39,7 +39,8 @@ const IndexPage: React.FC = () => {
 
       const pusher = await makePusher()
       const channel = pusher.subscribe('post')
-      user.subscribeNotifications(channel, 'typing', () => {
+      user.subscribeNotifications(channel, 'typing', (data) => {
+        console.log(data)
         /* no-op */
       })
     }
