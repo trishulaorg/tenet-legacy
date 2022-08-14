@@ -47,7 +47,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
           .map((v) => v.data.authorPersonaScreenName)
       ),
     ],
-    100
+    1000
   )
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
