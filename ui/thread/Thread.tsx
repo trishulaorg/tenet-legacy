@@ -76,6 +76,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                   postForm.replyTo = v
                   postForm.onSubmit = (comment: string, files: File[]) =>
                     onSubmit(comment, files, v)
+                  postForm.onChange = () => publishWritingStatus(props.parent.id)
                 }}
                 showTrashIcon={v.author.name === userState.currentPersona?.name}
               />

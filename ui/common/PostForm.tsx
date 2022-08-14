@@ -62,7 +62,10 @@ export const PostFormInner: React.FC = observer(() => {
           className="w-full p-4"
           rows={4}
           value={content}
-          onChange={(e) => setContent(e.currentTarget.value)}
+          onChange={(e) => {
+            setContent(e.currentTarget.value)
+            state.onChange()
+          }}
           placeholder="What did you think?"
         />
 

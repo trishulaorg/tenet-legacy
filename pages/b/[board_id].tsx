@@ -31,17 +31,6 @@ const IndexPage: React.FC = () => {
     new BoardState('', contentGraphqlQueryDocument)
   )
 
-  const publishWritingStatus = (postId): void => {
-    fetcher(
-      queryDocuments.Mutation.setTypingStateOnBoard,
-      {
-        personaId: user.currentPersona?.id,
-        postId,
-      },
-      token
-    )
-  }
-
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
@@ -50,9 +39,12 @@ const IndexPage: React.FC = () => {
 
       const pusher = await makePusher()
       const channel = pusher.subscribe('post')
-      channel.bind('typing', function (data: { postId: string; createdAt: string }) {
-        alert(JSON.stringify(data))
-      })
+      channel.bind(
+        'typing',
+        function (data: { postId: string; createdAt: string; authorPersonaId: number }) {
+          console.log(JSON.stringify(data))
+        }
+      )
     }
     f()
   }, [token, router, user])
