@@ -37,12 +37,6 @@ export const context: ContextFunction = async ({ req }) => {
       // do nothing. just ignore for now.
     }
   }
-  console.info('env', {
-    appId: process.env['PUSHER_APP_ID']!,
-    key: process.env['PUSHER_KEY']!,
-    secret: process.env['PUSHER_SECRET']!,
-    cluster: process.env['PUSHER_CLUSTER']!,
-  })
   const pusher = new Pusher({
     appId: process.env['PUSHER_APP_ID']!,
     key: process.env['PUSHER_KEY']!,
