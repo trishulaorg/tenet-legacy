@@ -96,6 +96,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
         />
         <div className="pb-2" />
         <CreatedAt created={props.post.createdAt} />
+        <TypingMemberListLabel members={debouncedMembers} />
       </CardMeta>
       <div className="pb-5" />
       {props.post.hasRepsponse ? (
@@ -103,7 +104,6 @@ export const Post: React.FC<PostProps> = observer((props) => {
       ) : (
         <div>No Comments Yet</div>
       )}
-      <TypingMemberListLabel members={debouncedMembers} />
     </div>
   )
 })
