@@ -39,12 +39,9 @@ const IndexPage: React.FC = () => {
 
       const pusher = await makePusher()
       const channel = pusher.subscribe('post')
-      channel.bind(
-        'typing',
-        function (data: { postId: string; createdAt: string; authorPersonaId: number }) {
-          console.log(JSON.stringify(data))
-        }
-      )
+      user.subscribeNotifications(channel, 'typing', () => {
+        /* no-op */
+      })
     }
     f()
   }, [token, router, user])
@@ -56,7 +53,7 @@ const IndexPage: React.FC = () => {
 
   useEffect(() => {
     mutate()
-  }, [])
+  })
 
   useEffect(() => {
     if (data) {
