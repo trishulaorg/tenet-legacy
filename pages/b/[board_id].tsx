@@ -31,6 +31,11 @@ const IndexPage: React.FC = () => {
     new BoardState('', contentGraphqlQueryDocument)
   )
 
+  const { data, mutate } = useSWR<{ board: BoardType }>(
+    () => (isReady ? contentGraphqlQueryDocument : null),
+    (document) => fetcher(document, { topicId: board_id }, token)
+  )
+
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
@@ -38,19 +43,18 @@ const IndexPage: React.FC = () => {
       }
 
       const pusher = await makePusher()
-      const channel = pusher.subscribe('post')
-      user.subscribeNotifications(channel, 'typing', (data) => {
-        console.log(data)
-        /* no-op */
-      })
+      const postIds = data?.board.posts.map((post) => post.id) ?? []
+      const postChannels = postIds.map((postId) => pusher.subscribe(postId))
+
+      postChannels.forEach((channel) =>
+        user.subscribeNotifications(channel, 'typing', (data) => {
+          console.log(data)
+          /* no-op */
+        })
+      )
     }
     f()
-  }, [token, router, user])
-
-  const { data, mutate } = useSWR<{ board: BoardType }>(
-    () => (isReady ? contentGraphqlQueryDocument : null),
-    (document) => fetcher(document, { topicId: board_id }, token)
-  )
+  }, [token, router, user, data?.board.posts])
 
   useEffect(() => {
     mutate()
