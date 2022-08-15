@@ -80,6 +80,7 @@ const validationSchema: ValidationSchemaType = {
     }),
     putAttachedImage: z.any(),
     setPersonaIcon: z.any(),
+    setTypingStateOnBoard: z.any(),
   },
 } as const
 

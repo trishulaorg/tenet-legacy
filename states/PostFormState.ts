@@ -5,15 +5,33 @@ import type { PostState } from './PostState'
 export class PostFormState {
   private _replyTo: PostState | undefined
   private _onSubmit: (comment: string, files: File[]) => void
+  private _onChange: () => void
 
-  constructor(args: { replyTo?: PostState; onSubmit?: (comment: string, files: File[]) => void }) {
+  constructor(args: {
+    replyTo?: PostState
+    onSubmit?: (comment: string, files: File[]) => void
+    onChange?: () => void
+  }) {
     this._replyTo = args.replyTo
     this._onSubmit =
       args.onSubmit ??
       (() => {
         /* no-op */
       })
+    this._onChange =
+      args.onChange ??
+      (() => {
+        /* no-op */
+      })
     makeAutoObservable(this)
+  }
+
+  get onChange(): () => void {
+    return this._onChange
+  }
+
+  set onChange(cb: () => void) {
+    this._onChange = cb
   }
 
   get replyTo(): PostState | undefined {

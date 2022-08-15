@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx'
+import type { Channel } from 'pusher-js/with-encryption'
 import { createContext } from 'react'
 import { queryDocuments } from '../server/graphql-schema/queryDocuments'
 
@@ -7,11 +8,13 @@ export class UserState {
   token
   currentPersonaIndex: number
   requested: boolean
+  _notifications: Notification[]
   constructor(token: string, personas: PersonaState[], currentPersonaIndex: number) {
     this.token = token
     this._personas = personas
     this.currentPersonaIndex = currentPersonaIndex
     this.requested = false
+    this._notifications = []
     makeAutoObservable(this)
   }
   get isValidUser(): boolean {
@@ -47,6 +50,30 @@ export class UserState {
   get currentPersona(): PersonaState | undefined {
     return this.personas?.length > 0 ? this.personas[this.currentPersonaIndex] : undefined
   }
+
+  subscribeNotifications<T = Record<string, string>>(
+    channel: Channel,
+    eventName: string,
+    cb: (notification: Notification<T>) => void
+  ): void {
+    channel.bind(eventName, (data: T): void => {
+      const n: Notification<T> = {
+        channel: channel.name,
+        eventName,
+        data,
+      }
+      console.log(n)
+      this.notifications.push(n)
+      cb(n)
+    })
+  }
+
+  set notifications(notifications: Notification[]) {
+    this._notifications = notifications
+  }
+  get notifications(): Notification[] {
+    return this._notifications
+  }
 }
 
 export class PersonaState {
@@ -75,3 +102,15 @@ export const PersonaStateContext = createContext(
 )
 
 export const defaultUser: () => UserState = () => new UserState('INVALID_TOKEN', [], 0)
+
+export interface Notification<T = unknown> {
+  channel: string
+  eventName: string
+  data: T
+}
+
+export type TypingStateNotification = Notification<{
+  createdAt: string
+  authorPersonaId: number
+  authorPersonaScreenName: string
+}>

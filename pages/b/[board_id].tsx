@@ -13,6 +13,7 @@ import useSWR from 'swr'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
+import { makePusher } from '../../libs/usePusher'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -30,19 +31,30 @@ const IndexPage: React.FC = () => {
     new BoardState('', contentGraphqlQueryDocument)
   )
 
+  const { data, mutate } = useSWR<{ board: BoardType }>(
+    () => (isReady ? contentGraphqlQueryDocument : null),
+    (document) => fetcher(document, { topicId: board_id }, token)
+  )
+
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
         await user.request()
       }
+
+      const pusher = await makePusher()
+      const postIds = data?.board.posts.map((post) => post.id) ?? []
+      const postChannels = postIds.map((postId) => pusher.subscribe(postId))
+
+      postChannels.forEach((channel) =>
+        user.subscribeNotifications(channel, 'typing', (data) => {
+          console.log(data)
+          /* no-op */
+        })
+      )
     }
     f()
-  }, [token, router, user])
-
-  const { data, mutate } = useSWR<{ board: BoardType }>(
-    () => (isReady ? contentGraphqlQueryDocument : null),
-    (document) => fetcher(document, { topicId: board_id }, token)
-  )
+  }, [token, router, user, data?.board.posts])
 
   useEffect(() => {
     mutate()
