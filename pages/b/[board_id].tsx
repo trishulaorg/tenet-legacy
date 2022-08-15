@@ -14,6 +14,7 @@ import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
+import type { Channel } from 'pusher-js'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -44,7 +45,14 @@ const IndexPage: React.FC = () => {
 
       const pusher = await makePusher()
       const postIds = data?.board.posts.map((post) => post.id) ?? []
-      const postChannels = postIds.map((postId) => pusher.subscribe(postId))
+
+      const postChannels: Channel[] = []
+
+      postIds.forEach((postId) => {
+        if (user.notifications.every((notification) => notification.channel !== '')) {
+          postChannels.push(pusher.subscribe(postId))
+        }
+      })
 
       postChannels.forEach((channel) =>
         user.subscribeNotifications(channel, 'typing', (data) => {
