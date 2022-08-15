@@ -1,8 +1,6 @@
 import type { Variables } from 'graphql-request'
-import { request } from 'graphql-request'
-import type { DocumentNode, FetchResult } from '@apollo/client'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { createUploadLink } from 'apollo-upload-client'
+import { GraphQLClient, request } from 'graphql-request'
+import { getSdk } from '../server/frontend-graphql-definition'
 
 export interface APIResult<T> {
   data: T
@@ -25,24 +23,12 @@ export const rawFetcher = <T>(args: {
 export const fetcher = <T>(document: string, variables: Variables, token?: string): Promise<T> =>
   rawFetcher<T>({ url: ENDPOINT, document, variables, token })
 
-const mutator = <T>(
-  query: DocumentNode,
-  variables: Variables,
-  token: string
-): Promise<FetchResult<T>> =>
-  new ApolloClient({
-    uri: '/api/graphql',
-    cache: new InMemoryCache(),
-    link: createUploadLink({
-      uri: '/api/graphql',
-      headers: {
-        authorization: `Bearer ${token}`,
-        accept: 'application/json',
-      },
-    }),
-  }).mutate<T>({
-    mutation: query,
-    variables: variables,
-  })
+const client = getSdk(new GraphQLClient(ENDPOINT))
+const tokenToDefaultHeader = (token?: string): HeadersInit => {
+  return {
+    authorization: `Bearer ${token}`,
+    accept: 'application/json',
+  }
+}
 
-export { mutator }
+export { client, tokenToDefaultHeader }

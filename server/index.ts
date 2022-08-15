@@ -4,16 +4,20 @@ import type { ExpressContext } from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { NotAuthenticatedError } from './errors/NotAuthenticatedError'
-import type { ContextType } from './graphql-schema/resolvers'
 import Pusher from 'pusher'
 
 dotenv.config()
 
 const prisma = new PrismaClient()
 
-type ContextFunction = (args: ExpressContext) => Promise<ContextType>
+export type ContextFunction = typeof context
+export type Context = {
+  me: User | null
+  prisma: PrismaClient
+  pusher: Pusher
+}
 
-export const context: ContextFunction = async ({ req }) => {
+export const context = async ({ req }: ExpressContext): Promise<Context> => {
   const token = req.headers.authorization?.substring('Bearer '.length)
   let me: User | null = null
   if (token && process.env['API_TOKEN_SECRET']) {

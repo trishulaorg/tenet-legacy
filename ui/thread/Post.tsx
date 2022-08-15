@@ -11,13 +11,12 @@ import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import type { TypingStateNotification } from '../../states/UserState'
 import { UserStateContext } from '../../states/UserState'
-import { fetcher, mutator } from '../../libs/fetchAPI'
+import { client, fetcher, tokenToDefaultHeader } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
-import gql from 'graphql-tag'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { TypingMemberListLabel } from '../common/TypingMemberListLabel'
 import { parseISO, differenceInSeconds } from 'date-fns'
@@ -65,10 +64,9 @@ export const Post: React.FC<PostProps> = observer((props) => {
       },
       userState.token
     )
-    await mutator(
-      gql(queryDocuments.Mutation.putAttachedImage),
+    await client.putAttachedImage(
       { postId: id, files: files },
-      userState.token
+      tokenToDefaultHeader(userState.token)
     )
     await mutate(boardState.fetcherDocument)
   }
