@@ -109,8 +109,11 @@ export interface Notification<T = unknown> {
   data: T
 }
 
-export type TypingStateNotification = Notification<{
-  createdAt: string
-  authorPersonaId: number
-  authorPersonaScreenName: string
-}>
+export interface TypingStateNotification
+  extends Notification<{
+    createdAt: string
+    authorPersonaId: number
+    authorPersonaScreenName: string
+  }> {
+  eventName: 'typing'
+}
