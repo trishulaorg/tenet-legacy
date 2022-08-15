@@ -35,6 +35,7 @@ export const Board: React.FC<BoardProps> = observer(({ showPostCreate = true }) 
     )
     await mutate(state.fetcherDocument)
   }
+
   return (
     <div>
       <h1 className="my-4 text-slate-600 text-2xl">#{state.title}</h1>

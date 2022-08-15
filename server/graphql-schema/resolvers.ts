@@ -10,6 +10,8 @@ import type { Upload } from 'graphql-upload'
 import { NotAuthorizedError } from '../errors/NotAuthorizedError'
 import { uploadImageFileToS3 } from '../fileUpload/uploadImageFileToS3'
 import { ZodSchema } from 'zod'
+import type Pusher from 'pusher'
+import { formatISO } from 'date-fns'
 
 export const resolversWithoutValidator = {
   Query: {
@@ -441,6 +443,72 @@ export const resolversWithoutValidator = {
         filename: fileUrl,
       }
     },
+    setTypingStateOnBoard: async (
+      _source: never,
+      {
+        personaId,
+        postId,
+      }: {
+        personaId: number
+        postId: string
+      },
+      context: ContextType
+    ) => {
+      if (!context.me) {
+        throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
+      }
+      const currentPersona = await context.prisma.persona.findFirst({
+        where: {
+          user: {
+            id: context.me.id,
+          },
+          id: personaId,
+        },
+      })
+      if (!currentPersona) {
+        throw new NotFoundError('Invalid persona id')
+      }
+      const post = await context.prisma.post.findFirst({
+        where: {
+          id: postId,
+        },
+        include: {
+          board: true,
+          persona: true,
+          threads: {
+            include: {
+              persona: true,
+              replies: {
+                include: {
+                  persona: true,
+                },
+              },
+            },
+          },
+        },
+      })
+
+      if (post === null) {
+        return post
+      }
+      /*
+       * Pusher integration
+       */
+
+      const author = await context.prisma.persona.findFirst({
+        where: {
+          id: personaId,
+        },
+      })
+
+      await context.pusher.trigger(postId, 'typing', {
+        createdAt: formatISO(new Date()),
+        authorPersonaId: personaId,
+        authorPersonaScreenName: author?.screenName,
+      })
+
+      return post
+    },
   },
 } as const
 export type ResolverType = typeof resolversWithoutValidator
@@ -493,4 +561,5 @@ export const resolvers = {
 export type ContextType = {
   me: User | null
   prisma: PrismaClient
+  pusher: Pusher
 }
