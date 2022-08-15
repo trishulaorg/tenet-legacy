@@ -110,8 +110,7 @@ export interface Notification<T = unknown> {
 }
 
 export type TypingStateNotification = Notification<{
-  postId: string
   createdAt: string
-  authorPersonaId: string
+  authorPersonaId: number
   authorPersonaScreenName: string
 }>
