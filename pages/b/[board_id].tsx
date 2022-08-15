@@ -49,7 +49,7 @@ const IndexPage: React.FC = () => {
       const postChannels: Channel[] = []
 
       postIds.forEach((postId) => {
-        if (user.notifications.every((notification) => notification.channel !== '')) {
+        if (user.notifications.every((notification) => notification.channel !== postId)) {
           postChannels.push(pusher.subscribe(postId))
         }
       })
