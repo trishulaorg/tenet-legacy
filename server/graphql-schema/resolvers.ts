@@ -501,8 +501,7 @@ export const resolversWithoutValidator = {
         },
       })
 
-      context.pusher.trigger('post', 'typing', {
-        postId,
+      await context.pusher.trigger(postId, 'typing', {
         createdAt: formatISO(new Date()),
         authorPersonaId: personaId,
         authorPersonaScreenName: author?.screenName,

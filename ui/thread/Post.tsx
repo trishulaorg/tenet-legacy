@@ -39,9 +39,9 @@ export const Post: React.FC<PostProps> = observer((props) => {
         (userState.notifications as TypingStateNotification[])
           .filter(
             (v) =>
-              v.data.postId === props.post.id &&
-              v.channel === 'post' &&
+              v.channel === props.post.id &&
               v.eventName === 'typing' &&
+              v.data.authorPersonaId !== userState.currentPersona?.id &&
               differenceInSeconds(new Date(), parseISO(v.data.createdAt)) < 4
           )
           .map((v) => v.data.authorPersonaScreenName)
