@@ -1,48 +1,30 @@
-import type { Variables } from 'graphql-request'
-import { request } from 'graphql-request'
-import type { DocumentNode, FetchResult } from '@apollo/client'
-import { ApolloClient, InMemoryCache } from '@apollo/client'
-import { createUploadLink } from 'apollo-upload-client'
+import { GraphQLClient } from 'graphql-request'
+import { getSdk, getSdkWithHooks } from '../server/frontend-graphql-definition'
 
-export interface APIResult<T> {
-  data: T
+const ENDPOINT = '/api/graphql'
+
+const defaultHeaders = {
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+}
+const graphqlClient = new GraphQLClient(ENDPOINT, { headers: defaultHeaders })
+
+const client = getSdk(graphqlClient)
+const apiHooks = getSdkWithHooks(graphqlClient)
+
+const setAuthToken = (token: string | undefined): void => {
+  if (!token) {
+    graphqlClient.setHeaders(defaultHeaders)
+  } else {
+    graphqlClient.setHeader('Authorization', `Bearer ${token}`)
+  }
 }
 
-export const ENDPOINT = '/api/graphql'
+const tokenToDefaultHeader = (token?: string): HeadersInit => {
+  return {
+    authorization: `Bearer ${token}`,
+    accept: 'application/json',
+  }
+}
 
-export const rawFetcher = <T>(args: {
-  url: string
-  document: string
-  token: string | undefined
-  variables: Variables
-}): Promise<T> =>
-  request<T, Variables>(args.url, args.document, args.variables, {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-    Authorization: `Bearer ${args.token ?? 'INVALID_TOKEN'}`,
-  })
-
-export const fetcher = <T>(document: string, variables: Variables, token?: string): Promise<T> =>
-  rawFetcher<T>({ url: ENDPOINT, document, variables, token })
-
-const mutator = <T>(
-  query: DocumentNode,
-  variables: Variables,
-  token: string
-): Promise<FetchResult<T>> =>
-  new ApolloClient({
-    uri: '/api/graphql',
-    cache: new InMemoryCache(),
-    link: createUploadLink({
-      uri: '/api/graphql',
-      headers: {
-        authorization: `Bearer ${token}`,
-        accept: 'application/json',
-      },
-    }),
-  }).mutate<T>({
-    mutation: query,
-    variables: variables,
-  })
-
-export { mutator }
+export { client, apiHooks, setAuthToken, tokenToDefaultHeader }

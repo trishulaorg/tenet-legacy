@@ -2,14 +2,12 @@ import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
-import type { PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { fetcher } from '../../libs/fetchAPI'
-import useSWR from 'swr'
+import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
@@ -18,10 +16,13 @@ const PostPage: React.FC = () => {
   const router = useRouter()
   const {
     isReady,
-    query: { post_id },
+    query: { post_id: rawPostId },
   } = router
   let user = defaultUser()
-  if (token) user = new UserState(token, [], 0)
+  if (token) {
+    setAuthToken(token)
+    user = new UserState(token, [], 0)
+  }
 
   const contentGraphqlQueryDocument = queryDocuments.Query.post
 
@@ -34,14 +35,15 @@ const PostPage: React.FC = () => {
       if (user) {
         await user.request()
       }
+      if (token) {
+        setAuthToken(token)
+      }
     }
     f()
   }, [token, router, user])
 
-  const { data } = useSWR<{ post: PostType }>(
-    () => (isReady ? contentGraphqlQueryDocument : null),
-    (document) => fetcher(document, { id: post_id }, token)
-  )
+  const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
+  const { data } = apiHooks.useGetPost(() => postId, { id: postId })
 
   useEffect(() => {
     if (data) {

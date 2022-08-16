@@ -4,11 +4,9 @@ import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { UserStateContext } from '../../states/UserState'
 import { ErrorMessage } from '../form/ErrorMessage'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
-import gql from 'graphql-tag'
 import { ApolloError } from '@apollo/client'
 import { SuccessMessage } from '../form/SuccessMessage'
-import { mutator } from '../../libs/fetchAPI'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 
 const PersonaIconForm: React.FC = observer(() => {
   const userState = useContext(UserStateContext)
@@ -29,11 +27,11 @@ const PersonaIconForm: React.FC = observer(() => {
     setPersonaIconSuccessMessage(null)
     setPersonaIconErrorMessage(null)
     try {
-      await mutator(
-        gql(queryDocuments.Mutation.setPersonaIcon),
-        { personaId: userState.currentPersona?.id ?? -1, file: files[0] },
-        token ?? ''
-      )
+      setAuthToken(token)
+      await client.setPersonaIcon({
+        personaId: userState.currentPersona?.id ?? -1,
+        file: files[0] ?? new File([], ''),
+      })
       setPersonaIconSuccessMessage('New icon is Successfully set!')
     } catch (error) {
       console.dir(error)

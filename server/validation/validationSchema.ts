@@ -1,21 +1,16 @@
 import { z } from 'zod'
 import { ContentType } from '@prisma/client'
 import type { ZodString } from 'zod/lib/types'
-import type { ResolverType } from '../graphql-schema/resolvers'
+import type { NexusGenArgTypes, NexusGenFieldTypes } from '../nexus-typegen'
 
 type ValidationSchemaType = {
-  Query: {
-    [KeyName in keyof ResolverType['Query']]: {
-      parse: (
-        arg: Parameters<ResolverType['Query'][KeyName]>[1]
-      ) => Parameters<ResolverType['Query'][KeyName]>[1]
+  [Method in keyof Pick<NexusGenArgTypes, 'Query' | 'Mutation'>]: {
+    [KeyName in keyof NexusGenArgTypes[Method]]: {
+      parse: (arg: NexusGenArgTypes[Method][KeyName]) => NexusGenArgTypes[Method][KeyName]
     }
-  }
-  Mutation: {
-    [KeyName in keyof ResolverType['Mutation']]: {
-      parse: (
-        arg: Parameters<ResolverType['Mutation'][KeyName]>[1]
-      ) => Parameters<ResolverType['Mutation'][KeyName]>[1]
+  } & {
+    [KeyName in Exclude<keyof NexusGenFieldTypes[Method], keyof NexusGenArgTypes[Method]>]: {
+      parse: <T>(arg: T) => T
     }
   }
 }
@@ -80,7 +75,10 @@ const validationSchema: ValidationSchemaType = {
     }),
     putAttachedImage: z.any(),
     setPersonaIcon: z.any(),
-    setTypingStateOnBoard: z.any(),
+    setTypingStateOnBoard: z.object({
+      personaId: z.number().int(),
+      postId: z.string().min(26).max(26),
+    }),
   },
 } as const
 

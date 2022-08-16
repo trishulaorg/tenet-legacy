@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16
 
 MAINTAINER minamorl
 
@@ -9,6 +9,8 @@ COPY package*.json ./
 COPY prisma ./
 
 RUN npm install
+
+RUN npx prisma generate
 
 COPY . .
 

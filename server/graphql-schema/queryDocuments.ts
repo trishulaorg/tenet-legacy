@@ -1,41 +1,57 @@
-import type { ResolverType } from './resolvers'
 import { gql } from 'graphql-request'
+import type { NexusGenFieldTypes } from '../nexus-typegen'
 
 /**
  * FIXME: Implement missing documents
  */
 // @ts-expect-error Needs to be implemented.
 const queryDocuments: {
-  [MethodName in keyof ResolverType]: { [EndpointName in keyof ResolverType[MethodName]]: string }
+  [MethodName in keyof Pick<NexusGenFieldTypes, 'Query' | 'Mutation'>]: {
+    [EndpointName in keyof NexusGenFieldTypes[MethodName]]: string
+  }
 } = {
   Query: {
     activities: gql`
-      query {
+      query getActivities {
         activities {
           id
+          board {
+            id
+            title
+            description
+          }
           boardId
           title
           content
           createdAt
           persona {
+            id
             screenName
             name
             iconUrl
           }
           threads {
             id
+            board {
+              id
+              title
+            }
+            postId
             content
             createdAt
             persona {
+              id
               screenName
               name
               iconUrl
             }
             replies {
               id
+              threadId
               content
               createdAt
               persona {
+                id
                 screenName
                 name
                 iconUrl
@@ -46,38 +62,54 @@ const queryDocuments: {
       }
     `,
     board: gql`
-      query Board($topicId: String!) {
+      query getBoard($topicId: String!) {
         board(id: $topicId) {
           id
           title
+          description
           posts {
             id
             boardId
+            board {
+              id
+              description
+              title
+            }
             title
             content
             imageUrls
             createdAt
             persona {
+              id
               screenName
               name
               iconUrl
             }
             threads {
               id
+              board {
+                id
+                title
+              }
+              boardId
+              postId
               content
               imageUrls
               createdAt
               persona {
+                id
                 screenName
                 name
                 iconUrl
               }
               replies {
                 createdAt
+                threadId
                 id
                 content
                 imageUrls
                 persona {
+                  id
                   screenName
                   name
                   iconUrl
@@ -89,7 +121,7 @@ const queryDocuments: {
       }
     `,
     me: gql`
-      query {
+      query getMe {
         me {
           personas {
             id
@@ -101,29 +133,37 @@ const queryDocuments: {
       }
     `,
     post: gql`
-      query Post($id: String!) {
+      query getPost($id: String!) {
         post(id: $id) {
           id
           boardId
           board {
             id
             title
+            description
           }
           title
           content
           imageUrls
           createdAt
           persona {
+            id
             screenName
             name
             iconUrl
           }
           threads {
             id
+            board {
+              id
+              title
+            }
+            postId
             content
             imageUrls
             createdAt
             persona {
+              id
               screenName
               name
               iconUrl
@@ -131,9 +171,11 @@ const queryDocuments: {
             replies {
               createdAt
               id
+              threadId
               content
               imageUrls
               persona {
+                id
                 screenName
                 name
                 iconUrl
@@ -155,14 +197,14 @@ const queryDocuments: {
   },
   Mutation: {
     createBoard: gql`
-      mutation CreateBoard($title: String!, $description: String!, $personaId: Int!) {
+      mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
         createBoard(title: $title, description: $description, personaId: $personaId) {
           id
         }
       }
     `,
     createPersona: gql`
-      mutation CreatePersona($screenName: String!, $name: String!, $iconPath: String!) {
+      mutation createPersona($screenName: String!, $name: String!, $iconPath: String!) {
         createPersona(screenName: $screenName, name: $name, iconPath: $iconPath) {
           name
           screenName
@@ -170,7 +212,7 @@ const queryDocuments: {
       }
     `,
     createPost: gql`
-      mutation CreatePost(
+      mutation createPost(
         $title: String!
         $content: String!
         $persona_id: Int!
@@ -179,7 +221,7 @@ const queryDocuments: {
         createPost(
           title: $title
           content: $content
-          contentType: "TEXT"
+          contentType: TEXT
           personaId: $persona_id
           boardId: $board_id
         ) {
@@ -188,14 +230,8 @@ const queryDocuments: {
       }
     `,
     createReply: gql`
-      mutation CreateReply(
-        $title: String!
-        $content: String!
-        $persona_id: Int!
-        $thread_id: String!
-      ) {
+      mutation createReply($content: String!, $persona_id: Int!, $thread_id: String!) {
         createReply(
-          title: $title
           content: $content
           contentType: TEXT
           personaId: $persona_id
@@ -206,15 +242,13 @@ const queryDocuments: {
       }
     `,
     createThread: gql`
-      mutation CreateThread(
-        $title: String!
+      mutation createThread(
         $content: String!
         $post_id: String!
         $persona_id: Int!
         $board_id: String!
       ) {
         createThread(
-          title: $title
           content: $content
           contentType: TEXT
           personaId: $persona_id
@@ -226,7 +260,7 @@ const queryDocuments: {
       }
     `,
     putAttachedImage: gql`
-      mutation putAttachedImage($postId: String!, $files: [Upload]!) {
+      mutation putAttachedImage($postId: String!, $files: [Upload!]!) {
         putAttachedImage(postId: $postId, files: $files) {
           filename
         }
