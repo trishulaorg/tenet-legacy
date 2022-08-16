@@ -1,6 +1,6 @@
 import type { Variables } from 'graphql-request'
 import { GraphQLClient, request } from 'graphql-request'
-import { getSdk } from '../server/frontend-graphql-definition'
+import { getSdk, getSdkWithHooks } from '../server/frontend-graphql-definition'
 
 export interface APIResult<T> {
   data: T
@@ -23,7 +23,23 @@ export const rawFetcher = <T>(args: {
 export const fetcher = <T>(document: string, variables: Variables, token?: string): Promise<T> =>
   rawFetcher<T>({ url: ENDPOINT, document, variables, token })
 
-const client = getSdk(new GraphQLClient(ENDPOINT))
+const defaultHeaders = {
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+}
+const graphqlClient = new GraphQLClient(ENDPOINT, { headers: defaultHeaders })
+
+const client = getSdk(graphqlClient)
+const apiHooks = getSdkWithHooks(graphqlClient)
+
+const setAuthToken = (token: string | undefined): void => {
+  if (!token) {
+    graphqlClient.setHeaders(defaultHeaders)
+  } else {
+    graphqlClient.setHeader('Authorization', `Bearer ${token}`)
+  }
+}
+
 const tokenToDefaultHeader = (token?: string): HeadersInit => {
   return {
     authorization: `Bearer ${token}`,
@@ -31,4 +47,4 @@ const tokenToDefaultHeader = (token?: string): HeadersInit => {
   }
 }
 
-export { client, tokenToDefaultHeader }
+export { client, apiHooks, setAuthToken, tokenToDefaultHeader }

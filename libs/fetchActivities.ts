@@ -1,29 +1,7 @@
-import { fetcher } from './fetchAPI'
-import type { BoardType, ThreadType } from '../states/PostState'
-import { queryDocuments } from '../server/graphql-schema/queryDocuments'
+import { client, setAuthToken } from './fetchAPI'
+import type { GetActivitiesQuery } from '../server/frontend-graphql-definition'
 
-export interface PersonaType {
-  id: number
-  name: string
-  screenName: string
-  iconUrl: string
-}
-
-export interface ActivityType {
-  id: string
-  board: BoardType
-  boardId: string
-  title: string
-  content: string
-  persona: PersonaType
-  threads: ThreadType[]
-  createdAt: string
-}
-
-export interface ResultType {
-  activities: ActivityType[]
-}
-
-export function fetchActivities(token?: string): Promise<ResultType> {
-  return fetcher(queryDocuments.Query.activities, {}, token)
+export function fetchActivities(token?: string): Promise<GetActivitiesQuery> {
+  setAuthToken(token)
+  return client.getActivities({})
 }

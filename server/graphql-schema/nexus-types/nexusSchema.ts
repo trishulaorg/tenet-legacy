@@ -21,7 +21,9 @@ const FileDef = objectType({
     output: false,
   },
   definition(t) {
-    t.nonNull.string('filename'), t.string('mimetype'), t.string('encoding')
+    t.nonNull.string('filename')
+    t.string('mimetype')
+    t.string('encoding')
   },
 })
 
@@ -50,6 +52,7 @@ const BoardDef = objectType({
     })
     t.field(Board.id)
     t.field(Board.title)
+    t.field(Board.description)
     t.field(Board.posts)
     t.field({
       ...Board.posts,
@@ -104,6 +107,7 @@ const ThreadDef = objectType({
   definition(t) {
     t.field(Thread.id)
     t.field(Thread.boardId)
+    t.field(Thread.postId)
     t.field(Thread.board)
     t.field(Thread.content)
     t.field({
@@ -316,7 +320,7 @@ const QueryDef = objectType({
         return postWithImageUrl
       },
     })
-    t.nonNull.list.field('search', {
+    t.nonNull.list.nonNull.field('search', {
       type: SearchResultDef.name,
       args: {
         query: arg({

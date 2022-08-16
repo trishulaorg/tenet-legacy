@@ -1,17 +1,7 @@
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
-import useSWR from 'swr'
-import { fetcher } from '../../libs/fetchAPI'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
+import { apiHooks } from '../../libs/fetchAPI'
 import { SearchBoxTextField } from './SearchBoxTextField'
-
-interface ResultT {
-  search: {
-    kind: string
-    id: string
-    title: string
-  }[]
-}
 
 export const SearchBox: React.FC = () => {
   const [query, setQuery] = useState('')
@@ -21,10 +11,14 @@ export const SearchBox: React.FC = () => {
   const mouseDownHandler = (ev: MouseEvent): void => {
     if (ref.current && !ref.current.contains(ev.target as HTMLElement)) setVisibility(false)
   }
-  const { data, mutate } = useSWR<ResultT>(
-    () => (query !== '' ? queryDocuments.Query.search : null),
-    (document) => fetcher(document, { query })
+
+  const queryArguments = { query }
+
+  const { data, mutate } = apiHooks.useSearch(
+    () => apiHooks.useSearch.name + JSON.stringify(queryArguments),
+    queryArguments
   )
+
   useEffect(() => {
     mutate()
   }, [query, mutate])

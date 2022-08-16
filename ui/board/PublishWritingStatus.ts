@@ -1,21 +1,21 @@
 import { useContext } from 'react'
-import { fetcher } from '../../libs/fetchAPI'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
+import type { DebouncedState } from 'use-debounce'
 import { useDebouncedCallback } from 'use-debounce'
+import type { SetTypingStateOnBoardMutation } from '../../server/frontend-graphql-definition'
 
-export const usePublishWritingStatus = (): ((postId: string) => any) => {
+export const usePublishWritingStatus = (): DebouncedState<
+  (postId: string) => Promise<SetTypingStateOnBoardMutation>
+> => {
   const user = useContext(UserStateContext)
+  setAuthToken(user.token)
   const debounced = useDebouncedCallback(
     (postId: string) =>
-      fetcher(
-        queryDocuments.Mutation.setTypingStateOnBoard,
-        {
-          personaId: user.currentPersona?.id,
-          postId,
-        },
-        user.token
-      ),
+      client.setTypingStateOnBoard({
+        personaId: user.currentPersona?.id ?? 0,
+        postId,
+      }),
     200
   )
   return debounced

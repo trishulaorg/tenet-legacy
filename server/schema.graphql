@@ -4,6 +4,7 @@
 
 type Board {
   createdAt: DateTime!
+  description: String!
   id: ID!
   posts: [Post!]!
   title: String!
@@ -71,7 +72,7 @@ type Query {
   personas(names: [String!]!): [Persona]!
   post(id: String!): Post!
   removeUser(name: String!): Boolean!
-  search(query: String!): [SearchResult]!
+  search(query: String!): [SearchResult!]!
 }
 
 type Reply {
@@ -97,6 +98,7 @@ type Thread {
   id: ID!
   imageUrls: [String!]!
   persona: Persona!
+  postId: String!
   replies: [Reply!]!
 }
 
