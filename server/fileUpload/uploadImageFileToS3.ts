@@ -1,10 +1,13 @@
 import { BadRequestError } from '../errors/BadRequest/BadRequestError'
 import { ulid } from 'ulid'
 import { uploadFileToS3 } from './s3Handler'
-import type { Upload } from 'graphql-upload'
+import type { FileUpload } from 'graphql-upload'
 
-const uploadImageFileToS3 = async (file: Upload, directoryKey: string): Promise<string> => {
-  const fileObject = await file.file
+const uploadImageFileToS3 = async (
+  file: Promise<FileUpload>,
+  directoryKey: string
+): Promise<string> => {
+  const fileObject = await file
   if (typeof fileObject === 'undefined') {
     throw new BadRequestError('No file data is supplied.')
   }
