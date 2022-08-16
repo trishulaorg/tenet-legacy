@@ -1,11 +1,7 @@
 import { GraphQLClient } from 'graphql-request'
 import { getSdk, getSdkWithHooks } from '../server/frontend-graphql-definition'
 
-export interface APIResult<T> {
-  data: T
-}
-
-export const ENDPOINT = '/api/graphql'
+const ENDPOINT = '/api/graphql'
 
 const defaultHeaders = {
   'Content-Type': 'application/json',
