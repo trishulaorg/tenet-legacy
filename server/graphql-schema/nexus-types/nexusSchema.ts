@@ -12,7 +12,6 @@ import { formatISO } from 'date-fns'
 import { Board, ContentType, Persona, Post, Reply, Thread, User } from 'nexus-prisma'
 import type { Thread as PrismaThread } from '@prisma/client'
 import type { Post as PrismaPost, Reply as PrismaReply } from '@prisma/client'
-import { validationSchema } from '../../validation/validationSchema'
 
 const FileDef = objectType({
   name: 'File',
@@ -183,7 +182,6 @@ const QueryDef = objectType({
         }),
       },
       resolve(_source, args, context) {
-        validationSchema.Query.persona
         return context.prisma.persona.findFirstOrThrow({
           where: {
             name: args.name,
