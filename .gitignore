@@ -12,3 +12,7 @@ node_modules/
 .vercel
 
 tsconfig.tsbuildinfo
+
+# PWA auto generated files
+public/sw.js
+public/workbox-*.js
