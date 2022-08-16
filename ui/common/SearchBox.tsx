@@ -14,14 +14,10 @@ export const SearchBox: React.FC = () => {
 
   const queryArguments = { query }
 
-  const { data, mutate } = apiHooks.useSearch(
-    () => apiHooks.useSearch.name + JSON.stringify(queryArguments),
+  const { data } = apiHooks.useSearch(
+    () => query && apiHooks.useSearch.name + JSON.stringify(queryArguments),
     queryArguments
   )
-
-  useEffect(() => {
-    mutate()
-  }, [query, mutate])
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setQuery(e.currentTarget.value)
     setVisibility(true)
