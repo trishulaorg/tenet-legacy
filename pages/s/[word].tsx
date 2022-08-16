@@ -38,7 +38,7 @@ const IndexPage: React.FC = () => {
   const searchQuery = { query: word }
 
   const { data } = apiHooks.useSearch(
-    () => apiHooks.useSearch.name + JSON.stringify(searchQuery),
+    () => word && apiHooks.useSearch.name + JSON.stringify(searchQuery),
     searchQuery
   )
 
