@@ -9,13 +9,10 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { UserStateContext } from '../../states/UserState'
-import { fetcher, mutator } from '../../libs/fetchAPI'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
-import { ulid } from 'ulid'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
-import gql from 'graphql-tag'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 
 export interface ThreadProps {
@@ -34,25 +31,19 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
     files,
     thread
   ) => {
+    setAuthToken(userState.token)
+
     const {
       createReply: { id },
-    } = await fetcher(
-      queryDocuments.Mutation.createReply,
-      {
-        id: ulid(),
-        title: 'dummy',
-        content: comment,
-        persona_id: userState.currentPersona?.id ?? -1,
-        thread_id: thread.id,
-      },
-      userState.token
-    )
-    await mutator(
-      gql(queryDocuments.Mutation.putAttachedImage),
-      { postId: id, files: files },
-      userState.token
-    )
-    await mutate(boardState.fetcherDocument)
+    } = await client.createReply({
+      content: comment,
+      persona_id: userState.currentPersona?.id ?? -1,
+      thread_id: thread.id,
+    })
+    await client.putAttachedImage({ postId: id, files: files })
+
+    await mutate(boardState.id)
+    await mutate(props.parent.id)
     await publishWritingStatus(props.parent.id)
   }
   return (

@@ -2,14 +2,12 @@ import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
-import type { BoardType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { fetcher } from '../../libs/fetchAPI'
-import useSWR from 'swr'
+import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
@@ -21,21 +19,24 @@ const IndexPage: React.FC = () => {
   const router = useRouter()
   const {
     isReady,
-    query: { board_id },
+    query: { board_id: rawBoardId },
   } = router
   let user = defaultUser()
-  if (token) user = new UserState(token, [], 0)
+  if (token) {
+    setAuthToken(token)
+    user = new UserState(token, [], 0)
+  }
 
   const contentGraphqlQueryDocument = queryDocuments.Query.board
 
   const [context, setContext] = useState<BoardState>(
     new BoardState('', contentGraphqlQueryDocument)
   )
+  const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
-  const { data, mutate } = useSWR<{ board: BoardType }>(
-    () => (isReady ? contentGraphqlQueryDocument : null),
-    (document) => fetcher(document, { topicId: board_id }, token)
-  )
+  const { data } = apiHooks.useGetBoard(() => boardId, {
+    topicId: boardId,
+  })
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -63,10 +64,6 @@ const IndexPage: React.FC = () => {
     }
     f()
   }, [token, router, user, data?.board.posts])
-
-  useEffect(() => {
-    mutate()
-  })
 
   useEffect(() => {
     if (data) {

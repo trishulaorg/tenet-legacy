@@ -12,8 +12,6 @@ export interface PersonaType {
 
 export interface BaseContentType {
   id: string
-  boardId: string
-  title: string
   content: string
   persona: PersonaType
   createdAt: string
@@ -21,6 +19,7 @@ export interface BaseContentType {
 
 export interface BoardType extends BaseContentType {
   title: string
+  boardId: string
   description: string
   posts: PostType[]
   persona: PersonaType
@@ -28,12 +27,16 @@ export interface BoardType extends BaseContentType {
 
 export interface PostType extends BaseContentType {
   board: Pick<BoardType, 'id' | 'title' | 'description'>
+  boardId: string
+  title: string
   threads: ThreadType[]
   persona: PersonaType
 }
 
 export interface ThreadType extends BaseContentType {
   replies: BaseContentType[]
+  board: Pick<BoardType, 'id' | 'title'>
+  postId: string
   persona: PersonaType
 }
 
@@ -105,9 +108,17 @@ export class PostState {
   static fromThreadTypeJSON(json: ThreadType): PostState {
     return new PostState({
       ...json,
+      boardId: json.board.id,
+      title: json.board.title,
       author: new PersonaState(json.persona),
       children: json.replies.map(
-        (v) => new PostState({ ...v, author: new PersonaState(v.persona) })
+        (v) =>
+          new PostState({
+            ...v,
+            boardId: json.board.id,
+            title: json.board.title,
+            author: new PersonaState(v.persona),
+          })
       ),
     })
   }

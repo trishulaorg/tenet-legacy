@@ -2,17 +2,17 @@ import type { GetServerSideProps } from 'next'
 import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
-import { fetchActivities } from '../libs/fetchActivities'
 import { getGqlToken } from '../libs/cookies'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { getInstance } from '../libs/auth0'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
+import { apiHooks } from '../libs/fetchAPI'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -20,7 +20,8 @@ const IndexPage: React.FC = () => {
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
 
-  const [activities, setActivities] = useState<PostState[]>([])
+  const { data, mutate } = apiHooks.useGetActivities(() => apiHooks.useGetActivities.name, {})
+
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
@@ -33,18 +34,18 @@ const IndexPage: React.FC = () => {
     f()
   }, [token, router, user])
   useEffect(() => {
-    const f = async (): Promise<void> => {
-      const result = await fetchActivities(token)
-      setActivities(result.activities.map((v) => PostState.fromPostTypeJSON(v)))
+    if (token) {
+      mutate()
     }
-    f()
-  }, [token])
+  }, [token, mutate])
   const main: React.FC = () => (
     <>
       <ul>
-        {activities.map((v) => (
-          <ActivityCard key={v.id} post={v} />
-        ))}
+        {(data?.activities ?? [])
+          .map((v) => PostState.fromPostTypeJSON(v))
+          .map((v) => (
+            <ActivityCard key={v.id} post={v} />
+          ))}
       </ul>
     </>
   )
