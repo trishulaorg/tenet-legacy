@@ -57,6 +57,7 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Board: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    description: string; // String!
     id: string; // ID!
     title: string; // String!
   }
@@ -96,6 +97,7 @@ export interface NexusGenObjects {
     content: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
+    postId: string; // String!
   }
   User: {};
 }
@@ -113,6 +115,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnu
 export interface NexusGenFieldTypes {
   Board: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    description: string; // String!
     id: string; // ID!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
     title: string; // String!
@@ -157,7 +160,7 @@ export interface NexusGenFieldTypes {
     personas: Array<NexusGenRootTypes['Persona'] | null>; // [Persona]!
     post: NexusGenRootTypes['Post']; // Post!
     removeUser: boolean; // Boolean!
-    search: Array<NexusGenRootTypes['SearchResult'] | null>; // [SearchResult]!
+    search: NexusGenRootTypes['SearchResult'][]; // [SearchResult!]!
   }
   Reply: { // field return type
     content: string; // String!
@@ -180,6 +183,7 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     imageUrls: string[]; // [String!]!
     persona: NexusGenRootTypes['Persona']; // Persona!
+    postId: string; // String!
     replies: NexusGenRootTypes['Reply'][]; // [Reply!]!
   }
   User: { // field return type
@@ -190,6 +194,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Board: { // field return type name
     createdAt: 'DateTime'
+    description: 'String'
     id: 'ID'
     posts: 'Post'
     title: 'String'
@@ -257,6 +262,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     imageUrls: 'String'
     persona: 'Persona'
+    postId: 'String'
     replies: 'Reply'
   }
   User: { // field return type name

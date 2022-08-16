@@ -9,11 +9,10 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { CommentInput } from '../thread/CommentInput'
-import { fetcher } from '../../libs/fetchAPI'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 
 interface ActivityCardProps {
   post: PostState
@@ -24,17 +23,14 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   const userState = useContext(UserStateContext)
   const router = useRouter()
   const onSubmit: (comment: string) => void = async (comment: string) => {
-    await fetcher(
-      queryDocuments.Mutation.createThread,
-      {
-        title: 'dummy',
-        content: comment,
-        persona_id: userState.currentPersona?.id ?? -1,
-        post_id: post.id,
-        board_id: post.boardId,
-      },
-      userState.token
-    )
+    setAuthToken(userState.token)
+    await client.createThread({
+      content: comment,
+      persona_id: userState.currentPersona?.id ?? -1,
+      post_id: post.id,
+      board_id: post.boardId,
+    })
+
     setCommentVisibility(false)
   }
   return (

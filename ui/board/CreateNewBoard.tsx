@@ -2,18 +2,11 @@ import { useRouter } from 'next/router'
 import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
-import { fetcher } from '../../libs/fetchAPI'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import { ClientError } from 'graphql-request'
 import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
-
-interface ResultT {
-  createBoard: {
-    id: string
-  }
-}
 
 export const CreateNewBoard: React.FC = () => {
   const [name, setName] = useState('')
@@ -32,13 +25,11 @@ export const CreateNewBoard: React.FC = () => {
       return
     }
     try {
+      setAuthToken(token)
       const {
         createBoard: { id },
-      } = await fetcher<ResultT>(
-        queryDocuments.Mutation.createBoard,
-        { title: name, description: desc, personaId: persona.id },
-        token
-      )
+      } = await client.createBoard({ title: name, description: desc, personaId: persona.id })
+
       await router.push(`/b/${id}`)
     } catch (error) {
       if (error instanceof ClientError) {

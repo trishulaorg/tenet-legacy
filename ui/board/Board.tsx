@@ -1,13 +1,11 @@
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
-import { fetcher } from '../../libs/fetchAPI'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 import { BoardStateContext } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { Post } from '../thread/Post'
 import { mutate } from 'swr'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
-import { ulid } from 'ulid'
 import { PostForm } from '../common/PostForm'
 
 interface BoardProps {
@@ -22,17 +20,13 @@ export const Board: React.FC<BoardProps> = observer(({ showPostCreate = true }) 
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
 
-    await fetcher(
-      queryDocuments.Mutation.createPost,
-      {
-        id: ulid(),
-        title,
-        content,
-        persona_id: user.currentPersona?.id ?? -1,
-        board_id: state.id,
-      },
-      user.token
-    )
+    setAuthToken(user.token)
+    await client.createPost({
+      title,
+      content,
+      persona_id: user.currentPersona?.id ?? -1,
+      board_id: state.id,
+    })
     await mutate(state.fetcherDocument)
   }
 

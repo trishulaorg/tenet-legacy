@@ -6,7 +6,7 @@ import { UserStateContext } from '../../states/UserState'
 import { ErrorMessage } from '../form/ErrorMessage'
 import { ApolloError } from '@apollo/client'
 import { SuccessMessage } from '../form/SuccessMessage'
-import { client, tokenToDefaultHeader } from '../../libs/fetchAPI'
+import { client, setAuthToken } from '../../libs/fetchAPI'
 
 const PersonaIconForm: React.FC = observer(() => {
   const userState = useContext(UserStateContext)
@@ -27,10 +27,11 @@ const PersonaIconForm: React.FC = observer(() => {
     setPersonaIconSuccessMessage(null)
     setPersonaIconErrorMessage(null)
     try {
-      await client.setPersonaIcon(
-        { personaId: userState.currentPersona?.id ?? -1, file: files[0] ?? new File([], '') },
-        tokenToDefaultHeader(token)
-      )
+      setAuthToken(token)
+      await client.setPersonaIcon({
+        personaId: userState.currentPersona?.id ?? -1,
+        file: files[0] ?? new File([], ''),
+      })
       setPersonaIconSuccessMessage('New icon is Successfully set!')
     } catch (error) {
       console.dir(error)

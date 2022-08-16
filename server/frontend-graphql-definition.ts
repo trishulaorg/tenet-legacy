@@ -2,6 +2,8 @@ import { Upload } from '../server/graphql-schema/scalars/scalarDefinitions';
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
+import { ClientError } from 'graphql-request/dist/types';
+import useSWR, { SWRConfiguration as SWRConfigInterface, Key as SWRKeyInterface } from 'swr';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -22,6 +24,7 @@ export type Scalars = {
 export type Board = {
   __typename?: 'Board';
   createdAt: Scalars['DateTime'];
+  description: Scalars['String'];
   id: Scalars['ID'];
   posts: Array<Post>;
   title: Scalars['String'];
@@ -142,7 +145,7 @@ export type Query = {
   personas: Array<Maybe<Persona>>;
   post: Post;
   removeUser: Scalars['Boolean'];
-  search: Array<Maybe<SearchResult>>;
+  search: Array<SearchResult>;
 };
 
 
@@ -201,6 +204,7 @@ export type Thread = {
   id: Scalars['ID'];
   imageUrls: Array<Scalars['String']>;
   persona: Persona;
+  postId: Scalars['String'];
   replies: Array<Reply>;
 };
 
@@ -209,36 +213,36 @@ export type User = {
   personas: Array<Persona>;
 };
 
-export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
+export type GetActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type Unnamed_1_Query = { __typename?: 'Query', activities: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, createdAt: any, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, content: string, createdAt: any, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', id: string, content: string, createdAt: any, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string } }> }> }> };
+export type GetActivitiesQuery = { __typename?: 'Query', activities: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', id: string, threadId: string, content: string, createdAt: any, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> };
 
-export type BoardQueryVariables = Exact<{
+export type GetBoardQueryVariables = Exact<{
   topicId: Scalars['String'];
 }>;
 
 
-export type BoardQuery = { __typename?: 'Query', board: { __typename?: 'Board', id: string, title: string, posts: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, content: string, imageUrls: Array<string>, createdAt: any, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string } }> }> }> } };
+export type GetBoardQuery = { __typename?: 'Query', board: { __typename?: 'Board', id: string, title: string, description: string, posts: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, description: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, boardId: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', createdAt: any, threadId: string, id: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> } };
 
-export type Unnamed_2_QueryVariables = Exact<{ [key: string]: never; }>;
+export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type Unnamed_2_Query = { __typename?: 'Query', me?: { __typename?: 'User', personas: Array<{ __typename?: 'Persona', id: number, name: string, screenName: string, iconUrl: string }> } | null };
+export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', personas: Array<{ __typename?: 'Persona', id: number, name: string, screenName: string, iconUrl: string }> } | null };
 
-export type PostQueryVariables = Exact<{
+export type GetPostQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, content: string, imageUrls: Array<string>, createdAt: any, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', screenName: string, name: string, iconUrl: string } }> }> } };
+export type GetPostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, threadId: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> } };
 
 export type SearchQueryVariables = Exact<{
   query: Scalars['String'];
 }>;
 
 
-export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchResult', kind: string, id: string, title: string } | null> };
+export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchResult', kind: string, id: string, title: string }> };
 
 export type CreateBoardMutationVariables = Exact<{
   title: Scalars['String'];
@@ -312,39 +316,105 @@ export type SetTypingStateOnBoardMutationVariables = Exact<{
 export type SetTypingStateOnBoardMutation = { __typename?: 'Mutation', setTypingStateOnBoard: { __typename?: 'Post', id: string } };
 
 
-export const BoardDocument = gql`
-    query Board($topicId: String!) {
+export const GetActivitiesDocument = gql`
+    query getActivities {
+  activities {
+    id
+    board {
+      id
+      title
+      description
+    }
+    boardId
+    title
+    content
+    createdAt
+    persona {
+      id
+      screenName
+      name
+      iconUrl
+    }
+    threads {
+      id
+      board {
+        id
+        title
+      }
+      postId
+      content
+      createdAt
+      persona {
+        id
+        screenName
+        name
+        iconUrl
+      }
+      replies {
+        id
+        threadId
+        content
+        createdAt
+        persona {
+          id
+          screenName
+          name
+          iconUrl
+        }
+      }
+    }
+  }
+}
+    `;
+export const GetBoardDocument = gql`
+    query getBoard($topicId: String!) {
   board(id: $topicId) {
     id
     title
+    description
     posts {
       id
       boardId
+      board {
+        id
+        description
+        title
+      }
       title
       content
       imageUrls
       createdAt
       persona {
+        id
         screenName
         name
         iconUrl
       }
       threads {
         id
+        board {
+          id
+          title
+        }
+        boardId
+        postId
         content
         imageUrls
         createdAt
         persona {
+          id
           screenName
           name
           iconUrl
         }
         replies {
           createdAt
+          threadId
           id
           content
           imageUrls
           persona {
+            id
             screenName
             name
             iconUrl
@@ -355,30 +425,50 @@ export const BoardDocument = gql`
   }
 }
     `;
-export const PostDocument = gql`
-    query Post($id: String!) {
+export const GetMeDocument = gql`
+    query getMe {
+  me {
+    personas {
+      id
+      name
+      screenName
+      iconUrl
+    }
+  }
+}
+    `;
+export const GetPostDocument = gql`
+    query getPost($id: String!) {
   post(id: $id) {
     id
     boardId
     board {
       id
       title
+      description
     }
     title
     content
     imageUrls
     createdAt
     persona {
+      id
       screenName
       name
       iconUrl
     }
     threads {
       id
+      board {
+        id
+        title
+      }
+      postId
       content
       imageUrls
       createdAt
       persona {
+        id
         screenName
         name
         iconUrl
@@ -386,9 +476,11 @@ export const PostDocument = gql`
       replies {
         createdAt
         id
+        threadId
         content
         imageUrls
         persona {
+          id
           screenName
           name
           iconUrl
@@ -408,14 +500,14 @@ export const SearchDocument = gql`
 }
     `;
 export const CreateBoardDocument = gql`
-    mutation CreateBoard($title: String!, $description: String!, $personaId: Int!) {
+    mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
   createBoard(title: $title, description: $description, personaId: $personaId) {
     id
   }
 }
     `;
 export const CreatePersonaDocument = gql`
-    mutation CreatePersona($screenName: String!, $name: String!, $iconPath: String!) {
+    mutation createPersona($screenName: String!, $name: String!, $iconPath: String!) {
   createPersona(screenName: $screenName, name: $name, iconPath: $iconPath) {
     name
     screenName
@@ -423,7 +515,7 @@ export const CreatePersonaDocument = gql`
 }
     `;
 export const CreatePostDocument = gql`
-    mutation CreatePost($title: String!, $content: String!, $persona_id: Int!, $board_id: String!) {
+    mutation createPost($title: String!, $content: String!, $persona_id: Int!, $board_id: String!) {
   createPost(
     title: $title
     content: $content
@@ -436,7 +528,7 @@ export const CreatePostDocument = gql`
 }
     `;
 export const CreateReplyDocument = gql`
-    mutation CreateReply($content: String!, $persona_id: Int!, $thread_id: String!) {
+    mutation createReply($content: String!, $persona_id: Int!, $thread_id: String!) {
   createReply(
     content: $content
     contentType: TEXT
@@ -448,7 +540,7 @@ export const CreateReplyDocument = gql`
 }
     `;
 export const CreateThreadDocument = gql`
-    mutation CreateThread($content: String!, $post_id: String!, $persona_id: Int!, $board_id: String!) {
+    mutation createThread($content: String!, $post_id: String!, $persona_id: Int!, $board_id: String!) {
   createThread(
     content: $content
     contentType: TEXT
@@ -489,29 +581,35 @@ const defaultWrapper: SdkFunctionWrapper = (action, _operationName, _operationTy
 
 export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
   return {
-    Board(variables: BoardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<BoardQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<BoardQuery>(BoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Board', 'query');
+    getActivities(variables?: GetActivitiesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetActivitiesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetActivitiesQuery>(GetActivitiesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getActivities', 'query');
     },
-    Post(variables: PostQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<PostQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<PostQuery>(PostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Post', 'query');
+    getBoard(variables: GetBoardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBoardQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetBoardQuery>(GetBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getBoard', 'query');
+    },
+    getMe(variables?: GetMeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMeQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetMeQuery>(GetMeDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getMe', 'query');
+    },
+    getPost(variables: GetPostQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetPostQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetPostQuery>(GetPostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getPost', 'query');
     },
     Search(variables: SearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SearchQuery>(SearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Search', 'query');
     },
-    CreateBoard(variables: CreateBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateBoardMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateBoardMutation>(CreateBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateBoard', 'mutation');
+    createBoard(variables: CreateBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateBoardMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateBoardMutation>(CreateBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createBoard', 'mutation');
     },
-    CreatePersona(variables: CreatePersonaMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePersonaMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreatePersonaMutation>(CreatePersonaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePersona', 'mutation');
+    createPersona(variables: CreatePersonaMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePersonaMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreatePersonaMutation>(CreatePersonaDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createPersona', 'mutation');
     },
-    CreatePost(variables: CreatePostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePostMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreatePost', 'mutation');
+    createPost(variables: CreatePostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreatePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreatePostMutation>(CreatePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createPost', 'mutation');
     },
-    CreateReply(variables: CreateReplyMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateReplyMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateReplyMutation>(CreateReplyDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateReply', 'mutation');
+    createReply(variables: CreateReplyMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateReplyMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateReplyMutation>(CreateReplyDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createReply', 'mutation');
     },
-    CreateThread(variables: CreateThreadMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateThreadMutation> {
-      return withWrapper((wrappedRequestHeaders) => client.request<CreateThreadMutation>(CreateThreadDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'CreateThread', 'mutation');
+    createThread(variables: CreateThreadMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateThreadMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateThreadMutation>(CreateThreadDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createThread', 'mutation');
     },
     putAttachedImage(variables: PutAttachedImageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<PutAttachedImageMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<PutAttachedImageMutation>(PutAttachedImageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'putAttachedImage', 'mutation');
@@ -525,3 +623,25 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
   };
 }
 export type Sdk = ReturnType<typeof getSdk>;
+export function getSdkWithHooks(client: GraphQLClient, withWrapper: SdkFunctionWrapper = defaultWrapper) {
+  const sdk = getSdk(client, withWrapper);
+  return {
+    ...sdk,
+    useGetActivities(key: SWRKeyInterface, variables?: GetActivitiesQueryVariables, config?: SWRConfigInterface<GetActivitiesQuery, ClientError>) {
+      return useSWR<GetActivitiesQuery, ClientError>(key, () => sdk.getActivities(variables), config);
+    },
+    useGetBoard(key: SWRKeyInterface, variables: GetBoardQueryVariables, config?: SWRConfigInterface<GetBoardQuery, ClientError>) {
+      return useSWR<GetBoardQuery, ClientError>(key, () => sdk.getBoard(variables), config);
+    },
+    useGetMe(key: SWRKeyInterface, variables?: GetMeQueryVariables, config?: SWRConfigInterface<GetMeQuery, ClientError>) {
+      return useSWR<GetMeQuery, ClientError>(key, () => sdk.getMe(variables), config);
+    },
+    useGetPost(key: SWRKeyInterface, variables: GetPostQueryVariables, config?: SWRConfigInterface<GetPostQuery, ClientError>) {
+      return useSWR<GetPostQuery, ClientError>(key, () => sdk.getPost(variables), config);
+    },
+    useSearch(key: SWRKeyInterface, variables: SearchQueryVariables, config?: SWRConfigInterface<SearchQuery, ClientError>) {
+      return useSWR<SearchQuery, ClientError>(key, () => sdk.Search(variables), config);
+    }
+  };
+}
+export type SdkWithHooks = ReturnType<typeof getSdkWithHooks>;
