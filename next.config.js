@@ -8,4 +8,15 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+const pwaConfig = {
+  pwa: {
+    dest: 'public',
+  },
+}
+
+const innerConfig = Object.assign({}, nextConfig, pwaConfig)
+
+const withPWA = require('next-pwa')
+const nextConfigWithPWA = withPWA(innerConfig)
+
+module.exports = nextConfigWithPWA
