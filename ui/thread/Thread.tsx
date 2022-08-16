@@ -42,7 +42,8 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
     })
     await client.putAttachedImage({ postId: id, files: files })
 
-    await mutate(boardState.fetcherDocument)
+    await mutate(boardState.id)
+    await mutate(props.parent.id)
     await publishWritingStatus(props.parent.id)
   }
   return (

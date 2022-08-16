@@ -59,7 +59,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
     })
 
     await client.putAttachedImage({ postId: id, files: files })
-    await mutate(boardState.fetcherDocument)
+    await mutate(boardState.id)
   }
 
   return (
