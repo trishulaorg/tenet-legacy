@@ -1,19 +1,7 @@
-FROM node:16
-
-MAINTAINER minamorl
+FROM node
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-COPY prisma ./
-
-RUN npm install
-
-RUN npx prisma generate
-
 COPY . .
-
-RUN npm run build
-
-EXPOSE 8080 3000
+RUN npm i
+RUN npx prisma generate
