@@ -275,6 +275,9 @@ const QueryDef = objectType({
               },
             },
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
         })
 
         return posts.map((post) => {
