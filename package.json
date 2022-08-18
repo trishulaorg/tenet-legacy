@@ -23,7 +23,7 @@
     "postinstall": "husky install && npm run prisma:generate",
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate",
-    "migrate:test": "cross-env NODE_ENV=test prisma migrate dev --name init",
+    "migrate:test": "dotenv -e .env.test prisma migrate dev",
     "seed:test": "prisma db seed",
     "start": "next start",
     "storybook": "start-storybook -p 6006",
