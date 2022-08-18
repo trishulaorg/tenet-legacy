@@ -29,8 +29,8 @@
     "storybook": "start-storybook -p 6006",
     "test": "npm run test:all",
     "test:all": "jest",
-    "test:api": "jest",
-    "test:react": "jest",
+    "test:api": "echo to be implemented",
+    "test:react": "echo to be implemented",
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "vercel-build": "prisma generate"
