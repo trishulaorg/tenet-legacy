@@ -26,7 +26,6 @@ jobs:
           cache: 'npm'
       - run: npm run docker:start-testdb
       - run: npm ci
-      - run: npx prisma migrate dev
       - run: npm run dev:docker-db &
-      - run: sleep 10
+      - run: npm run migrate:test
       - run: npm run test
