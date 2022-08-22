@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { observer } from 'mobx-react'
 import type { PostState } from '../../states/PostState'
 
-import { Author } from '../common/Author'
+import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
 import { CardTitle } from '../common/CardTitle'
 import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
@@ -42,7 +42,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
       }}
     >
       <CardTitle title={post.title} />
-      <Author
+      <AuthorAndBoardLink
         screenName={post.author.screenName}
         name={post.author.name}
         iconUrl={post.author.iconUrl}
