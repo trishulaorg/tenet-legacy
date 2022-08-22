@@ -17,7 +17,7 @@ import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 
 export interface ThreadProps {
   parent: PostState
-  posts: PostState[]
+  threads: PostState[]
 }
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
@@ -48,33 +48,33 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
   }
   return (
     <ul className="pl-4">
-      {props.posts.map((v, i) => (
+      {props.threads.map((thread, i) => (
         <li key={i} className="py-4">
           <Author
-            screenName={v.author.screenName}
-            name={v.author.name}
-            iconUrl={v.author.iconUrl}
+            screenName={thread.author.screenName}
+            name={thread.author.name}
+            iconUrl={thread.author.iconUrl}
           />
           <div className="ml-2 border-gray-200	border-l-4">
-            <CardContent content={v.content} isPost={false} imageUrls={v.imageUrls} />
+            <CardContent content={thread.content} isPost={false} imageUrls={thread.imageUrls} />
             <CardMeta isPost={false}>
               <CardIcons
-                commentNumber={v.responseNumber}
-                upvote={v.upvote}
-                downvote={v.downvote}
+                commentNumber={thread.responseNumber}
+                upvote={thread.upvote}
+                downvote={thread.downvote}
                 isPost={false}
                 replyCallback={() => {
-                  postForm.replyTo = v
+                  postForm.replyTo = thread
                   postForm.onSubmit = (comment: string, files: File[]) =>
-                    onSubmit(comment, files, v)
+                    onSubmit(comment, files, thread)
                   postForm.onChange = () => publishWritingStatus(props.parent.id)
                 }}
-                showTrashIcon={v.author.name === userState.currentPersona?.name}
+                showTrashIcon={thread.author.name === userState.currentPersona?.name}
               />
               <div className="pb-2" />
-              <CreatedAt created={v.createdAt} />
+              <CreatedAt created={thread.createdAt} />
             </CardMeta>
-            {v.hasRepsponse ? <Reply posts={v.responses} /> : undefined}
+            {thread.hasRepsponse ? <Reply replies={thread.responses} /> : undefined}
           </div>
         </li>
       ))}
