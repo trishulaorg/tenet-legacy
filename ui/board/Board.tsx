@@ -5,6 +5,7 @@ import { Post } from '../thread/Post'
 import { PostForm } from '../common/PostForm'
 import Link from 'next/link'
 import { ChatIcon } from '@heroicons/react/solid'
+import { MultiLineText } from '../common/MultiLineText'
 
 interface BoardProps {
   showPostCreate?: boolean
@@ -30,7 +31,9 @@ export const Board: React.FC<BoardProps> = observer(({ showPostCreate = true }) 
           </Link>
         ) : null}
       </div>
-      <div>{state.description}</div>
+      <div>
+        <MultiLineText text={state.description} />
+      </div>
       <ul>
         {state.posts.map((p, idx) => (
           <li key={idx} className="mb-5">
