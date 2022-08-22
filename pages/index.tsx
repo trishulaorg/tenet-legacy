@@ -13,6 +13,7 @@ import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { apiHooks } from '../libs/fetchAPI'
+import Link from 'next/link'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -56,7 +57,14 @@ const IndexPage: React.FC = () => {
           <HeaderStateContext.Provider value={new HeaderState(user)}>
             <Header />
           </HeaderStateContext.Provider>
-          <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+          <PageContentLayout
+            Main={main}
+            Side={() => (
+              <div className="max-w-xs">
+                <Link href="/tos">Terms of Service</Link>
+              </div>
+            )}
+          />
         </PostFormStateContext.Provider>
       </UserStateContext.Provider>
     </PageBaseLayout>
