@@ -89,7 +89,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
       </CardMeta>
       <div className="pb-5" />
       {props.post.hasRepsponse ? (
-        <Thread posts={props.post.responses} parent={props.post} />
+        <Thread threads={props.post.responses} parent={props.post} />
       ) : (
         <div>No Comments Yet</div>
       )}
