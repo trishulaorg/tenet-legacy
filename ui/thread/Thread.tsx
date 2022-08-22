@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import type { PostState } from '../../states/PostState'
 
 import { Reply } from './Reply'
-import { Author } from '../common/Author'
+import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
 import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
@@ -50,7 +50,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
     <ul className="pl-4">
       {props.threads.map((thread, i) => (
         <li key={i} className="py-4">
-          <Author
+          <AuthorAndBoardLink
             screenName={thread.author.screenName}
             name={thread.author.name}
             iconUrl={thread.author.iconUrl}
