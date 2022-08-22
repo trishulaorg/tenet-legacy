@@ -6,10 +6,10 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
-import { Board } from '../../ui/board/Board'
 import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
+import { PostWrapper } from '../../ui/post/PostWrapper'
 
 const PostPage: React.FC = () => {
   const token = getGqlToken()
@@ -59,7 +59,7 @@ const PostPage: React.FC = () => {
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
-        <Board showPostCreate={false} />
+        <PostWrapper />
       </BoardStateContext.Provider>
     </>
   )
