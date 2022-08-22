@@ -42,7 +42,7 @@ export interface ThreadType extends BaseContentType {
 
 export class PostState {
   private readonly children: PostState[] = []
-  protected parent: PostState | undefined
+  parent: PostState | undefined
   id: string
   boardId: string
   title: string

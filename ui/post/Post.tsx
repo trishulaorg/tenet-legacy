@@ -2,9 +2,9 @@ import { observer } from 'mobx-react'
 import React, { useContext } from 'react'
 import type { PostState } from '../../states/PostState'
 
-import { Thread } from './Thread'
+import { Thread } from '../thread/Thread'
 import { CardTitle } from '../common/CardTitle'
-import { Author } from '../common/Author'
+import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
 import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
@@ -19,6 +19,7 @@ import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { TypingMemberListLabel } from '../common/TypingMemberListLabel'
 import { parseISO, differenceInSeconds } from 'date-fns'
 import { useDebounce } from 'use-debounce'
+import { useRouter } from 'next/router'
 
 export interface PostProps {
   post: PostState
@@ -47,6 +48,9 @@ export const Post: React.FC<PostProps> = observer((props) => {
     1000
   )
 
+  const { route } = useRouter()
+  const isInPostPage = route.startsWith('/p/')
+
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
     setAuthToken(userState.token)
     const {
@@ -65,11 +69,23 @@ export const Post: React.FC<PostProps> = observer((props) => {
   return (
     <div className="rounded-lg p-4 bg-white">
       <CardTitle title={props.post.title} />
-      <Author
-        screenName={props.post.author.screenName}
-        name={props.post.author.name}
-        iconUrl={props.post.author.iconUrl}
-      />
+      {isInPostPage ? (
+        <AuthorAndBoardLink
+          screenName={props.post.author.screenName}
+          name={props.post.author.name}
+          iconUrl={props.post.author.iconUrl}
+          boardLink={{
+            boardId: props.post.boardId,
+            boardName: props.post.parent?.title ?? boardState.title,
+          }}
+        />
+      ) : (
+        <AuthorAndBoardLink
+          screenName={props.post.author.screenName}
+          name={props.post.author.name}
+          iconUrl={props.post.author.iconUrl}
+        />
+      )}
       <CardContent content={props.post.content} imageUrls={props.post.imageUrls} />
       <CardMeta>
         <CardIcons

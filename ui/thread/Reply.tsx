@@ -3,7 +3,7 @@ import React, { useContext } from 'react'
 import type { PostState } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 
-import { Author } from '../common/Author'
+import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
 import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
@@ -20,7 +20,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
       {props.replies.map((reply, i) => {
         return (
           <li key={i} className="pt-4">
-            <Author
+            <AuthorAndBoardLink
               screenName={reply.author.screenName}
               name={reply.author.name}
               iconUrl={reply.author.iconUrl}

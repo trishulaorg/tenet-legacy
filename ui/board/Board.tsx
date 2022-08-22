@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react'
 import React, { useContext } from 'react'
 import { BoardStateContext } from '../../states/PostState'
-import { Post } from '../thread/Post'
+import { Post } from '../post/Post'
 import { PostForm } from '../common/PostForm'
 import Link from 'next/link'
 import { ChatIcon } from '@heroicons/react/solid'
