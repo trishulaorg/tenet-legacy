@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import ImageViewer from 'react-simple-image-viewer'
+import { MultiLineText } from './MultiLineText'
 
 interface CardContentProps {
   content: string
@@ -28,7 +29,9 @@ export const CardContent: React.FC<CardContentProps> = ({
   const style = isPost ? 'px-6 pb-8' : 'pl-4 pb-8'
   return (
     <div className={style}>
-      <p>{content}</p>
+      <p>
+        <MultiLineText text={content} />
+      </p>
       <div className={'mt-4 grid grid-cols-2 items-center gap-2'}>
         {imageUrls.map((imageUrl, index) => (
           <button onClick={() => openImageViewer(index)} key={imageUrl}>
