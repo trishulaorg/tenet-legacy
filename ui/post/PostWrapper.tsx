@@ -12,7 +12,7 @@ export const PostWrapper: React.FC = observer(() => {
       <ul>
         {state.posts.map((p, idx) => (
           <li key={idx} className="mb-5">
-            <Post post={p} />
+            <Post post={p} showThreads={true} />
           </li>
         ))}
       </ul>
