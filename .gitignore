@@ -2,7 +2,7 @@ dist/
 
 # dotenv
 .env
-
+.env*.local
 # NodeJS
 node_modules/
 
