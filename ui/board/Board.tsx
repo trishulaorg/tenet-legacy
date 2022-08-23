@@ -37,7 +37,7 @@ export const Board: React.FC<BoardProps> = observer(({ showPostCreate = true }) 
       <ul>
         {state.posts.map((p, idx) => (
           <li key={idx} className="mb-5">
-            <Post post={p} />
+            <Post post={p} showThreads={false} />
           </li>
         ))}
       </ul>

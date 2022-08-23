@@ -53,7 +53,14 @@ export const CardIcons: React.FC<{
     { name: ShareIcon, text: '', onClick: props.shareCallback, isVisible: true },
   ]
   return (
-    <div className="flex justify-between">
+    <div
+      role="presentation"
+      className="flex justify-between"
+      onClick={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+      }}
+    >
       <div className="flex justify-start">
         {icons.map((icon, index) => {
           const iconStyle =

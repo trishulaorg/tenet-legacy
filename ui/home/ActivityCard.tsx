@@ -12,7 +12,6 @@ import { CommentInput } from '../thread/CommentInput'
 import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 interface ActivityCardProps {
   post: PostState
@@ -21,7 +20,6 @@ interface ActivityCardProps {
 export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => {
   const [commentVisibility, setCommentVisibility] = useState(false)
   const userState = useContext(UserStateContext)
-  const router = useRouter()
   const onSubmit: (comment: string) => void = async (comment: string) => {
     setAuthToken(userState.token)
     await client.createThread({
@@ -33,10 +31,10 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
 
     setCommentVisibility(false)
   }
-  return (
+
+  const content = (
     <div // eslint-disable-line jsx-a11y/no-static-element-interactions
       className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer"
-      onClick={() => router.push(`/p/${post.id}`)}
       onKeyDown={() => {
         /* noop */
       }}
@@ -68,5 +66,10 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         </span>
       </CardMeta>
     </div>
+  )
+  return (
+    <Link href={`/p/${post.id}`}>
+      <a>{content}</a>
+    </Link>
   )
 })
