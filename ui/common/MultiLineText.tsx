@@ -1,16 +1,18 @@
+import Linkify from 'linkify-react'
 import type { FC } from 'react'
 import { Fragment } from 'react'
 
 const MultiLineText: FC<{ text: string }> = ({ text }: { text: string }) => {
-  const texts = text.split('\n').map((item, index) => {
+  const splittedTexts = text.split('\n')
+  const result = splittedTexts.map((item, index) => {
     return (
       <Fragment key={index}>
-        {item}
-        <br />
+        <Linkify tagName="span">{item}</Linkify>
+        {index !== splittedTexts.length - 1 ? <br /> : null}
       </Fragment>
     )
   })
-  return <>{texts}</>
+  return <>{result}</>
 }
 
 export { MultiLineText }
