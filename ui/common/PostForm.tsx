@@ -40,7 +40,6 @@ export const PostFormInner: React.FC = observer(() => {
   }
   const removeFile = (fileToRemove: File): void => {
     const newFiles = files.filter((file) => file !== fileToRemove)
-    console.dir(newFiles)
     setFiles(newFiles)
   }
   const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
