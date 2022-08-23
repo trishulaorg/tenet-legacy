@@ -24,7 +24,7 @@ model Persona {
   id               Int               @id @default(autoincrement())
   createdAt        DateTime          @default(now())
   name             String            @unique @db.VarChar(25)
-  screenName       String            @db.VarChar(50)
+  screenName       String            @db.VarChar(30)
   iconUrl          String            @db.Text
   followingBoards  Board[]           @relation("FollowingBoards")
   modelatingBoards Board[]           @relation()
@@ -66,7 +66,7 @@ model VoteOnComment {
 
 model Board {
   id          String    @id @db.Char(26)
-  title       String    @unique  @db.VarChar(50)
+  title       String    @unique  @db.VarChar(30)
   createdAt   DateTime  @default(now())
   description String    @db.VarChar(2000)
   moderators  Persona[] @relation()

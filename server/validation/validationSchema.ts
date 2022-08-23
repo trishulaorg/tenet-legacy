@@ -31,7 +31,7 @@ const validationSchema: ValidationSchemaType = {
       screenName: z
         .string()
         .min(1, 'Persona screen name is required.')
-        .max(50, 'Maximum length of persona screen name is 50.'),
+        .max(30, 'Maximum length of persona screen name is 30.'),
       name: z
         .string()
         .min(1, 'Persona id is required.')
@@ -46,7 +46,7 @@ const validationSchema: ValidationSchemaType = {
       title: z
         .string()
         .min(1, 'Board name is required.')
-        .max(50, 'Maximum length of board name is 50.'),
+        .max(30, 'Maximum length of board name is 30.'),
       description: z
         .string()
         .min(1, 'Description is required.')
