@@ -4,8 +4,7 @@ import React, { useContext, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { PostFormStateContext } from '../../states/PostFormState'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
-import { ErrorMessage } from '../form/ErrorMessage'
-import { ImageWithCloseButton } from '../form/ImageWithCloseButton'
+import { ImageUpload } from './ImageUpload'
 
 export const PostFormInner: React.FC = observer(() => {
   const [content, setContent] = useState('')
@@ -67,34 +66,20 @@ export const PostFormInner: React.FC = observer(() => {
           }}
           placeholder="What did you think?"
         />
-
-        <div className={'flex'}>
-          {files.map((file, index) => (
-            <ImageWithCloseButton
-              file={file}
-              alt={'uploaded-' + index + file.name}
-              key={'uploaded-' + index + file.name}
-              onDeleteClick={() => removeFile(file)}
-            />
-          ))}
-        </div>
-        {isDragActive ? (
-          <p className={'clear-left'}>Drop the Image here ...</p>
-        ) : (
-          <p className={'clear-left'}>
-            <button onClick={open}>Click here or Drop Image.</button>
-          </p>
-        )}
-        {uploadErrors.map((error, index) => (
-          <ErrorMessage errorMessage={error.message} key={index} />
-        ))}
+        <ImageUpload
+          files={files}
+          getInputProps={getInputProps}
+          removeFile={removeFile}
+          uploadErrors={uploadErrors}
+          isDragActive={isDragActive}
+          openFileUploadWindow={open}
+        />
         <button
           className="absolute bottom-0 right-0 text-green-400 clear-both"
           onClick={() => state.onSubmit(content, files)}
         >
           <PlusCircleIcon height="40" />
         </button>
-        <input {...getInputProps()} />
       </div>
     </div>
   ) : null

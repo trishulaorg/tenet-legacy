@@ -4,13 +4,26 @@ import React from 'react'
 type ImageWithCloseButtonProps = {
   file: File
   alt: string
-  onDeleteClick: () => void
+  onDeleteClick: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+  onImageClick: () => void
 }
 
-const ImageWithCloseButton: FC<ImageWithCloseButtonProps> = ({ file, alt, onDeleteClick }) => {
+const ImageWithCloseButton: FC<ImageWithCloseButtonProps> = ({
+  file,
+  alt,
+  onDeleteClick,
+  onImageClick,
+}) => {
   return (
-    <div className={'relative'}>
-      <button onClick={onDeleteClick} className="right-0 absolute">
+    <div role="presentation" className="relative" onClick={onImageClick}>
+      <button
+        onClick={(event) => {
+          event.stopPropagation()
+          event.preventDefault()
+          onDeleteClick(event)
+        }}
+        className="right-0 absolute"
+      >
         <span>&times;</span>
       </button>
       <img className="w-24 h-16 mx-2 my-3 object-cover" src={URL.createObjectURL(file)} alt={alt} />

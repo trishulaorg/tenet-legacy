@@ -4,7 +4,6 @@ import { getSdk, getSdkWithHooks } from '../server/frontend-graphql-definition'
 const ENDPOINT = '/api/graphql'
 
 const defaultHeaders = {
-  'Content-Type': 'application/json',
   Accept: 'application/json',
 }
 const graphqlClient = new GraphQLClient(ENDPOINT, { headers: defaultHeaders })
@@ -20,11 +19,4 @@ const setAuthToken = (token: string | undefined): void => {
   }
 }
 
-const tokenToDefaultHeader = (token?: string): HeadersInit => {
-  return {
-    authorization: `Bearer ${token}`,
-    accept: 'application/json',
-  }
-}
-
-export { client, apiHooks, setAuthToken, tokenToDefaultHeader }
+export { client, apiHooks, setAuthToken }

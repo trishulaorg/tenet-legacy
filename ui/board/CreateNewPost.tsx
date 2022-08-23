@@ -7,10 +7,9 @@ import { UserStateContext } from '../../states/UserState'
 import { mutate } from 'swr'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { useRouter } from 'next/router'
-import { ImageWithCloseButton } from '../form/ImageWithCloseButton'
-import { ErrorMessage } from '../form/ErrorMessage'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { useDropzone } from 'react-dropzone'
+import { ImageUpload } from '../common/ImageUpload'
 
 interface CreateNewPostProps {
   boardId: string
@@ -29,15 +28,20 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
 
     const onClick: FormEventHandler = async (e) => {
       e.preventDefault()
-
+      e.stopPropagation()
       setAuthToken(user.token)
 
-      await client.createPost({
+      const {
+        createPost: { id: createdPostId },
+      } = await client.createPost({
         title,
         content,
         persona_id: user.currentPersona?.id ?? -1,
         board_id: state.id,
       })
+
+      await client.putAttachedImage({ postId: createdPostId, files: files })
+
       await mutate(boardId)
       await router.push(`/b/${boardId}`)
     }
@@ -73,8 +77,8 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
       setFiles(newFiles)
     }
 
-    const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
-      noClick: true,
+    const { getInputProps, isDragActive, open } = useDropzone({
+      noClick: false,
       onDrop,
       multiple: true,
       accept: {
@@ -83,60 +87,48 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
     })
 
     return (
-      <div {...getRootProps()}>
+      <div>
         <div>
           {showPostCreate === true && user.isValidUser ? (
-            <form className="py-4">
-              <h2 className="my-2 text-slate-600 text-1xl">Create New Post</h2>
-              <label>
-                <div>Title</div>
-                <input
-                  type="text"
-                  placeholder="post title"
-                  value={title}
-                  onChange={(e) => setTitle(e.currentTarget.value)}
-                  className="w-full leading-6 p-1 border-2 border-black border-opacity-10 rounded-t-lg block mb-1"
-                />
-              </label>
-              <label>
-                <div>Content</div>
-                <textarea
-                  className="w-full leading-6 p-4 border-2 border-black border-opacity-10 rounded-t-lg block mb-2"
-                  rows={4}
-                  value={content}
-                  onChange={(e) => setContent(e.currentTarget.value)}
-                  placeholder="What did you think?"
-                />
-              </label>
-              <label>
-                <div>Attach Images</div>
-                <div className={'flex'}>
-                  {files.map((file, index) => (
-                    <ImageWithCloseButton
-                      file={file}
-                      alt={'uploaded-' + index + file.name}
-                      key={'uploaded-' + index + file.name}
-                      onDeleteClick={() => removeFile(file)}
-                    />
-                  ))}
+            <div>
+              <div className="py-4">
+                <h2 className="my-2 text-slate-600 text-1xl">Create New Post</h2>
+                <label>
+                  <div>Title</div>
+                  <input
+                    type="text"
+                    placeholder="post title"
+                    value={title}
+                    onChange={(e) => setTitle(e.currentTarget.value)}
+                    className="w-full leading-6 p-1 border-2 border-black border-opacity-10 rounded-t-lg block mb-1"
+                  />
+                </label>
+                <label>
+                  <div>Content</div>
+                  <textarea
+                    className="w-full leading-6 p-4 border-2 border-black border-opacity-10 rounded-t-lg block mb-2"
+                    rows={4}
+                    value={content}
+                    onChange={(e) => setContent(e.currentTarget.value)}
+                    placeholder="What did you think?"
+                  />
+                </label>
+                <div>
+                  <div>Attach Images</div>
+                  <ImageUpload
+                    files={files}
+                    getInputProps={getInputProps}
+                    removeFile={removeFile}
+                    uploadErrors={uploadErrors}
+                    isDragActive={isDragActive}
+                    openFileUploadWindow={open}
+                  />
                 </div>
-                {isDragActive ? (
-                  <p className={'clear-left'}>Drop the Image here ...</p>
-                ) : (
-                  <p className={'clear-left'}>
-                    <button onClick={open}>Click here or Drop Image.</button>
-                  </p>
-                )}
-                {uploadErrors.map((error, index) => (
-                  <ErrorMessage errorMessage={error.message} key={index} />
-                ))}
-
-                <input {...getInputProps()} />
-              </label>
-              <button className="bg-gray-600 text-white rounded-lg px-4 py-2" onClick={onClick}>
-                Create Post
-              </button>
-            </form>
+                <button className="bg-gray-600 text-white rounded-lg px-4 py-2" onClick={onClick}>
+                  Create Post
+                </button>
+              </div>
+            </div>
           ) : null}
         </div>
       </div>
