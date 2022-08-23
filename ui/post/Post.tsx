@@ -20,12 +20,14 @@ import { TypingMemberListLabel } from '../common/TypingMemberListLabel'
 import { parseISO, differenceInSeconds } from 'date-fns'
 import { useDebounce } from 'use-debounce'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export interface PostProps {
   post: PostState
+  showThreads: boolean
 }
 
-export const Post: React.FC<PostProps> = observer((props) => {
+export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   const boardState = useContext(BoardStateContext)
   const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
@@ -37,7 +39,7 @@ export const Post: React.FC<PostProps> = observer((props) => {
         (userState.notifications as TypingStateNotification[])
           .filter(
             (v) =>
-              v.channel === props.post.id &&
+              v.channel === post.id &&
               v.eventName === 'typing' &&
               v.data.authorPersonaId !== userState.currentPersona?.id &&
               differenceInSeconds(new Date(), parseISO(v.data.createdAt)) < 4
@@ -58,57 +60,66 @@ export const Post: React.FC<PostProps> = observer((props) => {
     } = await client.createThread({
       content: comment,
       persona_id: userState.currentPersona?.id ?? -1,
-      post_id: props.post.id,
-      board_id: props.post.boardId,
+      post_id: post.id,
+      board_id: post.boardId,
     })
 
     await client.putAttachedImage({ postId: id, files: files })
     await mutate(boardState.id)
   }
 
-  return (
+  const content = (
     <div className="rounded-lg p-4 bg-white">
-      <CardTitle title={props.post.title} />
+      <CardTitle title={post.title} />
       {isInPostPage ? (
         <AuthorAndBoardLink
-          screenName={props.post.author.screenName}
-          name={props.post.author.name}
-          iconUrl={props.post.author.iconUrl}
+          screenName={post.author.screenName}
+          name={post.author.name}
+          iconUrl={post.author.iconUrl}
           boardLink={{
-            boardId: props.post.boardId,
-            boardName: props.post.parent?.title ?? boardState.title,
+            boardId: post.boardId,
+            boardName: post.parent?.title ?? boardState.title,
           }}
         />
       ) : (
         <AuthorAndBoardLink
-          screenName={props.post.author.screenName}
-          name={props.post.author.name}
-          iconUrl={props.post.author.iconUrl}
+          screenName={post.author.screenName}
+          name={post.author.name}
+          iconUrl={post.author.iconUrl}
         />
       )}
-      <CardContent content={props.post.content} imageUrls={props.post.imageUrls} />
+      <CardContent content={post.content} imageUrls={post.imageUrls} />
       <CardMeta>
         <CardIcons
-          commentNumber={props.post.responseNumber}
-          upvote={props.post.upvote}
-          downvote={props.post.downvote}
+          commentNumber={post.responseNumber}
+          upvote={post.upvote}
+          downvote={post.downvote}
           replyCallback={() => {
-            postForm.replyTo = props.post
+            postForm.replyTo = post
             postForm.onSubmit = onSubmit
-            postForm.onChange = () => publishWritingStatus(props.post.id)
+            postForm.onChange = () => publishWritingStatus(post.id)
           }}
-          showTrashIcon={props.post.author.name === userState.currentPersona?.name}
+          showTrashIcon={post.author.name === userState.currentPersona?.name}
         />
         <div className="pb-2" />
-        <CreatedAt created={props.post.createdAt} />
+        <CreatedAt created={post.createdAt} />
         <TypingMemberListLabel members={debouncedMembers} />
       </CardMeta>
       <div className="pb-5" />
-      {props.post.hasRepsponse ? (
-        <Thread threads={props.post.responses} parent={props.post} />
-      ) : (
-        <div>No Comments Yet</div>
-      )}
+      {showThreads &&
+        (post.hasRepsponse ? (
+          <Thread threads={post.responses} parent={post} />
+        ) : (
+          <div>No Comments Yet</div>
+        ))}
     </div>
+  )
+
+  return showThreads ? (
+    content
+  ) : (
+    <Link href={'/p/' + post.id}>
+      <a>{content}</a>
+    </Link>
   )
 })
