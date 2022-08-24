@@ -37,8 +37,8 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       createReply: { id },
     } = await client.createReply({
       content: comment,
-      persona_id: userState.currentPersona?.id ?? -1,
-      thread_id: thread.id,
+      personaId: userState.currentPersona?.id ?? -1,
+      threadId: thread.id,
     })
     await client.putAttachedImage({ postId: id, files: files })
 

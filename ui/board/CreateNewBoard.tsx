@@ -4,13 +4,18 @@ import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
-import { ClientError } from 'graphql-request'
-import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
+import {
+  getValidationErrors,
+  isClientError,
+  isUniqueConstraintError,
+} from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
+import { ErrorMessage } from '../form/ErrorMessage'
 
 export const CreateNewBoard: React.FC = () => {
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
+  const [overallErrorMessage, setOverallErrorMessage] = useState('')
   const [titleErrorMessage, setTitleErrorMessage] = useState('')
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState('')
   const user = useContext(UserStateContext)
@@ -22,6 +27,7 @@ export const CreateNewBoard: React.FC = () => {
     setTitleErrorMessage('')
     setDescriptionErrorMessage('')
     if (!persona) {
+      setOverallErrorMessage('You must sign in to create a Board.')
       return
     }
     try {
@@ -32,7 +38,7 @@ export const CreateNewBoard: React.FC = () => {
 
       await router.push(`/b/${id}`)
     } catch (error) {
-      if (error instanceof ClientError) {
+      if (isClientError(error)) {
         const validationErrors = getValidationErrors(error)
         validationErrors.forEach((zodIssue) => {
           switch (zodIssue.path.join('')) {
@@ -79,6 +85,7 @@ export const CreateNewBoard: React.FC = () => {
             />
           }
         />
+        {overallErrorMessage && <ErrorMessage errorMessage={overallErrorMessage} />}
         <button
           className="my-4 py-2 px-8 block text-white bg-teal-400 hover:bg-teal-600	rounded-xl border border-slate-300"
           onClick={onClick}

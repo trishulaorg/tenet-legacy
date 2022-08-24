@@ -36,8 +36,8 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
       } = await client.createPost({
         title,
         content,
-        persona_id: user.currentPersona?.id ?? -1,
-        board_id: state.id,
+        personaId: user.currentPersona?.id ?? -1,
+        boardId: state.id,
       })
 
       await client.putAttachedImage({ postId: createdPostId, files: files })
