@@ -24,9 +24,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
     setAuthToken(userState.token)
     await client.createThread({
       content: comment,
-      persona_id: userState.currentPersona?.id ?? -1,
-      post_id: post.id,
-      board_id: post.boardId,
+      personaId: userState.currentPersona?.id ?? -1,
+      postId: post.id,
+      boardId: post.boardId,
     })
 
     setCommentVisibility(false)

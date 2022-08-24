@@ -6,10 +6,36 @@ import type { MicroRequest } from 'apollo-server-micro/dist/types'
 import type { ServerResponse } from 'http'
 import schema from '../../server/graphql-schema/nexus'
 import { context } from '../../server'
+import type { ApolloServerPlugin } from 'apollo-server-plugin-base/src'
+import type { GraphQLRequestListener } from 'apollo-server-plugin-base/src'
+import type { EndpointsType } from '../../server/validation/validationSchema'
+import { validationSchema } from '../../server/validation/validationSchema'
+import { ValidationError } from '../../server/errors/BadRequest/ValidationError'
+import { ZodError } from 'zod'
 
 const cors = Cors()
 
-const apolloServer = new ApolloServer({ schema, context })
+const validationPlugin: ApolloServerPlugin = {
+  async requestDidStart(): Promise<GraphQLRequestListener> {
+    return {
+      async executionDidStart({ operationName, operation, request }) {
+        if (!operation || !operationName || !request.variables) {
+          return
+        }
+        try {
+          validationSchema[operationName as keyof EndpointsType].parse(request.variables as never)
+        } catch (e) {
+          if (e instanceof ZodError) {
+            throw new ValidationError(e.message, { exception: e })
+          }
+        }
+        return
+      },
+    }
+  },
+}
+
+const apolloServer = new ApolloServer({ schema, context, plugins: [validationPlugin] })
 
 const startServer = apolloServer.start()
 
@@ -29,10 +55,12 @@ const handler = async (req: MicroRequest, res: ServerResponse): Promise<void> =>
   })(req, res)
 }
 
-export default cors(handler)
+const handlerWithCors = cors(handler)
 
 export const config = {
   api: {
     bodyParser: false,
   },
 }
+
+export default handlerWithCors

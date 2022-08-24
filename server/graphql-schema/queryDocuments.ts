@@ -212,30 +212,25 @@ const queryDocuments: {
       }
     `,
     createPost: gql`
-      mutation createPost(
-        $title: String!
-        $content: String!
-        $persona_id: Int!
-        $board_id: String!
-      ) {
+      mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
         createPost(
           title: $title
           content: $content
           contentType: TEXT
-          personaId: $persona_id
-          boardId: $board_id
+          personaId: $personaId
+          boardId: $boardId
         ) {
           id
         }
       }
     `,
     createReply: gql`
-      mutation createReply($content: String!, $persona_id: Int!, $thread_id: String!) {
+      mutation createReply($content: String!, $personaId: Int!, $threadId: String!) {
         createReply(
           content: $content
           contentType: TEXT
-          personaId: $persona_id
-          threadId: $thread_id
+          personaId: $personaId
+          threadId: $threadId
         ) {
           id
         }
@@ -244,16 +239,16 @@ const queryDocuments: {
     createThread: gql`
       mutation createThread(
         $content: String!
-        $post_id: String!
-        $persona_id: Int!
-        $board_id: String!
+        $postId: String!
+        $personaId: Int!
+        $boardId: String!
       ) {
         createThread(
           content: $content
           contentType: TEXT
-          personaId: $persona_id
-          boardId: $board_id
-          postId: $post_id
+          personaId: $personaId
+          boardId: $boardId
+          postId: $postId
         ) {
           id
         }

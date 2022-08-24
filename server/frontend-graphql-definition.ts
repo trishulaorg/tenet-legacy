@@ -265,8 +265,8 @@ export type CreatePersonaMutation = { __typename?: 'Mutation', createPersona: { 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
   content: Scalars['String'];
-  persona_id: Scalars['Int'];
-  board_id: Scalars['String'];
+  personaId: Scalars['Int'];
+  boardId: Scalars['String'];
 }>;
 
 
@@ -274,8 +274,8 @@ export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __type
 
 export type CreateReplyMutationVariables = Exact<{
   content: Scalars['String'];
-  persona_id: Scalars['Int'];
-  thread_id: Scalars['String'];
+  personaId: Scalars['Int'];
+  threadId: Scalars['String'];
 }>;
 
 
@@ -283,9 +283,9 @@ export type CreateReplyMutation = { __typename?: 'Mutation', createReply: { __ty
 
 export type CreateThreadMutationVariables = Exact<{
   content: Scalars['String'];
-  post_id: Scalars['String'];
-  persona_id: Scalars['Int'];
-  board_id: Scalars['String'];
+  postId: Scalars['String'];
+  personaId: Scalars['Int'];
+  boardId: Scalars['String'];
 }>;
 
 
@@ -515,38 +515,38 @@ export const CreatePersonaDocument = gql`
 }
     `;
 export const CreatePostDocument = gql`
-    mutation createPost($title: String!, $content: String!, $persona_id: Int!, $board_id: String!) {
+    mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
   createPost(
     title: $title
     content: $content
     contentType: TEXT
-    personaId: $persona_id
-    boardId: $board_id
+    personaId: $personaId
+    boardId: $boardId
   ) {
     id
   }
 }
     `;
 export const CreateReplyDocument = gql`
-    mutation createReply($content: String!, $persona_id: Int!, $thread_id: String!) {
+    mutation createReply($content: String!, $personaId: Int!, $threadId: String!) {
   createReply(
     content: $content
     contentType: TEXT
-    personaId: $persona_id
-    threadId: $thread_id
+    personaId: $personaId
+    threadId: $threadId
   ) {
     id
   }
 }
     `;
 export const CreateThreadDocument = gql`
-    mutation createThread($content: String!, $post_id: String!, $persona_id: Int!, $board_id: String!) {
+    mutation createThread($content: String!, $postId: String!, $personaId: Int!, $boardId: String!) {
   createThread(
     content: $content
     contentType: TEXT
-    personaId: $persona_id
-    boardId: $board_id
-    postId: $post_id
+    personaId: $personaId
+    boardId: $boardId
+    postId: $postId
   ) {
     id
   }

@@ -4,8 +4,11 @@ import React, { useContext, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
-import { ClientError } from 'graphql-request'
-import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
+import {
+  getValidationErrors,
+  isClientError,
+  isUniqueConstraintError,
+} from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
 
 export const CreateNewBoard: React.FC = () => {
@@ -32,7 +35,8 @@ export const CreateNewBoard: React.FC = () => {
 
       await router.push(`/b/${id}`)
     } catch (error) {
-      if (error instanceof ClientError) {
+      console.log(JSON.stringify(error))
+      if (isClientError(error)) {
         const validationErrors = getValidationErrors(error)
         validationErrors.forEach((zodIssue) => {
           switch (zodIssue.path.join('')) {
