@@ -10,9 +10,7 @@ const isClientError = (error: unknown): error is ClientError => {
 
 const isUniqueConstraintError = (error: ClientError): boolean =>
   !!error.response.errors?.some((innerError) =>
-    innerError.extensions?.exception?.stacktrace?.some((message: string) =>
-      message.includes('Unique constraint failed')
-    )
+    innerError.message.includes('Unique constraint failed')
   )
 
 const getValidationErrors = (error: ClientError): ZodIssue[] => {
