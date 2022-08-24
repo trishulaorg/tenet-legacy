@@ -27,6 +27,8 @@ const validationPlugin: ApolloServerPlugin = {
         } catch (e) {
           if (e instanceof ZodError) {
             throw new ValidationError(e.message, { exception: e })
+          } else {
+            throw new Error(`No validator found for ${operationName} endpoint.`)
           }
         }
         return
