@@ -18,7 +18,7 @@ const cors = Cors()
 const validationPlugin: ApolloServerPlugin = {
   async requestDidStart(): Promise<GraphQLRequestListener> {
     return {
-      async executionDidStart({ operationName, operation, request }) {
+      async didResolveOperation({ operationName, operation, request }) {
         if (!operation || !operationName || !request.variables) {
           return
         }
@@ -26,6 +26,7 @@ const validationPlugin: ApolloServerPlugin = {
           validationSchema[operationName as keyof EndpointsType].parse(request.variables as never)
         } catch (e) {
           if (e instanceof ZodError) {
+            // same format as ZodError thrown in resolver
             throw new ValidationError(e.message, { exception: e })
           } else {
             throw new Error(`No validator found for ${operationName} endpoint.`)
