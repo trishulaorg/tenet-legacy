@@ -10,10 +10,12 @@ import {
   isUniqueConstraintError,
 } from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
+import { ErrorMessage } from '../form/ErrorMessage'
 
 export const CreateNewBoard: React.FC = () => {
   const [name, setName] = useState('')
   const [desc, setDesc] = useState('')
+  const [overallErrorMessage, setOverallErrorMessage] = useState('')
   const [titleErrorMessage, setTitleErrorMessage] = useState('')
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState('')
   const user = useContext(UserStateContext)
@@ -25,6 +27,7 @@ export const CreateNewBoard: React.FC = () => {
     setTitleErrorMessage('')
     setDescriptionErrorMessage('')
     if (!persona) {
+      setOverallErrorMessage('You must sign in to create a Board.')
       return
     }
     try {
@@ -35,7 +38,6 @@ export const CreateNewBoard: React.FC = () => {
 
       await router.push(`/b/${id}`)
     } catch (error) {
-      console.log(JSON.stringify(error))
       if (isClientError(error)) {
         const validationErrors = getValidationErrors(error)
         validationErrors.forEach((zodIssue) => {
@@ -83,6 +85,7 @@ export const CreateNewBoard: React.FC = () => {
             />
           }
         />
+        {overallErrorMessage && <ErrorMessage errorMessage={overallErrorMessage} />}
         <button
           className="my-4 py-2 px-8 block text-white bg-teal-400 hover:bg-teal-600	rounded-xl border border-slate-300"
           onClick={onClick}
