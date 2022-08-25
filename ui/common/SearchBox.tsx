@@ -38,13 +38,13 @@ export const SearchBox: React.FC = () => {
               </Link>
             ))}
           </ul>
-          {query !== '' ? (
+          {query !== '' && (
             <Link href={`/s/${query}`}>
-              <button className="px-4 pt-4 h-6">Show full results</button>
+              <button className="mx-4 mt-4 h-6">Show full results</button>
             </Link>
-          ) : null}
+          )}
           <Link href={`/o/cb`}>
-            <button className="px-4 h-6">Create new board</button>
+            <button className="mx-4 h-6">Create new board</button>
           </Link>
         </div>
       ) : null}
