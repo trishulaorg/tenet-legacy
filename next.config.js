@@ -16,8 +16,9 @@ const pwaConfig = {
 }
 
 const innerConfig = Object.assign({}, nextConfig, pwaConfig)
-
 const withPWA = require('next-pwa')
-const nextConfigWithPWA = withPWA(innerConfig)
 
-module.exports = nextConfigWithPWA
+// do not activate pwa in development environment
+const config = process.env.NODE_ENV !== 'development' ? withPWA(innerConfig) : nextConfig
+
+module.exports = config
