@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { ContentType } from '@prisma/client'
 import type { ZodString } from 'zod/lib/types'
 import type { getSdk } from '../frontend-graphql-definition'
 
@@ -48,20 +47,17 @@ const validationSchema: ValidationSchemaType = {
   createPost: z.object({
     title: z.string().min(1).max(50),
     content: z.string().min(1).max(2000),
-    contentType: z.nativeEnum(ContentType),
     boardId: z.string().min(26).max(26),
     personaId: z.number(),
   }),
   createThread: z.object({
     content: z.string().min(1).max(500),
-    contentType: z.nativeEnum(ContentType),
     boardId: z.string().min(26).max(26),
     postId: z.string().min(26).max(26),
     personaId: z.number(),
   }),
   createReply: z.object({
     content: z.string().min(1).max(500),
-    contentType: z.nativeEnum(ContentType),
     threadId: z.string().min(26).max(26),
     personaId: z.number(),
   }),
