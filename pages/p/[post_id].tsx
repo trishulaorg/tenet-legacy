@@ -31,6 +31,12 @@ const PostPage: React.FC = () => {
     new BoardState('', contentGraphqlQueryDocument)
   )
 
+  const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
+  const { data, mutate } = apiHooks.useGetPost(
+    () => postId,
+    personaId ? { id: postId, personaId } : { id: postId }
+  )
+
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
@@ -45,13 +51,7 @@ const PostPage: React.FC = () => {
       }
     }
     f()
-  }, [token, router, user])
-
-  const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data, mutate } = apiHooks.useGetPost(
-    () => postId,
-    personaId ? { id: postId, personaId } : { id: postId }
-  )
+  }, [token, router, user, mutate])
 
   useEffect(() => {
     if (data) {
