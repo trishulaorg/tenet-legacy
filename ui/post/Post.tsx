@@ -70,7 +70,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   }
 
   const onPostDelete = async (): Promise<void> => {
-    if (prompt('Type "delete" if you sure want to delete:') === 'delete') {
+    if (prompt('Type "delete" if you really want to delete:') === 'delete') {
       await client.deletePost({ postId: post.id, personaId: userState.currentPersona?.id || 0 })
       await mutate(post.id)
       await mutate(post.boardId)
