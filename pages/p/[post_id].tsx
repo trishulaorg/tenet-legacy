@@ -14,6 +14,7 @@ import { PostWrapper } from '../../ui/post/PostWrapper'
 const PostPage: React.FC = () => {
   const token = getGqlToken()
   const router = useRouter()
+  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const {
     isReady,
     query: { post_id: rawPostId },
@@ -34,6 +35,9 @@ const PostPage: React.FC = () => {
     const f = async (): Promise<void> => {
       if (user) {
         await user.request()
+        if (user.currentPersona?.id) {
+          setPersonaId(user.currentPersona.id)
+        }
       }
       if (token) {
         setAuthToken(token)
@@ -43,7 +47,10 @@ const PostPage: React.FC = () => {
   }, [token, router, user])
 
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data } = apiHooks.useGetPost(() => postId, { id: postId })
+  const { data } = apiHooks.useGetPost(
+    () => postId,
+    personaId ? { id: postId, personaId } : { id: postId }
+  )
 
   useEffect(() => {
     if (data) {

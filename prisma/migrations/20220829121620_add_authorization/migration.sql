@@ -1,48 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `VoteOnComment` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `VoteOnPost` table. If the table is not empty, all the data it contains will be lost.
-  - Added the required column `defaultBoardRoleId` to the `Board` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `defaultPostRoleId` to the `Board` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `defaultReplyRoleId` to the `Board` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `defaultThreadRoleId` to the `Board` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `defaultPostRoleId` to the `Post` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `defaultReplyRoleId` to the `Post` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `defaultThreadRoleId` to the `Post` table without a default value. This is not possible if the table is not empty.
-
-*/
--- DropForeignKey
-ALTER TABLE `VoteOnComment` DROP FOREIGN KEY `VoteOnComment_createdById_fkey`;
-
--- DropForeignKey
-ALTER TABLE `VoteOnPost` DROP FOREIGN KEY `VoteOnPost_createdById_fkey`;
-
--- AlterTable
-ALTER TABLE `Board` ADD COLUMN `defaultBoardRoleId` INTEGER NOT NULL,
-    ADD COLUMN `defaultPostRoleId` INTEGER NOT NULL,
-    ADD COLUMN `defaultReplyRoleId` INTEGER NOT NULL,
-    ADD COLUMN `defaultThreadRoleId` INTEGER NOT NULL,
-    ADD COLUMN `deletedAt` DATETIME(3) NULL;
-
--- AlterTable
-ALTER TABLE `Post` ADD COLUMN `defaultPostRoleId` INTEGER NOT NULL,
-    ADD COLUMN `defaultReplyRoleId` INTEGER NOT NULL,
-    ADD COLUMN `defaultThreadRoleId` INTEGER NOT NULL,
-    ADD COLUMN `deletedAt` DATETIME(3) NULL;
-
--- AlterTable
-ALTER TABLE `Reply` ADD COLUMN `deletedAt` DATETIME(3) NULL;
-
--- AlterTable
-ALTER TABLE `Thread` ADD COLUMN `deletedAt` DATETIME(3) NULL;
-
--- DropTable
-DROP TABLE `VoteOnComment`;
-
--- DropTable
-DROP TABLE `VoteOnPost`;
-
 -- CreateTable
 CREATE TABLE `AllowedWritingRole` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -50,6 +5,39 @@ CREATE TABLE `AllowedWritingRole` (
     `read` BOOLEAN NOT NULL DEFAULT false,
     `update` BOOLEAN NOT NULL DEFAULT false,
     `delete` BOOLEAN NOT NULL DEFAULT false,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `User` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `token` VARCHAR(191) NOT NULL,
+
+    UNIQUE INDEX `User_token_key`(`token`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Persona` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `name` VARCHAR(25) NOT NULL,
+    `screenName` VARCHAR(30) NOT NULL,
+    `iconUrl` TEXT NOT NULL,
+    `userId` INTEGER NOT NULL,
+
+    UNIQUE INDEX `Persona_name_key`(`name`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PersonaRelation` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `srcPersonaId` INTEGER NOT NULL,
+    `destPersonaId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -70,6 +58,75 @@ CREATE TABLE `Comments_Vote` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdById` INTEGER NOT NULL,
     `weight` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Board` (
+    `id` CHAR(26) NOT NULL,
+    `title` VARCHAR(30) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NULL,
+    `description` VARCHAR(2000) NOT NULL,
+    `defaultBoardRoleId` INTEGER NOT NULL,
+    `defaultPostRoleId` INTEGER NOT NULL,
+    `defaultThreadRoleId` INTEGER NOT NULL,
+    `defaultReplyRoleId` INTEGER NOT NULL,
+
+    UNIQUE INDEX `Board_title_key`(`title`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Post` (
+    `id` CHAR(26) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NULL,
+    `title` VARCHAR(50) NOT NULL,
+    `contentType` ENUM('TEXT', 'LINK', 'IMAGE', 'VIDEO', 'EMOJI') NOT NULL,
+    `content` VARCHAR(2000) NOT NULL,
+    `boardId` VARCHAR(191) NOT NULL,
+    `personaId` INTEGER NOT NULL,
+    `defaultPostRoleId` INTEGER NOT NULL,
+    `defaultThreadRoleId` INTEGER NOT NULL,
+    `defaultReplyRoleId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Thread` (
+    `id` CHAR(26) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NULL,
+    `content` VARCHAR(500) NOT NULL,
+    `contentType` ENUM('TEXT', 'LINK', 'IMAGE', 'VIDEO', 'EMOJI') NOT NULL,
+    `boardId` VARCHAR(191) NOT NULL,
+    `postId` VARCHAR(191) NOT NULL,
+    `personaId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Reply` (
+    `id` CHAR(26) NOT NULL,
+    `contentType` ENUM('TEXT', 'LINK', 'IMAGE', 'VIDEO', 'EMOJI') NOT NULL,
+    `content` VARCHAR(500) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `deletedAt` DATETIME(3) NULL,
+    `threadId` VARCHAR(191) NOT NULL,
+    `personaId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `UploadedImage` (
+    `id` CHAR(26) NOT NULL,
+    `parentId` CHAR(26) NOT NULL,
+    `fileUrl` TEXT NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -131,6 +188,24 @@ CREATE TABLE `_PersonaToPostRole` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `_BoardToPersona` (
+    `A` CHAR(26) NOT NULL,
+    `B` INTEGER NOT NULL,
+
+    UNIQUE INDEX `_BoardToPersona_AB_unique`(`A`, `B`),
+    INDEX `_BoardToPersona_B_index`(`B`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `_FollowingBoards` (
+    `A` CHAR(26) NOT NULL,
+    `B` INTEGER NOT NULL,
+
+    UNIQUE INDEX `_FollowingBoards_AB_unique`(`A`, `B`),
+    INDEX `_FollowingBoards_B_index`(`B`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `_BoardToBoardRole` (
     `A` CHAR(26) NOT NULL,
     `B` CHAR(26) NOT NULL,
@@ -158,6 +233,15 @@ CREATE TABLE `_BoardRoleToPersona` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
+ALTER TABLE `Persona` ADD CONSTRAINT `Persona_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PersonaRelation` ADD CONSTRAINT `PersonaRelation_srcPersonaId_fkey` FOREIGN KEY (`srcPersonaId`) REFERENCES `Persona`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PersonaRelation` ADD CONSTRAINT `PersonaRelation_destPersonaId_fkey` FOREIGN KEY (`destPersonaId`) REFERENCES `Persona`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Posts_Vote` ADD CONSTRAINT `Posts_Vote_createdById_fkey` FOREIGN KEY (`createdById`) REFERENCES `Persona`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -176,6 +260,12 @@ ALTER TABLE `Board` ADD CONSTRAINT `Board_defaultThreadRoleId_fkey` FOREIGN KEY 
 ALTER TABLE `Board` ADD CONSTRAINT `Board_defaultReplyRoleId_fkey` FOREIGN KEY (`defaultReplyRoleId`) REFERENCES `AllowedWritingRole`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `Post` ADD CONSTRAINT `Post_boardId_fkey` FOREIGN KEY (`boardId`) REFERENCES `Board`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Post` ADD CONSTRAINT `Post_personaId_fkey` FOREIGN KEY (`personaId`) REFERENCES `Persona`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `Post` ADD CONSTRAINT `Post_defaultPostRoleId_fkey` FOREIGN KEY (`defaultPostRoleId`) REFERENCES `AllowedWritingRole`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -183,6 +273,21 @@ ALTER TABLE `Post` ADD CONSTRAINT `Post_defaultThreadRoleId_fkey` FOREIGN KEY (`
 
 -- AddForeignKey
 ALTER TABLE `Post` ADD CONSTRAINT `Post_defaultReplyRoleId_fkey` FOREIGN KEY (`defaultReplyRoleId`) REFERENCES `AllowedWritingRole`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Thread` ADD CONSTRAINT `Thread_boardId_fkey` FOREIGN KEY (`boardId`) REFERENCES `Board`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Thread` ADD CONSTRAINT `Thread_postId_fkey` FOREIGN KEY (`postId`) REFERENCES `Post`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Thread` ADD CONSTRAINT `Thread_personaId_fkey` FOREIGN KEY (`personaId`) REFERENCES `Persona`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Reply` ADD CONSTRAINT `Reply_threadId_fkey` FOREIGN KEY (`threadId`) REFERENCES `Thread`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Reply` ADD CONSTRAINT `Reply_personaId_fkey` FOREIGN KEY (`personaId`) REFERENCES `Persona`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SystemAdministratorRole` ADD CONSTRAINT `SystemAdministratorRole_boardRoleId_fkey` FOREIGN KEY (`boardRoleId`) REFERENCES `AllowedWritingRole`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -228,6 +333,18 @@ ALTER TABLE `_PersonaToPostRole` ADD CONSTRAINT `_PersonaToPostRole_A_fkey` FORE
 
 -- AddForeignKey
 ALTER TABLE `_PersonaToPostRole` ADD CONSTRAINT `_PersonaToPostRole_B_fkey` FOREIGN KEY (`B`) REFERENCES `PostRole`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_BoardToPersona` ADD CONSTRAINT `_BoardToPersona_A_fkey` FOREIGN KEY (`A`) REFERENCES `Board`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_BoardToPersona` ADD CONSTRAINT `_BoardToPersona_B_fkey` FOREIGN KEY (`B`) REFERENCES `Persona`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_FollowingBoards` ADD CONSTRAINT `_FollowingBoards_A_fkey` FOREIGN KEY (`A`) REFERENCES `Board`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `_FollowingBoards` ADD CONSTRAINT `_FollowingBoards_B_fkey` FOREIGN KEY (`B`) REFERENCES `Persona`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_BoardToBoardRole` ADD CONSTRAINT `_BoardToBoardRole_A_fkey` FOREIGN KEY (`A`) REFERENCES `Board`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
