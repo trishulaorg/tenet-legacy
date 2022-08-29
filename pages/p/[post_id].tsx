@@ -37,6 +37,7 @@ const PostPage: React.FC = () => {
         await user.request()
         if (user.currentPersona?.id) {
           setPersonaId(user.currentPersona.id)
+          await mutate()
         }
       }
       if (token) {
@@ -47,7 +48,7 @@ const PostPage: React.FC = () => {
   }, [token, router, user])
 
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data } = apiHooks.useGetPost(
+  const { data, mutate } = apiHooks.useGetPost(
     () => postId,
     personaId ? { id: postId, personaId } : { id: postId }
   )
