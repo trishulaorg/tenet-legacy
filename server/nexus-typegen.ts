@@ -55,6 +55,13 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  AllowedWritingRole: { // root type
+    create: boolean; // Boolean!
+    delete: boolean; // Boolean!
+    id: number; // Int!
+    read: boolean; // Boolean!
+    update: boolean; // Boolean!
+  }
   Board: { // root type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     description: string; // String!
@@ -79,6 +86,12 @@ export interface NexusGenObjects {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
     title: string; // String!
+  }
+  Privilege: { // root type
+    createChild: boolean; // Boolean!
+    deleteSelf: boolean; // Boolean!
+    readChild: boolean; // Boolean!
+    updateSelf: boolean; // Boolean!
   }
   Query: {};
   Reply: { // root type
@@ -113,11 +126,24 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars & NexusGenEnums
 
 export interface NexusGenFieldTypes {
+  AllowedWritingRole: { // field return type
+    create: boolean; // Boolean!
+    delete: boolean; // Boolean!
+    id: number; // Int!
+    read: boolean; // Boolean!
+    update: boolean; // Boolean!
+  }
   Board: { // field return type
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    defaultBoardRole: NexusGenRootTypes['AllowedWritingRole']; // AllowedWritingRole!
+    defaultPostRole: NexusGenRootTypes['AllowedWritingRole']; // AllowedWritingRole!
+    defaultReplyRole: NexusGenRootTypes['AllowedWritingRole']; // AllowedWritingRole!
+    defaultThreadRole: NexusGenRootTypes['AllowedWritingRole']; // AllowedWritingRole!
     description: string; // String!
     id: string; // ID!
+    moderators: NexusGenRootTypes['Persona'][]; // [Persona!]!
     posts: NexusGenRootTypes['Post'][]; // [Post!]!
+    privilege: NexusGenRootTypes['Privilege']; // Privilege!
     title: string; // String!
   }
   File: { // field return type
@@ -131,6 +157,7 @@ export interface NexusGenFieldTypes {
     createPost: NexusGenRootTypes['Post']; // Post!
     createReply: NexusGenRootTypes['Reply']; // Reply!
     createThread: NexusGenRootTypes['Thread']; // Thread!
+    deletePost: NexusGenRootTypes['Post']; // Post!
     putAttachedImage: NexusGenRootTypes['File'][]; // [File!]!
     setPersonaIcon: NexusGenRootTypes['File']; // File!
     setTypingStateOnBoard: NexusGenRootTypes['Post']; // Post!
@@ -149,8 +176,15 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     imageUrls: string[]; // [String!]!
     persona: NexusGenRootTypes['Persona']; // Persona!
+    privilege: NexusGenRootTypes['Privilege']; // Privilege!
     threads: NexusGenRootTypes['Thread'][]; // [Thread!]!
     title: string; // String!
+  }
+  Privilege: { // field return type
+    createChild: boolean; // Boolean!
+    deleteSelf: boolean; // Boolean!
+    readChild: boolean; // Boolean!
+    updateSelf: boolean; // Boolean!
   }
   Query: { // field return type
     activities: NexusGenRootTypes['Post'][]; // [Post!]!
@@ -168,6 +202,7 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     imageUrls: string[]; // [String!]!
     persona: NexusGenRootTypes['Persona']; // Persona!
+    privilege: NexusGenRootTypes['Privilege']; // Privilege!
     threadId: string; // String!
   }
   SearchResult: { // field return type
@@ -184,6 +219,7 @@ export interface NexusGenFieldTypes {
     imageUrls: string[]; // [String!]!
     persona: NexusGenRootTypes['Persona']; // Persona!
     postId: string; // String!
+    privilege: NexusGenRootTypes['Privilege']; // Privilege!
     replies: NexusGenRootTypes['Reply'][]; // [Reply!]!
   }
   User: { // field return type
@@ -192,11 +228,24 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  AllowedWritingRole: { // field return type name
+    create: 'Boolean'
+    delete: 'Boolean'
+    id: 'Int'
+    read: 'Boolean'
+    update: 'Boolean'
+  }
   Board: { // field return type name
     createdAt: 'DateTime'
+    defaultBoardRole: 'AllowedWritingRole'
+    defaultPostRole: 'AllowedWritingRole'
+    defaultReplyRole: 'AllowedWritingRole'
+    defaultThreadRole: 'AllowedWritingRole'
     description: 'String'
     id: 'ID'
+    moderators: 'Persona'
     posts: 'Post'
+    privilege: 'Privilege'
     title: 'String'
   }
   File: { // field return type name
@@ -210,6 +259,7 @@ export interface NexusGenFieldTypeNames {
     createPost: 'Post'
     createReply: 'Reply'
     createThread: 'Thread'
+    deletePost: 'Post'
     putAttachedImage: 'File'
     setPersonaIcon: 'File'
     setTypingStateOnBoard: 'Post'
@@ -228,8 +278,15 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     imageUrls: 'String'
     persona: 'Persona'
+    privilege: 'Privilege'
     threads: 'Thread'
     title: 'String'
+  }
+  Privilege: { // field return type name
+    createChild: 'Boolean'
+    deleteSelf: 'Boolean'
+    readChild: 'Boolean'
+    updateSelf: 'Boolean'
   }
   Query: { // field return type name
     activities: 'Post'
@@ -247,6 +304,7 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     imageUrls: 'String'
     persona: 'Persona'
+    privilege: 'Privilege'
     threadId: 'String'
   }
   SearchResult: { // field return type name
@@ -263,6 +321,7 @@ export interface NexusGenFieldTypeNames {
     imageUrls: 'String'
     persona: 'Persona'
     postId: 'String'
+    privilege: 'Privilege'
     replies: 'Reply'
   }
   User: { // field return type name
@@ -302,6 +361,10 @@ export interface NexusGenArgTypes {
       personaId: number; // Int!
       postId: string; // String!
     }
+    deletePost: { // args
+      personaId: number; // Int!
+      postId: string; // String!
+    }
     putAttachedImage: { // args
       files: NexusGenScalars['Upload'][]; // [Upload!]!
       postId: string; // String!
@@ -316,8 +379,12 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    activities: { // args
+      personaId?: number | null; // Int
+    }
     board: { // args
       id: string; // String!
+      personaId?: number | null; // Int
     }
     persona: { // args
       name: string; // String!
@@ -327,6 +394,7 @@ export interface NexusGenArgTypes {
     }
     post: { // args
       id: string; // String!
+      personaId?: number | null; // Int
     }
     removeUser: { // args
       name: string; // String!

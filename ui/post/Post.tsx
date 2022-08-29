@@ -50,7 +50,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     1000
   )
 
-  const { route } = useRouter()
+  const { route, push } = useRouter()
   const isInPostPage = route.startsWith('/p/')
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
@@ -65,7 +65,16 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     })
 
     await client.putAttachedImage({ postId: id, files: files })
+    await push(`/b/${post.boardId}`)
     await mutate(post.id)
+  }
+
+  const onPostDelete = async (): Promise<void> => {
+    if (prompt('Type "delete" if you sure want to delete:') === 'delete') {
+      await client.deletePost({ postId: post.id, personaId: userState.currentPersona?.id || 0 })
+      await mutate(post.id)
+      await mutate(post.boardId)
+    }
   }
 
   const content = (
@@ -90,17 +99,33 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
       )}
       <CardContent content={post.content} imageUrls={post.imageUrls} />
       <CardMeta>
-        <CardIcons
-          commentNumber={post.responseNumber}
-          upvote={post.upvote}
-          downvote={post.downvote}
-          replyCallback={() => {
-            postForm.replyTo = post
-            postForm.onSubmit = onSubmit
-            postForm.onChange = () => publishWritingStatus(post.id)
-          }}
-          showTrashIcon={post.author.name === userState.currentPersona?.name}
-        />
+        {post.privilege.deleteSelf ? (
+          <CardIcons
+            showCommentIcon={isInPostPage}
+            commentNumber={post.responseNumber}
+            upvote={post.upvote}
+            downvote={post.downvote}
+            replyCallback={() => {
+              postForm.replyTo = post
+              postForm.onSubmit = onSubmit
+              postForm.onChange = () => publishWritingStatus(post.id)
+            }}
+            deleteCallback={onPostDelete}
+          />
+        ) : (
+          <CardIcons
+            showCommentIcon={isInPostPage}
+            commentNumber={post.responseNumber}
+            upvote={post.upvote}
+            downvote={post.downvote}
+            replyCallback={() => {
+              postForm.replyTo = post
+              postForm.onSubmit = onSubmit
+              postForm.onChange = () => publishWritingStatus(post.id)
+            }}
+          />
+        )}
+
         <div className="pb-2" />
         <CreatedAt created={post.createdAt} />
         <TypingMemberListLabel members={debouncedMembers} />

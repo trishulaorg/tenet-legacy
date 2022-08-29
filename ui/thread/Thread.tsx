@@ -59,17 +59,16 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
             <CardContent content={thread.content} isPost={false} imageUrls={thread.imageUrls} />
             <CardMeta isPost={false}>
               <CardIcons
+                showCommentIcon={true}
                 commentNumber={thread.responseNumber}
                 upvote={thread.upvote}
                 downvote={thread.downvote}
-                isPost={false}
                 replyCallback={() => {
                   postForm.replyTo = thread
                   postForm.onSubmit = (comment: string, files: File[]) =>
                     onSubmit(comment, files, thread)
                   postForm.onChange = () => publishWritingStatus(props.parent.id)
                 }}
-                showTrashIcon={thread.author.name === userState.currentPersona?.name}
               />
               <div className="pb-2" />
               <CreatedAt created={thread.createdAt} />

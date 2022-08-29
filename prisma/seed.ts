@@ -9,6 +9,14 @@ async function main(): Promise<void> {
         token: `token${i}`,
       },
     })
+    const role = await prisma.allowedWritingRole.create({
+      data: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
+    })
     const persona = await prisma.persona.create({
       data: {
         userId: user.id,
@@ -22,6 +30,10 @@ async function main(): Promise<void> {
         id: ulid(),
         title: `Test Board ${i}`,
         description: 'This is a test board',
+        defaultBoardRoleId: role.id,
+        defaultPostRoleId: role.id,
+        defaultThreadRoleId: role.id,
+        defaultReplyRoleId: role.id,
       },
     })
     const post = await prisma.post.create({
@@ -32,6 +44,9 @@ async function main(): Promise<void> {
         title: 'Test Post',
         content: 'This is a test post',
         contentType: 'TEXT',
+        defaultPostRoleId: role.id,
+        defaultThreadRoleId: role.id,
+        defaultReplyRoleId: role.id,
       },
     })
     const thread = await prisma.thread.create({

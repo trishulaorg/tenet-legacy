@@ -5,6 +5,7 @@ import { ulid } from 'ulid'
 import { randomUniqueId } from '../libs/randomUniqueId'
 import type { User } from '@prisma/client'
 import { randomAlphabetString } from '../libs/randomAlphabetString'
+import type { AllowedWritingRole } from '@prisma/client'
 
 describe('test activity query api', () => {
   beforeEach(() => {
@@ -58,17 +59,36 @@ describe('test activity query api', () => {
       data: personas,
     })
 
+    const role: AllowedWritingRole = await prismaClient.allowedWritingRole.create({
+      data: {
+        create: true,
+        read: true,
+        update: true,
+        delete: true,
+      },
+    })
+
     const board1: Board = {
       id: ulid(),
       title: randomAlphabetString(10),
       createdAt: new Date(),
       description: randomAlphabetString(10),
+      defaultBoardRoleId: role.id,
+      defaultPostRoleId: role.id,
+      defaultThreadRoleId: role.id,
+      defaultReplyRoleId: role.id,
+      deletedAt: null,
     }
     const board2: Board = {
       id: ulid(),
       title: randomAlphabetString(10),
       createdAt: new Date(),
       description: randomAlphabetString(10),
+      defaultBoardRoleId: role.id,
+      defaultPostRoleId: role.id,
+      defaultThreadRoleId: role.id,
+      defaultReplyRoleId: role.id,
+      deletedAt: null,
     }
 
     const boards: Board[] = [board1, board2]
@@ -85,6 +105,10 @@ describe('test activity query api', () => {
       contentType: 'TEXT',
       content: randomAlphabetString(10),
       personaId: persona1.id,
+      defaultPostRoleId: role.id,
+      defaultThreadRoleId: role.id,
+      defaultReplyRoleId: role.id,
+      deletedAt: null,
     }
 
     const post2: Post = {
@@ -95,6 +119,10 @@ describe('test activity query api', () => {
       contentType: 'TEXT',
       content: randomAlphabetString(10),
       personaId: persona2.id,
+      defaultPostRoleId: role.id,
+      defaultThreadRoleId: role.id,
+      defaultReplyRoleId: role.id,
+      deletedAt: null,
     }
 
     const posts: Post[] = [post1, post2]

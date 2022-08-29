@@ -28,14 +28,24 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
             <div className="ml-2 border-gray-200	border-l-4">
               <CardContent content={reply.content} isPost={false} imageUrls={reply.imageUrls} />
               <CardMeta isPost={false}>
-                <CardIcons
-                  commentNumber={reply.responseNumber}
-                  upvote={reply.upvote}
-                  downvote={reply.downvote}
-                  isPost={false}
-                  showCommentNumber={false}
-                  showTrashIcon={reply.author.name === userState.currentPersona?.name}
-                />
+                {reply.author.name === userState.currentPersona?.name ? (
+                  <CardIcons
+                    showCommentIcon={false}
+                    commentNumber={reply.responseNumber}
+                    upvote={reply.upvote}
+                    downvote={reply.downvote}
+                    deleteCallback={() => {
+                      return
+                    }}
+                  />
+                ) : (
+                  <CardIcons
+                    showCommentIcon={false}
+                    commentNumber={reply.responseNumber}
+                    upvote={reply.upvote}
+                    downvote={reply.downvote}
+                  />
+                )}
                 <div className="pb-2" />
                 <CreatedAt created={reply.createdAt} />
               </CardMeta>

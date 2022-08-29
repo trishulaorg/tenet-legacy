@@ -1,5 +1,5 @@
+import type { ZodNumber } from 'zod'
 import { z } from 'zod'
-import { ContentType } from '@prisma/client'
 import type { ZodString } from 'zod/lib/types'
 import type { getSdk } from '../frontend-graphql-definition'
 
@@ -15,8 +15,20 @@ type ValidationSchemaType = {
 
 const validationSchema: ValidationSchemaType = {
   getMe: z.any(),
-  getBoard: z.object({ topicId: z.string().min(26).max(26) }),
-  getPost: z.object({ id: z.string().min(26).max(26) }),
+  getBoard: z.object({
+    topicId: z.string().min(26).max(26),
+    /**
+     * https://github.com/colinhacks/zod/issues/635
+     */
+    personaId: z.number().min(1).optional() as unknown as ZodNumber,
+  }),
+  getPost: z.object({
+    id: z.string().min(26).max(26),
+    /**
+     * https://github.com/colinhacks/zod/issues/635
+     */
+    personaId: z.number().min(1).optional() as unknown as ZodNumber,
+  }),
   getActivities: z.any(),
   Search: z.object({ query: z.string() }),
   createPersona: z.object({
@@ -48,26 +60,27 @@ const validationSchema: ValidationSchemaType = {
   createPost: z.object({
     title: z.string().min(1).max(50),
     content: z.string().min(1).max(2000),
-    contentType: z.nativeEnum(ContentType),
     boardId: z.string().min(26).max(26),
     personaId: z.number(),
   }),
   createThread: z.object({
     content: z.string().min(1).max(500),
-    contentType: z.nativeEnum(ContentType),
     boardId: z.string().min(26).max(26),
     postId: z.string().min(26).max(26),
     personaId: z.number(),
   }),
   createReply: z.object({
     content: z.string().min(1).max(500),
-    contentType: z.nativeEnum(ContentType),
     threadId: z.string().min(26).max(26),
     personaId: z.number(),
   }),
   putAttachedImage: z.any(),
   setPersonaIcon: z.any(),
   setTypingStateOnBoard: z.object({
+    personaId: z.number().int(),
+    postId: z.string().min(26).max(26),
+  }),
+  deletePost: z.object({
     personaId: z.number().int(),
     postId: z.string().min(26).max(26),
   }),

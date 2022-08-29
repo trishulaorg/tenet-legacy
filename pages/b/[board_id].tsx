@@ -21,11 +21,15 @@ const IndexPage: React.FC = () => {
     isReady,
     query: { board_id: rawBoardId },
   } = router
-  let user = defaultUser()
+  let user: UserState | undefined
+  if (!user) {
+    user = defaultUser()
+  }
   if (token) {
     setAuthToken(token)
     user = new UserState(token, [], 0)
   }
+  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
 
   const contentGraphqlQueryDocument = queryDocuments.Query.board
 
@@ -34,14 +38,24 @@ const IndexPage: React.FC = () => {
   )
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
-  const { data } = apiHooks.useGetBoard(() => boardId, {
-    topicId: boardId,
-  })
+  const { data, mutate } = apiHooks.useGetBoard(
+    () => boardId,
+    personaId
+      ? {
+          topicId: boardId,
+          personaId,
+        }
+      : { topicId: boardId }
+  )
 
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
         await user.request()
+        if (user.currentPersona?.id !== personaId) {
+          setPersonaId(user.currentPersona?.id)
+          mutate()
+        }
       }
 
       const pusher = await makePusher()
@@ -50,13 +64,13 @@ const IndexPage: React.FC = () => {
       const postChannels: Channel[] = []
 
       postIds.forEach((postId) => {
-        if (user.notifications.every((notification) => notification.channel !== postId)) {
+        if (user?.notifications.every((notification) => notification.channel !== postId)) {
           postChannels.push(pusher.subscribe(postId))
         }
       })
 
       postChannels.forEach((channel) =>
-        user.subscribeNotifications(channel, 'typing', (data) => {
+        user?.subscribeNotifications(channel, 'typing', (data) => {
           console.log(data)
           /* no-op */
         })
