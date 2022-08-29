@@ -1,6 +1,6 @@
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
@@ -10,7 +10,7 @@ generator client {
 }
 
 generator nexusPrisma {
-   provider = "nexus-prisma"
+  provider        = "nexus-prisma"
   previewFeatures = ["referentialIntegrity"]
 }
 
@@ -27,7 +27,7 @@ model Persona {
   name             String            @unique @db.VarChar(25)
   screenName       String            @db.VarChar(30)
   iconUrl          String            @db.Text
-  followingBoards  Board[]           @relation("FollowingBoards")
+  followingBoards  FollowingBoards[]
   modelatingBoards Board[]           @relation()
   followingUsers   PersonaRelation[] @relation("destPersona")
   followedUsers    PersonaRelation[] @relation("srcPersona")
@@ -66,14 +66,23 @@ model VoteOnComment {
 }
 
 model Board {
-  id          String    @id @db.Char(26)
-  title       String    @unique  @db.VarChar(30)
-  createdAt   DateTime  @default(now())
-  description String    @db.VarChar(2000)
-  moderators  Persona[] @relation()
-  followedBy  Persona[] @relation("FollowingBoards")
+  id          String            @id @db.Char(26)
+  title       String            @unique @db.VarChar(30)
+  createdAt   DateTime          @default(now())
+  description String            @db.VarChar(2000)
+  moderators  Persona[]         @relation()
+  followedBy  FollowingBoards[]
   posts       Post[]
   threads     Thread[]
+}
+
+model FollowingBoards {
+  id        String   @id @db.Char(26)
+  createdAt DateTime @default(now())
+  board     Board    @relation(fields: [boardId], references: [id])
+  boardId   String
+  persona   Persona  @relation(fields: [personaId], references: [id])
+  personaId Int
 }
 
 model Post {
@@ -104,7 +113,7 @@ model Thread {
 }
 
 model Reply {
-  id          String    @id @db.Char(26)
+  id          String      @id @db.Char(26)
   contentType ContentType
   content     String      @db.VarChar(500)
   createdAt   DateTime    @default(now())
@@ -115,9 +124,9 @@ model Reply {
 }
 
 model UploadedImage {
-  id          String    @id @db.Char(26)
-  parentId    String    @db.Char(26)
-  fileUrl     String    @db.Text
+  id       String @id @db.Char(26)
+  parentId String @db.Char(26)
+  fileUrl  String @db.Text
 }
 
 enum ContentType {

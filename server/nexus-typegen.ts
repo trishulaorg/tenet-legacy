@@ -127,6 +127,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createBoard: NexusGenRootTypes['Board']; // Board!
+    createFollowingBoard: NexusGenRootTypes['Board']; // Board!
     createPersona: NexusGenRootTypes['Persona']; // Persona!
     createPost: NexusGenRootTypes['Post']; // Post!
     createReply: NexusGenRootTypes['Reply']; // Reply!
@@ -206,6 +207,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createBoard: 'Board'
+    createFollowingBoard: 'Board'
     createPersona: 'Persona'
     createPost: 'Post'
     createReply: 'Reply'
@@ -276,6 +278,10 @@ export interface NexusGenArgTypes {
       description: string; // String!
       personaId: number; // Int!
       title: string; // String!
+    }
+    createFollowingBoard: { // args
+      boardId: string; // String!
+      personaId: number; // Int!
     }
     createPersona: { // args
       iconPath?: string | null; // String

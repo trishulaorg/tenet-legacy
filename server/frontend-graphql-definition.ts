@@ -48,6 +48,7 @@ export type File = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
+  createFollowingBoard: Board;
   createPersona: Persona;
   createPost: Post;
   createReply: Reply;
@@ -62,6 +63,12 @@ export type MutationCreateBoardArgs = {
   description: Scalars['String'];
   personaId: Scalars['Int'];
   title: Scalars['String'];
+};
+
+
+export type MutationCreateFollowingBoardArgs = {
+  boardId: Scalars['String'];
+  personaId: Scalars['Int'];
 };
 
 
@@ -314,6 +321,14 @@ export type SetTypingStateOnBoardMutationVariables = Exact<{
 
 
 export type SetTypingStateOnBoardMutation = { __typename?: 'Mutation', setTypingStateOnBoard: { __typename?: 'Post', id: string } };
+
+export type CreateFollowingBoardMutationVariables = Exact<{
+  personaId: Scalars['Int'];
+  boardId: Scalars['String'];
+}>;
+
+
+export type CreateFollowingBoardMutation = { __typename?: 'Mutation', createFollowingBoard: { __typename?: 'Board', id: string } };
 
 
 export const GetActivitiesDocument = gql`
@@ -573,6 +588,13 @@ export const SetTypingStateOnBoardDocument = gql`
   }
 }
     `;
+export const CreateFollowingBoardDocument = gql`
+    mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+  createFollowingBoard(personaId: $personaId, boardId: $boardId) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -619,6 +641,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     setTypingStateOnBoard(variables: SetTypingStateOnBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetTypingStateOnBoardMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SetTypingStateOnBoardMutation>(SetTypingStateOnBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'setTypingStateOnBoard', 'mutation');
+    },
+    createFollowingBoard(variables: CreateFollowingBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateFollowingBoardMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateFollowingBoardMutation>(CreateFollowingBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createFollowingBoard', 'mutation');
     }
   };
 }

@@ -718,6 +718,44 @@ const MutationDef = objectType({
         return postWithImageUrl
       },
     })
+    t.nonNull.field('createFollowingBoard', {
+      type: BoardDef.name,
+      args: {
+        personaId: arg({
+          type: nonNull('Int'),
+        }),
+        boardId: arg({
+          type: nonNull('String'),
+        }),
+      },
+      async resolve(_source, { personaId, boardId }, context) {
+        if (!context.me) {
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
+        }
+        const author = await context.prisma.persona.findFirst({
+          where: {
+            id: personaId,
+          },
+        })
+        const board = await context.prisma.board.findFirst({
+          where: {
+            id: boardId,
+          },
+        })
+        if (!(author && board)) {
+          throw new Error('Unexpected Error')
+        }
+        context.prisma.followingBoards.create({
+          data: {
+            id: ulid(),
+            boardId: boardId,
+            personaId: personaId,
+          },
+        })
+
+        return board
+      },
+    })
   },
 })
 

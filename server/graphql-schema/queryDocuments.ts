@@ -275,6 +275,13 @@ const queryDocuments: {
         }
       }
     `,
+    createFollowingBoard: gql`
+      mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+        createFollowingBoard(personaId: $personaId, boardId: $boardId) {
+          id
+        }
+      }
+    `,
   },
 } as const
 

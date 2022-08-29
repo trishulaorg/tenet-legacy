@@ -67,6 +67,10 @@ const validationSchema: ValidationSchemaType = {
     personaId: z.number().int(),
     postId: z.string().min(26).max(26),
   }),
+  createFollowingBoard: z.object({
+    personaId: z.number().int(),
+    boardId: z.string().min(26).max(26),
+  }),
 } as const
 
 export { validationSchema }

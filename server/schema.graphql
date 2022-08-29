@@ -36,6 +36,7 @@ type File {
 
 type Mutation {
   createBoard(description: String!, personaId: Int!, title: String!): Board!
+  createFollowingBoard(boardId: String!, personaId: Int!): Board!
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
   createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
   createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
