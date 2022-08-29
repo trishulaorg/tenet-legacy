@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { PersonaState } from './UserState'
 import { queryDocuments } from '../server/graphql-schema/queryDocuments'
+import type { GetPostQuery } from '../server/frontend-graphql-definition'
 
 export interface PersonaType {
   id: number
@@ -15,6 +16,7 @@ export interface BaseContentType {
   content: string
   persona: PersonaType
   createdAt: string
+  privilege: GetPostQuery['post']['privilege']
 }
 
 export interface BoardType extends BaseContentType {
@@ -51,20 +53,21 @@ export class PostState {
   upvote: number
   downvote: number
   createdAt: string
+  public privilege: GetPostQuery['post']['privilege']
   readonly imageUrls: string[]
-  constructor(data: {
-    id: string
-    boardId: string
-    title: string
-    content: string
-    author: PersonaState
-    createdAt: string
-    upvote?: number
-    downvote?: number
-    children?: PostState[]
-    parent?: PostState
-    imageUrls?: string[]
-  }) {
+  constructor(
+    data: Pick<
+      GetPostQuery['post'],
+      'id' | 'boardId' | 'title' | 'content' | 'createdAt' | 'privilege'
+    > & {
+      author: PersonaState
+      upvote?: number
+      downvote?: number
+      children?: PostState[]
+      parent?: PostState
+      imageUrls?: string[]
+    }
+  ) {
     this.id = data.id
     this.boardId = data.boardId
     this.title = data.title
@@ -72,6 +75,7 @@ export class PostState {
     this.author = data.author
     this.children = data.children ?? []
     this.parent = data.parent
+    this.privilege = data.privilege
     this.upvote = data.upvote ?? 0
     this.downvote = data.downvote ?? 0
     this.createdAt = data.createdAt

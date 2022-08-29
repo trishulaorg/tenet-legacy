@@ -12,8 +12,8 @@ const queryDocuments: {
 } = {
   Query: {
     activities: gql`
-      query getActivities {
-        activities {
+      query getActivities($personaId: Int) {
+        activities(personaId: $personaId) {
           id
           board {
             id
@@ -30,6 +30,9 @@ const queryDocuments: {
             name
             iconUrl
           }
+          privilege {
+            deleteSelf
+          }
           threads {
             id
             board {
@@ -45,6 +48,9 @@ const queryDocuments: {
               name
               iconUrl
             }
+            privilege {
+              deleteSelf
+            }
             replies {
               id
               threadId
@@ -56,17 +62,23 @@ const queryDocuments: {
                 name
                 iconUrl
               }
+              privilege {
+                deleteSelf
+              }
             }
           }
         }
       }
     `,
     board: gql`
-      query getBoard($topicId: String!) {
-        board(id: $topicId) {
+      query getBoard($topicId: String!, $personaId: Int) {
+        board(id: $topicId, personaId: $personaId) {
           id
           title
           description
+          privilege {
+            deleteSelf
+          }
           posts {
             id
             boardId
@@ -85,6 +97,9 @@ const queryDocuments: {
               name
               iconUrl
             }
+            privilege {
+              deleteSelf
+            }
             threads {
               id
               board {
@@ -102,12 +117,18 @@ const queryDocuments: {
                 name
                 iconUrl
               }
+              privilege {
+                deleteSelf
+              }
               replies {
                 createdAt
                 threadId
                 id
                 content
                 imageUrls
+                privilege {
+                  deleteSelf
+                }
                 persona {
                   id
                   screenName
@@ -133,8 +154,8 @@ const queryDocuments: {
       }
     `,
     post: gql`
-      query getPost($id: String!) {
-        post(id: $id) {
+      query getPost($id: String!, $personaId: Int) {
+        post(id: $id, personaId: $personaId) {
           id
           boardId
           board {
@@ -152,6 +173,9 @@ const queryDocuments: {
             name
             iconUrl
           }
+          privilege {
+            deleteSelf
+          }
           threads {
             id
             board {
@@ -168,6 +192,9 @@ const queryDocuments: {
               name
               iconUrl
             }
+            privilege {
+              deleteSelf
+            }
             replies {
               createdAt
               id
@@ -179,6 +206,9 @@ const queryDocuments: {
                 screenName
                 name
                 iconUrl
+              }
+              privilege {
+                deleteSelf
               }
             }
           }
@@ -271,6 +301,13 @@ const queryDocuments: {
     setTypingStateOnBoard: gql`
       mutation setTypingStateOnBoard($personaId: Int!, $postId: String!) {
         setTypingStateOnBoard(personaId: $personaId, postId: $postId) {
+          id
+        }
+      }
+    `,
+    deletePost: gql`
+      mutation deletePost($personaId: Int!, $postId: String!) {
+        deletePost(personaId: $personaId, postId: $postId) {
           id
         }
       }

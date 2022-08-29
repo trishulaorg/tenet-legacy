@@ -33,29 +33,24 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   }
 
   const content = (
-    <div // eslint-disable-line jsx-a11y/no-static-element-interactions
-      className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer"
-      onKeyDown={() => {
-        /* noop */
-      }}
-    >
+    <div className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer">
       <CardTitle title={post.title} />
       <AuthorAndBoardLink
         screenName={post.author.screenName}
         name={post.author.name}
         iconUrl={post.author.iconUrl}
-      />{' '}
+      />
       {/* TODO: replace iconUrl */}
       <CardContent content={post.content} />
       <CardMeta>
         <CardIcons
+          showCommentIcon={false}
           commentNumber={post.responseNumber}
           upvote={post.upvote}
           downvote={post.downvote}
           replyCallback={() => {
             setCommentVisibility(!commentVisibility)
           }}
-          showTrashIcon={post.author.name === userState.currentPersona?.name}
         />
         <div className="pb-2" />
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}

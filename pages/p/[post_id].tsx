@@ -14,6 +14,7 @@ import { PostWrapper } from '../../ui/post/PostWrapper'
 const PostPage: React.FC = () => {
   const token = getGqlToken()
   const router = useRouter()
+  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const {
     isReady,
     query: { post_id: rawPostId },
@@ -30,20 +31,27 @@ const PostPage: React.FC = () => {
     new BoardState('', contentGraphqlQueryDocument)
   )
 
+  const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
+  const { data, mutate } = apiHooks.useGetPost(
+    () => postId,
+    personaId ? { id: postId, personaId } : { id: postId }
+  )
+
   useEffect(() => {
     const f = async (): Promise<void> => {
       if (user) {
         await user.request()
+        if (user.currentPersona?.id) {
+          setPersonaId(user.currentPersona.id)
+          await mutate()
+        }
       }
       if (token) {
         setAuthToken(token)
       }
     }
     f()
-  }, [token, router, user])
-
-  const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data } = apiHooks.useGetPost(() => postId, { id: postId })
+  }, [token, router, user, mutate])
 
   useEffect(() => {
     if (data) {

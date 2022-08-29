@@ -21,12 +21,27 @@ export type Scalars = {
   Upload: Upload;
 };
 
+export type AllowedWritingRole = {
+  __typename?: 'AllowedWritingRole';
+  create: Scalars['Boolean'];
+  delete: Scalars['Boolean'];
+  id: Scalars['Int'];
+  read: Scalars['Boolean'];
+  update: Scalars['Boolean'];
+};
+
 export type Board = {
   __typename?: 'Board';
   createdAt: Scalars['DateTime'];
+  defaultBoardRole: AllowedWritingRole;
+  defaultPostRole: AllowedWritingRole;
+  defaultReplyRole: AllowedWritingRole;
+  defaultThreadRole: AllowedWritingRole;
   description: Scalars['String'];
   id: Scalars['ID'];
+  moderators: Array<Persona>;
   posts: Array<Post>;
+  privilege: Privilege;
   title: Scalars['String'];
 };
 
@@ -52,6 +67,7 @@ export type Mutation = {
   createPost: Post;
   createReply: Reply;
   createThread: Thread;
+  deletePost: Post;
   putAttachedImage: Array<File>;
   setPersonaIcon: File;
   setTypingStateOnBoard: Post;
@@ -98,6 +114,12 @@ export type MutationCreateThreadArgs = {
 };
 
 
+export type MutationDeletePostArgs = {
+  personaId: Scalars['Int'];
+  postId: Scalars['String'];
+};
+
+
 export type MutationPutAttachedImageArgs = {
   files: Array<Scalars['Upload']>;
   postId: Scalars['String'];
@@ -132,8 +154,17 @@ export type Post = {
   id: Scalars['ID'];
   imageUrls: Array<Scalars['String']>;
   persona: Persona;
+  privilege: Privilege;
   threads: Array<Thread>;
   title: Scalars['String'];
+};
+
+export type Privilege = {
+  __typename?: 'Privilege';
+  createChild: Scalars['Boolean'];
+  deleteSelf: Scalars['Boolean'];
+  readChild: Scalars['Boolean'];
+  updateSelf: Scalars['Boolean'];
 };
 
 export type Query = {
@@ -149,8 +180,14 @@ export type Query = {
 };
 
 
+export type QueryActivitiesArgs = {
+  personaId?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type QueryBoardArgs = {
   id: Scalars['String'];
+  personaId?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -166,6 +203,7 @@ export type QueryPersonasArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['String'];
+  personaId?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -185,6 +223,7 @@ export type Reply = {
   id: Scalars['ID'];
   imageUrls: Array<Scalars['String']>;
   persona: Persona;
+  privilege: Privilege;
   threadId: Scalars['String'];
 };
 
@@ -205,6 +244,7 @@ export type Thread = {
   imageUrls: Array<Scalars['String']>;
   persona: Persona;
   postId: Scalars['String'];
+  privilege: Privilege;
   replies: Array<Reply>;
 };
 
@@ -213,17 +253,20 @@ export type User = {
   personas: Array<Persona>;
 };
 
-export type GetActivitiesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetActivitiesQuery = { __typename?: 'Query', activities: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', id: string, threadId: string, content: string, createdAt: any, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> };
-
-export type GetBoardQueryVariables = Exact<{
-  topicId: Scalars['String'];
+export type GetActivitiesQueryVariables = Exact<{
+  personaId?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetBoardQuery = { __typename?: 'Query', board: { __typename?: 'Board', id: string, title: string, description: string, posts: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, description: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, boardId: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', createdAt: any, threadId: string, id: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> } };
+export type GetActivitiesQuery = { __typename?: 'Query', activities: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', id: string, threadId: string, content: string, createdAt: any, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean } }> }> }> };
+
+export type GetBoardQueryVariables = Exact<{
+  topicId: Scalars['String'];
+  personaId?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetBoardQuery = { __typename?: 'Query', board: { __typename?: 'Board', id: string, title: string, description: string, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, posts: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, description: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, boardId: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', createdAt: any, threadId: string, id: string, content: string, imageUrls: Array<string>, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> } };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -232,10 +275,11 @@ export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', per
 
 export type GetPostQueryVariables = Exact<{
   id: Scalars['String'];
+  personaId?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, threadId: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> } };
+export type GetPostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, threadId: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean } }> }> } };
 
 export type SearchQueryVariables = Exact<{
   query: Scalars['String'];
@@ -315,10 +359,18 @@ export type SetTypingStateOnBoardMutationVariables = Exact<{
 
 export type SetTypingStateOnBoardMutation = { __typename?: 'Mutation', setTypingStateOnBoard: { __typename?: 'Post', id: string } };
 
+export type DeletePostMutationVariables = Exact<{
+  personaId: Scalars['Int'];
+  postId: Scalars['String'];
+}>;
+
+
+export type DeletePostMutation = { __typename?: 'Mutation', deletePost: { __typename?: 'Post', id: string } };
+
 
 export const GetActivitiesDocument = gql`
-    query getActivities {
-  activities {
+    query getActivities($personaId: Int) {
+  activities(personaId: $personaId) {
     id
     board {
       id
@@ -335,6 +387,9 @@ export const GetActivitiesDocument = gql`
       name
       iconUrl
     }
+    privilege {
+      deleteSelf
+    }
     threads {
       id
       board {
@@ -350,6 +405,9 @@ export const GetActivitiesDocument = gql`
         name
         iconUrl
       }
+      privilege {
+        deleteSelf
+      }
       replies {
         id
         threadId
@@ -361,17 +419,23 @@ export const GetActivitiesDocument = gql`
           name
           iconUrl
         }
+        privilege {
+          deleteSelf
+        }
       }
     }
   }
 }
     `;
 export const GetBoardDocument = gql`
-    query getBoard($topicId: String!) {
-  board(id: $topicId) {
+    query getBoard($topicId: String!, $personaId: Int) {
+  board(id: $topicId, personaId: $personaId) {
     id
     title
     description
+    privilege {
+      deleteSelf
+    }
     posts {
       id
       boardId
@@ -390,6 +454,9 @@ export const GetBoardDocument = gql`
         name
         iconUrl
       }
+      privilege {
+        deleteSelf
+      }
       threads {
         id
         board {
@@ -407,12 +474,18 @@ export const GetBoardDocument = gql`
           name
           iconUrl
         }
+        privilege {
+          deleteSelf
+        }
         replies {
           createdAt
           threadId
           id
           content
           imageUrls
+          privilege {
+            deleteSelf
+          }
           persona {
             id
             screenName
@@ -438,8 +511,8 @@ export const GetMeDocument = gql`
 }
     `;
 export const GetPostDocument = gql`
-    query getPost($id: String!) {
-  post(id: $id) {
+    query getPost($id: String!, $personaId: Int) {
+  post(id: $id, personaId: $personaId) {
     id
     boardId
     board {
@@ -457,6 +530,9 @@ export const GetPostDocument = gql`
       name
       iconUrl
     }
+    privilege {
+      deleteSelf
+    }
     threads {
       id
       board {
@@ -473,6 +549,9 @@ export const GetPostDocument = gql`
         name
         iconUrl
       }
+      privilege {
+        deleteSelf
+      }
       replies {
         createdAt
         id
@@ -484,6 +563,9 @@ export const GetPostDocument = gql`
           screenName
           name
           iconUrl
+        }
+        privilege {
+          deleteSelf
         }
       }
     }
@@ -573,6 +655,13 @@ export const SetTypingStateOnBoardDocument = gql`
   }
 }
     `;
+export const DeletePostDocument = gql`
+    mutation deletePost($personaId: Int!, $postId: String!) {
+  deletePost(personaId: $personaId, postId: $postId) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -619,6 +708,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     setTypingStateOnBoard(variables: SetTypingStateOnBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SetTypingStateOnBoardMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<SetTypingStateOnBoardMutation>(SetTypingStateOnBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'setTypingStateOnBoard', 'mutation');
+    },
+    deletePost(variables: DeletePostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeletePostMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deletePost', 'mutation');
     }
   };
 }
