@@ -1,10 +1,17 @@
-import type { PrismaClient, User, Persona, Post, AllowedWritingRole } from '@prisma/client'
+import type { AllowedWritingRole, Persona, Post, PrismaClient, User } from '@prisma/client'
+import type {
+  Persona as PrismaPersona,
+  Post as PrismaPost,
+  Reply as PrismaReply,
+  Thread as PrismaThread,
+} from '@prisma/client'
 import {
   defaultNotAuthenticatedErrorMessage,
   NotAuthenticatedError,
 } from '../../errors/NotAuthenticatedError'
 import { NotFoundError } from '../../errors/NotFoundError'
 import { NotAuthorizedError } from '../../errors/NotAuthorizedError'
+import type { Privilege } from '../../frontend-graphql-definition'
 
 const validatePersona = async (
   user: User | null,
@@ -51,4 +58,58 @@ const canDeletePost = async (
   return post.persona.id === persona.id
 }
 
-export { validatePersona, canDeletePost }
+const postWithPrivilege = (
+  post: PrismaPost & {
+    persona: PrismaPersona
+    threads: (PrismaThread & {
+      persona: PrismaPersona
+      replies: (PrismaReply & { persona: PrismaPersona })[]
+    })[]
+  },
+  defaultPrivilege: Privilege,
+  persona?: PrismaPersona
+): PrismaPost & {
+  persona: PrismaPersona
+  privilege: Privilege
+  threads: (PrismaThread & {
+    persona: PrismaPersona
+    privilege: Privilege
+    replies: (PrismaReply & {
+      privilege: Privilege
+      persona: PrismaPersona
+    })[]
+  })[]
+} => {
+  if (persona) {
+    return {
+      ...post,
+      threads: post.threads.map((thread) => ({
+        ...thread,
+        privilege: { ...defaultPrivilege, deleteSelf: thread.personaId === persona.id },
+        replies: thread.replies.map((reply) => ({
+          ...reply,
+          privilege: { ...defaultPrivilege, deleteSelf: reply.personaId === persona.id },
+        })),
+      })),
+      privilege: {
+        ...defaultPrivilege,
+        deleteSelf: post.persona.id === persona.id,
+      },
+    }
+  } else {
+    return {
+      ...post,
+      threads: post.threads.map((thread) => ({
+        ...thread,
+        privilege: { ...defaultPrivilege },
+        replies: thread.replies.map((reply) => ({
+          ...reply,
+          privilege: { ...defaultPrivilege },
+        })),
+      })),
+      privilege: defaultPrivilege,
+    }
+  }
+}
+
+export { validatePersona, canDeletePost, postWithPrivilege }

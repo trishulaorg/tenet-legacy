@@ -224,6 +224,16 @@ const queryDocuments: {
         }
       }
     `,
+    getFollowingBoard: gql`
+      query getFollowingBoard($personaId: Int!) {
+        getFollowingBoard(personaId: $personaId) {
+          board {
+            title
+            id
+          }
+        }
+      }
+    `,
   },
   Mutation: {
     createBoard: gql`

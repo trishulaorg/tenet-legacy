@@ -60,6 +60,16 @@ export type File = {
   mimetype?: Maybe<Scalars['String']>;
 };
 
+export type FollowingBoard = {
+  __typename?: 'FollowingBoard';
+  board: Board;
+  boardId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  persona: Persona;
+  personaId: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
@@ -178,6 +188,7 @@ export type Query = {
   __typename?: 'Query';
   activities: Array<Post>;
   board: Board;
+  getFollowingBoard: Array<FollowingBoard>;
   me?: Maybe<User>;
   persona: Persona;
   personas: Array<Maybe<Persona>>;
@@ -195,6 +206,11 @@ export type QueryActivitiesArgs = {
 export type QueryBoardArgs = {
   id: Scalars['String'];
   personaId?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryGetFollowingBoardArgs = {
+  personaId: Scalars['Int'];
 };
 
 
@@ -294,6 +310,13 @@ export type SearchQueryVariables = Exact<{
 
 
 export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchResult', kind: string, id: string, title: string }> };
+
+export type GetFollowingBoardQueryVariables = Exact<{
+  personaId: Scalars['Int'];
+}>;
+
+
+export type GetFollowingBoardQuery = { __typename?: 'Query', getFollowingBoard: Array<{ __typename?: 'FollowingBoard', board: { __typename?: 'Board', title: string, id: string } }> };
 
 export type CreateBoardMutationVariables = Exact<{
   title: Scalars['String'];
@@ -596,6 +619,16 @@ export const SearchDocument = gql`
   }
 }
     `;
+export const GetFollowingBoardDocument = gql`
+    query getFollowingBoard($personaId: Int!) {
+  getFollowingBoard(personaId: $personaId) {
+    board {
+      title
+      id
+    }
+  }
+}
+    `;
 export const CreateBoardDocument = gql`
     mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
   createBoard(title: $title, description: $description, personaId: $personaId) {
@@ -707,6 +740,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     Search(variables: SearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SearchQuery>(SearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Search', 'query');
     },
+    getFollowingBoard(variables: GetFollowingBoardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetFollowingBoardQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetFollowingBoardQuery>(GetFollowingBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFollowingBoard', 'query');
+    },
     createBoard(variables: CreateBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateBoardMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateBoardMutation>(CreateBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createBoard', 'mutation');
     },
@@ -758,6 +794,9 @@ export function getSdkWithHooks(client: GraphQLClient, withWrapper: SdkFunctionW
     },
     useSearch(key: SWRKeyInterface, variables: SearchQueryVariables, config?: SWRConfigInterface<SearchQuery, ClientError>) {
       return useSWR<SearchQuery, ClientError>(key, () => sdk.Search(variables), config);
+    },
+    useGetFollowingBoard(key: SWRKeyInterface, variables: GetFollowingBoardQueryVariables, config?: SWRConfigInterface<GetFollowingBoardQuery, ClientError>) {
+      return useSWR<GetFollowingBoardQuery, ClientError>(key, () => sdk.getFollowingBoard(variables), config);
     }
   };
 }

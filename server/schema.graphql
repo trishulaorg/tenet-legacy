@@ -48,6 +48,15 @@ type File {
   mimetype: String
 }
 
+type FollowingBoard {
+  board: Board!
+  boardId: String!
+  createdAt: DateTime!
+  id: ID!
+  persona: Persona!
+  personaId: Int!
+}
+
 type Mutation {
   createBoard(description: String!, personaId: Int!, title: String!): Board!
   createFollowingBoard(boardId: String!, personaId: Int!): Board!
@@ -91,6 +100,7 @@ type Privilege {
 type Query {
   activities(personaId: Int): [Post!]!
   board(id: String!, personaId: Int): Board!
+  getFollowingBoard(personaId: Int!): [FollowingBoard!]!
   me: User
   persona(name: String!): Persona!
   personas(names: [String!]!): [Persona]!

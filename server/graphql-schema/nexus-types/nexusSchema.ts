@@ -13,6 +13,7 @@ import {
   AllowedWritingRole,
   Board,
   ContentType,
+  FollowingBoard,
   Persona,
   Post,
   Reply,
@@ -20,12 +21,11 @@ import {
   User,
 } from 'nexus-prisma'
 import type {
-  Persona as PrismaPersona,
   Post as PrismaPost,
   Reply as PrismaReply,
   Thread as PrismaThread,
 } from '@prisma/client'
-import { canDeletePost, validatePersona } from '../domain/authorization'
+import { canDeletePost, postWithPrivilege, validatePersona } from '../domain/authorization'
 import type { Privilege } from '../../frontend-graphql-definition'
 
 const FileDef = objectType({
@@ -273,48 +273,17 @@ const SearchResultDef = objectType({
   },
 })
 
-const postWithPrivilege = (
-  post: PrismaPost & {
-    persona: PrismaPersona
-    threads: (PrismaThread & {
-      persona: PrismaPersona
-      replies: (PrismaReply & { persona: PrismaPersona })[]
-    })[]
+const FollowingBoardDef = objectType({
+  name: FollowingBoard.$name,
+  definition(t) {
+    t.field(FollowingBoard.id)
+    t.field(FollowingBoard.boardId)
+    t.field(FollowingBoard.board)
+    t.field(FollowingBoard.personaId)
+    t.field(FollowingBoard.persona)
+    t.field(FollowingBoard.createdAt)
   },
-  defaultPrivilege: Privilege,
-  persona?: PrismaPersona
-) => {
-  if (persona) {
-    return {
-      ...post,
-      threads: post.threads.map((thread) => ({
-        ...thread,
-        privilege: { ...defaultPrivilege, deleteSelf: thread.personaId === persona.id },
-        replies: thread.replies.map((reply) => ({
-          ...reply,
-          privilege: { ...defaultPrivilege, deleteSelf: reply.personaId === persona.id },
-        })),
-      })),
-      privilege: {
-        ...defaultPrivilege,
-        deleteSelf: post.persona.id === persona.id,
-      },
-    }
-  } else {
-    return {
-      ...post,
-      threads: post.threads.map((thread) => ({
-        ...thread,
-        privilege: { ...defaultPrivilege },
-        replies: thread.replies.map((reply) => ({
-          ...reply,
-          privilege: { ...defaultPrivilege },
-        })),
-      })),
-      privilege: defaultPrivilege,
-    }
-  }
-}
+})
 
 const QueryDef = objectType({
   name: 'Query',
@@ -596,7 +565,23 @@ const QueryDef = objectType({
           id: x.id,
         }))
       },
-    })
+    }),
+      t.nonNull.list.nonNull.field('getFollowingBoard', {
+        type: FollowingBoardDef.name,
+        args: {
+          personaId: arg({ type: nonNull('Int') }),
+        },
+        async resolve(_source, args, context) {
+          const result = await context.prisma.followingBoard.findMany({
+            where: {
+              personaId: {
+                equals: args.personaId,
+              },
+            },
+          })
+          return result
+        },
+      })
   },
 })
 
@@ -1034,7 +1019,7 @@ const MutationDef = objectType({
         if (!(author && board)) {
           throw new Error('Unexpected Error')
         }
-        context.prisma.followingBoards.create({
+        context.prisma.followingBoard.create({
           data: {
             id: ulid(),
             boardId: boardId,
@@ -1059,6 +1044,7 @@ export {
   ReplyDef,
   ContentTypeDef,
   SearchResultDef,
+  FollowingBoardDef,
   QueryDef,
   MutationDef,
 }

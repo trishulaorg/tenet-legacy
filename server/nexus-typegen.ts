@@ -73,6 +73,12 @@ export interface NexusGenObjects {
     filename: string; // String!
     mimetype?: string | null; // String
   }
+  FollowingBoard: { // root type
+    boardId: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+    personaId: number; // Int!
+  }
   Mutation: {};
   Persona: { // root type
     iconUrl: string; // String!
@@ -151,6 +157,14 @@ export interface NexusGenFieldTypes {
     filename: string; // String!
     mimetype: string | null; // String
   }
+  FollowingBoard: { // field return type
+    board: NexusGenRootTypes['Board']; // Board!
+    boardId: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+    persona: NexusGenRootTypes['Persona']; // Persona!
+    personaId: number; // Int!
+  }
   Mutation: { // field return type
     createBoard: NexusGenRootTypes['Board']; // Board!
     createFollowingBoard: NexusGenRootTypes['Board']; // Board!
@@ -190,6 +204,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     activities: NexusGenRootTypes['Post'][]; // [Post!]!
     board: NexusGenRootTypes['Board']; // Board!
+    getFollowingBoard: NexusGenRootTypes['FollowingBoard'][]; // [FollowingBoard!]!
     me: NexusGenRootTypes['User'] | null; // User
     persona: NexusGenRootTypes['Persona']; // Persona!
     personas: Array<NexusGenRootTypes['Persona'] | null>; // [Persona]!
@@ -254,6 +269,14 @@ export interface NexusGenFieldTypeNames {
     filename: 'String'
     mimetype: 'String'
   }
+  FollowingBoard: { // field return type name
+    board: 'Board'
+    boardId: 'String'
+    createdAt: 'DateTime'
+    id: 'ID'
+    persona: 'Persona'
+    personaId: 'Int'
+  }
   Mutation: { // field return type name
     createBoard: 'Board'
     createFollowingBoard: 'Board'
@@ -293,6 +316,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     activities: 'Post'
     board: 'Board'
+    getFollowingBoard: 'FollowingBoard'
     me: 'User'
     persona: 'Persona'
     personas: 'Persona'
@@ -391,6 +415,9 @@ export interface NexusGenArgTypes {
     board: { // args
       id: string; // String!
       personaId?: number | null; // Int
+    }
+    getFollowingBoard: { // args
+      personaId: number; // Int!
     }
     persona: { // args
       name: string; // String!

@@ -66,7 +66,7 @@ model Persona {
   name                     String                    @unique @db.VarChar(25)
   screenName               String                    @db.VarChar(30)
   iconUrl                  String                    @db.Text
-  followingBoards  FollowingBoards[]
+  FollowingBoards  FollowingBoard[]
   modelatingBoards         Board[]                   @relation()
   followingUsers           PersonaRelation[]         @relation("destPersona")
   followedUsers            PersonaRelation[]         @relation("srcPersona")
@@ -114,7 +114,7 @@ model Board {
   deletedAt           DateTime?
   description         String             @db.VarChar(2000)
   moderators          Persona[]          @relation()
-  followedBy          FollowingBoards[]
+  followedBy          FollowingBoard[]
   posts               Post[]
   threads             Thread[]
   roles               BoardRole[]
@@ -128,7 +128,7 @@ model Board {
   defaultReplyRole    AllowedWritingRole @relation("Boards_defaultReplyRole", fields: [defaultReplyRoleId], references: [id])
 }
 
-model FollowingBoards {
+model FollowingBoard {
   id        String   @id @db.Char(26)
   createdAt DateTime @default(now())
   board     Board    @relation(fields: [boardId], references: [id])
