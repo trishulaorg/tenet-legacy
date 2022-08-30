@@ -2,11 +2,25 @@
 ### Do not make changes to this file directly
 
 
+type AllowedWritingRole {
+  create: Boolean!
+  delete: Boolean!
+  id: Int!
+  read: Boolean!
+  update: Boolean!
+}
+
 type Board {
   createdAt: DateTime!
+  defaultBoardRole: AllowedWritingRole!
+  defaultPostRole: AllowedWritingRole!
+  defaultReplyRole: AllowedWritingRole!
+  defaultThreadRole: AllowedWritingRole!
   description: String!
   id: ID!
+  moderators: [Persona!]!
   posts: [Post!]!
+  privilege: Privilege!
   title: String!
 }
 
@@ -41,6 +55,7 @@ type Mutation {
   createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
   createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
   createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
+  deletePost(personaId: Int!, postId: String!): Post!
   putAttachedImage(files: [Upload!]!, postId: String!): [File!]!
   setPersonaIcon(file: Upload, personaId: Int!): File!
   setTypingStateOnBoard(personaId: Int!, postId: String!): Post!
@@ -61,17 +76,25 @@ type Post {
   id: ID!
   imageUrls: [String!]!
   persona: Persona!
+  privilege: Privilege!
   threads: [Thread!]!
   title: String!
 }
 
+type Privilege {
+  createChild: Boolean!
+  deleteSelf: Boolean!
+  readChild: Boolean!
+  updateSelf: Boolean!
+}
+
 type Query {
-  activities: [Post!]!
-  board(id: String!): Board!
+  activities(personaId: Int): [Post!]!
+  board(id: String!, personaId: Int): Board!
   me: User
   persona(name: String!): Persona!
   personas(names: [String!]!): [Persona]!
-  post(id: String!): Post!
+  post(id: String!, personaId: Int): Post!
   removeUser(name: String!): Boolean!
   search(query: String!): [SearchResult!]!
 }
@@ -82,6 +105,7 @@ type Reply {
   id: ID!
   imageUrls: [String!]!
   persona: Persona!
+  privilege: Privilege!
   threadId: String!
 }
 
@@ -100,6 +124,7 @@ type Thread {
   imageUrls: [String!]!
   persona: Persona!
   postId: String!
+  privilege: Privilege!
   replies: [Reply!]!
 }
 

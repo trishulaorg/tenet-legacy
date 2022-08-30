@@ -1,17 +1,32 @@
-import { list, objectType, enumType, arg, nonNull } from 'nexus'
+import { arg, enumType, list, nonNull, objectType } from 'nexus'
 import { getPostsWithImageUrls } from './getImageUrls'
 import {
   defaultNotAuthenticatedErrorMessage,
   NotAuthenticatedError,
 } from '../../errors/NotAuthenticatedError'
-import { defaultNotFoundErrorMessage, NotFoundError } from '../../errors/NotFoundError'
+import { NotFoundError } from '../../errors/NotFoundError'
 import { ulid } from 'ulid'
 import { uploadImageFileToS3 } from '../../fileUpload/uploadImageFileToS3'
 import { NotAuthorizedError } from '../../errors/NotAuthorizedError'
 import { formatISO } from 'date-fns'
-import { Board, ContentType, Persona, Post, Reply, Thread, User } from 'nexus-prisma'
-import type { Thread as PrismaThread } from '@prisma/client'
-import type { Post as PrismaPost, Reply as PrismaReply } from '@prisma/client'
+import {
+  AllowedWritingRole,
+  Board,
+  ContentType,
+  Persona,
+  Post,
+  Reply,
+  Thread,
+  User,
+} from 'nexus-prisma'
+import type {
+  Persona as PrismaPersona,
+  Post as PrismaPost,
+  Reply as PrismaReply,
+  Thread as PrismaThread,
+} from '@prisma/client'
+import { canDeletePost, validatePersona } from '../domain/authorization'
+import type { Privilege } from '../../frontend-graphql-definition'
 
 const FileDef = objectType({
   name: 'File',
@@ -43,6 +58,27 @@ const PersonaDef = objectType({
   },
 })
 
+const PrivilegeDef = objectType({
+  name: 'Privilege',
+  definition(t) {
+    t.nonNull.boolean('createChild')
+    t.nonNull.boolean('readChild')
+    t.nonNull.boolean('updateSelf')
+    t.nonNull.boolean('deleteSelf')
+  },
+})
+
+const AllowedWritingRoleDef = objectType({
+  name: AllowedWritingRole.$name,
+  definition(t) {
+    t.field(AllowedWritingRole.id)
+    t.field(AllowedWritingRole.create)
+    t.field(AllowedWritingRole.read)
+    t.field(AllowedWritingRole.update)
+    t.field(AllowedWritingRole.delete)
+  },
+})
+
 const BoardDef = objectType({
   name: Board.$name,
   definition(t) {
@@ -52,7 +88,24 @@ const BoardDef = objectType({
     t.field(Board.id)
     t.field(Board.title)
     t.field(Board.description)
-    t.field(Board.posts)
+    t.field(Board.moderators)
+    t.nonNull.field('privilege', {
+      type: PrivilegeDef.name,
+      resolve(source) {
+        // @ts-expect-error pass privilege from mutation
+        if ('privilege' in source && typeof source['privilege'] === 'object') {
+          // @ts-expect-error pass privilege from mutation
+          return source['privilege'] as unknown as Privilege
+        } else {
+          return {
+            createChild: false,
+            readChild: false,
+            updateSelf: false,
+            deleteSelf: false,
+          }
+        }
+      },
+    })
     t.field({
       ...Board.posts,
       resolve: (source, ...rest) => {
@@ -66,6 +119,10 @@ const BoardDef = objectType({
       },
     })
     t.field(Board.createdAt)
+    t.field(Board.defaultBoardRole)
+    t.field(Board.defaultPostRole)
+    t.field(Board.defaultThreadRole)
+    t.field(Board.defaultReplyRole)
   },
 })
 
@@ -89,6 +146,23 @@ const PostDef = objectType({
         }
       },
     })
+    t.nonNull.field('privilege', {
+      type: PrivilegeDef.name,
+      resolve(source) {
+        // @ts-expect-error pass privilege from mutation
+        if ('privilege' in source && typeof source['privilege'] === 'object') {
+          // @ts-expect-error preserve imageUrls
+          return source['privilege'] as unknown as Privilege
+        } else {
+          return {
+            createChild: false,
+            readChild: false,
+            updateSelf: false,
+            deleteSelf: false,
+          }
+        }
+      },
+    })
     t.field(Post.persona)
     t.field(Post.createdAt)
     t.nonNull.list.field('imageUrls', {
@@ -109,6 +183,23 @@ const ThreadDef = objectType({
     t.field(Thread.postId)
     t.field(Thread.board)
     t.field(Thread.content)
+    t.nonNull.field('privilege', {
+      type: PrivilegeDef.name,
+      resolve(source) {
+        // @ts-expect-error pass privilege from mutation
+        if ('privilege' in source && typeof source['privilege'] === 'object') {
+          // @ts-expect-error pass privilege from mutation
+          return source['privilege'] as unknown as Privilege
+        } else {
+          return {
+            createChild: false,
+            readChild: false,
+            updateSelf: false,
+            deleteSelf: false,
+          }
+        }
+      },
+    })
     t.field({
       ...Thread.replies,
       resolve: (source, ...rest) => {
@@ -141,6 +232,23 @@ const ReplyDef = objectType({
     t.field(Reply.content)
     t.field(Reply.persona)
     t.field(Reply.createdAt)
+    t.nonNull.field('privilege', {
+      type: PrivilegeDef.name,
+      resolve(source) {
+        // @ts-expect-error pass privilege from mutation
+        if ('privilege' in source && typeof source['privilege'] === 'object') {
+          // @ts-expect-error pass privilege from mutation
+          return source['privilege'] as unknown as Privilege
+        } else {
+          return {
+            createChild: false,
+            readChild: false,
+            updateSelf: false,
+            deleteSelf: false,
+          }
+        }
+      },
+    })
     t.nonNull.list.field('imageUrls', {
       type: nonNull('String'),
       resolve: (source) => {
@@ -164,6 +272,49 @@ const SearchResultDef = objectType({
     t.nonNull.string('title')
   },
 })
+
+const postWithPrivilege = (
+  post: PrismaPost & {
+    persona: PrismaPersona
+    threads: (PrismaThread & {
+      persona: PrismaPersona
+      replies: (PrismaReply & { persona: PrismaPersona })[]
+    })[]
+  },
+  defaultPrivilege: Privilege,
+  persona?: PrismaPersona
+) => {
+  if (persona) {
+    return {
+      ...post,
+      threads: post.threads.map((thread) => ({
+        ...thread,
+        privilege: { ...defaultPrivilege, deleteSelf: thread.personaId === persona.id },
+        replies: thread.replies.map((reply) => ({
+          ...reply,
+          privilege: { ...defaultPrivilege, deleteSelf: reply.personaId === persona.id },
+        })),
+      })),
+      privilege: {
+        ...defaultPrivilege,
+        deleteSelf: post.persona.id === persona.id,
+      },
+    }
+  } else {
+    return {
+      ...post,
+      threads: post.threads.map((thread) => ({
+        ...thread,
+        privilege: { ...defaultPrivilege },
+        replies: thread.replies.map((reply) => ({
+          ...reply,
+          privilege: { ...defaultPrivilege },
+        })),
+      })),
+      privilege: defaultPrivilege,
+    }
+  }
+}
 
 const QueryDef = objectType({
   name: 'Query',
@@ -223,14 +374,27 @@ const QueryDef = objectType({
         id: arg({
           type: nonNull('String'),
         }),
+        personaId: arg({
+          type: 'Int',
+        }),
       },
-      async resolve(_source, args, context) {
+      async resolve(_source, { id, personaId }, context) {
+        const privilege: Privilege = {
+          createChild: true,
+          readChild: true,
+          updateSelf: false,
+          deleteSelf: false,
+        }
         const board = await context.prisma.board.findFirstOrThrow({
           where: {
-            id: args.id,
+            id,
+            deletedAt: null,
           },
           include: {
             posts: {
+              where: {
+                deletedAt: null,
+              },
               include: {
                 persona: true,
                 threads: {
@@ -250,24 +414,67 @@ const QueryDef = objectType({
             },
           },
         })
+
         const boardWithImageUrls = {
           ...board,
           posts: await getPostsWithImageUrls(board.posts, context.prisma),
         }
-        return boardWithImageUrls
+
+        if (personaId) {
+          const persona = await validatePersona(context.me, personaId, context.prisma)
+          return {
+            ...boardWithImageUrls,
+            posts: boardWithImageUrls.posts.map((post) =>
+              postWithPrivilege(post, privilege, persona)
+            ),
+            privilege,
+          }
+        } else {
+          return {
+            ...boardWithImageUrls,
+            posts: boardWithImageUrls.posts.map((post) => postWithPrivilege(post, privilege)),
+            privilege,
+          }
+        }
       },
     })
     t.nonNull.list.field('activities', {
       type: nonNull('Post'),
-      async resolve(_source, _args, context) {
+      args: {
+        personaId: arg({
+          type: 'Int',
+        }),
+      },
+      async resolve(_source, { personaId }, context) {
+        const privilege: Privilege = {
+          createChild: true,
+          readChild: true,
+          updateSelf: false,
+          deleteSelf: false,
+        }
         const posts = await context.prisma.post.findMany({
+          where: {
+            deletedAt: null,
+            board: {
+              deletedAt: null,
+              defaultBoardRole: {
+                read: true,
+              },
+            },
+          },
           include: {
             board: true,
             persona: true,
             threads: {
+              where: {
+                deletedAt: null,
+              },
               include: {
                 persona: true,
                 replies: {
+                  where: {
+                    deletedAt: null,
+                  },
                   include: {
                     persona: true,
                   },
@@ -279,10 +486,13 @@ const QueryDef = objectType({
             createdAt: 'desc',
           },
         })
-
-        return posts.map((post) => {
-          return { ...post, imageUrls: [] }
-        })
+        const postsWithImageUrl = await getPostsWithImageUrls(posts, context.prisma)
+        if (personaId) {
+          const persona = await validatePersona(context.me, personaId, context.prisma)
+          return postsWithImageUrl.map((post) => postWithPrivilege(post, privilege, persona))
+        } else {
+          return postsWithImageUrl.map((post) => postWithPrivilege(post, privilege))
+        }
       },
     })
     t.nonNull.field('post', {
@@ -291,11 +501,24 @@ const QueryDef = objectType({
         id: arg({
           type: nonNull('String'),
         }),
+        personaId: arg({
+          type: 'Int',
+        }),
       },
-      async resolve(_source, args, context) {
+      async resolve(_source, { id, personaId }, context) {
+        const privilege: Privilege = {
+          createChild: true,
+          readChild: true,
+          updateSelf: false,
+          deleteSelf: false,
+        }
         const post = await context.prisma.post.findFirstOrThrow({
           where: {
-            id: args.id,
+            id: id,
+            deletedAt: null,
+            board: {
+              deletedAt: null,
+            },
           },
           include: {
             board: true,
@@ -318,7 +541,37 @@ const QueryDef = objectType({
           throw new Error('Unexpected error!!!')
         }
 
-        return postWithImageUrl
+        if (personaId) {
+          const persona = await validatePersona(context.me, personaId, context.prisma)
+          if (postWithImageUrl.persona.id === persona.id) {
+            privilege.deleteSelf = true
+          }
+          return {
+            ...postWithImageUrl,
+            threads: postWithImageUrl.threads.map((thread) => ({
+              ...thread,
+              privilege: { ...privilege, deleteSelf: thread.personaId === persona.id },
+              replies: thread.replies.map((reply) => ({
+                ...reply,
+                privilege: { ...privilege, deleteSelf: reply.personaId === persona.id },
+              })),
+            })),
+            privilege,
+          }
+        } else {
+          return {
+            ...postWithImageUrl,
+            threads: postWithImageUrl.threads.map((thread) => ({
+              ...thread,
+              privilege: { ...privilege },
+              replies: thread.replies.map((reply) => ({
+                ...reply,
+                privilege: { ...privilege },
+              })),
+            })),
+            privilege,
+          }
+        }
       },
     })
     t.nonNull.list.nonNull.field('search', {
@@ -334,6 +587,7 @@ const QueryDef = objectType({
             title: {
               startsWith: args.query,
             },
+            deletedAt: null,
           },
         })
         return result.map((x) => ({
@@ -389,29 +643,43 @@ const MutationDef = objectType({
           type: nonNull('Int'),
         }),
       },
-      async resolve(_source, args, context) {
+      async resolve(_source, { description, personaId, title }, context) {
         if (!context.me) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
-        const currentPersona = await context.prisma.persona.findFirst({
-          where: {
-            user: {
-              id: context.me.id,
-            },
-            id: args.personaId,
-          },
-        })
-        if (!currentPersona) {
-          throw new NotFoundError('Invalid persona id')
-        }
+        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
         return context.prisma.board.create({
           data: {
             id: ulid(),
-            title: args.title,
-            description: args.description,
+            title: title,
+            description: description,
             moderators: {
               connect: {
                 id: currentPersona.id,
+              },
+            },
+            defaultBoardRole: {
+              create: {
+                read: true,
+                update: true,
+              },
+            },
+            defaultPostRole: {
+              create: {
+                create: true,
+                read: true,
+              },
+            },
+            defaultThreadRole: {
+              create: {
+                create: true,
+                read: true,
+              },
+            },
+            defaultReplyRole: {
+              create: {
+                create: true,
+                read: true,
               },
             },
           },
@@ -438,15 +706,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { boardId, content, contentType, personaId, title }, context) {
-        if (!context.me) {
-          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
-        }
-        const currentPersona = await context.prisma.persona.findFirst({
-          where: { userId: context.me.id, id: personaId },
-        })
-        if (!currentPersona) {
-          throw new NotFoundError(defaultNotFoundErrorMessage('Persona', 'id', personaId))
-        }
+        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
         return {
           ...(await context.prisma.post.create({
             data: {
@@ -462,6 +722,23 @@ const MutationDef = objectType({
               board: {
                 connect: {
                   id: boardId,
+                },
+              },
+              defaultPostRole: {
+                create: {
+                  read: true,
+                },
+              },
+              defaultThreadRole: {
+                create: {
+                  create: true,
+                  read: true,
+                },
+              },
+              defaultReplyRole: {
+                create: {
+                  create: true,
+                  read: true,
                 },
               },
             },
@@ -493,15 +770,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { boardId, content, contentType, personaId, postId }, context) {
-        if (!context.me) {
-          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
-        }
-        const currentPersona = await context.prisma.persona.findFirst({
-          where: { userId: context.me.id, id: personaId },
-        })
-        if (!currentPersona) {
-          throw new NotFoundError(defaultNotFoundErrorMessage('Persona', 'id', personaId))
-        }
+        await validatePersona(context.me, personaId, context.prisma)
         return {
           ...(await context.prisma.thread.create({
             data: {
@@ -546,15 +815,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { content, contentType, personaId, threadId }, context) {
-        if (!context.me) {
-          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
-        }
-        const currentPersona = await context.prisma.persona.findFirst({
-          where: { userId: context.me.id, id: personaId },
-        })
-        if (!currentPersona) {
-          throw new NotFoundError(defaultNotFoundErrorMessage('Persona', 'id', personaId))
-        }
+        await validatePersona(context.me, personaId, context.prisma)
         return {
           ...(await context.prisma.reply.create({
             data: {
@@ -656,23 +917,14 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { personaId, postId }, context) {
-        if (!context.me) {
-          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
-        }
-        const currentPersona = await context.prisma.persona.findFirst({
-          where: {
-            user: {
-              id: context.me.id,
-            },
-            id: personaId,
-          },
-        })
-        if (!currentPersona) {
-          throw new NotFoundError('Invalid persona id')
-        }
+        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
         const post = await context.prisma.post.findFirst({
           where: {
             id: postId,
+            deletedAt: null,
+            board: {
+              deletedAt: null,
+            },
           },
           include: {
             board: true,
@@ -693,20 +945,11 @@ const MutationDef = objectType({
         if (post === null) {
           throw new NotFoundError('Invalid Post id')
         }
-        /*
-         * Pusher integration
-         */
-
-        const author = await context.prisma.persona.findFirst({
-          where: {
-            id: personaId,
-          },
-        })
 
         await context.pusher.trigger(postId, 'typing', {
           createdAt: formatISO(new Date()),
           authorPersonaId: personaId,
-          authorPersonaScreenName: author?.screenName,
+          authorPersonaScreenName: currentPersona.screenName,
         })
 
         const [postWithImageUrl] = await getPostsWithImageUrls([post], context.prisma)
@@ -716,6 +959,52 @@ const MutationDef = objectType({
         }
 
         return postWithImageUrl
+      },
+    })
+    t.nonNull.field('deletePost', {
+      type: PostDef.name,
+      args: {
+        personaId: arg({
+          type: nonNull('Int'),
+        }),
+        postId: arg({
+          type: nonNull('String'),
+        }),
+      },
+      async resolve(_source, { personaId, postId }, context) {
+        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
+        const post = await context.prisma.post.findFirst({
+          where: {
+            id: postId,
+            deletedAt: null,
+          },
+          include: {
+            board: {
+              include: {
+                defaultPostRole: true,
+                moderators: true,
+              },
+            },
+            defaultPostRole: true,
+            persona: true,
+          },
+        })
+
+        if (post === null) {
+          throw new NotFoundError('Invalid Post id')
+        }
+
+        if (!(await canDeletePost(currentPersona, post))) {
+          throw new NotAuthorizedError('You do not have permission to delete post.')
+        }
+        return context.prisma.post.update({
+          where: {
+            id: postId,
+          },
+          data: {
+            deletedAt: new Date(),
+          },
+        })
       },
     })
     t.nonNull.field('createFollowingBoard', {
@@ -752,7 +1041,6 @@ const MutationDef = objectType({
             personaId: personaId,
           },
         })
-
         return board
       },
     })
@@ -760,11 +1048,13 @@ const MutationDef = objectType({
 })
 
 export {
+  AllowedWritingRoleDef,
   FileDef,
   UserDef,
   BoardDef,
   PostDef,
   PersonaDef,
+  PrivilegeDef,
   ThreadDef,
   ReplyDef,
   ContentTypeDef,

@@ -14,6 +14,45 @@ generator nexusPrisma {
   previewFeatures = ["referentialIntegrity"]
 }
 
+enum ContentType {
+  TEXT
+  LINK
+  IMAGE
+  VIDEO
+  EMOJI
+}
+
+model AllowedWritingRole {
+  id     Int     @id @default(autoincrement())
+  create Boolean @default(false)
+  read   Boolean @default(false)
+  update Boolean @default(false)
+  delete Boolean @default(false)
+
+  Boards_defaultBoardRole  Board[] @relation("Boards_defaultBoardRole")
+  Boards_defaultPostRole   Board[] @relation("Boards_defaultPostRole")
+  Boards_defaultThreadRole Board[] @relation("Boards_defaultThreadRole")
+  Boards_defaultReplyRole  Board[] @relation("Boards_defaultReplyRole")
+
+  Posts_defaultPostRole   Post[] @relation("Posts_defaultPostRole")
+  Posts_defaultThreadRole Post[] @relation("Posts_defaultThreadRole")
+  Posts_defaultReplyRole  Post[] @relation("Posts_defaultReplyRole")
+
+  SystemAdministratorRoles_boardRole  SystemAdministratorRole[] @relation("SystemAdministratorRoles_boardRole")
+  SystemAdministratorRoles_postRole   SystemAdministratorRole[] @relation("SystemAdministratorRoles_postRole")
+  SystemAdministratorRoles_threadRole SystemAdministratorRole[] @relation("SystemAdministratorRoles_threadRole")
+  SystemAdministratorRoles_replyRole  SystemAdministratorRole[] @relation("SystemAdministratorRoles_replyRole")
+
+  BoardRoles_boardRole  BoardRole[] @relation("BoardRoles_boardRole")
+  BoardRoles_postRole   BoardRole[] @relation("BoardRoles_postRole")
+  BoardRoles_threadRole BoardRole[] @relation("BoardRoles_threadRole")
+  BoardRoles_replyRole  BoardRole[] @relation("BoardRoles_replyRole")
+
+  PostRoles_postRole   PostRole[] @relation("PostRoles_postRole")
+  PostRoles_threadRole PostRole[] @relation("PostRoles_threadRole")
+  PostRoles_replyRole  PostRole[] @relation("PostRoles_replyRole")
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
@@ -22,22 +61,25 @@ model User {
 }
 
 model Persona {
-  id               Int               @id @default(autoincrement())
-  createdAt        DateTime          @default(now())
-  name             String            @unique @db.VarChar(25)
-  screenName       String            @db.VarChar(30)
-  iconUrl          String            @db.Text
+  id                       Int                       @id @default(autoincrement())
+  createdAt                DateTime                  @default(now())
+  name                     String                    @unique @db.VarChar(25)
+  screenName               String                    @db.VarChar(30)
+  iconUrl                  String                    @db.Text
   followingBoards  FollowingBoards[]
-  modelatingBoards Board[]           @relation()
-  followingUsers   PersonaRelation[] @relation("destPersona")
-  followedUsers    PersonaRelation[] @relation("srcPersona")
+  modelatingBoards         Board[]                   @relation()
+  followingUsers           PersonaRelation[]         @relation("destPersona")
+  followedUsers            PersonaRelation[]         @relation("srcPersona")
   votesOnComments  VoteOnComment[]
   votesOnPosts     VoteOnPost[]
-  user             User              @relation(fields: [userId], references: [id])
-  userId           Int
-  posts            Post[]
-  threads          Thread[]
-  replies          Reply[]
+  user                     User                      @relation(fields: [userId], references: [id])
+  userId                   Int
+  posts                    Post[]
+  threads                  Thread[]
+  replies                  Reply[]
+  systemAdministratorRoles SystemAdministratorRole[]
+  boardRoles               BoardRole[]
+  postRoles                PostRole[]
 }
 
 model PersonaRelation {
@@ -66,14 +108,24 @@ model VoteOnComment {
 }
 
 model Board {
-  id          String            @id @db.Char(26)
-  title       String            @unique @db.VarChar(30)
-  createdAt   DateTime          @default(now())
-  description String            @db.VarChar(2000)
-  moderators  Persona[]         @relation()
-  followedBy  FollowingBoards[]
-  posts       Post[]
-  threads     Thread[]
+  id                  String             @id @db.Char(26)
+  title               String             @unique @db.VarChar(30)
+  createdAt           DateTime           @default(now())
+  deletedAt           DateTime?
+  description         String             @db.VarChar(2000)
+  moderators          Persona[]          @relation()
+  followedBy          FollowingBoards[]
+  posts               Post[]
+  threads             Thread[]
+  roles               BoardRole[]
+  defaultBoardRoleId  Int
+  defaultBoardRole    AllowedWritingRole @relation("Boards_defaultBoardRole", fields: [defaultBoardRoleId], references: [id])
+  defaultPostRoleId   Int
+  defaultPostRole     AllowedWritingRole @relation("Boards_defaultPostRole", fields: [defaultPostRoleId], references: [id])
+  defaultThreadRoleId Int
+  defaultThreadRole   AllowedWritingRole @relation("Boards_defaultThreadRole", fields: [defaultThreadRoleId], references: [id])
+  defaultReplyRoleId  Int
+  defaultReplyRole    AllowedWritingRole @relation("Boards_defaultReplyRole", fields: [defaultReplyRoleId], references: [id])
 }
 
 model FollowingBoards {
@@ -86,21 +138,30 @@ model FollowingBoards {
 }
 
 model Post {
-  id          String      @id @db.Char(26)
-  createdAt   DateTime    @default(now())
-  title       String      @db.VarChar(50)
-  contentType ContentType
-  content     String      @db.VarChar(2000)
-  threads     Thread[]
-  board       Board       @relation(fields: [boardId], references: [id])
-  boardId     String
-  persona     Persona     @relation(fields: [personaId], references: [id])
-  personaId   Int
+  id                  String             @id @db.Char(26)
+  createdAt           DateTime           @default(now())
+  deletedAt           DateTime?
+  title               String             @db.VarChar(50)
+  contentType         ContentType
+  content             String             @db.VarChar(2000)
+  threads             Thread[]
+  board               Board              @relation(fields: [boardId], references: [id])
+  boardId             String
+  persona             Persona            @relation(fields: [personaId], references: [id])
+  personaId           Int
+  roles               PostRole[]
+  defaultPostRoleId   Int
+  defaultPostRole     AllowedWritingRole @relation("Posts_defaultPostRole", fields: [defaultPostRoleId], references: [id])
+  defaultThreadRoleId Int
+  defaultThreadRole   AllowedWritingRole @relation("Posts_defaultThreadRole", fields: [defaultThreadRoleId], references: [id])
+  defaultReplyRoleId  Int
+  defaultReplyRole    AllowedWritingRole @relation("Posts_defaultReplyRole", fields: [defaultReplyRoleId], references: [id])
 }
 
 model Thread {
   id          String      @id @db.Char(26)
   createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
   content     String      @db.VarChar(500)
   contentType ContentType
   replies     Reply[]
@@ -117,6 +178,7 @@ model Reply {
   contentType ContentType
   content     String      @db.VarChar(500)
   createdAt   DateTime    @default(now())
+  deletedAt   DateTime?
   thread      Thread      @relation(fields: [threadId], references: [id])
   threadId    String
   persona     Persona     @relation(fields: [personaId], references: [id])
@@ -129,10 +191,47 @@ model UploadedImage {
   fileUrl  String @db.Text
 }
 
-enum ContentType {
-  TEXT
-  LINK
-  IMAGE
-  VIDEO
-  EMOJI
+model SystemAdministratorRole {
+  id           String             @id @db.Char(26)
+  personas     Persona[]
+  allowAll     Boolean            @default(false)
+  roleManager  Boolean            @default(false)
+  boardRoleId  Int
+  boardRole    AllowedWritingRole @relation("SystemAdministratorRoles_boardRole", fields: [boardRoleId], references: [id])
+  postRoleId   Int
+  postRole     AllowedWritingRole @relation("SystemAdministratorRoles_postRole", fields: [postRoleId], references: [id])
+  threadRoleId Int
+  threadRole   AllowedWritingRole @relation("SystemAdministratorRoles_threadRole", fields: [threadRoleId], references: [id])
+  replyRoleId  Int
+  replyRole    AllowedWritingRole @relation("SystemAdministratorRoles_replyRole", fields: [replyRoleId], references: [id])
+}
+
+model BoardRole {
+  id           String             @id @db.Char(26)
+  personas     Persona[]
+  boards       Board[]
+  allowAll     Boolean            @default(false)
+  roleManager  Boolean            @default(false)
+  boardRoleId  Int
+  boardRole    AllowedWritingRole @relation("BoardRoles_boardRole", fields: [boardRoleId], references: [id])
+  postRoleId   Int
+  postRole     AllowedWritingRole @relation("BoardRoles_postRole", fields: [postRoleId], references: [id])
+  threadRoleId Int
+  threadRole   AllowedWritingRole @relation("BoardRoles_threadRole", fields: [threadRoleId], references: [id])
+  replyRoleId  Int
+  replyRole    AllowedWritingRole @relation("BoardRoles_replyRole", fields: [replyRoleId], references: [id])
+}
+
+model PostRole {
+  id           String             @id @db.Char(26)
+  personas     Persona[]
+  posts        Post[]
+  allowAll     Boolean            @default(false)
+  roleManager  Boolean            @default(false)
+  postRoleId   Int
+  postRole     AllowedWritingRole @relation("PostRoles_postRole", fields: [postRoleId], references: [id])
+  threadRoleId Int
+  threadRole   AllowedWritingRole @relation("PostRoles_threadRole", fields: [threadRoleId], references: [id])
+  replyRoleId  Int
+  replyRole    AllowedWritingRole @relation("PostRoles_replyRole", fields: [replyRoleId], references: [id])
 }
