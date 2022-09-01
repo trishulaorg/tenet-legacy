@@ -1017,6 +1017,7 @@ const MutationDef = objectType({
           throw new Error('Board was not found')
         }
 
+        // Workaround for MySQL, which does not apply unique constraint for null columns.
         const alreadyFollowingTheBoard = await context.prisma.followingBoard.findMany({
           where: {
             boardId: {
