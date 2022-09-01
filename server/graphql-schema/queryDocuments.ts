@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import type { NexusGenFieldTypes } from '../nexus-typegen'
+import type { NexusGenFieldTypes } from '../generated-files/nexus-typegen'
 
 /**
  * FIXME: Implement missing documents

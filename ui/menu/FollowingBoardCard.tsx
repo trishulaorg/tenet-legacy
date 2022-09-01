@@ -1,5 +1,5 @@
 import type { FC } from 'react'
-import type { GetFollowingBoardQuery } from '../../server/frontend-graphql-definition'
+import type { GetFollowingBoardQuery } from '../../server/generated-files/frontend-graphql-definition'
 import Link from 'next/link'
 
 interface FollowingBoardCardProps {

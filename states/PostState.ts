@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { PersonaState } from './UserState'
 import { queryDocuments } from '../server/graphql-schema/queryDocuments'
-import type { GetPostQuery } from '../server/frontend-graphql-definition'
+import type { GetPostQuery } from '../server/generated-files/frontend-graphql-definition'
 
 export interface PersonaType {
   id: number

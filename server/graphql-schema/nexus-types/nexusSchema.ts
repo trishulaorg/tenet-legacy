@@ -26,7 +26,7 @@ import type {
   Thread as PrismaThread,
 } from '@prisma/client'
 import { canDeletePost, postWithPrivilege, validatePersona } from '../domain/authorization'
-import type { Privilege } from '../../frontend-graphql-definition'
+import type { Privilege } from '../../generated-files/frontend-graphql-definition'
 
 const FileDef = objectType({
   name: 'File',
