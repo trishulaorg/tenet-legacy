@@ -129,8 +129,10 @@ model Board {
 }
 
 model FollowingBoard {
+  @@unique([boardId, personaId, deletedAt], name: "followingBoardUnique")
   id        String   @id @db.Char(26)
   createdAt DateTime @default(now())
+  deletedAt DateTime?
   board     Board    @relation(fields: [boardId], references: [id])
   boardId   String
   persona   Persona  @relation(fields: [personaId], references: [id])

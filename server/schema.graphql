@@ -52,6 +52,7 @@ type FollowingBoard {
   board: Board!
   boardId: String!
   createdAt: DateTime!
+  deletedAt: DateTime
   id: ID!
   persona: Persona!
   personaId: Int!
@@ -59,7 +60,7 @@ type FollowingBoard {
 
 type Mutation {
   createBoard(description: String!, personaId: Int!, title: String!): Board!
-  createFollowingBoard(boardId: String!, personaId: Int!): Board!
+  createFollowingBoard(boardId: String!, personaId: Int!): FollowingBoard!
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
   createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
   createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
@@ -68,6 +69,7 @@ type Mutation {
   putAttachedImage(files: [Upload!]!, postId: String!): [File!]!
   setPersonaIcon(file: Upload, personaId: Int!): File!
   setTypingStateOnBoard(personaId: Int!, postId: String!): Post!
+  unfollowBoard(boardId: String!, personaId: Int!): FollowingBoard!
 }
 
 type Persona {

@@ -76,6 +76,7 @@ export interface NexusGenObjects {
   FollowingBoard: { // root type
     boardId: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    deletedAt?: NexusGenScalars['DateTime'] | null; // DateTime
     id: string; // ID!
     personaId: number; // Int!
   }
@@ -161,13 +162,14 @@ export interface NexusGenFieldTypes {
     board: NexusGenRootTypes['Board']; // Board!
     boardId: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
+    deletedAt: NexusGenScalars['DateTime'] | null; // DateTime
     id: string; // ID!
     persona: NexusGenRootTypes['Persona']; // Persona!
     personaId: number; // Int!
   }
   Mutation: { // field return type
     createBoard: NexusGenRootTypes['Board']; // Board!
-    createFollowingBoard: NexusGenRootTypes['Board']; // Board!
+    createFollowingBoard: NexusGenRootTypes['FollowingBoard']; // FollowingBoard!
     createPersona: NexusGenRootTypes['Persona']; // Persona!
     createPost: NexusGenRootTypes['Post']; // Post!
     createReply: NexusGenRootTypes['Reply']; // Reply!
@@ -176,6 +178,7 @@ export interface NexusGenFieldTypes {
     putAttachedImage: NexusGenRootTypes['File'][]; // [File!]!
     setPersonaIcon: NexusGenRootTypes['File']; // File!
     setTypingStateOnBoard: NexusGenRootTypes['Post']; // Post!
+    unfollowBoard: NexusGenRootTypes['FollowingBoard']; // FollowingBoard!
   }
   Persona: { // field return type
     iconUrl: string; // String!
@@ -273,13 +276,14 @@ export interface NexusGenFieldTypeNames {
     board: 'Board'
     boardId: 'String'
     createdAt: 'DateTime'
+    deletedAt: 'DateTime'
     id: 'ID'
     persona: 'Persona'
     personaId: 'Int'
   }
   Mutation: { // field return type name
     createBoard: 'Board'
-    createFollowingBoard: 'Board'
+    createFollowingBoard: 'FollowingBoard'
     createPersona: 'Persona'
     createPost: 'Post'
     createReply: 'Reply'
@@ -288,6 +292,7 @@ export interface NexusGenFieldTypeNames {
     putAttachedImage: 'File'
     setPersonaIcon: 'File'
     setTypingStateOnBoard: 'Post'
+    unfollowBoard: 'FollowingBoard'
   }
   Persona: { // field return type name
     iconUrl: 'String'
@@ -406,6 +411,10 @@ export interface NexusGenArgTypes {
     setTypingStateOnBoard: { // args
       personaId: number; // Int!
       postId: string; // String!
+    }
+    unfollowBoard: { // args
+      boardId: string; // String!
+      personaId: number; // Int!
     }
   }
   Query: {

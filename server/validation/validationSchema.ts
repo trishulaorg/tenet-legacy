@@ -91,6 +91,10 @@ const validationSchema: ValidationSchemaType = {
     personaId: z.number().int().int().min(1),
     boardId: z.string().min(26).max(26),
   }),
+  unfollowBoard: z.object({
+    personaId: z.number().int().int().min(1),
+    boardId: z.string().min(26).max(26),
+  }),
 } as const
 
 export { validationSchema }

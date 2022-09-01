@@ -329,6 +329,13 @@ const queryDocuments: {
         }
       }
     `,
+    unfollowBoard: gql`
+      mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+        unfollowBoard(personaId: $personaId, boardId: $boardId) {
+          id
+        }
+      }
+    `,
   },
 } as const
 

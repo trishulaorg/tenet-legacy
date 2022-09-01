@@ -65,6 +65,7 @@ export type FollowingBoard = {
   board: Board;
   boardId: Scalars['String'];
   createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   persona: Persona;
   personaId: Scalars['Int'];
@@ -73,7 +74,7 @@ export type FollowingBoard = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
-  createFollowingBoard: Board;
+  createFollowingBoard: FollowingBoard;
   createPersona: Persona;
   createPost: Post;
   createReply: Reply;
@@ -82,6 +83,7 @@ export type Mutation = {
   putAttachedImage: Array<File>;
   setPersonaIcon: File;
   setTypingStateOnBoard: Post;
+  unfollowBoard: FollowingBoard;
 };
 
 
@@ -152,6 +154,12 @@ export type MutationSetPersonaIconArgs = {
 export type MutationSetTypingStateOnBoardArgs = {
   personaId: Scalars['Int'];
   postId: Scalars['String'];
+};
+
+
+export type MutationUnfollowBoardArgs = {
+  boardId: Scalars['String'];
+  personaId: Scalars['Int'];
 };
 
 export type Persona = {
@@ -403,7 +411,15 @@ export type CreateFollowingBoardMutationVariables = Exact<{
 }>;
 
 
-export type CreateFollowingBoardMutation = { __typename?: 'Mutation', createFollowingBoard: { __typename?: 'Board', id: string } };
+export type CreateFollowingBoardMutation = { __typename?: 'Mutation', createFollowingBoard: { __typename?: 'FollowingBoard', id: string } };
+
+export type UnfollowBoardMutationVariables = Exact<{
+  personaId: Scalars['Int'];
+  boardId: Scalars['String'];
+}>;
+
+
+export type UnfollowBoardMutation = { __typename?: 'Mutation', unfollowBoard: { __typename?: 'FollowingBoard', id: string } };
 
 
 export const GetActivitiesDocument = gql`
@@ -717,6 +733,13 @@ export const CreateFollowingBoardDocument = gql`
   }
 }
     `;
+export const UnfollowBoardDocument = gql`
+    mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+  unfollowBoard(personaId: $personaId, boardId: $boardId) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -772,6 +795,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     createFollowingBoard(variables: CreateFollowingBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateFollowingBoardMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateFollowingBoardMutation>(CreateFollowingBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createFollowingBoard', 'mutation');
+    },
+    unfollowBoard(variables: UnfollowBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UnfollowBoardMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UnfollowBoardMutation>(UnfollowBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'unfollowBoard', 'mutation');
     }
   };
 }

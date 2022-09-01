@@ -282,6 +282,7 @@ const FollowingBoardDef = objectType({
     t.field(FollowingBoard.personaId)
     t.field(FollowingBoard.persona)
     t.field(FollowingBoard.createdAt)
+    t.field(FollowingBoard.deletedAt)
   },
 })
 
@@ -576,6 +577,9 @@ const QueryDef = objectType({
             where: {
               personaId: {
                 equals: args.personaId,
+              },
+              deletedAt: {
+                equals: null,
               },
             },
           })
@@ -993,7 +997,58 @@ const MutationDef = objectType({
       },
     })
     t.nonNull.field('createFollowingBoard', {
-      type: BoardDef.name,
+      type: FollowingBoardDef.name,
+      args: {
+        personaId: arg({
+          type: nonNull('Int'),
+        }),
+        boardId: arg({
+          type: nonNull('String'),
+        }),
+      },
+      async resolve(_source, { personaId, boardId }, context) {
+        await validatePersona(context.me, personaId, context.prisma)
+        const board = await context.prisma.board.findFirst({
+          where: {
+            id: boardId,
+          },
+        })
+        if (board === null) {
+          throw new Error('Board was not found')
+        }
+
+        const alreadyFollowingTheBoard = await context.prisma.followingBoard.findMany({
+          where: {
+            boardId: {
+              equals: boardId,
+            },
+            personaId: {
+              equals: personaId,
+            },
+            deletedAt: {
+              equals: null,
+            },
+          },
+        })
+        if (alreadyFollowingTheBoard.length > 0) {
+          const existing = alreadyFollowingTheBoard[0]
+          if (typeof existing === 'undefined') {
+            throw new Error('unexpected')
+          }
+          return existing
+        }
+        const created = await context.prisma.followingBoard.create({
+          data: {
+            id: ulid(),
+            boardId: boardId,
+            personaId: personaId,
+          },
+        })
+        return created
+      },
+    })
+    t.nonNull.field('unfollowBoard', {
+      type: FollowingBoardDef.name,
       args: {
         personaId: arg({
           type: nonNull('Int'),
@@ -1006,27 +1061,50 @@ const MutationDef = objectType({
         if (!context.me) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
-        const author = await context.prisma.persona.findFirst({
-          where: {
-            id: personaId,
-          },
-        })
+        await validatePersona(context.me, personaId, context.prisma)
         const board = await context.prisma.board.findFirst({
           where: {
             id: boardId,
           },
         })
-        if (!(author && board)) {
-          throw new Error('Unexpected Error')
+        if (board === null) {
+          throw new Error('Board was not found')
         }
-        context.prisma.followingBoard.create({
+        await context.prisma.followingBoard.updateMany({
+          where: {
+            boardId: {
+              equals: boardId,
+            },
+            personaId: {
+              equals: personaId,
+            },
+            deletedAt: {
+              equals: null,
+            },
+          },
           data: {
-            id: ulid(),
-            boardId: boardId,
-            personaId: personaId,
+            deletedAt: new Date(),
           },
         })
-        return board
+        const originalFollowingBoard = (
+          await context.prisma.followingBoard.findMany({
+            where: {
+              boardId: {
+                equals: boardId,
+              },
+              personaId: {
+                equals: personaId,
+              },
+            },
+            orderBy: {
+              deletedAt: 'desc',
+            },
+          })
+        )[0]
+        if (typeof originalFollowingBoard === 'undefined') {
+          throw new Error('unexpected error')
+        }
+        return originalFollowingBoard
       },
     })
   },
