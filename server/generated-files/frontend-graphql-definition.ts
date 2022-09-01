@@ -1,4 +1,4 @@
-import { Upload } from '../server/graphql-schema/scalars/scalarDefinitions';
+import { Upload } from '../../server/graphql-schema/scalars/scalarDefinitions';
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
