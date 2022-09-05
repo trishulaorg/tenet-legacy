@@ -30,5 +30,5 @@
     "strictPropertyInitialization": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "api", "server/frontend-graphql-definition.ts"]
+  "exclude": ["node_modules", "api", "server/generated-files/frontend-graphql-definition.ts"]
 }

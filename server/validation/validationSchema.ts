@@ -1,7 +1,7 @@
 import type { ZodNumber } from 'zod'
 import { z } from 'zod'
 import type { ZodString } from 'zod/lib/types'
-import type { getSdk } from '../frontend-graphql-definition'
+import type { getSdk } from '../generated-files/frontend-graphql-definition'
 
 export type EndpointsType = ReturnType<typeof getSdk>
 
@@ -20,17 +20,20 @@ const validationSchema: ValidationSchemaType = {
     /**
      * https://github.com/colinhacks/zod/issues/635
      */
-    personaId: z.number().min(1).optional() as unknown as ZodNumber,
+    personaId: z.number().int().min(1).optional() as unknown as ZodNumber,
   }),
   getPost: z.object({
     id: z.string().min(26).max(26),
     /**
      * https://github.com/colinhacks/zod/issues/635
      */
-    personaId: z.number().min(1).optional() as unknown as ZodNumber,
+    personaId: z.number().int().min(1).optional() as unknown as ZodNumber,
   }),
   getActivities: z.any(),
   Search: z.object({ query: z.string() }),
+  getFollowingBoard: z.object({
+    personaId: z.number().int().min(1),
+  }),
   createPersona: z.object({
     screenName: z
       .string()
@@ -55,34 +58,42 @@ const validationSchema: ValidationSchemaType = {
       .string()
       .min(1, 'Description is required.')
       .max(2000, 'Maximum length of description is 2000.'),
-    personaId: z.number(),
+    personaId: z.number().int().min(1),
   }),
   createPost: z.object({
     title: z.string().min(1).max(50),
     content: z.string().min(1).max(2000),
     boardId: z.string().min(26).max(26),
-    personaId: z.number(),
+    personaId: z.number().int().min(1),
   }),
   createThread: z.object({
     content: z.string().min(1).max(500),
     boardId: z.string().min(26).max(26),
     postId: z.string().min(26).max(26),
-    personaId: z.number(),
+    personaId: z.number().int().min(1),
   }),
   createReply: z.object({
     content: z.string().min(1).max(500),
     threadId: z.string().min(26).max(26),
-    personaId: z.number(),
+    personaId: z.number().int().min(1),
   }),
   putAttachedImage: z.any(),
   setPersonaIcon: z.any(),
   setTypingStateOnBoard: z.object({
-    personaId: z.number().int(),
+    personaId: z.number().int().int().min(1),
     postId: z.string().min(26).max(26),
   }),
   deletePost: z.object({
-    personaId: z.number().int(),
+    personaId: z.number().int().int().min(1),
     postId: z.string().min(26).max(26),
+  }),
+  createFollowingBoard: z.object({
+    personaId: z.number().int().int().min(1),
+    boardId: z.string().min(26).max(26),
+  }),
+  unfollowBoard: z.object({
+    personaId: z.number().int().int().min(1),
+    boardId: z.string().min(26).max(26),
   }),
 } as const
 

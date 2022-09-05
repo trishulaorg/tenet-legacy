@@ -1,6 +1,6 @@
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
@@ -66,12 +66,12 @@ model Persona {
   name                     String                    @unique @db.VarChar(25)
   screenName               String                    @db.VarChar(30)
   iconUrl                  String                    @db.Text
-  followingBoards          Board[]                   @relation("FollowingBoards")
+  FollowingBoards  FollowingBoard[]
   modelatingBoards         Board[]                   @relation()
   followingUsers           PersonaRelation[]         @relation("destPersona")
   followedUsers            PersonaRelation[]         @relation("srcPersona")
-  Commentss_votes          Comments_Vote[]
-  Postss_votes             Posts_Vote[]
+  votesOnComments  VoteOnComment[]
+  votesOnPosts     VoteOnPost[]
   user                     User                      @relation(fields: [userId], references: [id])
   userId                   Int
   posts                    Post[]
@@ -91,7 +91,7 @@ model PersonaRelation {
   destPersona   Persona  @relation("destPersona", fields: [destPersonaId], references: [id])
 }
 
-model Posts_Vote {
+model VoteOnPost {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   createdById Int
@@ -99,7 +99,7 @@ model Posts_Vote {
   weight      Int
 }
 
-model Comments_Vote {
+model VoteOnComment {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   createdById Int
@@ -114,7 +114,7 @@ model Board {
   deletedAt           DateTime?
   description         String             @db.VarChar(2000)
   moderators          Persona[]          @relation()
-  followedBy          Persona[]          @relation("FollowingBoards")
+  followedBy          FollowingBoard[]
   posts               Post[]
   threads             Thread[]
   roles               BoardRole[]
@@ -126,6 +126,17 @@ model Board {
   defaultThreadRole   AllowedWritingRole @relation("Boards_defaultThreadRole", fields: [defaultThreadRoleId], references: [id])
   defaultReplyRoleId  Int
   defaultReplyRole    AllowedWritingRole @relation("Boards_defaultReplyRole", fields: [defaultReplyRoleId], references: [id])
+}
+
+model FollowingBoard {
+  @@unique([boardId, personaId, deletedAt], name: "followingBoardUnique")
+  id        String   @id @db.Char(26)
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+  board     Board    @relation(fields: [boardId], references: [id])
+  boardId   String
+  persona   Persona  @relation(fields: [personaId], references: [id])
+  personaId Int
 }
 
 model Post {

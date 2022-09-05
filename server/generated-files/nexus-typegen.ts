@@ -4,7 +4,7 @@
  */
 
 
-import type { Context } from "./index"
+import type { Context } from "./../index"
 import type { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
@@ -72,6 +72,13 @@ export interface NexusGenObjects {
     encoding?: string | null; // String
     filename: string; // String!
     mimetype?: string | null; // String
+  }
+  FollowingBoard: { // root type
+    boardId: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    deletedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    id: string; // ID!
+    personaId: number; // Int!
   }
   Mutation: {};
   Persona: { // root type
@@ -151,8 +158,18 @@ export interface NexusGenFieldTypes {
     filename: string; // String!
     mimetype: string | null; // String
   }
+  FollowingBoard: { // field return type
+    board: NexusGenRootTypes['Board']; // Board!
+    boardId: string; // String!
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    deletedAt: NexusGenScalars['DateTime'] | null; // DateTime
+    id: string; // ID!
+    persona: NexusGenRootTypes['Persona']; // Persona!
+    personaId: number; // Int!
+  }
   Mutation: { // field return type
     createBoard: NexusGenRootTypes['Board']; // Board!
+    createFollowingBoard: NexusGenRootTypes['FollowingBoard']; // FollowingBoard!
     createPersona: NexusGenRootTypes['Persona']; // Persona!
     createPost: NexusGenRootTypes['Post']; // Post!
     createReply: NexusGenRootTypes['Reply']; // Reply!
@@ -161,6 +178,7 @@ export interface NexusGenFieldTypes {
     putAttachedImage: NexusGenRootTypes['File'][]; // [File!]!
     setPersonaIcon: NexusGenRootTypes['File']; // File!
     setTypingStateOnBoard: NexusGenRootTypes['Post']; // Post!
+    unfollowBoard: NexusGenRootTypes['FollowingBoard']; // FollowingBoard!
   }
   Persona: { // field return type
     iconUrl: string; // String!
@@ -189,6 +207,7 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     activities: NexusGenRootTypes['Post'][]; // [Post!]!
     board: NexusGenRootTypes['Board']; // Board!
+    getFollowingBoard: NexusGenRootTypes['FollowingBoard'][]; // [FollowingBoard!]!
     me: NexusGenRootTypes['User'] | null; // User
     persona: NexusGenRootTypes['Persona']; // Persona!
     personas: Array<NexusGenRootTypes['Persona'] | null>; // [Persona]!
@@ -253,8 +272,18 @@ export interface NexusGenFieldTypeNames {
     filename: 'String'
     mimetype: 'String'
   }
+  FollowingBoard: { // field return type name
+    board: 'Board'
+    boardId: 'String'
+    createdAt: 'DateTime'
+    deletedAt: 'DateTime'
+    id: 'ID'
+    persona: 'Persona'
+    personaId: 'Int'
+  }
   Mutation: { // field return type name
     createBoard: 'Board'
+    createFollowingBoard: 'FollowingBoard'
     createPersona: 'Persona'
     createPost: 'Post'
     createReply: 'Reply'
@@ -263,6 +292,7 @@ export interface NexusGenFieldTypeNames {
     putAttachedImage: 'File'
     setPersonaIcon: 'File'
     setTypingStateOnBoard: 'Post'
+    unfollowBoard: 'FollowingBoard'
   }
   Persona: { // field return type name
     iconUrl: 'String'
@@ -291,6 +321,7 @@ export interface NexusGenFieldTypeNames {
   Query: { // field return type name
     activities: 'Post'
     board: 'Board'
+    getFollowingBoard: 'FollowingBoard'
     me: 'User'
     persona: 'Persona'
     personas: 'Persona'
@@ -336,6 +367,10 @@ export interface NexusGenArgTypes {
       personaId: number; // Int!
       title: string; // String!
     }
+    createFollowingBoard: { // args
+      boardId: string; // String!
+      personaId: number; // Int!
+    }
     createPersona: { // args
       iconPath?: string | null; // String
       name: string; // String!
@@ -377,6 +412,10 @@ export interface NexusGenArgTypes {
       personaId: number; // Int!
       postId: string; // String!
     }
+    unfollowBoard: { // args
+      boardId: string; // String!
+      personaId: number; // Int!
+    }
   }
   Query: {
     activities: { // args
@@ -385,6 +424,9 @@ export interface NexusGenArgTypes {
     board: { // args
       id: string; // String!
       personaId?: number | null; // Int
+    }
+    getFollowingBoard: { // args
+      personaId: number; // Int!
     }
     persona: { // args
       name: string; // String!

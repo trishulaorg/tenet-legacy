@@ -3,7 +3,7 @@ import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import type { DebouncedState } from 'use-debounce'
 import { useDebouncedCallback } from 'use-debounce'
-import type { SetTypingStateOnBoardMutation } from '../../server/frontend-graphql-definition'
+import type { SetTypingStateOnBoardMutation } from '../../server/generated-files/frontend-graphql-definition'
 
 export const usePublishWritingStatus = (): DebouncedState<
   (postId: string) => Promise<SetTypingStateOnBoardMutation>

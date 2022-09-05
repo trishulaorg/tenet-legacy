@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { getSdk, getSdkWithHooks } from '../server/frontend-graphql-definition'
+import { getSdk, getSdkWithHooks } from '../server/generated-files/frontend-graphql-definition'
 
 const ENDPOINT = '/api/graphql'
 

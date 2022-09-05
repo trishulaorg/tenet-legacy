@@ -13,6 +13,7 @@ import {
   AllowedWritingRole,
   Board,
   ContentType,
+  FollowingBoard,
   Persona,
   Post,
   Reply,
@@ -20,13 +21,12 @@ import {
   User,
 } from 'nexus-prisma'
 import type {
-  Persona as PrismaPersona,
   Post as PrismaPost,
   Reply as PrismaReply,
   Thread as PrismaThread,
 } from '@prisma/client'
-import { canDeletePost, validatePersona } from '../domain/authorization'
-import type { Privilege } from '../../frontend-graphql-definition'
+import { canDeletePost, postWithPrivilege, validatePersona } from '../domain/authorization'
+import type { Privilege } from '../../generated-files/frontend-graphql-definition'
 
 const FileDef = objectType({
   name: 'File',
@@ -273,48 +273,18 @@ const SearchResultDef = objectType({
   },
 })
 
-const postWithPrivilege = (
-  post: PrismaPost & {
-    persona: PrismaPersona
-    threads: (PrismaThread & {
-      persona: PrismaPersona
-      replies: (PrismaReply & { persona: PrismaPersona })[]
-    })[]
+const FollowingBoardDef = objectType({
+  name: FollowingBoard.$name,
+  definition(t) {
+    t.field(FollowingBoard.id)
+    t.field(FollowingBoard.boardId)
+    t.field(FollowingBoard.board)
+    t.field(FollowingBoard.personaId)
+    t.field(FollowingBoard.persona)
+    t.field(FollowingBoard.createdAt)
+    t.field(FollowingBoard.deletedAt)
   },
-  defaultPrivilege: Privilege,
-  persona?: PrismaPersona
-) => {
-  if (persona) {
-    return {
-      ...post,
-      threads: post.threads.map((thread) => ({
-        ...thread,
-        privilege: { ...defaultPrivilege, deleteSelf: thread.personaId === persona.id },
-        replies: thread.replies.map((reply) => ({
-          ...reply,
-          privilege: { ...defaultPrivilege, deleteSelf: reply.personaId === persona.id },
-        })),
-      })),
-      privilege: {
-        ...defaultPrivilege,
-        deleteSelf: post.persona.id === persona.id,
-      },
-    }
-  } else {
-    return {
-      ...post,
-      threads: post.threads.map((thread) => ({
-        ...thread,
-        privilege: { ...defaultPrivilege },
-        replies: thread.replies.map((reply) => ({
-          ...reply,
-          privilege: { ...defaultPrivilege },
-        })),
-      })),
-      privilege: defaultPrivilege,
-    }
-  }
-}
+})
 
 const QueryDef = objectType({
   name: 'Query',
@@ -596,7 +566,26 @@ const QueryDef = objectType({
           id: x.id,
         }))
       },
-    })
+    }),
+      t.nonNull.list.nonNull.field('getFollowingBoard', {
+        type: FollowingBoardDef.name,
+        args: {
+          personaId: arg({ type: nonNull('Int') }),
+        },
+        async resolve(_source, args, context) {
+          const result = await context.prisma.followingBoard.findMany({
+            where: {
+              personaId: {
+                equals: args.personaId,
+              },
+              deletedAt: {
+                equals: null,
+              },
+            },
+          })
+          return result
+        },
+      })
   },
 })
 
@@ -1007,6 +996,118 @@ const MutationDef = objectType({
         })
       },
     })
+    t.nonNull.field('createFollowingBoard', {
+      type: FollowingBoardDef.name,
+      args: {
+        personaId: arg({
+          type: nonNull('Int'),
+        }),
+        boardId: arg({
+          type: nonNull('String'),
+        }),
+      },
+      async resolve(_source, { personaId, boardId }, context) {
+        await validatePersona(context.me, personaId, context.prisma)
+        const board = await context.prisma.board.findFirst({
+          where: {
+            id: boardId,
+          },
+        })
+        if (board === null) {
+          throw new Error('Board was not found')
+        }
+
+        // Workaround for MySQL, which does not apply unique constraint for null columns.
+        const alreadyFollowingTheBoard = await context.prisma.followingBoard.findMany({
+          where: {
+            boardId: {
+              equals: boardId,
+            },
+            personaId: {
+              equals: personaId,
+            },
+            deletedAt: {
+              equals: null,
+            },
+          },
+        })
+        if (alreadyFollowingTheBoard.length > 0) {
+          const existing = alreadyFollowingTheBoard[0]
+          if (typeof existing === 'undefined') {
+            throw new Error('unexpected')
+          }
+          return existing
+        }
+        const created = await context.prisma.followingBoard.create({
+          data: {
+            id: ulid(),
+            boardId: boardId,
+            personaId: personaId,
+          },
+        })
+        return created
+      },
+    })
+    t.nonNull.field('unfollowBoard', {
+      type: FollowingBoardDef.name,
+      args: {
+        personaId: arg({
+          type: nonNull('Int'),
+        }),
+        boardId: arg({
+          type: nonNull('String'),
+        }),
+      },
+      async resolve(_source, { personaId, boardId }, context) {
+        if (!context.me) {
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
+        }
+        await validatePersona(context.me, personaId, context.prisma)
+        const board = await context.prisma.board.findFirst({
+          where: {
+            id: boardId,
+          },
+        })
+        if (board === null) {
+          throw new Error('Board was not found')
+        }
+        await context.prisma.followingBoard.updateMany({
+          where: {
+            boardId: {
+              equals: boardId,
+            },
+            personaId: {
+              equals: personaId,
+            },
+            deletedAt: {
+              equals: null,
+            },
+          },
+          data: {
+            deletedAt: new Date(),
+          },
+        })
+        const originalFollowingBoard = (
+          await context.prisma.followingBoard.findMany({
+            where: {
+              boardId: {
+                equals: boardId,
+              },
+              personaId: {
+                equals: personaId,
+              },
+            },
+            orderBy: {
+              deletedAt: 'desc',
+            },
+          })
+        )[0]
+        if (typeof originalFollowingBoard === 'undefined') {
+          throw new Error('unexpected error')
+        }
+        return originalFollowingBoard
+      },
+    })
   },
 })
 
@@ -1022,6 +1123,7 @@ export {
   ReplyDef,
   ContentTypeDef,
   SearchResultDef,
+  FollowingBoardDef,
   QueryDef,
   MutationDef,
 }
