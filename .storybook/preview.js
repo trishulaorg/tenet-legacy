@@ -1,4 +1,3 @@
-import { RouterContext } from "next/dist/next-server/lib/router-context"; // next < 11.2
 import '../styles/global.css'
 
 export const parameters = {
@@ -10,7 +9,6 @@ export const parameters = {
     },
   },
   nextRouter: {
-    Provider: RouterContext.Provider,
     push() {}, // override with an empty function.
   },
 }

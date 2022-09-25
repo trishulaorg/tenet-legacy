@@ -6,12 +6,31 @@ import { PostForm } from '../common/PostForm'
 import Link from 'next/link'
 import { ChatIcon, MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/solid'
 import { MultiLineText } from '../common/MultiLineText'
+import { WithPrimaryButtonStyling } from '../common/Primitives'
 
 type BoardProps = {
   showPostCreate?: boolean
   followButtonType?: 'follow' | 'unfollow'
   onFollowButtonClick?: () => Promise<void>
 }
+
+const FollowButton: React.FC<{ onClick: React.MouseEventHandler }> = ({ onClick }) => (
+  <WithPrimaryButtonStyling>
+    <button onClick={onClick} className="flex block">
+      <PlusCircleIcon width={24} />
+      <span className="px-2">Follow</span>
+    </button>
+  </WithPrimaryButtonStyling>
+)
+
+const UnfollowButton: React.FC<{ onClick: React.MouseEventHandler }> = ({ onClick }) => (
+  <WithPrimaryButtonStyling>
+    <button onClick={onClick} className="flex block">
+      <MinusCircleIcon width={24} />
+      <span className="px-2">Unfollow</span>
+    </button>
+  </WithPrimaryButtonStyling>
+)
 
 export const Board: React.FC<BoardProps> = observer(
   ({ showPostCreate = true, followButtonType = 'follow', onFollowButtonClick }) => {
@@ -28,30 +47,20 @@ export const Board: React.FC<BoardProps> = observer(
           <div className={'flex ml-auto'}>
             {onFollowButtonClick ? (
               followButtonType === 'follow' ? (
-                <button
-                  onClick={onFollowButtonClick}
-                  className="flex mb-4 py-2 px-2 md:px-4 lg:px-6 block text-white bg-teal-400 hover:bg-teal-600 rounded-xl border border-slate-300"
-                >
-                  <PlusCircleIcon width={24} />
-                  <span className="px-2">Follow</span>
-                </button>
+                <FollowButton onClick={onFollowButtonClick} />
               ) : (
-                <button
-                  onClick={onFollowButtonClick}
-                  className="flex mb-4 py-2 px-2 md:px-4 lg:px-6 block text-white bg-gray-400 hover:bg-gray-700 rounded-xl border border-slate-300"
-                >
-                  <MinusCircleIcon width={24} />
-                  <span className="px-2">Unfollow</span>
-                </button>
+                <UnfollowButton onClick={onFollowButtonClick} />
               )
             ) : null}
             {showPostCreate ? (
-              <Link href={{ pathname: `/o/cp`, query: { boardId: state.id } }}>
-                <button className="flex ml-2 lg:ml-4 mb-4 py-2 px-2 md:px-4 lg:px-6 block text-white bg-teal-400 hover:bg-teal-600 rounded-xl border border-slate-300">
-                  <ChatIcon width={24} />
-                  <span className="px-2">New Post</span>
-                </button>
-              </Link>
+              <WithPrimaryButtonStyling>
+                <Link href={{ pathname: `/o/cp`, query: { boardId: state.id } }}>
+                  <button className="flex block">
+                    <ChatIcon width={24} />
+                    <span className="px-2">New Post</span>
+                  </button>
+                </Link>
+              </WithPrimaryButtonStyling>
             ) : null}
           </div>
         </div>
