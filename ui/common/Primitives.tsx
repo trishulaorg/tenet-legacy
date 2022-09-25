@@ -5,15 +5,15 @@ export const Heading1: React.FC = ({ children }) => {
 }
 
 export const Heading2: React.FC = ({ children }) => {
-  return <h2 className="my-4 text-slate-600 text-1xl">{children}</h2>
+  return <h2 className="my-4 text-slate-600 text-xl">{children}</h2>
 }
 
 export const Heading3: React.FC = ({ children }) => {
-  return (
-    <h3 className="text-xl font-bold mr-5 pb-1 border-solid text-gray-600 border-b-2 border-gray-600 border-opacity-70 ">
-      {children}
-    </h3>
-  )
+  return <h3 className="text-1xl mr-5 pb-1 border-solid text-slate-600">{children}</h3>
+}
+
+export const Paragraph: React.FC = ({ children }) => {
+  return <p className="text-1xl text-slate-500">{children}</p>
 }
 
 export const WithPrimaryButtonStyling: React.FC = ({ children }) => {
