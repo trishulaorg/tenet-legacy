@@ -9,7 +9,7 @@ export const Heading2: React.FC = ({ children }) => {
 }
 
 export const Heading3: React.FC = ({ children }) => {
-  return <h3 className="text-1xl mr-5 pb-1 border-solid text-slate-600">{children}</h3>
+  return <h3 className="text-1xl py-1 border-solid text-slate-600">{children}</h3>
 }
 
 export const Paragraph: React.FC = ({ children }) => {

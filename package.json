@@ -34,13 +34,17 @@
     "test:react": "echo to be implemented",
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
-    "vercel-build": "prisma generate"
+    "vercel-build": "prisma generate",
+    "chromatic:dev": "npx chromatic",
+    "chromatic:dev": "npx chromatic --exit-zero-on-changes"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/minamorl/tenet.git"
   },
-  "author": "minamorl",
+  "author": {
+    "name": "minamorl"
+  },
   "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/minamorl/tenet/issues"
@@ -70,6 +74,7 @@
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "babel-loader": "^8.2.3",
+    "chromatic": "^6.10.0",
     "cpx2": "^4.2.0",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
@@ -145,5 +150,7 @@
   },
   "engines": {
     "node": "16.x"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "tenet@0.0.1"
 }
