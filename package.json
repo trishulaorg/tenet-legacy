@@ -36,7 +36,7 @@
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "vercel-build": "prisma generate",
     "chromatic:dev": "npx chromatic",
-    "chromatic:dev": "npx chromatic --exit-zero-on-changes"
+    "chromatic:ci": "npx chromatic --exit-zero-on-changes"
   },
   "repository": {
     "type": "git",
