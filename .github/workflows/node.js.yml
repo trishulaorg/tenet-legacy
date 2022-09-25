@@ -19,12 +19,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          fetch-depth: 0
       - run: npm run docker:start-testdb
       - run: npm ci
       - run: npm run dev:docker-db &
