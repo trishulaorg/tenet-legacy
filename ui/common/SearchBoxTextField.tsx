@@ -11,7 +11,7 @@ export const SearchBoxTextField: React.FC<{
   const router = useRouter()
   const submitSearch = async (): Promise<void> => {
     if (query !== '') {
-      await router.push(`/s/${query}`)
+      await router.push(`/search/${query}`)
     }
   }
   const onKeyDown: KeyboardEventHandler = async (e) => {

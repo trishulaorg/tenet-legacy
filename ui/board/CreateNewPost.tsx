@@ -43,7 +43,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
       await client.putAttachedImage({ postId: createdPostId, files: files })
 
       await mutate(boardId)
-      await router.push(`/p/${createdPostId}`)
+      await router.push(`/post/${createdPostId}`)
     }
     const onDrop = (acceptedFiles: File[]): void => {
       setUploadErrors([])

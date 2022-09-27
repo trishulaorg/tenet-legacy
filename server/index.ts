@@ -20,20 +20,21 @@ export type Context = {
 export const context = async ({ req }: ExpressContext): Promise<Context> => {
   const token = req.headers.authorization?.substring('Bearer '.length)
   let me: User | null = null
-  if (token && process.env['API_TOKEN_SECRET']) {
+  if (token && process.env['NEXT_PUBLIC_API_TOKEN_SECRET']) {
     try {
-      const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
-      if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
+      const decoded = jwt.verify(token, process.env['NEXT_PUBLIC_API_TOKEN_SECRET'])
+      console.log(decoded)
+      if (typeof decoded !== 'object' || typeof decoded['uid'] === 'undefined') {
         throw new NotAuthenticatedError('invalid auth token')
       }
       me = await prisma.user.findFirst({
-        where: { token: decoded.sub },
+        where: { token: decoded['uid'] },
         include: { personas: true },
       })
       if (!me) {
         me = await prisma.user.create({
           data: {
-            token: decoded.sub,
+            token: decoded['uid'],
           },
         })
       }
