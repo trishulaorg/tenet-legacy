@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request'
-import type { NexusGenFieldTypes } from '../nexus-typegen'
+import type { NexusGenFieldTypes } from '../generated-files/nexus-typegen'
 
 /**
  * FIXME: Implement missing documents
@@ -224,6 +224,16 @@ const queryDocuments: {
         }
       }
     `,
+    getFollowingBoard: gql`
+      query getFollowingBoard($personaId: Int!) {
+        getFollowingBoard(personaId: $personaId) {
+          board {
+            title
+            id
+          }
+        }
+      }
+    `,
   },
   Mutation: {
     createBoard: gql`
@@ -308,6 +318,20 @@ const queryDocuments: {
     deletePost: gql`
       mutation deletePost($personaId: Int!, $postId: String!) {
         deletePost(personaId: $personaId, postId: $postId) {
+          id
+        }
+      }
+    `,
+    createFollowingBoard: gql`
+      mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+        createFollowingBoard(personaId: $personaId, boardId: $boardId) {
+          id
+        }
+      }
+    `,
+    unfollowBoard: gql`
+      mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+        unfollowBoard(personaId: $personaId, boardId: $boardId) {
           id
         }
       }

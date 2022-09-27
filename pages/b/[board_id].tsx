@@ -7,12 +7,13 @@ import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
+import { apiHooks, client, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
+import { swrKey } from '../../libs/swrKey'
 
 const IndexPage: React.FC = () => {
   const token = getGqlToken()
@@ -38,7 +39,7 @@ const IndexPage: React.FC = () => {
   )
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
-  const { data, mutate } = apiHooks.useGetBoard(
+  const { data: boardData, mutate } = apiHooks.useGetBoard(
     () => boardId,
     personaId
       ? {
@@ -46,6 +47,11 @@ const IndexPage: React.FC = () => {
           personaId,
         }
       : { topicId: boardId }
+  )
+
+  const { data: followingBoardData, mutate: mutateFollowingBoard } = apiHooks.useGetFollowingBoard(
+    () => (personaId ? swrKey.useGetFollowingBoard({ personaId: personaId }) : undefined),
+    { personaId: personaId ?? 0 }
   )
 
   useEffect(() => {
@@ -59,7 +65,7 @@ const IndexPage: React.FC = () => {
       }
 
       const pusher = await makePusher()
-      const postIds = data?.board.posts.map((post) => post.id) ?? []
+      const postIds = boardData?.board.posts.map((post) => post.id) ?? []
 
       const postChannels: Channel[] = []
 
@@ -77,23 +83,51 @@ const IndexPage: React.FC = () => {
       )
     }
     f()
-  }, [token, router, user, data?.board.posts])
+  }, [token, router, user, boardData?.board.posts])
 
   useEffect(() => {
-    if (data) {
+    if (boardData) {
       setContext(
-        new BoardState(data.board.id, contentGraphqlQueryDocument, {
-          title: data.board.title,
-          description: data.board.description,
-          posts: data.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
+        new BoardState(boardData.board.id, contentGraphqlQueryDocument, {
+          title: boardData.board.title,
+          description: boardData.board.description,
+          posts: boardData.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
         })
       )
     }
-  }, [token, data, contentGraphqlQueryDocument])
+  }, [token, boardData, contentGraphqlQueryDocument])
+
+  const following = followingBoardData?.getFollowingBoard.some(
+    (boardData) => boardId && boardData.board.id === boardId
+  )
+
+  const onFollowButtonClick = async (): Promise<void> => {
+    if (!following) {
+      await client.createFollowingBoard({
+        personaId: personaId ?? 0,
+        boardId: boardId,
+      })
+      await mutateFollowingBoard()
+    } else {
+      await client.unfollowBoard({
+        personaId: personaId ?? 0,
+        boardId: boardId,
+      })
+      await mutateFollowingBoard()
+    }
+  }
+
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
-        <Board />
+        {boardId ? (
+          <Board
+            followButtonType={following ? 'unfollow' : 'follow'}
+            onFollowButtonClick={onFollowButtonClick}
+          />
+        ) : (
+          <Board />
+        )}
       </BoardStateContext.Provider>
     </>
   )

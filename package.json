@@ -13,7 +13,7 @@
   "scripts": {
     "build:nexus": "ts-node --compiler-options {\\\"module\\\":\\\"nodenext\\\",\\\"allowJs\\\":true,\\\"maxNodeModuleJsDepth\\\":10} --transpile-only server/graphql-schema/nexus",
     "build:api": "npx graphql-codegen",
-    "build:graphql": "npm run prisma:generate && npm run build:nexus && npm run build:api",
+    "build:graphql": "npm run prisma:regenerate && npm run build:nexus && npm run build:api",
     "build": "next build && rimraf public/sw.js public/workbox-*.js && cpx .next/sw.js public && cpx .next/workbox-*.js public",
     "build-storybook": "build-storybook",
     "dev": "next dev",
@@ -23,6 +23,7 @@
     "postinstall": "husky install && npm run prisma:generate",
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate",
+    "prisma:regenerate": "rimraf node_modules/prisma node_modules/nexus-prisma && npm i",
     "migrate:test": "dotenv -e .env.test prisma migrate dev",
     "seed:test": "prisma db seed",
     "start": "next start",
@@ -33,13 +34,17 @@
     "test:react": "echo to be implemented",
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
-    "vercel-build": "prisma generate"
+    "vercel-build": "prisma generate",
+    "chromatic:dev": "npx chromatic",
+    "chromatic:ci": "npx chromatic --exit-zero-on-changes"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/minamorl/tenet.git"
   },
-  "author": "minamorl",
+  "author": {
+    "name": "minamorl"
+  },
   "license": "UNLICENSED",
   "bugs": {
     "url": "https://github.com/minamorl/tenet/issues"
@@ -69,6 +74,7 @@
     "@typescript-eslint/eslint-plugin": "^5.11.0",
     "@typescript-eslint/parser": "^5.11.0",
     "babel-loader": "^8.2.3",
+    "chromatic": "^6.10.0",
     "cpx2": "^4.2.0",
     "cross-env": "^7.0.3",
     "env-cmd": "^10.1.0",
@@ -88,7 +94,7 @@
     "postcss": "^8.4.6",
     "postcss-import": "^14.0.2",
     "prettier": "^2.5.1",
-    "prisma": "^4.2.1",
+    "prisma": "^4.3.0",
     "rimraf": "^3.0.2",
     "storybook-addon-next-router": "^3.1.1",
     "tailwindcss": "^3.0.19",
@@ -98,7 +104,7 @@
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.9.1",
     "@aws-sdk/client-s3": "^3.142.0",
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.3.0",
     "apollo-server": "^3.10.0",
     "apollo-server-micro": "^3.10.0",
     "apollo-upload-client": "^17.0.0",
@@ -139,12 +145,14 @@
     "zod": "^3.18.0"
   },
   "overrides": {
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.3.0",
     "graphql": "^16.5.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "engines": {
     "node": "16.x"
-  }
+  },
+  "readme": "ERROR: No README data found!",
+  "_id": "tenet@0.0.1"
 }

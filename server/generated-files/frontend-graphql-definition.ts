@@ -1,4 +1,4 @@
-import { Upload } from '../server/graphql-schema/scalars/scalarDefinitions';
+import { Upload } from '../../server/graphql-schema/scalars/scalarDefinitions';
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -60,9 +60,21 @@ export type File = {
   mimetype?: Maybe<Scalars['String']>;
 };
 
+export type FollowingBoard = {
+  __typename?: 'FollowingBoard';
+  board: Board;
+  boardId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  persona: Persona;
+  personaId: Scalars['Int'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
+  createFollowingBoard: FollowingBoard;
   createPersona: Persona;
   createPost: Post;
   createReply: Reply;
@@ -71,6 +83,7 @@ export type Mutation = {
   putAttachedImage: Array<File>;
   setPersonaIcon: File;
   setTypingStateOnBoard: Post;
+  unfollowBoard: FollowingBoard;
 };
 
 
@@ -78,6 +91,12 @@ export type MutationCreateBoardArgs = {
   description: Scalars['String'];
   personaId: Scalars['Int'];
   title: Scalars['String'];
+};
+
+
+export type MutationCreateFollowingBoardArgs = {
+  boardId: Scalars['String'];
+  personaId: Scalars['Int'];
 };
 
 
@@ -137,6 +156,12 @@ export type MutationSetTypingStateOnBoardArgs = {
   postId: Scalars['String'];
 };
 
+
+export type MutationUnfollowBoardArgs = {
+  boardId: Scalars['String'];
+  personaId: Scalars['Int'];
+};
+
 export type Persona = {
   __typename?: 'Persona';
   iconUrl: Scalars['String'];
@@ -171,6 +196,7 @@ export type Query = {
   __typename?: 'Query';
   activities: Array<Post>;
   board: Board;
+  getFollowingBoard: Array<FollowingBoard>;
   me?: Maybe<User>;
   persona: Persona;
   personas: Array<Maybe<Persona>>;
@@ -188,6 +214,11 @@ export type QueryActivitiesArgs = {
 export type QueryBoardArgs = {
   id: Scalars['String'];
   personaId?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryGetFollowingBoardArgs = {
+  personaId: Scalars['Int'];
 };
 
 
@@ -288,6 +319,13 @@ export type SearchQueryVariables = Exact<{
 
 export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchResult', kind: string, id: string, title: string }> };
 
+export type GetFollowingBoardQueryVariables = Exact<{
+  personaId: Scalars['Int'];
+}>;
+
+
+export type GetFollowingBoardQuery = { __typename?: 'Query', getFollowingBoard: Array<{ __typename?: 'FollowingBoard', board: { __typename?: 'Board', title: string, id: string } }> };
+
 export type CreateBoardMutationVariables = Exact<{
   title: Scalars['String'];
   description: Scalars['String'];
@@ -366,6 +404,22 @@ export type DeletePostMutationVariables = Exact<{
 
 
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost: { __typename?: 'Post', id: string } };
+
+export type CreateFollowingBoardMutationVariables = Exact<{
+  personaId: Scalars['Int'];
+  boardId: Scalars['String'];
+}>;
+
+
+export type CreateFollowingBoardMutation = { __typename?: 'Mutation', createFollowingBoard: { __typename?: 'FollowingBoard', id: string } };
+
+export type UnfollowBoardMutationVariables = Exact<{
+  personaId: Scalars['Int'];
+  boardId: Scalars['String'];
+}>;
+
+
+export type UnfollowBoardMutation = { __typename?: 'Mutation', unfollowBoard: { __typename?: 'FollowingBoard', id: string } };
 
 
 export const GetActivitiesDocument = gql`
@@ -581,6 +635,16 @@ export const SearchDocument = gql`
   }
 }
     `;
+export const GetFollowingBoardDocument = gql`
+    query getFollowingBoard($personaId: Int!) {
+  getFollowingBoard(personaId: $personaId) {
+    board {
+      title
+      id
+    }
+  }
+}
+    `;
 export const CreateBoardDocument = gql`
     mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
   createBoard(title: $title, description: $description, personaId: $personaId) {
@@ -662,6 +726,20 @@ export const DeletePostDocument = gql`
   }
 }
     `;
+export const CreateFollowingBoardDocument = gql`
+    mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+  createFollowingBoard(personaId: $personaId, boardId: $boardId) {
+    id
+  }
+}
+    `;
+export const UnfollowBoardDocument = gql`
+    mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+  unfollowBoard(personaId: $personaId, boardId: $boardId) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -684,6 +762,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     Search(variables: SearchQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<SearchQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<SearchQuery>(SearchDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'Search', 'query');
+    },
+    getFollowingBoard(variables: GetFollowingBoardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetFollowingBoardQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetFollowingBoardQuery>(GetFollowingBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getFollowingBoard', 'query');
     },
     createBoard(variables: CreateBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateBoardMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateBoardMutation>(CreateBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createBoard', 'mutation');
@@ -711,6 +792,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     deletePost(variables: DeletePostMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<DeletePostMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<DeletePostMutation>(DeletePostDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'deletePost', 'mutation');
+    },
+    createFollowingBoard(variables: CreateFollowingBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateFollowingBoardMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateFollowingBoardMutation>(CreateFollowingBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createFollowingBoard', 'mutation');
+    },
+    unfollowBoard(variables: UnfollowBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UnfollowBoardMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<UnfollowBoardMutation>(UnfollowBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'unfollowBoard', 'mutation');
     }
   };
 }
@@ -733,6 +820,9 @@ export function getSdkWithHooks(client: GraphQLClient, withWrapper: SdkFunctionW
     },
     useSearch(key: SWRKeyInterface, variables: SearchQueryVariables, config?: SWRConfigInterface<SearchQuery, ClientError>) {
       return useSWR<SearchQuery, ClientError>(key, () => sdk.Search(variables), config);
+    },
+    useGetFollowingBoard(key: SWRKeyInterface, variables: GetFollowingBoardQueryVariables, config?: SWRConfigInterface<GetFollowingBoardQuery, ClientError>) {
+      return useSWR<GetFollowingBoardQuery, ClientError>(key, () => sdk.getFollowingBoard(variables), config);
     }
   };
 }

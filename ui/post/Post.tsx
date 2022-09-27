@@ -50,7 +50,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     1000
   )
 
-  const { route, push } = useRouter()
+  const { route } = useRouter()
   const isInPostPage = route.startsWith('/p/')
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
@@ -65,7 +65,6 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     })
 
     await client.putAttachedImage({ postId: id, files: files })
-    await push(`/b/${post.boardId}`)
     await mutate(post.id)
   }
 

@@ -10,8 +10,8 @@ const schema = makeSchema({
     export: 'Context',
   },
   outputs: {
-    typegen: join(process.cwd(), 'server/nexus-typegen.ts'),
-    schema: join(process.cwd(), 'server/schema.graphql'),
+    typegen: join(process.cwd(), 'server/generated-files/nexus-typegen.ts'),
+    schema: join(process.cwd(), 'server/generated-files/schema.graphql'),
   },
   plugins: [],
 })

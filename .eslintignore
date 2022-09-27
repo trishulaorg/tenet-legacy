@@ -1,2 +1,2 @@
 nexus-typegen.ts
-server/frontend-graphql-definition.ts
+server/generated-files/frontend-graphql-definition.ts
