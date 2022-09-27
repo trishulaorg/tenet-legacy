@@ -142,7 +142,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   return showThreads ? (
     content
   ) : (
-    <Link href={'' + post.id}>
+    <Link href={'/post/' + post.id}>
       <a>{content}</a>
     </Link>
   )
