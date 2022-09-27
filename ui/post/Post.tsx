@@ -51,7 +51,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   )
 
   const { route } = useRouter()
-  const isInPostPage = route.startsWith('/p/')
+  const isInPostPage = route.startsWith('/post/')
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
     setAuthToken(userState.token)
@@ -142,7 +142,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   return showThreads ? (
     content
   ) : (
-    <Link href={'/p/' + post.id}>
+    <Link href={'' + post.id}>
       <a>{content}</a>
     </Link>
   )

@@ -40,7 +40,7 @@ export const Board: React.FC<BoardProps> = observer(
       <div>
         <div className="flex flex-col">
           <h1 className="flex-row my-4 text-slate-600 text-2xl">
-            <Link href={`/b/${state.id}`}>
+            <Link href={`/board/${state.id}`}>
               <span className="cursor-pointer">#{state.title}</span>
             </Link>
           </h1>
