@@ -40,7 +40,7 @@ export const UserMenu: React.FC = observer(() => {
                   </Switch>
                 </UserMenuItem>
                 <UserMenuItem onClick={() => state.closeMenu()}>
-                  <Link href="/api/auth/logout">
+                  <Link href="/auth">
                     <a
                       onClick={() => state.logOut()}
                       onKeyDown={() => state.logOut()}
@@ -59,7 +59,7 @@ export const UserMenu: React.FC = observer(() => {
               </Switch>
               <Switch visibility={!state.isLoggedIn}>
                 <UserMenuItem onClick={() => state.closeMenu()}>
-                  <Link href="/api/auth/login">Sign in / Sign up</Link>
+                  <Link href="/auth">Sign in / Sign up</Link>
                 </UserMenuItem>
               </Switch>
             </UserMenuItems>
