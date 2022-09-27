@@ -6,14 +6,6 @@ import { getAuth } from 'firebase/auth'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 export const init = () => {
-  if (typeof window === 'undefined') {
-    return {
-      firebaseConfig: {},
-      app: {},
-      analytics: {},
-      auth: {},
-    }
-  }
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
@@ -26,6 +18,14 @@ export const init = () => {
     measurementId: 'G-Y6GD5HPV67',
   }
 
+  if (typeof window === 'undefined') {
+    return {
+      firebaseConfig,
+      app: {},
+      analytics: {},
+      auth: {},
+    }
+  }
   // Initialize Firebase
   const app = initializeApp(firebaseConfig)
   const analytics = getAnalytics(app)

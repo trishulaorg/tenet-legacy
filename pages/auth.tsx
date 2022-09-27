@@ -2,14 +2,18 @@ import { init } from '../libs/initFirebase'
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
+import { useEffect } from 'react'
 
 const AuthPage: React.FC = () => {
   const { auth } = init()
+  useEffect(() => {
+    document.cookie = 'gqltoken='
+  })
   const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: 'popup',
-    // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-    signInSuccessUrl: '/signedIn',
+    // Redirect to / after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+    signInSuccessUrl: '/',
     signInOptions: [
       firebase.auth.EmailAuthProvider.PROVIDER_ID,
       firebase.auth.GoogleAuthProvider.PROVIDER_ID,
