@@ -15,15 +15,14 @@ const IndexPage: React.FC = () => {
   if (token) user = new UserState(token, [], 0)
 
   useEffect(() => {
-    const f = async (): Promise<void> => {
+    ;(async (): Promise<void> => {
       if (user) {
         await user.request()
         if (user.isValidUser && !user.currentPersona) {
           await router.push('/persona/onboarding')
         }
       }
-    }
-    f()
+    })()
   }, [token, router, user])
   const main: React.FC = () => (
     <>
