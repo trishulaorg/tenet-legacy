@@ -1,12 +1,9 @@
-import type { GetServerSideProps } from 'next'
 import { Header } from '../../ui/header/Header'
-import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
-import { getInstance } from '../../libs/auth0'
 import { useRouter } from 'next/router'
 import { CreateNewBoard } from '../../ui/board/CreateNewBoard'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
@@ -27,7 +24,7 @@ const IndexPage: React.FC = () => {
       }
     }
     f()
-  }, [token, router, user])
+  }, [router, user])
   const main: React.FC = () => (
     <>
       <CreateNewBoard />
@@ -43,20 +40,6 @@ const IndexPage: React.FC = () => {
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = getInstance().getSession(context.req, context.res)
-  if (!process.env['API_TOKEN_SECRET'] || !(session && session.user)) {
-    return {
-      props: {},
-    }
-  }
-  const token = jwt.sign(JSON.stringify(session.user ?? ''), process.env['API_TOKEN_SECRET'])
-  context.res.setHeader('set-cookie', [`gqltoken=${token}`])
-  return {
-    props: {},
-  }
 }
 
 export default IndexPage
