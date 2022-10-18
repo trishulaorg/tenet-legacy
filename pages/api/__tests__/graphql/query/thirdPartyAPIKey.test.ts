@@ -17,7 +17,7 @@ describe('test third-party api', () => {
       data: {
         id: ulid(),
         userId: user.id,
-        token: 'TEST_API_TOKEN_FOR_BOT',
+        token: ulid(),
         type: 'bot',
       },
     })
@@ -26,7 +26,7 @@ describe('test third-party api', () => {
       data: {
         id: ulid(),
         userId: user.id,
-        token: 'TEST_API_TOKEN_FOR_USER',
+        token: ulid(),
         type: 'user',
       },
     })
