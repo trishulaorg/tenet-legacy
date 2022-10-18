@@ -38,24 +38,20 @@ const validatePersona = async (
   return currentPersona
 }
 
-const canDeletePost = async (
+const hasPriviledgeToDeletePost = (
   persona: Persona,
   post: Post & {
     board: { moderators: Persona[]; defaultPostRole: AllowedWritingRole }
     persona: Persona
     defaultPostRole: AllowedWritingRole
   }
-): Promise<boolean> => {
-  if (post.board.defaultPostRole.delete === true) {
-    return true
-  }
-  if (post.defaultPostRole.delete === true) {
-    return true
-  }
-  if (post.board.moderators.some((moderatorPersona) => moderatorPersona.id === persona.id)) {
-    return true
-  }
-  return post.persona.id === persona.id
+): boolean => {
+  return (
+    post.board.defaultPostRole.delete === true ||
+    post.defaultPostRole.delete === true ||
+    post.board.moderators.some((moderatorPersona) => moderatorPersona.id === persona.id) ||
+    post.persona.id === persona.id
+  )
 }
 
 const postWithPrivilege = (
@@ -112,4 +108,4 @@ const postWithPrivilege = (
   }
 }
 
-export { validatePersona, canDeletePost, postWithPrivilege }
+export { validatePersona, hasPriviledgeToDeletePost, postWithPrivilege }

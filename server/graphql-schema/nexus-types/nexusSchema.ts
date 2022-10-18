@@ -25,7 +25,11 @@ import type {
   Reply as PrismaReply,
   Thread as PrismaThread,
 } from '@prisma/client'
-import { canDeletePost, postWithPrivilege, validatePersona } from '../domain/authorization'
+import {
+  hasPriviledgeToDeletePost,
+  postWithPrivilege,
+  validatePersona,
+} from '../domain/authorization'
 import type { Privilege } from '../../generated-files/frontend-graphql-definition'
 
 const FileDef = objectType({
@@ -983,7 +987,7 @@ const MutationDef = objectType({
           throw new NotFoundError('Invalid Post id')
         }
 
-        if (!(await canDeletePost(currentPersona, post))) {
+        if (!hasPriviledgeToDeletePost(currentPersona, post)) {
           throw new NotAuthorizedError('You do not have permission to delete post.')
         }
         return context.prisma.post.update({
