@@ -1,4 +1,4 @@
-import { apiTestClient, prismaClient } from '../libs/client'
+import { generateAPITestClient, prismaClient } from '../libs/client'
 import { resetDatabase } from '../libs/resetDB'
 import type { Board, Post, Persona } from '@prisma/client'
 import { ulid } from 'ulid'
@@ -6,6 +6,8 @@ import { randomUniqueId } from '../libs/randomUniqueId'
 import type { User } from '@prisma/client'
 import { randomAlphabetString } from '../libs/randomAlphabetString'
 import type { AllowedWritingRole } from '@prisma/client'
+
+const apiTestClient = generateAPITestClient({})
 
 describe('test activity query api', () => {
   beforeEach(() => {

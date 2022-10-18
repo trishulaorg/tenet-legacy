@@ -4,8 +4,10 @@ import { PrismaClient } from '@prisma/client'
 
 const BASE_API_URL = 'http://localhost:3000/api/graphql'
 
-const apiTestClient = getSdk(new GraphQLClient(BASE_API_URL))
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+const generateAPITestClient = (headers: HeadersInit) =>
+  getSdk(new GraphQLClient(BASE_API_URL, { headers }))
 
 const prismaClient = new PrismaClient()
 
-export { apiTestClient, prismaClient }
+export { generateAPITestClient, prismaClient }

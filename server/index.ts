@@ -19,26 +19,40 @@ export type Context = {
 
 export const context = async ({ req }: ExpressContext): Promise<Context> => {
   const token = req.headers.authorization?.substring('Bearer '.length)
+  console.log(token)
   let me: User | null = null
+  if (token) {
+    const apiToken = await prisma.thirdPartyAPIKey.findFirst({
+      where: {
+        token,
+      },
+      include: {
+        user: true,
+      },
+    })
+    me = apiToken ? apiToken.user : null
+  }
   if (token && process.env['API_TOKEN_SECRET']) {
-    try {
-      const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
-      if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
-        throw new NotAuthenticatedError('invalid auth token')
-      }
-      me = await prisma.user.findFirst({
-        where: { token: decoded.sub },
-        include: { personas: true },
-      })
-      if (!me) {
-        me = await prisma.user.create({
-          data: {
-            token: decoded.sub,
-          },
+    if (!me) {
+      try {
+        const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
+        if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
+          throw new NotAuthenticatedError('invalid auth token')
+        }
+        me = await prisma.user.findFirst({
+          where: { token: decoded.sub },
+          include: { personas: true },
         })
+        if (!me) {
+          me = await prisma.user.create({
+            data: {
+              token: decoded.sub,
+            },
+          })
+        }
+      } catch {
+        // nothing to do
       }
-    } catch {
-      // do nothing. just ignore for now.
     }
   }
   const pusher = new Pusher({
