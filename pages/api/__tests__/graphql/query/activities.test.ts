@@ -9,11 +9,12 @@ import type { AllowedWritingRole } from '@prisma/client'
 
 const apiTestClient = generateAPITestClient({})
 
-describe('test activity query api', () => {
-  beforeEach(() => {
-    resetDatabase()
-  })
+jest.setTimeout(20000)
+beforeAll((done) => {
+  resetDatabase(done)
+})
 
+describe('test activity query api', () => {
   test('activities return value', async () => {
     const { activities } = await apiTestClient.getActivities()
 

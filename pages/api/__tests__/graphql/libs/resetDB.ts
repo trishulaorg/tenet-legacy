@@ -1,6 +1,6 @@
 import { exec } from 'child_process'
 
-const resetDatabase = (): void => {
+const resetDatabase = (cb: any): void => {
   if (process.env['NODE_ENV'] !== 'test') {
     throw new Error('resetting database is only allowed in test environment.')
   }
@@ -13,8 +13,7 @@ const resetDatabase = (): void => {
     throw new Error('resetting database is only allowed in local database.')
   }
 
-  exec('npx prisma migrate reset --force')
-  console.log('database reset!')
+  exec('npx prisma migrate reset --force', cb)
 }
 
 export { resetDatabase }
