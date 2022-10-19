@@ -42,9 +42,7 @@ describe('test third-party api', () => {
         type: 'bot',
       },
     })
-    console.log(key.token)
     const result = await generateAPITestClient({ authorization: `Bearer ${key.token}` }).getMe()
-    console.log(result)
     expect(result.me).not.toBeNull()
   })
   test('API should be accessable from third-party keys', async () => {
@@ -81,7 +79,6 @@ describe('test third-party api', () => {
     const result = await generateAPITestClient({
       authorization: `Bearer ${key.token}`,
     }).createBoard({ personaId: persona.id, title: ulid(), description: ulid() })
-    console.log(result)
     expect(result.createBoard).not.toBeNull
   })
 })

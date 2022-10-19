@@ -19,7 +19,6 @@ export type Context = {
 
 export const context = async ({ req }: ExpressContext): Promise<Context> => {
   const token = req.headers.authorization?.substring('Bearer '.length)
-  console.log(token)
   let me: User | null = null
   if (token) {
     const apiToken = await prisma.thirdPartyAPIKey.findFirst({
