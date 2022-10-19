@@ -28,6 +28,9 @@ module.exports = {
         'plugin:prettier/recommended', // Prettier plugin
       ],
       rules: {
+        // Console should be only used for testing, not on prod
+        'no-console': ["error", { allow: ["debug", "warn", "error"] }],
+
         // We will use TypeScript's types for component props instead
         'react/prop-types': 'off',
 

@@ -14,11 +14,11 @@ import { apiHooks } from '../libs/fetchAPI'
 import Link from 'next/link'
 import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { swrKey } from '../libs/swrKey'
-import type { Auth } from 'firebase/auth'
 import { init } from '../libs/initFirebase'
+import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 
 const IndexPage: React.FC = () => {
-  const token = getGqlToken()
+  const [token, setToken] = useState(getGqlToken())
   const router = useRouter()
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
@@ -55,18 +55,18 @@ const IndexPage: React.FC = () => {
   }, [token, mutate])
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    async function f() {
+    ;(async () => {
       const r = init()
-      const auth = r.auth as Auth
-      if (!auth.currentUser) return
-      const token = jwt.sign(
+      const { auth } = r
+      if (!isValidAuthInstance(auth) || !auth.currentUser) return
+      const localToken = jwt.sign(
         { uid: auth.currentUser.uid },
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         process.env['NEXT_PUBLIC_API_TOKEN_SECRET']!
       )
-      document.cookie = `gqltoken=${token}`
-    }
-    f()
+      document.cookie = `gqltoken=${localToken}`
+      setToken(localToken)
+    })()
   })
   const main: React.FC = () => (
     <>

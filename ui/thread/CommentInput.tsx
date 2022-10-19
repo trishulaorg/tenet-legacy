@@ -4,7 +4,6 @@ import { UserStateContext } from '../../states/UserState'
 export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (props) => {
   const [comment, setComment] = useState('')
   const userState = useContext(UserStateContext)
-  console.log(userState)
   return userState.isValidUser ? (
     <div>
       <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>
