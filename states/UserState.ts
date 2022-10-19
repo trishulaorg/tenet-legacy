@@ -62,7 +62,6 @@ export class UserState {
         eventName,
         data,
       }
-      console.log(n)
       this.notifications.push(n)
       cb(n)
     })

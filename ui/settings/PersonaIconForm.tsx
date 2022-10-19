@@ -34,7 +34,6 @@ const PersonaIconForm: React.FC = observer(() => {
       })
       setPersonaIconSuccessMessage('New icon is Successfully set!')
     } catch (error) {
-      console.dir(error)
       if (error instanceof ApolloError) {
         setPersonaIconErrorMessage(error.message)
       }

@@ -36,7 +36,7 @@ export const CreateNewBoard: React.FC = () => {
         createBoard: { id },
       } = await client.createBoard({ title: name, description: desc, personaId: persona.id })
 
-      await router.push(`/b/${id}`)
+      await router.push(`/board/${id}`)
     } catch (error) {
       if (isClientError(error)) {
         const validationErrors = getValidationErrors(error)

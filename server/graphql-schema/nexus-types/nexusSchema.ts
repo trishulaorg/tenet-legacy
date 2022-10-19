@@ -337,8 +337,7 @@ const QueryDef = objectType({
           type: nonNull('String'),
         }),
       },
-      resolve(_source, args) {
-        console.log(args)
+      resolve() {
         return false // need to check tokens. wip.
       },
     })

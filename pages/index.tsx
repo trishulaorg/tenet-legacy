@@ -1,4 +1,3 @@
-import type { GetServerSideProps } from 'next'
 import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
@@ -8,7 +7,6 @@ import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
 import { getGqlToken } from '../libs/cookies'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
-import { getInstance } from '../libs/auth0'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
@@ -16,9 +14,11 @@ import { apiHooks } from '../libs/fetchAPI'
 import Link from 'next/link'
 import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { swrKey } from '../libs/swrKey'
+import { init } from '../libs/initFirebase'
+import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 
 const IndexPage: React.FC = () => {
-  const token = getGqlToken()
+  const [token, setToken] = useState(getGqlToken())
   const router = useRouter()
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
@@ -53,6 +53,21 @@ const IndexPage: React.FC = () => {
       mutate()
     }
   }, [token, mutate])
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    ;(async () => {
+      const r = init()
+      const { auth } = r
+      if (!isValidAuthInstance(auth) || !auth.currentUser) return
+      const localToken = jwt.sign(
+        { uid: auth.currentUser.uid },
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        process.env['NEXT_PUBLIC_API_TOKEN_SECRET']!
+      )
+      document.cookie = `gqltoken=${localToken}`
+      setToken(localToken)
+    })()
+  })
   const main: React.FC = () => (
     <>
       <ul>
@@ -86,20 +101,6 @@ const IndexPage: React.FC = () => {
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = getInstance().getSession(context.req, context.res)
-  if (!process.env['API_TOKEN_SECRET'] || !(session && session.user)) {
-    return {
-      props: {},
-    }
-  }
-  const token = jwt.sign(JSON.stringify(session.user ?? ''), process.env['API_TOKEN_SECRET'])
-  context.res.setHeader('set-cookie', [`gqltoken=${token}`])
-  return {
-    props: {},
-  }
 }
 
 export default IndexPage

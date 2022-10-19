@@ -33,13 +33,13 @@ export const SearchBox: React.FC = () => {
         <div className="absolute bg-white w-full rounded border z-10">
           <ul>
             {data?.search.slice(0, 10).map((v) => (
-              <Link key={v.id} href={`/b/${v.id}`}>
+              <Link key={v.id} href={`/board/${v.id}`}>
                 <li className="px-4 cursor-pointer">{v.title}</li>
               </Link>
             ))}
           </ul>
           {query !== '' && (
-            <Link href={`/s/${query}`}>
+            <Link href={`/search/${query}`}>
               <button className="mx-4 mt-4 h-6">Show full results</button>
             </Link>
           )}

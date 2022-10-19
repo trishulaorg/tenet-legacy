@@ -76,8 +76,7 @@ const IndexPage: React.FC = () => {
       })
 
       postChannels.forEach((channel) =>
-        user?.subscribeNotifications(channel, 'typing', (data) => {
-          console.log(data)
+        user?.subscribeNotifications(channel, 'typing', () => {
           /* no-op */
         })
       )

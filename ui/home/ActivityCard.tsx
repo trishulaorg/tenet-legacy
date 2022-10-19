@@ -57,13 +57,13 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         <CreatedAt created={post.createdAt} />
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */}
         <span onClick={(e) => e.stopPropagation()}>
-          <Link href={`/b/${post.boardId}`}>Show board</Link>
+          <Link href={`/board/${post.boardId}`}>Show board</Link>
         </span>
       </CardMeta>
     </div>
   )
   return (
-    <Link href={`/p/${post.id}`}>
+    <Link href={`/post/${post.id}`}>
       <a>{content}</a>
     </Link>
   )
