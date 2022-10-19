@@ -69,4 +69,4 @@ This software is written and maintained by @minamorl.
 
 ## License
 
-All rights reserved.
+See `LICENSE` in this repo.

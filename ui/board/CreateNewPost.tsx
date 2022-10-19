@@ -73,7 +73,6 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
     }
     const removeFile = (fileToRemove: File): void => {
       const newFiles = files.filter((file) => file !== fileToRemove)
-      console.dir(newFiles)
       setFiles(newFiles)
     }
 
