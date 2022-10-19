@@ -14,8 +14,8 @@ import { apiHooks } from '../libs/fetchAPI'
 import Link from 'next/link'
 import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { swrKey } from '../libs/swrKey'
-import type { Auth } from 'firebase/auth'
 import { init } from '../libs/initFirebase'
+import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 
 const IndexPage: React.FC = () => {
   const [token, setToken] = useState(getGqlToken())
@@ -57,8 +57,8 @@ const IndexPage: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ;(async () => {
       const r = init()
-      const auth = r.auth as Auth
-      if (!auth.currentUser) return
+      const { auth } = r
+      if (!isValidAuthInstance(auth) || !auth.currentUser) return
       const localToken = jwt.sign(
         { uid: auth.currentUser.uid },
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
