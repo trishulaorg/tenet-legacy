@@ -35,6 +35,7 @@ export class UserState {
         query: queryDocuments.Query.me,
       }),
     }).then((r) => r.json())
+    console.log(result)
     this.isValidUser = !result.me
     this.personas = result.data.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
