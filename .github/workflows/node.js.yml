@@ -26,11 +26,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+      # Check bosh linting issues and type issues
+      - run: npm run lint:test
+      - run: npm run type-check
+      # Start DB and installation process
       - run: npm run docker:start-testdb
       - run: npm ci
       - run: npm run dev:docker-db &
+      # Run tests
       - run: npm run migrate:test
       - run: npm run test
+      # Pubslish to chromatic (storybook related)
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         with:
