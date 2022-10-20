@@ -14,7 +14,7 @@ describe('test third-party api', () => {
         id: ulid(),
         userId: user.id,
         token: ulid(),
-        type: 'bot',
+        type: 'BOT',
       },
     })
     expect(keyForBot).not.toBeNull()
@@ -23,7 +23,7 @@ describe('test third-party api', () => {
         id: ulid(),
         userId: user.id,
         token: ulid(),
-        type: 'user',
+        type: 'USER',
       },
     })
     expect(keyForUser).not.toBeNull()
@@ -39,7 +39,7 @@ describe('test third-party api', () => {
         id: ulid(),
         userId: user.id,
         token: ulid(),
-        type: 'bot',
+        type: 'BOT',
       },
     })
     const result = await generateAPITestClient({ authorization: `Bearer ${key.token}` }).getMe()
@@ -71,7 +71,7 @@ describe('test third-party api', () => {
             id: user.id,
           },
         },
-        type: 'bot',
+        type: 'BOT',
         token: ulid(),
       },
     })

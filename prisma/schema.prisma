@@ -241,8 +241,8 @@ model PostRole {
 }
 
 enum ThirdPartyAPIKeyType {
-  bot
-  user
+  BOT
+  USER
 }
 
 model ThirdPartyAPIKey {

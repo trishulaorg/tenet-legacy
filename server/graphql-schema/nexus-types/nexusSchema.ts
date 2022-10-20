@@ -17,6 +17,8 @@ import {
   Persona,
   Post,
   Reply,
+  ThirdPartyAPIKey,
+  ThirdPartyAPIKeyType,
   Thread,
   User,
 } from 'nexus-prisma'
@@ -290,6 +292,23 @@ const FollowingBoardDef = objectType({
   },
 })
 
+const ThirdPartyAPIKeyTypeDef = enumType({
+  name: ThirdPartyAPIKeyType.name,
+  members: ThirdPartyAPIKeyType.members,
+})
+
+const ThirdPartyAPIKeyDef = objectType({
+  name: ThirdPartyAPIKey.$name,
+  description: ThirdPartyAPIKey.$description,
+  definition(t) {
+    t.field(ThirdPartyAPIKey.id)
+    t.field(ThirdPartyAPIKey.token)
+    t.field(ThirdPartyAPIKey.user)
+    t.field(ThirdPartyAPIKey.userId)
+    t.field(ThirdPartyAPIKey.createdAt)
+    t.field(ThirdPartyAPIKey.revokedAt)
+  },
+})
 const QueryDef = objectType({
   name: 'Query',
   definition(t) {
@@ -1051,6 +1070,35 @@ const MutationDef = objectType({
         return created
       },
     })
+    t.nonNull.field('createThirdPartyAPIKey', {
+      type: ThirdPartyAPIKeyDef.name,
+      args: {
+        type: arg({
+          type: nonNull(ThirdPartyAPIKeyType.name),
+        }),
+      },
+      async resolve(_source, { type }, context) {
+        if (!context.me) {
+          throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
+        }
+        const key = await context.prisma.thirdPartyAPIKey.create({
+          data: {
+            id: ulid(),
+            user: {
+              connect: {
+                id: context.me.id,
+              },
+            },
+            token: ulid(),
+            type,
+          },
+        })
+        if (key === null) {
+          throw new Error('Failed to generate third-party key')
+        }
+        return key
+      },
+    })
     t.nonNull.field('unfollowBoard', {
       type: FollowingBoardDef.name,
       args: {
@@ -1127,6 +1175,8 @@ export {
   ContentTypeDef,
   SearchResultDef,
   FollowingBoardDef,
+  ThirdPartyAPIKeyDef,
+  ThirdPartyAPIKeyTypeDef,
   QueryDef,
   MutationDef,
 }
