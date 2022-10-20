@@ -1,5 +1,6 @@
 import { generateAPITestClient, prismaClient } from '../libs/client'
 import { ulid } from 'ulid'
+import { ThirdPartyApiKeyType } from '../../../../../server/generated-files/frontend-graphql-definition'
 
 describe('test third-party api', () => {
   test('Check third-party tokens can be created', async () => {
@@ -80,5 +81,32 @@ describe('test third-party api', () => {
       authorization: `Bearer ${key.token}`,
     }).createBoard({ personaId: persona.id, title: ulid(), description: ulid() })
     expect(result.createBoard).not.toBeNull
+  })
+  test('API key should be generated and passed via GraphQL client', async () => {
+    const user = await prismaClient.user.create({
+      data: {
+        token: ulid(),
+      },
+    })
+    const key = await prismaClient.thirdPartyAPIKey.create({
+      data: {
+        id: ulid(),
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        type: 'BOT',
+        token: ulid(),
+      },
+    })
+    const client = generateAPITestClient({
+      authorization: `Bearer ${key.token}`,
+    })
+
+    const key2 = await client.createThirdPartyAPIKey({ type: ThirdPartyApiKeyType.Bot })
+    console.debug(key2.createThirdPartyAPIKey.token)
+    expect(key2.createThirdPartyAPIKey.token).not.toBeNull()
+    expect(key.token).not.toBe(key2.createThirdPartyAPIKey.token)
   })
 })

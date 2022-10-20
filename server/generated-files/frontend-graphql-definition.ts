@@ -78,6 +78,7 @@ export type Mutation = {
   createPersona: Persona;
   createPost: Post;
   createReply: Reply;
+  createThirdPartyAPIKey: ThirdPartyApiKey;
   createThread: Thread;
   deletePost: Post;
   putAttachedImage: Array<File>;
@@ -121,6 +122,11 @@ export type MutationCreateReplyArgs = {
   contentType: ContentType;
   personaId: Scalars['Int'];
   threadId: Scalars['String'];
+};
+
+
+export type MutationCreateThirdPartyApiKeyArgs = {
+  type: ThirdPartyApiKeyType;
 };
 
 
@@ -264,6 +270,21 @@ export type SearchResult = {
   kind: Scalars['String'];
   title: Scalars['String'];
 };
+
+export type ThirdPartyApiKey = {
+  __typename?: 'ThirdPartyAPIKey';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  revokedAt?: Maybe<Scalars['DateTime']>;
+  token: Scalars['String'];
+  user: User;
+  userId: Scalars['Int'];
+};
+
+export enum ThirdPartyApiKeyType {
+  Bot = 'BOT',
+  User = 'USER'
+}
 
 export type Thread = {
   __typename?: 'Thread';
@@ -420,6 +441,13 @@ export type UnfollowBoardMutationVariables = Exact<{
 
 
 export type UnfollowBoardMutation = { __typename?: 'Mutation', unfollowBoard: { __typename?: 'FollowingBoard', id: string } };
+
+export type CreateThirdPartyApiKeyMutationVariables = Exact<{
+  type: ThirdPartyApiKeyType;
+}>;
+
+
+export type CreateThirdPartyApiKeyMutation = { __typename?: 'Mutation', createThirdPartyAPIKey: { __typename?: 'ThirdPartyAPIKey', token: string } };
 
 
 export const GetActivitiesDocument = gql`
@@ -740,6 +768,13 @@ export const UnfollowBoardDocument = gql`
   }
 }
     `;
+export const CreateThirdPartyApiKeyDocument = gql`
+    mutation createThirdPartyAPIKey($type: ThirdPartyAPIKeyType!) {
+  createThirdPartyAPIKey(type: $type) {
+    token
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -798,6 +833,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     unfollowBoard(variables: UnfollowBoardMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<UnfollowBoardMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<UnfollowBoardMutation>(UnfollowBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'unfollowBoard', 'mutation');
+    },
+    createThirdPartyAPIKey(variables: CreateThirdPartyApiKeyMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateThirdPartyApiKeyMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateThirdPartyApiKeyMutation>(CreateThirdPartyApiKeyDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createThirdPartyAPIKey', 'mutation');
     }
   };
 }
