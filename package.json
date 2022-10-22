@@ -21,6 +21,7 @@
     "predev:docker-db": "npm run count",
     "docker:start-testdb": "docker compose -f docker-compose.api-test.yml up -d",
     "lint": "eslint . --ext ts,tsx --fix",
+    "lint:test": "eslint . --ext ts,tsx",
     "postinstall": "husky install && npm run prisma:generate",
     "prisma:studio": "prisma studio",
     "prisma:generate": "prisma generate",

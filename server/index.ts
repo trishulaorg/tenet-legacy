@@ -23,7 +23,6 @@ export const context = async ({ req }: ExpressContext): Promise<Context> => {
   if (token && process.env['NEXT_PUBLIC_API_TOKEN_SECRET']) {
     try {
       const decoded = jwt.verify(token, process.env['NEXT_PUBLIC_API_TOKEN_SECRET'])
-      console.log(decoded)
       if (typeof decoded !== 'object' || typeof decoded['uid'] === 'undefined') {
         throw new NotAuthenticatedError('invalid auth token')
       }

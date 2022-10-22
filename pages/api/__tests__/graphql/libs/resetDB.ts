@@ -14,7 +14,7 @@ const resetDatabase = (): void => {
   }
 
   exec('npx prisma migrate reset --force')
-  console.log('database reset!')
+  console.warn('database reset!')
 }
 
 export { resetDatabase }
