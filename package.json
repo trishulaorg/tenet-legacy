@@ -18,6 +18,7 @@
     "build-storybook": "build-storybook",
     "dev": "next dev",
     "dev:docker-db": "cross-env NODE_ENV=test next dev",
+    "predev:docker-db": "npm run count",
     "docker:start-testdb": "docker compose -f docker-compose.api-test.yml up -d",
     "lint": "eslint . --ext ts,tsx --fix",
     "lint:test": "eslint . --ext ts,tsx",
@@ -37,7 +38,9 @@
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "vercel-build": "prisma generate",
     "chromatic:dev": "npx chromatic",
-    "chromatic:ci": "npx chromatic --exit-zero-on-changes"
+    "chromatic:ci": "npx chromatic --exit-zero-on-changes",
+    "count": "printf '\\e[36m\\n  This project has\\e[35m %s lines\\e[36m of source code!\\n\\n\\e[m' $(find . -name '*.html' -o -name '*.css' -o -name '*.ts' -o -name '*.tsx' | grep -v node_modules | xargs wc -l | tail -1 | awk '{print $1}')",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
