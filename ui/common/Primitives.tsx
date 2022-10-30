@@ -5,11 +5,11 @@ export const Heading1: React.FC = ({ children }) => {
 }
 
 export const Heading2: React.FC = ({ children }) => {
-  return <h2 className="my-4 text-slate-600 text-xl">{children}</h2>
+  return <h2 className="my-2 text-slate-600 text-xl">{children}</h2>
 }
 
 export const Heading3: React.FC = ({ children }) => {
-  return <h3 className="text-1xl py-1 border-solid text-slate-600">{children}</h3>
+  return <h3 className="text-1xl my-2 border-solid text-slate-600">{children}</h3>
 }
 
 export const Paragraph: React.FC = ({ children }) => {

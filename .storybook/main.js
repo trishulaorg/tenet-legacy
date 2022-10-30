@@ -7,5 +7,6 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-postcss",
     "@storybook/addon-essentials"
-  ]
+  ],
+  staticDirs: ['./test-assets']
 }
