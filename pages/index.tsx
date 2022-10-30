@@ -19,10 +19,9 @@ import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 
 const IndexPage: React.FC = () => {
   const [token, setToken] = useState(getGqlToken())
-  const router = useRouter()
-  let user = defaultUser()
-  if (token) user = new UserState(token, [], 0)
+  const [user, setUser] = useState(defaultUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const router = useRouter()
 
   const { data: activitiesData, mutate } = apiHooks.useGetActivities(
     () => swrKey.useGetActivities(personaId ? { personaId } : undefined),
@@ -33,6 +32,10 @@ const IndexPage: React.FC = () => {
     () => (personaId ? swrKey.useGetFollowingBoard({ personaId }) : undefined),
     { personaId: personaId ?? 0 }
   )
+
+  useEffect(() => {
+    if (token) setUser(new UserState(token, [], 0))
+  }, [token])
 
   useEffect(() => {
     const f = async (): Promise<void> => {
