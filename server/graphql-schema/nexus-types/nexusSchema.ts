@@ -320,7 +320,7 @@ const QueryDef = objectType({
     t.field('me', {
       type: UserDef.name,
       resolve(_source, _args, context) {
-        return context.accessor?.user
+        return context.accessor.user
       },
     })
     t.nonNull.field('persona', {
@@ -346,6 +346,9 @@ const QueryDef = objectType({
         }),
       },
       resolve(_source, args, context) {
+        if (!validateUserIsNotABot(context.accessor)) {
+          throw new NotAuthorizedError(defaultNotAuthorizedErrorMessage)
+        }
         return context.prisma.persona.findMany({
           where: {
             name: {

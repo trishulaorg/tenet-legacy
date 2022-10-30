@@ -82,7 +82,7 @@ describe('test third-party api', () => {
     }).createBoard({ personaId: persona.id, title: ulid(), description: ulid() })
     expect(result.createBoard).not.toBeNull
   })
-  test('API key should be generated and passed via GraphQL client', async () => {
+  test('Bot cannot create another bot recursively', async () => {
     const user = await prismaClient.user.create({
       data: {
         token: ulid(),
@@ -100,13 +100,17 @@ describe('test third-party api', () => {
         token: ulid(),
       },
     })
-    const client = generateAPITestClient({
-      authorization: `Bearer ${key.token}`,
-    })
 
-    const key2 = await client.createThirdPartyAPIKey({ type: ThirdPartyApiKeyType.Bot })
-    console.debug(key2.createThirdPartyAPIKey.token)
-    expect(key2.createThirdPartyAPIKey.token).not.toBeNull()
-    expect(key.token).not.toBe(key2.createThirdPartyAPIKey.token)
+    const fn = async () => {
+      const client = generateAPITestClient({
+        authorization: `Bearer ${key.token}`,
+      })
+      try {
+        await client.createThirdPartyAPIKey({ type: ThirdPartyApiKeyType.Bot })
+      } catch {
+        throw new Error()
+      }
+    }
+    expect(fn).rejects.toThrow()
   })
 })

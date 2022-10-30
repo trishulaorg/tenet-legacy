@@ -59,7 +59,7 @@ export const context = async ({ req }: ExpressContext): Promise<Context> => {
         user: true,
       },
     })
-    if (apiToken && apiToken.bot) {
+    if (apiToken) {
       return {
         accessor: {
           type: 'bot',
