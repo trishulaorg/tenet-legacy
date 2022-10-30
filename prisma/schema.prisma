@@ -81,7 +81,7 @@ model Persona {
   systemAdministratorRoles SystemAdministratorRole[]
   boardRoles               BoardRole[]
   postRoles                PostRole[]
-  Bot                      Bot?
+  bot                      Bot?
 }
 
 model PersonaRelation {
