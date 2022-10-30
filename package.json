@@ -98,7 +98,7 @@
     "postcss": "^8.4.6",
     "postcss-import": "^14.0.2",
     "prettier": "^2.5.1",
-    "prisma": "^4.3.0",
+    "prisma": "^4.5.0",
     "rimraf": "^3.0.2",
     "storybook-addon-next-router": "^3.1.1",
     "tailwindcss": "^3.0.19",
@@ -108,7 +108,7 @@
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.9.1",
     "@aws-sdk/client-s3": "^3.142.0",
-    "@prisma/client": "^4.3.0",
+    "@prisma/client": "^4.5.0",
     "apollo-server": "^3.10.0",
     "apollo-server-micro": "^3.10.0",
     "apollo-upload-client": "^17.0.0",
