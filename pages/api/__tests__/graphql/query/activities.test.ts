@@ -1,4 +1,4 @@
-import { apiTestClient, prismaClient } from '../libs/client'
+import { generateAPITestClient, prismaClient } from '../libs/client'
 import { resetDatabase } from '../libs/resetDB'
 import type { Board, Post, Persona } from '@prisma/client'
 import { ulid } from 'ulid'
@@ -7,11 +7,14 @@ import type { User } from '@prisma/client'
 import { randomAlphabetString } from '../libs/randomAlphabetString'
 import type { AllowedWritingRole } from '@prisma/client'
 
-describe('test activity query api', () => {
-  beforeEach(() => {
-    resetDatabase()
-  })
+const apiTestClient = generateAPITestClient({})
 
+jest.setTimeout(20000)
+beforeAll((done) => {
+  resetDatabase(done)
+})
+
+describe('test activity query api', () => {
   test('activities return value', async () => {
     const { activities } = await apiTestClient.getActivities()
 

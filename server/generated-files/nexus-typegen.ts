@@ -41,6 +41,7 @@ export interface NexusGenInputs {
 
 export interface NexusGenEnums {
   ContentType: "EMOJI" | "IMAGE" | "LINK" | "TEXT" | "VIDEO"
+  ThirdPartyAPIKeyType: "BOT" | "USER"
 }
 
 export interface NexusGenScalars {
@@ -112,6 +113,13 @@ export interface NexusGenObjects {
     kind: string; // String!
     title: string; // String!
   }
+  ThirdPartyAPIKey: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+    revokedAt?: NexusGenScalars['DateTime'] | null; // DateTime
+    token: string; // String!
+    userId: number; // Int!
+  }
   Thread: { // root type
     boardId: string; // String!
     content: string; // String!
@@ -173,6 +181,7 @@ export interface NexusGenFieldTypes {
     createPersona: NexusGenRootTypes['Persona']; // Persona!
     createPost: NexusGenRootTypes['Post']; // Post!
     createReply: NexusGenRootTypes['Reply']; // Reply!
+    createThirdPartyAPIKey: NexusGenRootTypes['ThirdPartyAPIKey']; // ThirdPartyAPIKey!
     createThread: NexusGenRootTypes['Thread']; // Thread!
     deletePost: NexusGenRootTypes['Post']; // Post!
     putAttachedImage: NexusGenRootTypes['File'][]; // [File!]!
@@ -228,6 +237,14 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     kind: string; // String!
     title: string; // String!
+  }
+  ThirdPartyAPIKey: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+    revokedAt: NexusGenScalars['DateTime'] | null; // DateTime
+    token: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+    userId: number; // Int!
   }
   Thread: { // field return type
     board: NexusGenRootTypes['Board']; // Board!
@@ -287,6 +304,7 @@ export interface NexusGenFieldTypeNames {
     createPersona: 'Persona'
     createPost: 'Post'
     createReply: 'Reply'
+    createThirdPartyAPIKey: 'ThirdPartyAPIKey'
     createThread: 'Thread'
     deletePost: 'Post'
     putAttachedImage: 'File'
@@ -343,6 +361,14 @@ export interface NexusGenFieldTypeNames {
     kind: 'String'
     title: 'String'
   }
+  ThirdPartyAPIKey: { // field return type name
+    createdAt: 'DateTime'
+    id: 'ID'
+    revokedAt: 'DateTime'
+    token: 'String'
+    user: 'User'
+    userId: 'Int'
+  }
   Thread: { // field return type name
     board: 'Board'
     boardId: 'String'
@@ -388,6 +414,9 @@ export interface NexusGenArgTypes {
       contentType: NexusGenEnums['ContentType']; // ContentType!
       personaId: number; // Int!
       threadId: string; // String!
+    }
+    createThirdPartyAPIKey: { // args
+      type: NexusGenEnums['ThirdPartyAPIKeyType']; // ThirdPartyAPIKeyType!
     }
     createThread: { // args
       boardId: string; // String!
