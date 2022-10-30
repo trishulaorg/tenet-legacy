@@ -81,6 +81,7 @@ model Persona {
   systemAdministratorRoles SystemAdministratorRole[]
   boardRoles               BoardRole[]
   postRoles                PostRole[]
+  Bot                      Bot?
 }
 
 model PersonaRelation {
@@ -251,6 +252,15 @@ model ThirdPartyAPIKey {
   token     String               @unique
   userId    Int
   user      User                 @relation(fields: [userId], references: [id])
+  bot       Bot?
   createdAt DateTime             @default(now())
   revokedAt DateTime?
+}
+
+model Bot {
+  id                 String           @id @db.Char(26)
+  persona            Persona          @relation(fields: [personaId], references: [id])
+  personaId          Int              @unique
+  thirdPartyAPIKey   ThirdPartyAPIKey @relation(fields: [thirdPartyAPIKeyId], references: [id])
+  thirdPartyAPIKeyId String           @unique @db.Char(26)
 }
