@@ -12,6 +12,7 @@ import {
 import { NotFoundError } from '../../errors/NotFoundError'
 import { NotAuthorizedError } from '../../errors/NotAuthorizedError'
 import type { Privilege } from '../../generated-files/frontend-graphql-definition'
+import type { BotAccesorType, UniversalAccessorType, UserAccesorType } from '../..'
 
 const validatePersona = async (
   user: User | null,
@@ -36,6 +37,15 @@ const validatePersona = async (
     throw new NotAuthorizedError('Persona is not owned by current user.')
   }
   return currentPersona
+}
+
+const validateUserIsAnnonymous = (
+  accessor: UniversalAccessorType
+): accessor is UserAccesorType | BotAccesorType => {
+  return accessor.type === 'annonymous'
+}
+const validateUserIsNotABot = (accessor: UniversalAccessorType): accessor is UserAccesorType => {
+  return accessor.type === 'user'
 }
 
 const hasPriviledgeToDeletePost = (
@@ -108,4 +118,10 @@ const postWithPrivilege = (
   }
 }
 
-export { validatePersona, hasPriviledgeToDeletePost, postWithPrivilege }
+export {
+  validatePersona,
+  validateUserIsAnnonymous,
+  hasPriviledgeToDeletePost,
+  postWithPrivilege,
+  validateUserIsNotABot,
+}

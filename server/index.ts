@@ -1,4 +1,4 @@
-import type { User } from '@prisma/client'
+import type { User, Bot, Persona } from '@prisma/client'
 import { PrismaClient } from '@prisma/client'
 import type { ExpressContext } from 'apollo-server-express'
 import jwt from 'jsonwebtoken'
@@ -10,58 +10,112 @@ dotenv.config()
 
 const prisma = new PrismaClient()
 
+export type UserAccesorType = {
+  type: 'user'
+  bot: null
+  user: User & { personas?: Persona[] }
+}
+
+export type BotAccesorType = {
+  type: 'bot'
+  bot: Bot & { persona?: Persona }
+  user: User & { personas?: Persona[] }
+}
+
+export type AnnonymousAccessorType = {
+  type: 'annonymous'
+  bot: null
+  user: null
+}
+
+export type UniversalAccessorType = UserAccesorType | BotAccesorType | AnnonymousAccessorType
+
 export type ContextFunction = typeof context
 export type Context = {
-  me: User | null
+  accessor: UniversalAccessorType
   prisma: PrismaClient
   pusher: Pusher
 }
 
 export const context = async ({ req }: ExpressContext): Promise<Context> => {
   const token = req.headers.authorization?.substring('Bearer '.length)
-  let me: User | null = null
-  if (token) {
-    const apiToken = await prisma.thirdPartyAPIKey.findFirst({
-      where: {
-        token,
-      },
-      include: {
-        user: true,
-      },
-    })
-    me = apiToken ? apiToken.user : null
-  }
-  if (token && process.env['API_TOKEN_SECRET']) {
-    if (!me) {
-      try {
-        const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
-        if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
-          throw new NotAuthenticatedError('invalid auth token')
-        }
-        me = await prisma.user.findFirst({
-          where: { token: decoded.sub },
-          include: { personas: true },
-        })
-        if (!me) {
-          me = await prisma.user.create({
-            data: {
-              token: decoded.sub,
-            },
-          })
-        }
-      } catch {
-        // nothing to do
-      }
-    }
-  }
   const pusher = new Pusher({
     appId: process.env['PUSHER_APP_ID']!,
     key: process.env['PUSHER_KEY']!,
     secret: process.env['PUSHER_SECRET']!,
     cluster: process.env['PUSHER_CLUSTER']!,
   })
+  if (token) {
+    const apiToken = await prisma.thirdPartyAPIKey.findFirst({
+      where: {
+        token,
+      },
+      include: {
+        bot: {
+          include: {
+            persona: true,
+          },
+        },
+        user: true,
+      },
+    })
+    if (apiToken && apiToken.bot) {
+      return {
+        accessor: {
+          type: 'bot',
+          bot: apiToken.bot,
+          user: apiToken.user,
+        } as BotAccesorType,
+        pusher,
+        prisma,
+      }
+    }
+  }
+  if (token && process.env['API_TOKEN_SECRET']) {
+    try {
+      const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
+      if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
+        throw new NotAuthenticatedError('invalid auth token')
+      }
+      let user: (User & { personas?: Persona[] }) | null = await prisma.user.findFirst({
+        where: { token: decoded.sub },
+        include: { personas: true },
+      })
+      if (user) {
+        return {
+          accessor: {
+            type: 'user',
+            user,
+          } as UserAccesorType,
+          pusher,
+          prisma,
+        }
+      }
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            token: decoded.sub,
+          },
+        })
+      }
+      return {
+        accessor: {
+          type: 'user',
+          user,
+        } as UserAccesorType,
+        pusher,
+        prisma,
+      }
+    } catch (e) {
+      console.error('Authentication Error', e)
+    }
+  }
   return {
-    me,
+    accessor: {
+      type: 'annonymous',
+      bot: null,
+      user: null,
+    } as AnnonymousAccessorType,
     pusher,
     prisma,
   }

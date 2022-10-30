@@ -7,7 +7,10 @@ import {
 import { NotFoundError } from '../../errors/NotFoundError'
 import { ulid } from 'ulid'
 import { uploadImageFileToS3 } from '../../fileUpload/uploadImageFileToS3'
-import { NotAuthorizedError } from '../../errors/NotAuthorizedError'
+import {
+  defaultNotAuthorizedErrorMessage,
+  NotAuthorizedError,
+} from '../../errors/NotAuthorizedError'
 import { formatISO } from 'date-fns'
 import {
   AllowedWritingRole,
@@ -31,6 +34,8 @@ import {
   hasPriviledgeToDeletePost,
   postWithPrivilege,
   validatePersona,
+  validateUserIsAnnonymous,
+  validateUserIsNotABot,
 } from '../domain/authorization'
 import type { Privilege } from '../../generated-files/frontend-graphql-definition'
 
@@ -315,7 +320,7 @@ const QueryDef = objectType({
     t.field('me', {
       type: UserDef.name,
       resolve(_source, _args, context) {
-        return context.me
+        return context.accessor?.user
       },
     })
     t.nonNull.field('persona', {
@@ -413,7 +418,7 @@ const QueryDef = objectType({
         }
 
         if (personaId) {
-          const persona = await validatePersona(context.me, personaId, context.prisma)
+          const persona = await validatePersona(context.accessor.user, personaId, context.prisma)
           return {
             ...boardWithImageUrls,
             posts: boardWithImageUrls.posts.map((post) =>
@@ -480,7 +485,7 @@ const QueryDef = objectType({
         })
         const postsWithImageUrl = await getPostsWithImageUrls(posts, context.prisma)
         if (personaId) {
-          const persona = await validatePersona(context.me, personaId, context.prisma)
+          const persona = await validatePersona(context.accessor.user, personaId, context.prisma)
           return postsWithImageUrl.map((post) => postWithPrivilege(post, privilege, persona))
         } else {
           return postsWithImageUrl.map((post) => postWithPrivilege(post, privilege))
@@ -534,7 +539,7 @@ const QueryDef = objectType({
         }
 
         if (personaId) {
-          const persona = await validatePersona(context.me, personaId, context.prisma)
+          const persona = await validatePersona(context.accessor.user, personaId, context.prisma)
           if (postWithImageUrl.persona.id === persona.id) {
             privilege.deleteSelf = true
           }
@@ -628,12 +633,15 @@ const MutationDef = objectType({
         }),
       },
       resolve(_source, args, context) {
-        if (!context.me) {
+        if (!context.accessor) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
+        }
+        if (!validateUserIsNotABot(context.accessor)) {
+          throw new NotAuthorizedError(defaultNotAuthorizedErrorMessage)
         }
         return context.prisma.persona.create({
           data: {
-            userId: context.me.id,
+            userId: context.accessor.user.id,
             name: args.name,
             iconUrl: args.iconPath ?? 'https://example.com',
             screenName: args.screenName,
@@ -655,10 +663,14 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { description, personaId, title }, context) {
-        if (!context.me) {
+        if (!context.accessor.user) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
-        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
+        const currentPersona = await validatePersona(
+          context.accessor.user,
+          personaId,
+          context.prisma
+        )
         return context.prisma.board.create({
           data: {
             id: ulid(),
@@ -717,7 +729,11 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { boardId, content, contentType, personaId, title }, context) {
-        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
+        const currentPersona = await validatePersona(
+          context.accessor.user,
+          personaId,
+          context.prisma
+        )
         return {
           ...(await context.prisma.post.create({
             data: {
@@ -781,7 +797,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { boardId, content, contentType, personaId, postId }, context) {
-        await validatePersona(context.me, personaId, context.prisma)
+        await validatePersona(context.accessor.user, personaId, context.prisma)
         return {
           ...(await context.prisma.thread.create({
             data: {
@@ -826,7 +842,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { content, contentType, personaId, threadId }, context) {
-        await validatePersona(context.me, personaId, context.prisma)
+        await validatePersona(context.accessor.user, personaId, context.prisma)
         return {
           ...(await context.prisma.reply.create({
             data: {
@@ -860,7 +876,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { files, postId }, context) {
-        if (typeof context.me?.id === 'undefined' || context.me.id < 1) {
+        if (typeof context.accessor.user?.id === 'undefined' || context.accessor.user.id < 1) {
           throw new NotAuthenticatedError('Not Authenticated.')
         }
         const fileUrls = await Promise.all(
@@ -896,10 +912,10 @@ const MutationDef = objectType({
           },
         })
 
-        if (typeof context.me?.id === 'undefined' || context.me.id < 1) {
+        if (typeof context.accessor.user?.id === 'undefined' || context.accessor.user.id < 1) {
           throw new NotAuthenticatedError('Not Authenticated.')
         }
-        if (context.me.id !== (await persona.user())?.id) {
+        if (context.accessor.user.id !== (await persona.user())?.id) {
           throw new NotAuthorizedError('You do not have permission to edit Persona of the User.')
         }
         const fileUrl = await uploadImageFileToS3(file, 'personaIcon')
@@ -928,7 +944,11 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { personaId, postId }, context) {
-        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
+        const currentPersona = await validatePersona(
+          context.accessor.user,
+          personaId,
+          context.prisma
+        )
         const post = await context.prisma.post.findFirst({
           where: {
             id: postId,
@@ -983,7 +1003,11 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { personaId, postId }, context) {
-        const currentPersona = await validatePersona(context.me, personaId, context.prisma)
+        const currentPersona = await validatePersona(
+          context.accessor.user,
+          personaId,
+          context.prisma
+        )
         const post = await context.prisma.post.findFirst({
           where: {
             id: postId,
@@ -1029,7 +1053,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { personaId, boardId }, context) {
-        await validatePersona(context.me, personaId, context.prisma)
+        await validatePersona(context.accessor.user, personaId, context.prisma)
         const board = await context.prisma.board.findFirst({
           where: {
             id: boardId,
@@ -1078,7 +1102,7 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { type }, context) {
-        if (!context.me) {
+        if (!validateUserIsAnnonymous(context.accessor)) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         const key = await context.prisma.thirdPartyAPIKey.create({
@@ -1086,7 +1110,7 @@ const MutationDef = objectType({
             id: ulid(),
             user: {
               connect: {
-                id: context.me.id,
+                id: context.accessor.user.id,
               },
             },
             token: ulid(),
@@ -1110,10 +1134,10 @@ const MutationDef = objectType({
         }),
       },
       async resolve(_source, { personaId, boardId }, context) {
-        if (!context.me) {
+        if (!validateUserIsAnnonymous(context.accessor)) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
-        await validatePersona(context.me, personaId, context.prisma)
+        await validatePersona(context.accessor.user, personaId, context.prisma)
         const board = await context.prisma.board.findFirst({
           where: {
             id: boardId,
