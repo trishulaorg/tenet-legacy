@@ -636,7 +636,7 @@ const MutationDef = objectType({
         }),
       },
       resolve(_source, args, context) {
-        if (!context.accessor) {
+        if (!context.accessor.user) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
         if (!validateUserIsNotABot(context.accessor)) {

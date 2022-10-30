@@ -71,14 +71,14 @@ export const context = async ({ req }: ExpressContext): Promise<Context> => {
       }
     }
   }
-  if (token && process.env['API_TOKEN_SECRET']) {
+  if (token && process.env['NEXT_PUBLIC_API_TOKEN_SECRET']) {
     try {
-      const decoded = jwt.verify(token, process.env['API_TOKEN_SECRET'])
-      if (typeof decoded !== 'object' || typeof decoded.sub === 'undefined') {
+      const decoded = jwt.verify(token, process.env['NEXT_PUBLIC_API_TOKEN_SECRET'])
+      if (typeof decoded !== 'object' || typeof decoded['uid'] === 'undefined') {
         throw new NotAuthenticatedError('invalid auth token')
       }
       let user: (User & { personas?: Persona[] }) | null = await prisma.user.findFirst({
-        where: { token: decoded.sub },
+        where: { token: decoded['uid'] },
         include: { personas: true },
       })
       if (user) {
@@ -86,6 +86,7 @@ export const context = async ({ req }: ExpressContext): Promise<Context> => {
           accessor: {
             type: 'user',
             user,
+            bot: null,
           } as UserAccesorType,
           pusher,
           prisma,
@@ -94,17 +95,18 @@ export const context = async ({ req }: ExpressContext): Promise<Context> => {
       if (!user) {
         user = await prisma.user.create({
           data: {
-            token: decoded.sub,
+            token: decoded['uid'],
           },
         })
-      }
-      return {
-        accessor: {
-          type: 'user',
-          user,
-        } as UserAccesorType,
-        pusher,
-        prisma,
+        return {
+          accessor: {
+            type: 'user',
+            user,
+            bot: null,
+          } as UserAccesorType,
+          pusher,
+          prisma,
+        }
       }
     } catch (e) {
       console.error('Authentication Error', e)
