@@ -24,6 +24,7 @@
     "lint:test": "eslint . --ext ts,tsx",
     "postinstall": "husky install && npm run prisma:generate",
     "prisma:studio": "prisma studio",
+    "prisma:studio:local": "dotenv -e .env.local prisma studio",
     "prisma:generate": "prisma generate",
     "prisma:regenerate": "rimraf node_modules/prisma node_modules/nexus-prisma && npm i",
     "migrate:test": "dotenv -e .env.test prisma migrate dev",
