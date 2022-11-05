@@ -107,6 +107,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
             replyCallback={() => {
               postForm.replyTo = post
               postForm.onSubmit = onSubmit
+              postForm.boardState = boardState
               postForm.onChange = () => publishWritingStatus(post.id)
             }}
             deleteCallback={onPostDelete}
