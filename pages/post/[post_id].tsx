@@ -10,6 +10,7 @@ import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostWrapper } from '../../ui/post/PostWrapper'
+import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 
 const PostPage: React.FC = () => {
   const token = getGqlToken()
@@ -67,7 +68,9 @@ const PostPage: React.FC = () => {
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>
-        <PostWrapper />
+        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+          <PostWrapper />
+        </PostFormStateContext.Provider>
       </BoardStateContext.Provider>
     </>
   )
