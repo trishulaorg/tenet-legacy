@@ -133,7 +133,7 @@ const IndexPage: React.FC = () => {
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
-        <PostFormStateContext.Provider value={new PostFormState({})}>
+        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
           <HeaderStateContext.Provider value={new HeaderState(user)}>
             <Header />
           </HeaderStateContext.Provider>

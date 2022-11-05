@@ -67,6 +67,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                   postForm.replyTo = thread
                   postForm.onSubmit = (comment: string, files: File[]) =>
                     onSubmit(comment, files, thread)
+                  postForm.boardState = boardState
                   postForm.onChange = () => publishWritingStatus(props.parent.id)
                 }}
               />
