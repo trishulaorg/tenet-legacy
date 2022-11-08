@@ -57,9 +57,10 @@ PUSHER_CLUSTER=
 ## API Test Steps
 
 1. Run `npm install` before all
-2. Run `npm run docker:start-testdb`
-3. Run `npm run dev:docker-db`
-4. Run `npm run test`
+2. Run `migrate:test`
+3. Run `npm run docker:start-testdb`
+4. Run `npm run dev:docker-db`
+5. Run `npm run test`
 
 During developing this software, you might repeat step 3 to 5. If there's a problem let me know. I've only tested on my Ubuntu environment.
 
