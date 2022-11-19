@@ -8,11 +8,15 @@ Tenet is consisted of three servers: RDBMS, Next.js server, and Apollo server. N
 
 In each test environment, all servers above can be automatically set up and managed by **docker-compose**. For more detailed information, you can see `docker-compose.yml` and `Dockerfile`.
 
+## Community
+
+Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
+
 ## Development Steps
 
 1. At first, you have to clone this repo
 2. Execute `npm install` and `cp .env.example .env`
-3. Add auth0 config to `.env` file. Ask config for admin or get your own from [Auth0 Dashboard](https://manage.auth0.com) > Applications > YourAppName > Quick Start > Regular Web App > Next.js. Set up pusher and miscs (ask to admin)
+3. `.env` file. Ask config for admin.
 4. Run `npm run docker:start-testdb`
 5. Run `npm run migrate:test`
 6. Run `npm run seed:test`
