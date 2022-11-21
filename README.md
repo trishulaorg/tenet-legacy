@@ -8,13 +8,19 @@ Tenet is consisted of three servers: RDBMS, Next.js server, and Apollo server. N
 
 In each test environment, all servers above can be automatically set up and managed by **docker-compose**. For more detailed information, you can see `docker-compose.yml` and `Dockerfile`.
 
+## Community
+
+Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
+
 ## Development Steps
 
 1. At first, you have to clone this repo
 2. Execute `npm install` and `cp .env.example .env`
-3. Add auth0 config to `.env` file. Ask config for admin or get your own from [Auth0 Dashboard](https://manage.auth0.com) > Applications > YourAppName > Quick Start > Regular Web App > Next.js. Set up pusher and miscs (ask to admin)
+3. `.env` file. Ask config for admin.
 4. Run `npm run docker:start-testdb`
-5. Run `npm run dev:docker-db` 
+5. Run `npm run migrate:test`
+6. Run `npm run seed:test`
+7. Run `npm run dev:docker-db` 
 
 ## Examples
 
@@ -27,21 +33,6 @@ DATABASE_URL=YOUR_DB_URL
 
 `.env`:
 ```
-API_TOKEN_SECRET=RANDOM_STRING
-#
-# Auth0 related
-#
-# A long, secret value used to encrypt the session cookie
-AUTH0_SECRET=
-# The base url of your application
-AUTH0_BASE_URL=
-# The url of your Auth0 tenant domain
-AUTH0_ISSUER_BASE_URL=
-# Your Auth0 application's Client ID
-AUTH0_CLIENT_ID=
-# Your Auth0 application's Client Secret
-AUTH0_CLIENT_SECRET=
-
 STORAGE_ACCESS_KEY_ID=
 STORAGE_SECRET_ACCESS_KEY=t
 STORAGE_ENDPOINT=
