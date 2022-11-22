@@ -172,9 +172,9 @@ const IndexPage: React.FC = () => {
   }, [token, router, user, data?.board.posts])
 
   const main: React.FC = () => (
-    <>
+    <div className='text-fontcl-heavy'>
       <ReactMarkdown>{tos}</ReactMarkdown>
-    </>
+    </div>
   )
   return (
     <PageBaseLayout>

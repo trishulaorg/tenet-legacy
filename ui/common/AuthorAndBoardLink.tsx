@@ -12,8 +12,8 @@ export const AuthorAndBoardLink: React.FC<{
     <div className="flex items-center font-medium relative">
       <UserIcon size={'small'} src={iconUrl} />
       <p className="pl-1">
-        <span className="pr-1">{screenName}</span>
-        <span className="text-gray-400 font-thin">@{name}</span>
+        <span className="pr-1 text-fontcl-heavy">{screenName}</span>
+        <span className="text-fontcl-light font-thin">@{name}</span>
       </p>
       {boardLink && (
         <div className={'absolute right-8'}>

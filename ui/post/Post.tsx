@@ -77,7 +77,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   }
 
   const content = (
-    <div className="rounded-lg p-4 bg-white">
+    <div className="rounded-lg p-4 bg-contentbg">
       <CardTitle title={post.title} />
       {isInPostPage ? (
         <AuthorAndBoardLink

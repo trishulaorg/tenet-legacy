@@ -25,7 +25,7 @@ export const SearchBoxTextField: React.FC<{
         onChange={onChange}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
-        className="flex-1 outline-0"
+        className="flex-1 outline-0 bg-contentbg"
       />
       <button onClick={submitSearch}>
         <SearchIcon className="h-5 w-5 text-gray-400 hover:text-gray-700 " />
