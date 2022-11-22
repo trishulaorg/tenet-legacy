@@ -25,17 +25,6 @@ async function askMigration() {
   return result.migration
 }
 
-async function askSeeding() {
-  const result = await inquirer.prompt({
-    type: 'confirm',
-    name: 'seeding',
-    message: 'Do you want to run DB seeding?',
-    default: true,
-  })
-
-  return result.seeding
-}
-
 function run(command) {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
@@ -64,5 +53,4 @@ async function askAndRunOrNot(question, command) {
   // TODO: implement workaround for Windows
   await askAndRunOrNot(await askDockerStart(),'npm run docker:start-testdb')
   await askAndRunOrNot(await askMigration(),'npm run migrate:test')
-  await askAndRunOrNot(await askSeeding(),'npm run seed:test')
 })()
