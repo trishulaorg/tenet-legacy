@@ -17,7 +17,7 @@ const FollowingBoardCard: FC<FollowingBoardCardProps> = ({ boards }) => {
           <tr className="font-bold text-xl mb-2">Following Boards:</tr>
           {boards.map((board) => (
             <tr className="text-gray-700 text-base" key={`following_${board.board.id}`}>
-              <Link href={'/b/' + board.board.id}>{board.board.title}</Link>
+              <Link href={'/board/' + board.board.id}>{board.board.title}</Link>
             </tr>
           ))}
         </tbody>
