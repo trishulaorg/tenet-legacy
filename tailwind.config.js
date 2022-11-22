@@ -12,7 +12,7 @@ module.exports = {
         'teritary': '#EB0C54',
         'pagebg': { /* background for empty space on the page */
           'DEFAULT': '#F3F4F6',
-          'darkmode' : 'black'
+          'darkmode' : '#111111'
         },
         'contentbg': { /* background for posts, following board, navbar, dropdowns, etc. (background for text) */
           'DEFAULT' : 'white',
@@ -21,11 +21,11 @@ module.exports = {
         'fontcl' : {
           'light' : { /* @Usernames, light text elements */
             'DEFAULT' : '#9CA3AF',
-            'darkmode' : 'white'
+            'darkmode' : '#AAAAAA'
           }, 
           'med' : { /* Most text, including board titles, post titles and post content */
             'DEFAULT' : '#374151',
-            'darkmode' : 'white'
+            'darkmode' : '#DDDDDD'
           },
           'heavy' : { /* Bold text: Following boards title, TOS */
             'DEFAULT' : 'black',
