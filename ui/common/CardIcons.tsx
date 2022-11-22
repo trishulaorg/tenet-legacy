@@ -68,7 +68,7 @@ export const CardIcons: React.FC<CardIconsProps> = observer(
     return (
       <div
         role="presentation"
-        className="flex justify-between"
+        className="flex justify-between text-fontcl-med"
         onClick={(event) => {
           event.preventDefault()
           event.stopPropagation()
