@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { exec } from 'node:child_process'
+import { spawn } from 'node:child_process'
 import inquirer from 'inquirer'
 
 async function askDockerStart() {
@@ -25,32 +25,40 @@ async function askMigration() {
   return result.migration
 }
 
-function run(command) {
+function run(command, arg) {
   return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(error);
-        reject();
-        return;
+    const stream = spawn(command, arg);
+
+    stream.stdout.on('data', (data) => {
+      console.log(data.toString())
+    })
+
+    stream.stderr.on('data', (data) => {
+      console.error(data.toString());
+    })
+
+    stream.on('close', (code) => {
+      console.log(`child process exited with code ${code}`)
+      if (code === 0) {
+        resolve()
+      } else {
+        reject()
       }
-      console.log(stdout);
-      console.error(stderr);
-      resolve();
     });
   })
 }
 
-async function askAndRunOrNot(question, command) {
+async function askAndRunOrNot(question, command, arg) {
   if (!question) {
     console.log('canceled')
     return 0
   } else {
-    await run(command)
+    await run(command, arg)
   }
 }
 
 (async () => {
   // TODO: implement workaround for Windows
-  await askAndRunOrNot(await askDockerStart(),'npm run docker:start-testdb')
-  await askAndRunOrNot(await askMigration(),'npm run migrate:test')
+  await askAndRunOrNot(await askDockerStart(),'npm', ['run', 'docker:start-testdb'])
+  await askAndRunOrNot(await askMigration(),'npm', ['run', 'migrate:test'])
 })()
