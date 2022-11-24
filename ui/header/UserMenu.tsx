@@ -69,7 +69,7 @@ export const UserMenu: React.FC = observer(() => {
               <UserMenuItem onClick={() => {
                 setTheme(theme == "dark" ? "light" : "dark")
                 // window.localStorage.setItem('theme', theme)
-                console.log(theme, window.localStorage.getItem('theme'))
+                // console.log(theme, window.localStorage.getItem('theme'))
               }}>
                 Switch Theme
               </UserMenuItem>
