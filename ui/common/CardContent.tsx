@@ -26,7 +26,7 @@ export const CardContent: React.FC<CardContentProps> = ({
     setIsViewerOpen(false)
   }
 
-  const style = isPost ? 'px-6 pb-8 text-fontcl-med' : 'pl-4 pb-8 text-fontcl-med'
+  const style = isPost ? 'px-6 pb-8 text-med dark:text-med-dark' : 'pl-4 pb-8 text-med dark:text-med-dark'
   return (
     <div className={style}>
       <p>

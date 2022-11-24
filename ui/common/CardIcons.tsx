@@ -68,7 +68,7 @@ export const CardIcons: React.FC<CardIconsProps> = observer(
     return (
       <div
         role="presentation"
-        className="flex justify-between text-fontcl-med"
+        className="flex justify-between text-med dark:text-med-dark"
         onClick={(event) => {
           event.preventDefault()
           event.stopPropagation()
@@ -78,8 +78,8 @@ export const CardIcons: React.FC<CardIconsProps> = observer(
           {icons.map((icon, index) => {
             const iconStyle =
               index === 0
-                ? 'flex items-center opacity-50 hover:text-rose-800'
-                : 'flex items-center opacity-50 pl-4 hover:text-rose-800'
+                ? 'flex items-center opacity-50 hover:text-rose-800 dark:hover:text-rose-400 hover:transition-colors'
+                : 'flex items-center opacity-50 pl-4 hover:text-rose-800 dark:hover:text-rose-400 hover:transition-colors'
             const textStyle = index < 2 ? 'pl-1' : 'pl-1 hidden md:block'
             return (
               <Fragment key={index}>

@@ -64,7 +64,7 @@ export const CreateNewBoard: React.FC = () => {
   }
   return (
     <div>
-      <h1 className="my-4 text-fontcl-med text-2xl">Create new board</h1>
+      <h1 className="my-4 text-med dark:text-med-dark text-2xl">Create new board</h1>
       <form>
         <InputWithLabel
           label="Board Name"

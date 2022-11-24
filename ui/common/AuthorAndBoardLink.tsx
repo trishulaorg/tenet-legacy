@@ -9,11 +9,11 @@ export const AuthorAndBoardLink: React.FC<{
   boardLink?: { boardId: string; boardName: string }
 }> = ({ name, screenName, iconUrl, boardLink }) => {
   return (
-    <div className="flex items-center font-medium text-fontcl-med relative">
+    <div className="flex items-center font-medium text-med dark:text-med-dark relative">
       <UserIcon size={'small'} src={iconUrl} />
       <p className="pl-1">
-        <span className="pr-1 text-fontcl-heavy">{screenName}</span>
-        <span className="text-fontcl-light font-thin">@{name}</span>
+        <span className="pr-1 text-high dark:text-high-dark">{screenName}</span>
+        <span className="text-low dark:text-low-dark font-thin">@{name}</span>
       </p>
       {boardLink && (
         <div className={'absolute right-8'}>

@@ -50,11 +50,11 @@ const IndexPage: React.FC = () => {
           data.search.map((c, idx) => (
             <li
               key={idx}
-              className="flex my-2 p-2 rounded bg-contentbg/75 hover:bg-contentbg transition-colors cursor-pointer border"
+              className="flex my-2 p-2 rounded bg-contentbg/75 hover:bg-contentbg dark:bg-contentbg-dark/75 dark:hover:bg-contentbg-dark transition-colors duration-350 cursor-pointer border"
             >
-              <div className="w-8 text-fontcl-light">#{idx + 1}</div>
-              <div className="flex-1 text-fontcl-med">
-                <div className="text-2xl	text-fontcl-heavy">
+              <div className="w-8 text-low dark:text-low-dark">#{idx + 1}</div>
+              <div className="flex-1 text-med dark:text-med-dark">
+                <div className="text-2xl	text-high dark:text-high-dark">
                   <Link href={`/board/${c.id}`}>{c.title}</Link>
                 </div>
                 <div className="">Kind: {c.kind}</div>
@@ -65,7 +65,7 @@ const IndexPage: React.FC = () => {
     </PageBaseLayout>
   )
   return (
-    <div className="bg-pagebg">
+    <div className="bg-pagebg dark:bg-pagebg-dark transition-colors duration-350">
       <HeaderStateContext.Provider value={new HeaderState(user)}>
         <Header />
       </HeaderStateContext.Provider>

@@ -94,7 +94,7 @@ const IndexPage: React.FC = () => {
             Side={() => (
               <div className="w-56">
                 <FollowingBoardCard boards={followingBoardsData?.getFollowingBoard ?? []} />
-                <div className="rounded overflow-hidden my-2 py-2 text-fontcl-heavy">
+                <div className="rounded overflow-hidden my-2 py-2 text-high dark:text-high-dark">
                   <Link href="/tos">Terms of Service</Link>
                 </div>
               </div>
