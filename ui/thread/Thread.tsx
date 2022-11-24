@@ -55,7 +55,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
             name={thread.author.name}
             iconUrl={thread.author.iconUrl}
           />
-          <div className="ml-2 border-gray-200	border-l-4">
+          <div className="ml-2 border-gray-200 dark:border-contentbg/25	border-l-4 transition-colors duration-350">
             <CardContent content={thread.content} isPost={false} imageUrls={thread.imageUrls} />
             <CardMeta isPost={false}>
               <CardIcons

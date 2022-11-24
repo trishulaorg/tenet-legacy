@@ -39,12 +39,12 @@ export const Board: React.FC<BoardProps> = observer(
     return (
       <div>
         <div className="flex flex-col">
-          <h1 className="flex-row my-4 text-slate-600 text-2xl">
+          <h1 className="flex-row my-4 text-med dark:text-med-dark text-2xl">
             <Link href={`/board/${state.id}`}>
               <span className="cursor-pointer">#{state.title}</span>
             </Link>
           </h1>
-          <div>
+          <div className='text-med dark:text-med-dark'>
             <MultiLineText text={state.description} />
           </div>
           <div className={'flex ml-auto'}>

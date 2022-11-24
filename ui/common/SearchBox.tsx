@@ -30,7 +30,7 @@ export const SearchBox: React.FC = () => {
     <div className="relative" ref={ref}>
       <SearchBoxTextField query={query} onChange={onChange} onFocus={() => setVisibility(true)} />
       {visibility ? (
-        <div className="absolute bg-white w-full rounded border z-10">
+        <div className="absolute bg-contentbg dark:bg-contentbg-dark transition-colors duration-350 w-full rounded border z-10">
           <ul>
             {data?.search.slice(0, 10).map((v) => (
               <Link key={v.id} href={`/board/${v.id}`}>

@@ -43,12 +43,13 @@ const PersonaIconForm: React.FC = observer(() => {
   return (
     <div>
       <form>
-        <h1 className="my-4 text-slate-600 text-2xl">Icon for {userState.currentPersona?.name}</h1>
+        <h1 className="my-4 text-med dark:text-med-dark text-2xl">Icon for {userState.currentPersona?.name}</h1>
         <input
           type="file"
           onChange={onIconSet}
           multiple={false}
           accept="image/png, image/jpeg, image/gif, image/svg+xml"
+          className='text-high dark:text-high-dark'
         />
 
         {personaIconErrorMessage && <ErrorMessage errorMessage={personaIconErrorMessage} />}
