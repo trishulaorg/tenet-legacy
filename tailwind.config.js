@@ -1,37 +1,45 @@
 module.exports = {
   //content: ["./ui/**/*.{ts,tsx}", "./pages/**/*.{ts,tsx}"],
   content: ["ui/**/*.{ts,tsx}", "pages/**/*.{ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
+        /* theme colors */
         'primary': {
           'DEFAULT': '#33AEBC',
           'dark': '#116999'
         },
-        'secondary': '#00EB9C',
-        'teritary': '#EB0C54',
+        'secondary': {
+          'DEFAULT' : '#00EB9C'
+        },
+        'teritary': {
+          'DEFAULT' :'#EB0C54'
+        },
+        
+        /* background colors */
         'pagebg': { /* background for empty space on the page */
           'DEFAULT': '#F3F4F6',
-          'darkmode' : '#111111'
+          'dark' : '#111111'
         },
         'contentbg': { /* background for posts, following board, navbar, dropdowns, etc. (background for text) */
           'DEFAULT' : 'white',
-          'darkmode' : '#2E2E2E'
+          'dark' : '#2E2E2E'
         },
-        'fontcl' : {
-          'light' : { /* @Usernames, light text elements */
-            'DEFAULT' : '#9CA3AF',
-            'darkmode' : '#AAAAAA'
-          }, 
-          'med' : { /* Most text, including board titles, post titles and post content */
-            'DEFAULT' : '#374151',
-            'darkmode' : '#DDDDDD'
-          },
-          'heavy' : { /* Bold text: Following boards title, TOS */
-            'DEFAULT' : 'black',
-            'darkmode' : 'white'
-          } 
-        }
+
+        /* font colors */
+        'low' : { /* Low contrast text: subtle but legible */
+          'DEFAULT' : '#9CA3AF',
+          'dark' : '#AAAAAA'
+        }, 
+        'med' : { /* Medium contrast text: comfortably legible; Used for most text, including board titles, post titles and post content */
+          'DEFAULT' : '#374151',
+          'dark' : '#DDDDDD'
+        },
+        'high' : { /* High contrast text, very bold; Used for following boards title, TOS link */
+          'DEFAULT' : 'black',
+          'dark' : 'white'
+        } 
       }
     },
   },
