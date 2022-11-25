@@ -4,11 +4,11 @@ import { ThemeProvider } from 'next-themes'
 import '../styles/global.css'
 
 function MyApp({ Component, pageProps }: AppProps): ReactElement {
-  return(
-    <ThemeProvider attribute='class' >
+  return (
+    <ThemeProvider attribute="class">
       <Component {...pageProps} />
     </ThemeProvider>
-  ) 
+  )
 }
 
 export default MyApp
