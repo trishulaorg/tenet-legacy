@@ -8,5 +8,7 @@ type Props = {
 export default function UserIcon(props: Props) {
   const { src } = props
 
-  return <div>{/* TODO */}</div>
+  return <div>
+    <img src={src} className="max-w-full h-auto rounded-full"/>
+  </div>
 }
