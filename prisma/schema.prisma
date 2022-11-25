@@ -54,7 +54,7 @@ model AllowedWritingRole {
 }
 
 model User {
-  id                  Int                @id @default(autoincrement())
+  id                  String             @id
   createdAt           DateTime           @default(now())
   token               String             @unique
   thirdPartyAPITokens ThirdPartyAPIKey[] @relation()
@@ -62,43 +62,43 @@ model User {
 }
 
 model Persona {
-  id                       Int                       @id @default(autoincrement())
-  createdAt                DateTime                  @default(now())
-  name                     String                    @unique @db.VarChar(25)
-  screenName               String                    @db.VarChar(30)
-  iconUrl                  String                    @db.Text
-  FollowingBoards          FollowingBoard[]
-  modelatingBoards         Board[]                   @relation()
-  followingUsers           PersonaRelation[]         @relation("destPersona")
-  followedUsers            PersonaRelation[]         @relation("srcPersona")
-  votesOnComments          VoteOnComment[]
-  votesOnPosts             VoteOnPost[]
-  user                     User                      @relation(fields: [userId], references: [id])
-  userId                   Int
-  posts                    Post[]
-  threads                  Thread[]
-  replies                  Reply[]
-  systemAdministratorRoles SystemAdministratorRole[]
-  boardRoles               BoardRole[]
-  postRoles                PostRole[]
-  bot                      Bot?
-  notificationEvent_senders        NotificationEvent[] @relation("NotificationEvent_sender")
-  notificationEvent_receivers        NotificationEvent[] @relation("NotificationEvent_receiver")
+  id                          String                    @id
+  createdAt                   DateTime                  @default(now())
+  name                        String                    @unique @db.VarChar(25)
+  screenName                  String                    @db.VarChar(30)
+  iconUrl                     String                    @db.Text
+  FollowingBoards             FollowingBoard[]
+  modelatingBoards            Board[]                   @relation()
+  followingUsers              PersonaRelation[]         @relation("destPersona")
+  followedUsers               PersonaRelation[]         @relation("srcPersona")
+  votesOnComments             VoteOnComment[]
+  votesOnPosts                VoteOnPost[]
+  user                        User                      @relation(fields: [userId], references: [id])
+  userId                      String
+  posts                       Post[]
+  threads                     Thread[]
+  replies                     Reply[]
+  systemAdministratorRoles    SystemAdministratorRole[]
+  boardRoles                  BoardRole[]
+  postRoles                   PostRole[]
+  bot                         Bot?
+  notificationEvent_senders   NotificationEvent[]       @relation("NotificationEvent_sender")
+  notificationEvent_receivers NotificationEvent[]       @relation("NotificationEvent_receiver")
 }
 
 model PersonaRelation {
   id            Int      @id @default(autoincrement())
   createdAt     DateTime @default(now())
-  srcPersonaId  Int
+  srcPersonaId  String
   srcPersona    Persona  @relation("srcPersona", fields: [srcPersonaId], references: [id])
-  destPersonaId Int
+  destPersonaId String
   destPersona   Persona  @relation("destPersona", fields: [destPersonaId], references: [id])
 }
 
 model VoteOnPost {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
-  createdById Int
+  createdById String
   createdBy   Persona  @relation(fields: [createdById], references: [id])
   weight      Int
 }
@@ -106,7 +106,7 @@ model VoteOnPost {
 model VoteOnComment {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
-  createdById Int
+  createdById String
   createdBy   Persona  @relation(fields: [createdById], references: [id])
   weight      Int
 }
@@ -139,7 +139,7 @@ model FollowingBoard {
   board     Board     @relation(fields: [boardId], references: [id])
   boardId   String
   persona   Persona   @relation(fields: [personaId], references: [id])
-  personaId Int
+  personaId String
 
   @@unique([boardId, personaId, deletedAt], name: "followingBoardUnique")
 }
@@ -155,7 +155,7 @@ model Post {
   board               Board              @relation(fields: [boardId], references: [id])
   boardId             String
   persona             Persona            @relation(fields: [personaId], references: [id])
-  personaId           Int
+  personaId           String
   roles               PostRole[]
   defaultPostRoleId   Int
   defaultPostRole     AllowedWritingRole @relation("Posts_defaultPostRole", fields: [defaultPostRoleId], references: [id])
@@ -177,7 +177,7 @@ model Thread {
   postId      String
   Post        Post        @relation(fields: [postId], references: [id])
   persona     Persona     @relation(fields: [personaId], references: [id])
-  personaId   Int
+  personaId   String
 }
 
 model Reply {
@@ -189,7 +189,7 @@ model Reply {
   thread      Thread      @relation(fields: [threadId], references: [id])
   threadId    String
   persona     Persona     @relation(fields: [personaId], references: [id])
-  personaId   Int
+  personaId   String
 }
 
 model UploadedImage {
@@ -252,7 +252,7 @@ model ThirdPartyAPIKey {
   id        String               @id @db.Char(26)
   type      ThirdPartyAPIKeyType
   token     String               @unique
-  userId    Int
+  userId    String
   user      User                 @relation(fields: [userId], references: [id])
   bot       Bot?
   createdAt DateTime             @default(now())
@@ -262,7 +262,7 @@ model ThirdPartyAPIKey {
 model Bot {
   id                 String           @id @db.Char(26)
   persona            Persona          @relation(fields: [personaId], references: [id])
-  personaId          Int              @unique
+  personaId          String           @unique
   thirdPartyAPIKey   ThirdPartyAPIKey @relation(fields: [thirdPartyAPIKeyId], references: [id])
   thirdPartyAPIKeyId String           @unique @db.Char(26)
 }
@@ -277,9 +277,9 @@ enum NotificationEventType {
 model NotificationEvent {
   id         String                @id @db.Char(26)
   sender     Persona               @relation("NotificationEvent_sender", fields: [senderId], references: [id])
-  senderId   Int
+  senderId   String
   receiver   Persona               @relation("NotificationEvent_receiver", fields: [receiverId], references: [id])
-  receiverId Int
+  receiverId String
   type       NotificationEventType
   createdAt  DateTime              @default(now())
   readAt     DateTime?
