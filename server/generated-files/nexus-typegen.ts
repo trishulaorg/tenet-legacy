@@ -390,12 +390,12 @@ export interface NexusGenArgTypes {
   Mutation: {
     createBoard: { // args
       description: string; // String!
-      personaId: number; // Int!
+      personaId: string; // String!
       title: string; // String!
     }
     createFollowingBoard: { // args
       boardId: string; // String!
-      personaId: number; // Int!
+      personaId: string; // String!
     }
     createPersona: { // args
       iconPath?: string | null; // String
@@ -406,13 +406,13 @@ export interface NexusGenArgTypes {
       boardId: string; // String!
       content: string; // String!
       contentType: NexusGenEnums['ContentType']; // ContentType!
-      personaId: number; // Int!
+      personaId: string; // String!
       title: string; // String!
     }
     createReply: { // args
       content: string; // String!
       contentType: NexusGenEnums['ContentType']; // ContentType!
-      personaId: number; // Int!
+      personaId: string; // String!
       threadId: string; // String!
     }
     createThirdPartyAPIKey: { // args
@@ -422,11 +422,11 @@ export interface NexusGenArgTypes {
       boardId: string; // String!
       content: string; // String!
       contentType: NexusGenEnums['ContentType']; // ContentType!
-      personaId: number; // Int!
+      personaId: string; // String!
       postId: string; // String!
     }
     deletePost: { // args
-      personaId: number; // Int!
+      personaId: string; // String!
       postId: string; // String!
     }
     putAttachedImage: { // args
@@ -435,27 +435,27 @@ export interface NexusGenArgTypes {
     }
     setPersonaIcon: { // args
       file?: NexusGenScalars['Upload'] | null; // Upload
-      personaId: number; // Int!
+      personaId: string; // String!
     }
     setTypingStateOnBoard: { // args
-      personaId: number; // Int!
+      personaId: string; // String!
       postId: string; // String!
     }
     unfollowBoard: { // args
       boardId: string; // String!
-      personaId: number; // Int!
+      personaId: string; // String!
     }
   }
   Query: {
     activities: { // args
-      personaId?: number | null; // Int
+      personaId?: string | null; // String
     }
     board: { // args
       id: string; // String!
-      personaId?: number | null; // Int
+      personaId?: string | null; // String
     }
     getFollowingBoard: { // args
-      personaId: number; // Int!
+      personaId: string; // String!
     }
     persona: { // args
       name: string; // String!
@@ -465,7 +465,7 @@ export interface NexusGenArgTypes {
     }
     post: { // args
       id: string; // String!
-      personaId?: number | null; // Int
+      personaId?: string | null; // String
     }
     removeUser: { // args
       name: string; // String!

@@ -59,18 +59,18 @@ type FollowingBoard {
 }
 
 type Mutation {
-  createBoard(description: String!, personaId: Int!, title: String!): Board!
-  createFollowingBoard(boardId: String!, personaId: Int!): FollowingBoard!
+  createBoard(description: String!, personaId: String!, title: String!): Board!
+  createFollowingBoard(boardId: String!, personaId: String!): FollowingBoard!
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
-  createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
-  createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
+  createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: String!, title: String!): Post!
+  createReply(content: String!, contentType: ContentType!, personaId: String!, threadId: String!): Reply!
   createThirdPartyAPIKey(type: ThirdPartyAPIKeyType!): ThirdPartyAPIKey!
-  createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
-  deletePost(personaId: Int!, postId: String!): Post!
+  createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: String!, postId: String!): Thread!
+  deletePost(personaId: String!, postId: String!): Post!
   putAttachedImage(files: [Upload!]!, postId: String!): [File!]!
-  setPersonaIcon(file: Upload, personaId: Int!): File!
-  setTypingStateOnBoard(personaId: Int!, postId: String!): Post!
-  unfollowBoard(boardId: String!, personaId: Int!): FollowingBoard!
+  setPersonaIcon(file: Upload, personaId: String!): File!
+  setTypingStateOnBoard(personaId: String!, postId: String!): Post!
+  unfollowBoard(boardId: String!, personaId: String!): FollowingBoard!
 }
 
 type Persona {
@@ -101,13 +101,13 @@ type Privilege {
 }
 
 type Query {
-  activities(personaId: Int): [Post!]!
-  board(id: String!, personaId: Int): Board!
-  getFollowingBoard(personaId: Int!): [FollowingBoard!]!
+  activities(personaId: String): [Post!]!
+  board(id: String!, personaId: String): Board!
+  getFollowingBoard(personaId: String!): [FollowingBoard!]!
   me: User
   persona(name: String!): Persona!
   personas(names: [String!]!): [Persona]!
-  post(id: String!, personaId: Int): Post!
+  post(id: String!, personaId: String): Post!
   removeUser(name: String!): Boolean!
   search(query: String!): [SearchResult!]!
 }

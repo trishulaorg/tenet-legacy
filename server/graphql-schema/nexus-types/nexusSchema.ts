@@ -1118,11 +1118,22 @@ const MutationDef = objectType({
             },
             bot: {
               connectOrCreate: {
+                where: {
+                  id: context.accessor.bot?.id,
+                },
                 create: {
                   id: ulid(),
                   persona: {
                     create: {
                       id: ulid(),
+                      name: 'bot',
+                      screenName: 'bot',
+                      iconUrl: '',
+                      user: {
+                        connect: {
+                          id: context.accessor.user.id,
+                        },
+                      },
                     },
                   },
                 },
