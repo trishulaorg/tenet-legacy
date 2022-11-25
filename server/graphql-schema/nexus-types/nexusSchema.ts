@@ -375,7 +375,7 @@ const QueryDef = objectType({
           type: nonNull('String'),
         }),
         personaId: arg({
-          type: 'Int',
+          type: 'String',
         }),
       },
       async resolve(_source, { id, personaId }, context) {
@@ -442,7 +442,7 @@ const QueryDef = objectType({
       type: nonNull('Post'),
       args: {
         personaId: arg({
-          type: 'Int',
+          type: 'String',
         }),
       },
       async resolve(_source, { personaId }, context) {
@@ -502,7 +502,7 @@ const QueryDef = objectType({
           type: nonNull('String'),
         }),
         personaId: arg({
-          type: 'Int',
+          type: 'String',
         }),
       },
       async resolve(_source, { id, personaId }, context) {
@@ -600,7 +600,7 @@ const QueryDef = objectType({
       t.nonNull.list.nonNull.field('getFollowingBoard', {
         type: FollowingBoardDef.name,
         args: {
-          personaId: arg({ type: nonNull('Int') }),
+          personaId: arg({ type: nonNull('String') }),
         },
         async resolve(_source, args, context) {
           const result = await context.prisma.followingBoard.findMany({
@@ -662,7 +662,7 @@ const MutationDef = objectType({
           type: nonNull('String'),
         }),
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
       },
       async resolve(_source, { description, personaId, title }, context) {
@@ -725,7 +725,7 @@ const MutationDef = objectType({
           type: nonNull(ContentTypeDef.name),
         }),
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
         boardId: arg({
           type: nonNull('String'),
@@ -796,7 +796,7 @@ const MutationDef = objectType({
           type: nonNull('String'),
         }),
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
       },
       async resolve(_source, { boardId, content, contentType, personaId, postId }, context) {
@@ -841,7 +841,7 @@ const MutationDef = objectType({
           type: nonNull('String'),
         }),
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
       },
       async resolve(_source, { content, contentType, personaId, threadId }, context) {
@@ -899,7 +899,7 @@ const MutationDef = objectType({
       type: FileDef.name,
       args: {
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
         file: arg({
           type: 'Upload',
@@ -940,7 +940,7 @@ const MutationDef = objectType({
       type: PostDef.name,
       args: {
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
         postId: arg({
           type: nonNull('String'),
@@ -999,7 +999,7 @@ const MutationDef = objectType({
       type: PostDef.name,
       args: {
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
         postId: arg({
           type: nonNull('String'),
@@ -1049,7 +1049,7 @@ const MutationDef = objectType({
       type: FollowingBoardDef.name,
       args: {
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
         boardId: arg({
           type: nonNull('String'),
@@ -1116,6 +1116,18 @@ const MutationDef = objectType({
                 id: context.accessor.user.id,
               },
             },
+            bot: {
+              connectOrCreate: {
+                create: {
+                  id: ulid(),
+                  persona: {
+                    create: {
+                      id: ulid(),
+                    },
+                  },
+                },
+              },
+            },
             token: ulid(),
             type,
           },
@@ -1123,6 +1135,7 @@ const MutationDef = objectType({
         if (key === null) {
           throw new Error('Failed to generate third-party key')
         }
+
         return key
       },
     })
@@ -1130,7 +1143,7 @@ const MutationDef = objectType({
       type: FollowingBoardDef.name,
       args: {
         personaId: arg({
-          type: nonNull('Int'),
+          type: nonNull('String'),
         }),
         boardId: arg({
           type: nonNull('String'),
