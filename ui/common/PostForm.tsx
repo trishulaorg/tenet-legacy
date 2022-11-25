@@ -51,9 +51,9 @@ export const PostFormInner: React.FC = observer(() => {
   })
   return state.replyTo ? (
     <div className="sticky bottom-0 shadow-2xl" {...getRootProps()}>
-      <div className="w-full leading-6 border-t-2 border-black border-opacity-10 rounded-t-lg block bg-white">
+      <div className="w-full leading-6 border-t-2 border-black border-opacity-10 rounded-t-lg block bg-contentbg dark:bg-contentbg-dark transition-colors duration-350">
         {state.replyTo ? (
-          <div className="mt-2 ml-2 p-2 border-l-2 border-gray-200">{state.replyTo?.content}</div>
+          <div className="mt-2 ml-2 p-2 border-l-2 border-gray-200 dark:border-contentbg/25">{state.replyTo.content}</div>
         ) : null}
 
         <textarea

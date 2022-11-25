@@ -95,6 +95,7 @@ const validationSchema: ValidationSchemaType = {
     personaId: z.number().int().int().min(1),
     boardId: z.string().min(26).max(26),
   }),
+  createThirdPartyAPIKey: z.any(),
 } as const
 
 export { validationSchema }

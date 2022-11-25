@@ -4,15 +4,19 @@ import { observer } from 'mobx-react'
 import { HeaderStateContext } from '../../states/HeaderState'
 import { MenuIcon } from '@heroicons/react/solid'
 import { Switch } from '../common/Switch'
+import {useTheme} from "next-themes"
 import Link from 'next/link'
+
 export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
+  const {theme, setTheme, systemTheme} = useTheme()
+
   return (
     <>
-      <div className="flex-initial mx-3 my-auto flex items-center justify-center">
+      <div className="flex-initial mx-3 my-auto flex items-center justify-center text-high dark:text-high-dark">
         <div className="my-auto">
           <button onClick={() => state.toggleMenu()}>
-            <MenuIcon className="h-5 w-5 text-slate-700" />{' '}
+            <MenuIcon className="h-5 w-5 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}
           </button>
           <Switch visibility={state.menuVisibility}>
             <UserMenuItems>
@@ -21,7 +25,7 @@ export const UserMenu: React.FC = observer(() => {
                   {state.userState?.currentPersona?.name}
                   <Switch visibility={state.personaListVisibility}>
                     <Switch visibility={state.userState.isValidUser}>
-                      <ul className="bg-white width-100">
+                      <ul className="bg-contentbg dark:bg-contentbg-dark width-100">
                         {state.userState?.personas.map((p, idx) => (
                           <li key={idx} className="border-solid border-b-2">
                             <button
@@ -62,6 +66,13 @@ export const UserMenu: React.FC = observer(() => {
                   <Link href="/auth">Sign in / Sign up</Link>
                 </UserMenuItem>
               </Switch>
+              <UserMenuItem onClick={() => {
+                setTheme(theme == "system" ? (systemTheme == "dark" ? "light" : "dark") : (theme == "dark" ? "light" : "dark"))
+                // window.localStorage.setItem('theme', theme)
+                // console.log(theme, window.localStorage.getItem('theme'))
+              }}>
+                Switch Theme
+              </UserMenuItem>
             </UserMenuItems>
           </Switch>
         </div>
@@ -82,7 +93,7 @@ export const UserMenuItems: React.FC = observer((props) => {
   }, [ref])
   return (
     <div className="relative inline-block float-right" ref={ref}>
-      <ul className={`absolute right-0 z-10 bg-white w-48 rounded-sm border-2`}>
+      <ul className={`absolute right-0 z-10 bg-contentbg dark:bg-contentbg-dark w-48 rounded-sm border-2 dark:border-low`}>
         {props.children}
       </ul>
     </div>

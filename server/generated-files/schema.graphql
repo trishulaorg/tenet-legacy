@@ -64,6 +64,7 @@ type Mutation {
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
   createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
   createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
+  createThirdPartyAPIKey(type: ThirdPartyAPIKeyType!): ThirdPartyAPIKey!
   createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
   deletePost(personaId: Int!, postId: String!): Post!
   putAttachedImage(files: [Upload!]!, postId: String!): [File!]!
@@ -125,6 +126,20 @@ type SearchResult {
   id: String!
   kind: String!
   title: String!
+}
+
+type ThirdPartyAPIKey {
+  createdAt: DateTime!
+  id: ID!
+  revokedAt: DateTime
+  token: String!
+  user: User!
+  userId: Int!
+}
+
+enum ThirdPartyAPIKeyType {
+  BOT
+  USER
 }
 
 type Thread {

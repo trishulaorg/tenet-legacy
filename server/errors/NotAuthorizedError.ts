@@ -5,4 +5,6 @@ import { ForbiddenError } from 'apollo-server'
  */
 class NotAuthorizedError extends ForbiddenError {}
 
-export { NotAuthorizedError }
+const defaultNotAuthorizedErrorMessage = 'Bot is not authorized to do this operation'
+
+export { NotAuthorizedError, defaultNotAuthorizedErrorMessage }

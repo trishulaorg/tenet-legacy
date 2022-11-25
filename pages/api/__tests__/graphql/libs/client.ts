@@ -4,8 +4,9 @@ import { PrismaClient } from '@prisma/client'
 
 const BASE_API_URL = 'http://localhost:3000/api/graphql'
 
-const apiTestClient = getSdk(new GraphQLClient(BASE_API_URL))
+const generateAPITestClient = (headers: HeadersInit): ReturnType<typeof getSdk> =>
+  getSdk(new GraphQLClient(BASE_API_URL, { headers }))
 
 const prismaClient = new PrismaClient()
 
-export { apiTestClient, prismaClient }
+export { generateAPITestClient, prismaClient }

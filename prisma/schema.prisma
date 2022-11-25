@@ -54,10 +54,11 @@ model AllowedWritingRole {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  token     String    @unique
-  personas  Persona[]
+  id                  Int                @id @default(autoincrement())
+  createdAt           DateTime           @default(now())
+  token               String             @unique
+  thirdPartyAPITokens ThirdPartyAPIKey[] @relation()
+  personas            Persona[]
 }
 
 model Persona {
@@ -66,12 +67,12 @@ model Persona {
   name                     String                    @unique @db.VarChar(25)
   screenName               String                    @db.VarChar(30)
   iconUrl                  String                    @db.Text
-  FollowingBoards  FollowingBoard[]
+  FollowingBoards          FollowingBoard[]
   modelatingBoards         Board[]                   @relation()
   followingUsers           PersonaRelation[]         @relation("destPersona")
   followedUsers            PersonaRelation[]         @relation("srcPersona")
-  votesOnComments  VoteOnComment[]
-  votesOnPosts     VoteOnPost[]
+  votesOnComments          VoteOnComment[]
+  votesOnPosts             VoteOnPost[]
   user                     User                      @relation(fields: [userId], references: [id])
   userId                   Int
   posts                    Post[]
@@ -80,6 +81,9 @@ model Persona {
   systemAdministratorRoles SystemAdministratorRole[]
   boardRoles               BoardRole[]
   postRoles                PostRole[]
+  bot                      Bot?
+  notificationEvent_senders        NotificationEvent[] @relation("NotificationEvent_sender")
+  notificationEvent_receivers        NotificationEvent[] @relation("NotificationEvent_receiver")
 }
 
 model PersonaRelation {
@@ -129,14 +133,15 @@ model Board {
 }
 
 model FollowingBoard {
-  @@unique([boardId, personaId, deletedAt], name: "followingBoardUnique")
-  id        String   @id @db.Char(26)
-  createdAt DateTime @default(now())
+  id        String    @id @db.Char(26)
+  createdAt DateTime  @default(now())
   deletedAt DateTime?
-  board     Board    @relation(fields: [boardId], references: [id])
+  board     Board     @relation(fields: [boardId], references: [id])
   boardId   String
-  persona   Persona  @relation(fields: [personaId], references: [id])
+  persona   Persona   @relation(fields: [personaId], references: [id])
   personaId Int
+
+  @@unique([boardId, personaId, deletedAt], name: "followingBoardUnique")
 }
 
 model Post {
@@ -236,4 +241,46 @@ model PostRole {
   threadRole   AllowedWritingRole @relation("PostRoles_threadRole", fields: [threadRoleId], references: [id])
   replyRoleId  Int
   replyRole    AllowedWritingRole @relation("PostRoles_replyRole", fields: [replyRoleId], references: [id])
+}
+
+enum ThirdPartyAPIKeyType {
+  BOT
+  USER
+}
+
+model ThirdPartyAPIKey {
+  id        String               @id @db.Char(26)
+  type      ThirdPartyAPIKeyType
+  token     String               @unique
+  userId    Int
+  user      User                 @relation(fields: [userId], references: [id])
+  bot       Bot?
+  createdAt DateTime             @default(now())
+  revokedAt DateTime?
+}
+
+model Bot {
+  id                 String           @id @db.Char(26)
+  persona            Persona          @relation(fields: [personaId], references: [id])
+  personaId          Int              @unique
+  thirdPartyAPIKey   ThirdPartyAPIKey @relation(fields: [thirdPartyAPIKeyId], references: [id])
+  thirdPartyAPIKeyId String           @unique @db.Char(26)
+}
+
+enum NotificationEventType {
+  NEW_FOLLOWER
+  LIKE
+  COMMENT
+  DIRECT_MESSAGE
+}
+
+model NotificationEvent {
+  id         String                @id @db.Char(26)
+  sender     Persona               @relation("NotificationEvent_sender", fields: [senderId], references: [id])
+  senderId   Int
+  receiver   Persona               @relation("NotificationEvent_receiver", fields: [receiverId], references: [id])
+  receiverId Int
+  type       NotificationEventType
+  createdAt  DateTime              @default(now())
+  readAt     DateTime?
 }

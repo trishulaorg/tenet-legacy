@@ -19,10 +19,9 @@ import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 
 const IndexPage: React.FC = () => {
   const [token, setToken] = useState(getGqlToken())
-  const router = useRouter()
-  let user = defaultUser()
-  if (token) user = new UserState(token, [], 0)
+  const [user, setUser] = useState(defaultUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const router = useRouter()
 
   const { data: activitiesData, mutate } = apiHooks.useGetActivities(
     () => swrKey.useGetActivities(personaId ? { personaId } : undefined),
@@ -33,6 +32,10 @@ const IndexPage: React.FC = () => {
     () => (personaId ? swrKey.useGetFollowingBoard({ personaId }) : undefined),
     { personaId: personaId ?? 0 }
   )
+
+  useEffect(() => {
+    if (token) setUser(new UserState(token, [], 0))
+  }, [token])
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -91,7 +94,7 @@ const IndexPage: React.FC = () => {
             Side={() => (
               <div className="w-56">
                 <FollowingBoardCard boards={followingBoardsData?.getFollowingBoard ?? []} />
-                <div className="rounded overflow-hidden my-2 py-2">
+                <div className="rounded overflow-hidden my-2 py-2 text-high dark:text-high-dark">
                   <Link href="/tos">Terms of Service</Link>
                 </div>
               </div>

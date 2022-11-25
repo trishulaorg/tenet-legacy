@@ -36,7 +36,7 @@ export const CreateNewBoard: React.FC = () => {
         createBoard: { id },
       } = await client.createBoard({ title: name, description: desc, personaId: persona.id })
 
-      await router.push(`/board/${id}`)
+      await router.push(`/o/cp?boardId=${id}`)
     } catch (error) {
       if (isClientError(error)) {
         const validationErrors = getValidationErrors(error)
@@ -64,7 +64,7 @@ export const CreateNewBoard: React.FC = () => {
   }
   return (
     <div>
-      <h1 className="my-4 text-slate-600 text-2xl">Create new board</h1>
+      <h1 className="my-4 text-med dark:text-med-dark text-2xl">Create new board</h1>
       <form>
         <InputWithLabel
           label="Board Name"

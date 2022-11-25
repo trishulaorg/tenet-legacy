@@ -77,7 +77,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   }
 
   const content = (
-    <div className="rounded-lg p-4 bg-white">
+    <div className="rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350">
       <CardTitle title={post.title} />
       {isInPostPage ? (
         <AuthorAndBoardLink
@@ -107,6 +107,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
             replyCallback={() => {
               postForm.replyTo = post
               postForm.onSubmit = onSubmit
+              postForm.boardState = boardState
               postForm.onChange = () => publishWritingStatus(post.id)
             }}
             deleteCallback={onPostDelete}

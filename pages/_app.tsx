@@ -1,14 +1,14 @@
 import type { AppProps } from 'next/app'
 import type { ReactElement } from 'react'
-import { UserProvider } from '@auth0/nextjs-auth0'
+import { ThemeProvider } from 'next-themes'
 import '../styles/global.css'
 
 function MyApp({ Component, pageProps }: AppProps): ReactElement {
-  return (
-    <UserProvider>
+  return(
+    <ThemeProvider attribute='class' >
       <Component {...pageProps} />
-    </UserProvider>
-  )
+    </ThemeProvider>
+  ) 
 }
 
 export default MyApp

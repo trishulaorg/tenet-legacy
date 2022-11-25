@@ -91,7 +91,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
           {showPostCreate === true && user.isValidUser ? (
             <div>
               <div className="py-4">
-                <h2 className="my-2 text-slate-600 text-1xl">Create New Post</h2>
+                <h2 className="my-2 text-med dark:text-med-dark text-1xl">Create New Post</h2>
                 <label>
                   <div>Title</div>
                   <input

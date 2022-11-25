@@ -62,7 +62,7 @@ export const PersonaCreateSteps: React.FC = observer(() => {
   return (
     <div className="">
       <form>
-        <h1 className="my-4 text-slate-600 text-2xl">Create your new persona</h1>
+        <h1 className="my-4 text-med dark:text-med-dark text-2xl">Create your new persona</h1>
         <label>
           Your id (must be unique)
           <input

@@ -2,6 +2,7 @@ version: '3'
 services:
   db:
     image: mysql:8-debian
+    platform: linux/amd64
     ports:
       - '3306:3306'
     environment:
