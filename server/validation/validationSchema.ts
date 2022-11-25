@@ -17,10 +17,7 @@ const validationSchema: ValidationSchemaType = {
   getMe: z.any(),
   getBoard: z.object({
     topicId: z.string().min(26).max(26),
-    /**
-     * https://github.com/colinhacks/zod/issues/635
-     */
-    personaId: z.number().int().min(1).optional() as unknown as ZodNumber,
+    personaId: z.number().int().min(1),
   }),
   getPost: z.object({
     id: z.string().min(26).max(26),
@@ -58,41 +55,41 @@ const validationSchema: ValidationSchemaType = {
       .string()
       .min(1, 'Description is required.')
       .max(2000, 'Maximum length of description is 2000.'),
-    personaId: z.number().int().min(1),
+    personaId: z.string().min(26).max(26),
   }),
   createPost: z.object({
     title: z.string().min(1).max(50),
     content: z.string().min(1).max(2000),
     boardId: z.string().min(26).max(26),
-    personaId: z.number().int().min(1),
+    personaId: z.string().min(26).max(26),
   }),
   createThread: z.object({
     content: z.string().min(1).max(500),
     boardId: z.string().min(26).max(26),
     postId: z.string().min(26).max(26),
-    personaId: z.number().int().min(1),
+    personaId: z.string().min(26).max(26),
   }),
   createReply: z.object({
     content: z.string().min(1).max(500),
     threadId: z.string().min(26).max(26),
-    personaId: z.number().int().min(1),
+    personaId: z.string().min(26).max(26),
   }),
   putAttachedImage: z.any(),
   setPersonaIcon: z.any(),
   setTypingStateOnBoard: z.object({
-    personaId: z.number().int().int().min(1),
+    personaId: z.string().min(26).max(26),
     postId: z.string().min(26).max(26),
   }),
   deletePost: z.object({
-    personaId: z.number().int().int().min(1),
+    personaId: z.string().min(26).max(26),
     postId: z.string().min(26).max(26),
   }),
   createFollowingBoard: z.object({
-    personaId: z.number().int().int().min(1),
+    personaId: z.string().min(26).max(26),
     boardId: z.string().min(26).max(26),
   }),
   unfollowBoard: z.object({
-    personaId: z.number().int().int().min(1),
+    personaId: z.string().min(26).max(26),
     boardId: z.string().min(26).max(26),
   }),
   createThirdPartyAPIKey: z.any(),

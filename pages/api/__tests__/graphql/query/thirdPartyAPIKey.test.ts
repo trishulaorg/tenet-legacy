@@ -32,6 +32,7 @@ describe('test third-party api', () => {
   test('getMe should return the owner of token', async () => {
     const user = await prismaClient.user.create({
       data: {
+        id: ulid(),
         token: ulid(),
       },
     })
@@ -54,6 +55,7 @@ describe('test third-party api', () => {
     })
     const persona = await prismaClient.persona.create({
       data: {
+        id: ulid()
         name: ulid().substring(10),
         screenName: ulid(),
         iconUrl: '',
@@ -85,6 +87,7 @@ describe('test third-party api', () => {
   test('Bot cannot create another bot recursively', async () => {
     const user = await prismaClient.user.create({
       data: {
+        id: ulid(),
         token: ulid(),
       },
     })
