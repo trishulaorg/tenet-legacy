@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
-  const {theme, setTheme} = useTheme()
+  const {theme, setTheme, systemTheme} = useTheme()
 
   return (
     <>
@@ -67,7 +67,7 @@ export const UserMenu: React.FC = observer(() => {
                 </UserMenuItem>
               </Switch>
               <UserMenuItem onClick={() => {
-                setTheme(theme == "dark" ? "light" : "dark")
+                setTheme(theme == "system" ? (systemTheme == "dark" ? "light" : "dark") : (theme == "dark" ? "light" : "dark"))
                 // window.localStorage.setItem('theme', theme)
                 // console.log(theme, window.localStorage.getItem('theme'))
               }}>
@@ -93,7 +93,7 @@ export const UserMenuItems: React.FC = observer((props) => {
   }, [ref])
   return (
     <div className="relative inline-block float-right" ref={ref}>
-      <ul className={`absolute right-0 z-10 bg-contentbg dark:bg-contentbg-dark w-48 rounded-sm border-2`}>
+      <ul className={`absolute right-0 z-10 bg-contentbg dark:bg-contentbg-dark w-48 rounded-sm border-2 dark:border-low`}>
         {props.children}
       </ul>
     </div>

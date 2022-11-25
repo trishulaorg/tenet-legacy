@@ -18,7 +18,7 @@ export const SearchBoxTextField: React.FC<{
     if (e.code === 'Enter') await submitSearch()
   }
   return (
-    <div className="border rounded flex">
+    <div className="border dark:border-low rounded flex">
       <input
         type="text"
         value={query}
