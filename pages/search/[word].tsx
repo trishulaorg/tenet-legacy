@@ -50,7 +50,7 @@ const IndexPage: React.FC = () => {
           data.search.map((c, idx) => (
             <li
               key={idx}
-              className="flex my-2 p-2 rounded bg-contentbg/75 hover:bg-contentbg dark:bg-contentbg-dark/75 dark:hover:bg-contentbg-dark transition-colors duration-350 cursor-pointer border"
+              className="flex my-2 p-2 rounded bg-contentbg/75 hover:bg-contentbg dark:bg-contentbg-dark/75 dark:hover:bg-contentbg-dark transition-colors duration-350 cursor-pointer border dark:border-med"
             >
               <div className="w-8 text-low dark:text-low-dark">#{idx + 1}</div>
               <div className="flex-1 text-med dark:text-med-dark">

@@ -8,7 +8,7 @@ export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (
     <div>
       <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>
       <textarea
-        className="w-full leading-6 p-4 border-2 border-black border-opacity-10 rounded-t-lg block"
+        className="w-full leading-6 p-4 border-2 border-black dark:border-white border-opacity-10 rounded-t-lg block"
         rows={4}
         value={comment}
         onChange={(e) => setComment(e.currentTarget.value)}
