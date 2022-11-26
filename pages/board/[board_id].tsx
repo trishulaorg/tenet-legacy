@@ -30,7 +30,7 @@ const IndexPage: React.FC = () => {
     setAuthToken(token)
     user = new UserState(token, [], 0)
   }
-  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const [personaId, setPersonaId] = useState<string | undefined>(undefined)
 
   const contentGraphqlQueryDocument = queryDocuments.Query.board
 

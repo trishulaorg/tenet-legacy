@@ -24,7 +24,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
     setAuthToken(userState.token)
     await client.createThread({
       content: comment,
-      personaId: userState.currentPersona?.id ?? -1,
+      personaId: userState.currentPersona?.id,
       postId: post.id,
       boardId: post.boardId,
     })

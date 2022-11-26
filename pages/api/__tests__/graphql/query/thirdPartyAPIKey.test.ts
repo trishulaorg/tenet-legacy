@@ -6,6 +6,7 @@ describe('test third-party api', () => {
   test('Check third-party tokens can be created', async () => {
     const user = await prismaClient.user.create({
       data: {
+        id: ulid(),
         token: ulid(),
       },
     })
