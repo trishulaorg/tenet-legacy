@@ -2,7 +2,6 @@ import { generateAPITestClient, prismaClient } from '../libs/client'
 import { resetDatabase } from '../libs/resetDB'
 import type { Board, Post, Persona } from '@prisma/client'
 import { ulid } from 'ulid'
-import { randomUniqueId } from '../libs/randomUniqueId'
 import type { User } from '@prisma/client'
 import { randomAlphabetString } from '../libs/randomAlphabetString'
 import type { AllowedWritingRole } from '@prisma/client'
@@ -23,12 +22,12 @@ describe('test activity query api', () => {
 
   test('activities returns posts', async () => {
     const user1: User = {
-      id: randomUniqueId(),
+      id: ulid(),
       createdAt: new Date(),
       token: ulid(),
     }
     const user2: User = {
-      id: randomUniqueId(),
+      id: ulid(),
       createdAt: new Date(),
       token: ulid(),
     }
@@ -39,7 +38,7 @@ describe('test activity query api', () => {
     })
 
     const persona1: Persona = {
-      id: randomUniqueId(),
+      id: ulid(),
       createdAt: new Date(),
       name: randomAlphabetString(10),
       screenName: randomAlphabetString(10),
@@ -48,7 +47,7 @@ describe('test activity query api', () => {
     }
 
     const persona2: Persona = {
-      id: randomUniqueId(),
+      id: ulid(),
       createdAt: new Date(),
       name: randomAlphabetString(10),
       screenName: randomAlphabetString(10),
