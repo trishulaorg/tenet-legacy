@@ -50,12 +50,13 @@ describe('test third-party api', () => {
   test('API should be accessable from third-party keys', async () => {
     const user = await prismaClient.user.create({
       data: {
+        id: ulid(),
         token: ulid(),
       },
     })
     const persona = await prismaClient.persona.create({
       data: {
-        id: ulid()
+        id: ulid(),
         name: ulid().substring(10),
         screenName: ulid(),
         iconUrl: '',
