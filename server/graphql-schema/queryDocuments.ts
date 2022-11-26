@@ -12,7 +12,7 @@ const queryDocuments: {
 } = {
   Query: {
     activities: gql`
-      query getActivities($personaId: Int) {
+      query getActivities($personaId: String) {
         activities(personaId: $personaId) {
           id
           board {
@@ -71,7 +71,7 @@ const queryDocuments: {
       }
     `,
     board: gql`
-      query getBoard($topicId: String!, $personaId: Int) {
+      query getBoard($topicId: String!, $personaId: String!) {
         board(id: $topicId, personaId: $personaId) {
           id
           title
@@ -154,7 +154,7 @@ const queryDocuments: {
       }
     `,
     post: gql`
-      query getPost($id: String!, $personaId: Int) {
+      query getPost($id: String!, $personaId: String!) {
         post(id: $id, personaId: $personaId) {
           id
           boardId
@@ -225,7 +225,7 @@ const queryDocuments: {
       }
     `,
     getFollowingBoard: gql`
-      query getFollowingBoard($personaId: Int!) {
+      query getFollowingBoard($personaId: String!) {
         getFollowingBoard(personaId: $personaId) {
           board {
             title
@@ -237,7 +237,7 @@ const queryDocuments: {
   },
   Mutation: {
     createBoard: gql`
-      mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
+      mutation createBoard($title: String!, $description: String!, $personaId: String!) {
         createBoard(title: $title, description: $description, personaId: $personaId) {
           id
         }
@@ -252,7 +252,12 @@ const queryDocuments: {
       }
     `,
     createPost: gql`
-      mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
+      mutation createPost(
+        $title: String!
+        $content: String!
+        $personaId: String!
+        $boardId: String!
+      ) {
         createPost(
           title: $title
           content: $content
@@ -265,7 +270,7 @@ const queryDocuments: {
       }
     `,
     createReply: gql`
-      mutation createReply($content: String!, $personaId: Int!, $threadId: String!) {
+      mutation createReply($content: String!, $personaId: String!, $threadId: String!) {
         createReply(
           content: $content
           contentType: TEXT
@@ -280,7 +285,7 @@ const queryDocuments: {
       mutation createThread(
         $content: String!
         $postId: String!
-        $personaId: Int!
+        $personaId: String!
         $boardId: String!
       ) {
         createThread(
@@ -302,35 +307,35 @@ const queryDocuments: {
       }
     `,
     setPersonaIcon: gql`
-      mutation setPersonaIcon($personaId: Int!, $file: Upload!) {
+      mutation setPersonaIcon($personaId: String!, $file: Upload!) {
         setPersonaIcon(personaId: $personaId, file: $file) {
           filename
         }
       }
     `,
     setTypingStateOnBoard: gql`
-      mutation setTypingStateOnBoard($personaId: Int!, $postId: String!) {
+      mutation setTypingStateOnBoard($personaId: String!, $postId: String!) {
         setTypingStateOnBoard(personaId: $personaId, postId: $postId) {
           id
         }
       }
     `,
     deletePost: gql`
-      mutation deletePost($personaId: Int!, $postId: String!) {
+      mutation deletePost($personaId: String!, $postId: String!) {
         deletePost(personaId: $personaId, postId: $postId) {
           id
         }
       }
     `,
     createFollowingBoard: gql`
-      mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+      mutation createFollowingBoard($personaId: String!, $boardId: String!) {
         createFollowingBoard(personaId: $personaId, boardId: $boardId) {
           id
         }
       }
     `,
     unfollowBoard: gql`
-      mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+      mutation unfollowBoard($personaId: String!, $boardId: String!) {
         unfollowBoard(personaId: $personaId, boardId: $boardId) {
           id
         }

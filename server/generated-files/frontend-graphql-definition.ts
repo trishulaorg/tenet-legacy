@@ -90,14 +90,14 @@ export type Mutation = {
 
 export type MutationCreateBoardArgs = {
   description: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   title: Scalars['String'];
 };
 
 
 export type MutationCreateFollowingBoardArgs = {
   boardId: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
 };
 
 
@@ -112,7 +112,7 @@ export type MutationCreatePostArgs = {
   boardId: Scalars['String'];
   content: Scalars['String'];
   contentType: ContentType;
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   title: Scalars['String'];
 };
 
@@ -120,7 +120,7 @@ export type MutationCreatePostArgs = {
 export type MutationCreateReplyArgs = {
   content: Scalars['String'];
   contentType: ContentType;
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   threadId: Scalars['String'];
 };
 
@@ -134,13 +134,13 @@ export type MutationCreateThreadArgs = {
   boardId: Scalars['String'];
   content: Scalars['String'];
   contentType: ContentType;
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   postId: Scalars['String'];
 };
 
 
 export type MutationDeletePostArgs = {
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   postId: Scalars['String'];
 };
 
@@ -153,19 +153,19 @@ export type MutationPutAttachedImageArgs = {
 
 export type MutationSetPersonaIconArgs = {
   file?: InputMaybe<Scalars['Upload']>;
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
 };
 
 
 export type MutationSetTypingStateOnBoardArgs = {
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   postId: Scalars['String'];
 };
 
 
 export type MutationUnfollowBoardArgs = {
   boardId: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
 };
 
 export type Persona = {
@@ -213,18 +213,18 @@ export type Query = {
 
 
 export type QueryActivitiesArgs = {
-  personaId?: InputMaybe<Scalars['Int']>;
+  personaId?: InputMaybe<Scalars['String']>;
 };
 
 
 export type QueryBoardArgs = {
   id: Scalars['String'];
-  personaId?: InputMaybe<Scalars['Int']>;
+  personaId?: InputMaybe<Scalars['String']>;
 };
 
 
 export type QueryGetFollowingBoardArgs = {
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
 };
 
 
@@ -240,7 +240,7 @@ export type QueryPersonasArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['String'];
-  personaId?: InputMaybe<Scalars['Int']>;
+  personaId?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -306,7 +306,7 @@ export type User = {
 };
 
 export type GetActivitiesQueryVariables = Exact<{
-  personaId?: InputMaybe<Scalars['Int']>;
+  personaId?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -314,7 +314,7 @@ export type GetActivitiesQuery = { __typename?: 'Query', activities: Array<{ __t
 
 export type GetBoardQueryVariables = Exact<{
   topicId: Scalars['String'];
-  personaId?: InputMaybe<Scalars['Int']>;
+  personaId: Scalars['String'];
 }>;
 
 
@@ -327,7 +327,7 @@ export type GetMeQuery = { __typename?: 'Query', me?: { __typename?: 'User', per
 
 export type GetPostQueryVariables = Exact<{
   id: Scalars['String'];
-  personaId?: InputMaybe<Scalars['Int']>;
+  personaId: Scalars['String'];
 }>;
 
 
@@ -341,7 +341,7 @@ export type SearchQueryVariables = Exact<{
 export type SearchQuery = { __typename?: 'Query', search: Array<{ __typename?: 'SearchResult', kind: string, id: string, title: string }> };
 
 export type GetFollowingBoardQueryVariables = Exact<{
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
 }>;
 
 
@@ -350,7 +350,7 @@ export type GetFollowingBoardQuery = { __typename?: 'Query', getFollowingBoard: 
 export type CreateBoardMutationVariables = Exact<{
   title: Scalars['String'];
   description: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
 }>;
 
 
@@ -368,7 +368,7 @@ export type CreatePersonaMutation = { __typename?: 'Mutation', createPersona: { 
 export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
   content: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   boardId: Scalars['String'];
 }>;
 
@@ -377,7 +377,7 @@ export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __type
 
 export type CreateReplyMutationVariables = Exact<{
   content: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   threadId: Scalars['String'];
 }>;
 
@@ -387,7 +387,7 @@ export type CreateReplyMutation = { __typename?: 'Mutation', createReply: { __ty
 export type CreateThreadMutationVariables = Exact<{
   content: Scalars['String'];
   postId: Scalars['String'];
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   boardId: Scalars['String'];
 }>;
 
@@ -403,7 +403,7 @@ export type PutAttachedImageMutationVariables = Exact<{
 export type PutAttachedImageMutation = { __typename?: 'Mutation', putAttachedImage: Array<{ __typename?: 'File', filename: string }> };
 
 export type SetPersonaIconMutationVariables = Exact<{
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   file: Scalars['Upload'];
 }>;
 
@@ -411,7 +411,7 @@ export type SetPersonaIconMutationVariables = Exact<{
 export type SetPersonaIconMutation = { __typename?: 'Mutation', setPersonaIcon: { __typename?: 'File', filename: string } };
 
 export type SetTypingStateOnBoardMutationVariables = Exact<{
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   postId: Scalars['String'];
 }>;
 
@@ -419,7 +419,7 @@ export type SetTypingStateOnBoardMutationVariables = Exact<{
 export type SetTypingStateOnBoardMutation = { __typename?: 'Mutation', setTypingStateOnBoard: { __typename?: 'Post', id: string } };
 
 export type DeletePostMutationVariables = Exact<{
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   postId: Scalars['String'];
 }>;
 
@@ -427,7 +427,7 @@ export type DeletePostMutationVariables = Exact<{
 export type DeletePostMutation = { __typename?: 'Mutation', deletePost: { __typename?: 'Post', id: string } };
 
 export type CreateFollowingBoardMutationVariables = Exact<{
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   boardId: Scalars['String'];
 }>;
 
@@ -435,7 +435,7 @@ export type CreateFollowingBoardMutationVariables = Exact<{
 export type CreateFollowingBoardMutation = { __typename?: 'Mutation', createFollowingBoard: { __typename?: 'FollowingBoard', id: string } };
 
 export type UnfollowBoardMutationVariables = Exact<{
-  personaId: Scalars['Int'];
+  personaId: Scalars['String'];
   boardId: Scalars['String'];
 }>;
 
@@ -451,7 +451,7 @@ export type CreateThirdPartyApiKeyMutation = { __typename?: 'Mutation', createTh
 
 
 export const GetActivitiesDocument = gql`
-    query getActivities($personaId: Int) {
+    query getActivities($personaId: String) {
   activities(personaId: $personaId) {
     id
     board {
@@ -510,7 +510,7 @@ export const GetActivitiesDocument = gql`
 }
     `;
 export const GetBoardDocument = gql`
-    query getBoard($topicId: String!, $personaId: Int) {
+    query getBoard($topicId: String!, $personaId: String!) {
   board(id: $topicId, personaId: $personaId) {
     id
     title
@@ -593,7 +593,7 @@ export const GetMeDocument = gql`
 }
     `;
 export const GetPostDocument = gql`
-    query getPost($id: String!, $personaId: Int) {
+    query getPost($id: String!, $personaId: String!) {
   post(id: $id, personaId: $personaId) {
     id
     boardId
@@ -664,7 +664,7 @@ export const SearchDocument = gql`
 }
     `;
 export const GetFollowingBoardDocument = gql`
-    query getFollowingBoard($personaId: Int!) {
+    query getFollowingBoard($personaId: String!) {
   getFollowingBoard(personaId: $personaId) {
     board {
       title
@@ -674,7 +674,7 @@ export const GetFollowingBoardDocument = gql`
 }
     `;
 export const CreateBoardDocument = gql`
-    mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
+    mutation createBoard($title: String!, $description: String!, $personaId: String!) {
   createBoard(title: $title, description: $description, personaId: $personaId) {
     id
   }
@@ -689,7 +689,7 @@ export const CreatePersonaDocument = gql`
 }
     `;
 export const CreatePostDocument = gql`
-    mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
+    mutation createPost($title: String!, $content: String!, $personaId: String!, $boardId: String!) {
   createPost(
     title: $title
     content: $content
@@ -702,7 +702,7 @@ export const CreatePostDocument = gql`
 }
     `;
 export const CreateReplyDocument = gql`
-    mutation createReply($content: String!, $personaId: Int!, $threadId: String!) {
+    mutation createReply($content: String!, $personaId: String!, $threadId: String!) {
   createReply(
     content: $content
     contentType: TEXT
@@ -714,7 +714,7 @@ export const CreateReplyDocument = gql`
 }
     `;
 export const CreateThreadDocument = gql`
-    mutation createThread($content: String!, $postId: String!, $personaId: Int!, $boardId: String!) {
+    mutation createThread($content: String!, $postId: String!, $personaId: String!, $boardId: String!) {
   createThread(
     content: $content
     contentType: TEXT
@@ -734,35 +734,35 @@ export const PutAttachedImageDocument = gql`
 }
     `;
 export const SetPersonaIconDocument = gql`
-    mutation setPersonaIcon($personaId: Int!, $file: Upload!) {
+    mutation setPersonaIcon($personaId: String!, $file: Upload!) {
   setPersonaIcon(personaId: $personaId, file: $file) {
     filename
   }
 }
     `;
 export const SetTypingStateOnBoardDocument = gql`
-    mutation setTypingStateOnBoard($personaId: Int!, $postId: String!) {
+    mutation setTypingStateOnBoard($personaId: String!, $postId: String!) {
   setTypingStateOnBoard(personaId: $personaId, postId: $postId) {
     id
   }
 }
     `;
 export const DeletePostDocument = gql`
-    mutation deletePost($personaId: Int!, $postId: String!) {
+    mutation deletePost($personaId: String!, $postId: String!) {
   deletePost(personaId: $personaId, postId: $postId) {
     id
   }
 }
     `;
 export const CreateFollowingBoardDocument = gql`
-    mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+    mutation createFollowingBoard($personaId: String!, $boardId: String!) {
   createFollowingBoard(personaId: $personaId, boardId: $boardId) {
     id
   }
 }
     `;
 export const UnfollowBoardDocument = gql`
-    mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+    mutation unfollowBoard($personaId: String!, $boardId: String!) {
   unfollowBoard(personaId: $personaId, boardId: $boardId) {
     id
   }

@@ -644,6 +644,7 @@ const MutationDef = objectType({
         }
         return context.prisma.persona.create({
           data: {
+            id: ulid(),
             userId: context.accessor.user.id,
             name: args.name,
             iconUrl: args.iconPath ?? 'https://example.com',
