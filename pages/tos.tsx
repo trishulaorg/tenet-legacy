@@ -172,7 +172,7 @@ const IndexPage: React.FC = () => {
   }, [token, router, user, data?.board.posts])
 
   const main: React.FC = () => (
-    <div className='text-med dark:text-med-dark'>
+    <div className="text-med dark:text-med-dark">
       <ReactMarkdown>{tos}</ReactMarkdown>
     </div>
   )

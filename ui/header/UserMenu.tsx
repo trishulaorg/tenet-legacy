@@ -4,12 +4,12 @@ import { observer } from 'mobx-react'
 import { HeaderStateContext } from '../../states/HeaderState'
 import { MenuIcon } from '@heroicons/react/solid'
 import { Switch } from '../common/Switch'
-import {useTheme} from "next-themes"
+import { useTheme } from 'next-themes'
 import Link from 'next/link'
 
 export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
-  const {theme, setTheme, systemTheme} = useTheme()
+  const { theme, setTheme, systemTheme } = useTheme()
 
   return (
     <>
@@ -66,11 +66,21 @@ export const UserMenu: React.FC = observer(() => {
                   <Link href="/auth">Sign in / Sign up</Link>
                 </UserMenuItem>
               </Switch>
-              <UserMenuItem onClick={() => {
-                setTheme(theme == "system" ? (systemTheme == "dark" ? "light" : "dark") : (theme == "dark" ? "light" : "dark"))
-                // window.localStorage.setItem('theme', theme)
-                // console.log(theme, window.localStorage.getItem('theme'))
-              }}>
+              <UserMenuItem
+                onClick={() => {
+                  setTheme(
+                    theme == 'system'
+                      ? systemTheme == 'dark'
+                        ? 'light'
+                        : 'dark'
+                      : theme == 'dark'
+                      ? 'light'
+                      : 'dark'
+                  )
+                  // window.localStorage.setItem('theme', theme)
+                  // console.log(theme, window.localStorage.getItem('theme'))
+                }}
+              >
                 Switch Theme
               </UserMenuItem>
             </UserMenuItems>
@@ -93,7 +103,9 @@ export const UserMenuItems: React.FC = observer((props) => {
   }, [ref])
   return (
     <div className="relative inline-block float-right" ref={ref}>
-      <ul className={`absolute right-0 z-10 bg-contentbg dark:bg-contentbg-dark w-48 rounded-sm border-2 dark:border-low`}>
+      <ul
+        className={`absolute right-0 z-10 bg-contentbg dark:bg-contentbg-dark w-48 rounded-sm border-2 dark:border-low`}
+      >
         {props.children}
       </ul>
     </div>
