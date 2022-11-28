@@ -12,6 +12,7 @@ import { CommentInput } from '../thread/CommentInput'
 import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 interface ActivityCardProps {
   post: PostState
@@ -33,7 +34,13 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   }
 
   const content = (
-    <div className="max-w-2xl rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark mb-5 opacity-95 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer">
+    <motion.div
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ ease: [0.17, 0.27, 0.83, 0.67] }}
+      className="max-w-2xl rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark mb-5 opacity-95 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer"
+    >
       <CardTitle title={post.title} />
       <AuthorAndBoardLink
         screenName={post.author.screenName}
@@ -60,7 +67,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
           <Link href={`/board/${post.boardId}`}>Show board</Link>
         </span>
       </CardMeta>
-    </div>
+    </motion.div>
   )
   return <Link href={`/post/${post.id}`}>{content}</Link>
 })

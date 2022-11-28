@@ -79,9 +79,11 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
 
   const content = (
     <motion.div
+      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ ease: [0.17, 0.67, 0.83, 0.67] }}
+      transition={{ ease: [0.17, 0.27, 0.83, 0.67] }}
       className="rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
+      layout
     >
       <CardTitle title={post.title} />
       {isInPostPage ? (
