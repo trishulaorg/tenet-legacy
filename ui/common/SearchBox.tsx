@@ -33,21 +33,21 @@ export const SearchBox: React.FC = () => {
         <div className="absolute bg-contentbg dark:bg-contentbg-dark transition-colors duration-350 w-full rounded border dark:border-low z-10">
           <ul>
             {data?.search.slice(0, 10).map((v) => (
-              <Link key={v.id} href={`/board/${v.id}`}>
+              <Link key={v.id} href={`/board/${v.id}`} legacyBehavior>
                 <li className="px-4 cursor-pointer">{v.title}</li>
               </Link>
             ))}
           </ul>
           {query !== '' && (
-            <Link href={`/search/${query}`}>
+            <Link href={`/search/${query}`} legacyBehavior>
               <button className="mx-4 mt-4 h-6">Show full results</button>
             </Link>
           )}
-          <Link href={`/o/cb`}>
+          <Link href={`/o/cb`} legacyBehavior>
             <button className="mx-4 h-6">Create new board</button>
           </Link>
         </div>
       ) : null}
     </div>
-  )
+  );
 }

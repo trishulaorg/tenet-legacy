@@ -46,7 +46,7 @@ export const Board: React.FC<BoardProps> = observer(
       <div>
         <div className="flex flex-col">
           <h1 className="flex-row my-4 text-med dark:text-med-dark text-2xl">
-            <Link href={`/board/${state.id}`}>
+            <Link href={`/board/${state.id}`} legacyBehavior>
               <span className="cursor-pointer">#{state.title}</span>
             </Link>
           </h1>
@@ -63,7 +63,7 @@ export const Board: React.FC<BoardProps> = observer(
             ) : null}
             {showPostCreate ? (
               <WithPrimaryButtonStyling>
-                <Link href={{ pathname: `/o/cp`, query: { boardId: state.id } }}>
+                <Link href={{ pathname: `/o/cp`, query: { boardId: state.id } }} legacyBehavior>
                   <button className="flex block py-2 -my-2 px-2 -mx-2 md:px-4 md:-mx-4 lg:px-6 lg:-mx-6">
                     <ChatIcon width={24} />
                     <span className="px-2">New Post</span>
@@ -82,6 +82,6 @@ export const Board: React.FC<BoardProps> = observer(
         </ul>
         <PostForm />
       </div>
-    )
+    );
   }
 )
