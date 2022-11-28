@@ -12,8 +12,8 @@ function Tab(props: TabProps) {
         <div
           className={
             state == label
-              ? 'cursor-pointer font-bold border-b-2 border-high dark:border-high-dark transition-all'
-              : 'cursor-pointer transition-all'
+              ? 'w-full cursor-pointer text-center font-bold pb-2 border-b-[3px] border-high dark:border-high-dark transition-all'
+              : 'w-full cursor-pointer text-center font-bold pb-2 transition-all'
           }
           onClick={() => setter(label)}
         >

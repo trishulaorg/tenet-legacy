@@ -40,7 +40,7 @@ const NotificationsPage: React.FC = () => {
           <HeaderStateContext.Provider value={new HeaderState(user)}>
             <Header />
           </HeaderStateContext.Provider>
-          <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+          <PageContentLayout Main={main} Side={() => <></>} />
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
