@@ -28,7 +28,7 @@ jobs:
           cache: 'npm'
       # Start DB and installation process
       - run: npm run docker:start-testdb
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
       - run: npm run dev:docker-db &
       # Check bosh linting issues and type issues
       - run: npm run lint:test
