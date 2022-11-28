@@ -145,11 +145,5 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     </motion.div>
   )
 
-  return showThreads ? (
-    content
-  ) : (
-    <Link href={'/post/' + post.id}>
-      {content}
-    </Link>
-  );
+  return showThreads ? content : <Link href={'/post/' + post.id}>{content}</Link>
 })

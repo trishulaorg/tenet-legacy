@@ -11,82 +11,83 @@ export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
   const { theme, setTheme, systemTheme } = useTheme()
 
-  return <>
-    <div className="flex-initial mx-3 my-auto flex items-center justify-center text-high dark:text-high-dark">
-      <div className="my-auto">
-        <button onClick={() => state.toggleMenu()}>
-          <MenuIcon className="h-5 w-5 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}
-        </button>
-        <Switch visibility={state.menuVisibility}>
-          <UserMenuItems>
-            <Switch visibility={state.isLoggedIn}>
-              <UserMenuItem onClick={() => state.togglePersonaList()}>
-                {state.userState?.currentPersona?.name}
-                <Switch visibility={state.personaListVisibility}>
-                  <Switch visibility={state.userState.isValidUser}>
-                    <ul className="bg-contentbg dark:bg-contentbg-dark width-100">
-                      {state.userState?.personas.map((p, idx) => (
-                        <li key={idx} className="border-solid border-b-2">
-                          <button
-                            onClick={() => {
-                              if (state.userState) {
-                                state.userState.currentPersonaIndex = idx
-                              }
-                            }}
-                          >
-                            {p.name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+  return (
+    <>
+      <div className="flex-initial mx-3 my-auto flex items-center justify-center text-high dark:text-high-dark">
+        <div className="my-auto">
+          <button onClick={() => state.toggleMenu()}>
+            <MenuIcon className="h-5 w-5 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}
+          </button>
+          <Switch visibility={state.menuVisibility}>
+            <UserMenuItems>
+              <Switch visibility={state.isLoggedIn}>
+                <UserMenuItem onClick={() => state.togglePersonaList()}>
+                  {state.userState?.currentPersona?.name}
+                  <Switch visibility={state.personaListVisibility}>
+                    <Switch visibility={state.userState.isValidUser}>
+                      <ul className="bg-contentbg dark:bg-contentbg-dark width-100">
+                        {state.userState?.personas.map((p, idx) => (
+                          <li key={idx} className="border-solid border-b-2">
+                            <button
+                              onClick={() => {
+                                if (state.userState) {
+                                  state.userState.currentPersonaIndex = idx
+                                }
+                              }}
+                            >
+                              {p.name}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </Switch>
                   </Switch>
-                </Switch>
-              </UserMenuItem>
-              <UserMenuItem onClick={() => state.closeMenu()}>
-                <Link
-                  href="/auth"
-                  onClick={() => state.logOut()}
-                  onKeyDown={() => state.logOut()}
-                  role="link"
-                  tabIndex={0}>
-                  
+                </UserMenuItem>
+                <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link
+                    href="/auth"
+                    onClick={() => state.logOut()}
+                    onKeyDown={() => state.logOut()}
+                    role="link"
+                    tabIndex={0}
+                  >
                     Sign out
-                  
-                </Link>
-              </UserMenuItem>
-            </Switch>
-            <Switch visibility={state.isLoggedIn}>
-              <UserMenuItem onClick={() => state.closeMenu()}>
-                <Link href="/persona/settings/icon">Change Persona Icon</Link>
-              </UserMenuItem>
-            </Switch>
-            <Switch visibility={!state.isLoggedIn}>
-              <UserMenuItem onClick={() => state.closeMenu()}>
-                <Link href="/auth">Sign in / Sign up</Link>
-              </UserMenuItem>
-            </Switch>
-            <UserMenuItem
-              onClick={() => {
-                setTheme(
-                  theme == 'system'
-                    ? systemTheme == 'dark'
+                  </Link>
+                </UserMenuItem>
+              </Switch>
+              <Switch visibility={state.isLoggedIn}>
+                <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/persona/settings/icon">Change Persona Icon</Link>
+                </UserMenuItem>
+              </Switch>
+              <Switch visibility={!state.isLoggedIn}>
+                <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/auth">Sign in / Sign up</Link>
+                </UserMenuItem>
+              </Switch>
+              <UserMenuItem
+                onClick={() => {
+                  setTheme(
+                    theme == 'system'
+                      ? systemTheme == 'dark'
+                        ? 'light'
+                        : 'dark'
+                      : theme == 'dark'
                       ? 'light'
                       : 'dark'
-                    : theme == 'dark'
-                    ? 'light'
-                    : 'dark'
-                )
-                // window.localStorage.setItem('theme', theme)
-                // console.log(theme, window.localStorage.getItem('theme'))
-              }}
-            >
-              Switch Theme
-            </UserMenuItem>
-          </UserMenuItems>
-        </Switch>
+                  )
+                  // window.localStorage.setItem('theme', theme)
+                  // console.log(theme, window.localStorage.getItem('theme'))
+                }}
+              >
+                Switch Theme
+              </UserMenuItem>
+            </UserMenuItems>
+          </Switch>
+        </div>
       </div>
-    </div>
-  </>;
+    </>
+  )
 })
 
 export const UserMenuItems: React.FC = observer((props) => {

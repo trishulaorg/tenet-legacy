@@ -17,9 +17,12 @@ export const AuthorAndBoardLink: React.FC<{
       </p>
       {boardLink && (
         <div className={'absolute right-8'}>
-          <Link href={`/board/${boardLink.boardId}`} legacyBehavior>{`Post from #${boardLink.boardName}`}</Link>
+          <Link
+            href={`/board/${boardLink.boardId}`}
+            legacyBehavior
+          >{`Post from #${boardLink.boardName}`}</Link>
         </div>
       )}
     </div>
-  );
+  )
 }

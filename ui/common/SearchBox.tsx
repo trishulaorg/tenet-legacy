@@ -49,5 +49,5 @@ export const SearchBox: React.FC = () => {
         </div>
       ) : null}
     </div>
-  );
+  )
 }

@@ -22,13 +22,15 @@ const FollowingBoardCard: FC<FollowingBoardCardProps> = ({ boards }) => {
               className="text-med dark:text-med-dark text-base"
               key={`following_${board.board.id}`}
             >
-              <Link href={'/board/' + board.board.id} legacyBehavior>{board.board.title}</Link>
+              <Link href={'/board/' + board.board.id} legacyBehavior>
+                {board.board.title}
+              </Link>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  );
+  )
 }
 
 export { FollowingBoardCard }

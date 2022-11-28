@@ -82,6 +82,6 @@ export const Board: React.FC<BoardProps> = observer(
         </ul>
         <PostForm />
       </div>
-    );
+    )
   }
 )
