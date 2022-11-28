@@ -42,6 +42,13 @@ A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `dat
 """
 scalar DateTime
 
+type DirectMessage {
+  createdAt: DateTime!
+  id: ID!
+  receiver: Persona!
+  sender: Persona!
+}
+
 type File {
   encoding: String
   filename: String!
@@ -60,6 +67,7 @@ type FollowingBoard {
 
 type Mutation {
   createBoard(description: String!, personaId: Int!, title: String!): Board!
+  createDirectMessage(rawContent: String!, receiverId: Int!, senderId: Int!): DirectMessage!
   createFollowingBoard(boardId: String!, personaId: Int!): FollowingBoard!
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
   createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!

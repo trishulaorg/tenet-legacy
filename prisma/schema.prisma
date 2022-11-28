@@ -304,6 +304,7 @@ model DirectMessage {
   receiver         Persona  @relation("DirectMessage_receiver", fields: [receiverId], references: [id])
   receiverId       Int
   encryptedContent String   @db.Text
+  iv String    @db.Text
   createdAt        DateTime @default(now())
 }
 

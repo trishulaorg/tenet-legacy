@@ -69,6 +69,10 @@ export interface NexusGenObjects {
     id: string; // ID!
     title: string; // String!
   }
+  DirectMessage: { // root type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+  }
   File: { // root type
     encoding?: string | null; // String
     filename: string; // String!
@@ -161,6 +165,12 @@ export interface NexusGenFieldTypes {
     privilege: NexusGenRootTypes['Privilege']; // Privilege!
     title: string; // String!
   }
+  DirectMessage: { // field return type
+    createdAt: NexusGenScalars['DateTime']; // DateTime!
+    id: string; // ID!
+    receiver: NexusGenRootTypes['Persona']; // Persona!
+    sender: NexusGenRootTypes['Persona']; // Persona!
+  }
   File: { // field return type
     encoding: string | null; // String
     filename: string; // String!
@@ -177,6 +187,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createBoard: NexusGenRootTypes['Board']; // Board!
+    createDirectMessage: NexusGenRootTypes['DirectMessage']; // DirectMessage!
     createFollowingBoard: NexusGenRootTypes['FollowingBoard']; // FollowingBoard!
     createPersona: NexusGenRootTypes['Persona']; // Persona!
     createPost: NexusGenRootTypes['Post']; // Post!
@@ -284,6 +295,12 @@ export interface NexusGenFieldTypeNames {
     privilege: 'Privilege'
     title: 'String'
   }
+  DirectMessage: { // field return type name
+    createdAt: 'DateTime'
+    id: 'ID'
+    receiver: 'Persona'
+    sender: 'Persona'
+  }
   File: { // field return type name
     encoding: 'String'
     filename: 'String'
@@ -300,6 +317,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createBoard: 'Board'
+    createDirectMessage: 'DirectMessage'
     createFollowingBoard: 'FollowingBoard'
     createPersona: 'Persona'
     createPost: 'Post'
@@ -392,6 +410,11 @@ export interface NexusGenArgTypes {
       description: string; // String!
       personaId: number; // Int!
       title: string; // String!
+    }
+    createDirectMessage: { // args
+      rawContent: string; // String!
+      receiverId: number; // Int!
+      senderId: number; // Int!
     }
     createFollowingBoard: { // args
       boardId: string; // String!

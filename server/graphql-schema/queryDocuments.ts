@@ -343,6 +343,13 @@ const queryDocuments: {
         }
       }
     `,
+    createDirectMessage: gql`
+      mutation createDirectMessage($senderId: Int!, $receiverId: Int!, $rawContent: String!) {
+        createDirectMessage(senderId: $senderId, receiverId: $receiverId, rawContent: $rawContent) {
+          id
+        }
+      }
+    `,
   },
 } as const
 

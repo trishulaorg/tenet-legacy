@@ -1,4 +1,5 @@
 import { arg, enumType, list, nonNull, objectType } from 'nexus'
+import crypto from 'crypto'
 import { getPostsWithImageUrls } from './getImageUrls'
 import {
   defaultNotAuthenticatedErrorMessage,
@@ -24,6 +25,11 @@ import {
   ThirdPartyAPIKeyType,
   Thread,
   User,
+  DirectMessage,
+  // VoteOnPost,
+  // VoteOnThread,
+  // VoteOnReply,
+  // PersonaProfile,
 } from 'nexus-prisma'
 import type {
   Post as PrismaPost,
@@ -87,6 +93,16 @@ const AllowedWritingRoleDef = objectType({
     t.field(AllowedWritingRole.read)
     t.field(AllowedWritingRole.update)
     t.field(AllowedWritingRole.delete)
+  },
+})
+
+const DirectMessageDef = objectType({
+  name: DirectMessage.$name,
+  definition(t) {
+    t.field(DirectMessage.id)
+    t.field(DirectMessage.sender)
+    t.field(DirectMessage.receiver)
+    t.field(DirectMessage.createdAt)
   },
 })
 
@@ -1045,6 +1061,44 @@ const MutationDef = objectType({
         })
       },
     })
+    t.nonNull.field('createDirectMessage', {
+      type: DirectMessageDef.name,
+      args: {
+        senderId: arg({
+          type: nonNull('Int'),
+        }),
+        receiverId: arg({
+          type: nonNull('Int'),
+        }),
+        rawContent: arg({
+          type: nonNull('String'),
+        }),
+      },
+      async resolve(_source, { senderId, receiverId, rawContent }, context) {
+        // WIP: encrypt content
+        const key = process.env['DM_SECRET_KEY']
+        if (!key) {
+          throw new Error('Env DM_SECRET_KEY is not set. Set random seed value as DM_SECRET_KEY')
+        }
+        const iv = crypto.randomBytes(16)
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
+        const encryptedContent = Buffer.concat([
+          cipher.update(rawContent),
+          cipher.final(),
+        ]).toString('hex')
+        cipher.update(rawContent)
+        await validatePersona(context.accessor.user, senderId, context.prisma)
+        return await context.prisma.directMessage.create({
+          data: {
+            id: ulid(),
+            senderId,
+            receiverId,
+            encryptedContent,
+            iv: iv.toString('hex'),
+          },
+        })
+      },
+    })
     t.nonNull.field('createFollowingBoard', {
       type: FollowingBoardDef.name,
       args: {
@@ -1204,6 +1258,7 @@ export {
   FollowingBoardDef,
   ThirdPartyAPIKeyDef,
   ThirdPartyAPIKeyTypeDef,
+  DirectMessageDef,
   QueryDef,
   MutationDef,
 }
