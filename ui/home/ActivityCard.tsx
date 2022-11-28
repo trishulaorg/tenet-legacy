@@ -33,7 +33,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   }
 
   const content = (
-    <div className="max-w-2xl rounded-lg p-4 bg-white mb-5 opacity-95 text-gray-700 cursor-pointer">
+    <div className="max-w-2xl rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark mb-5 opacity-95 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer">
       <CardTitle title={post.title} />
       <AuthorAndBoardLink
         screenName={post.author.screenName}

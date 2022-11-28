@@ -25,7 +25,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
               name={reply.author.name}
               iconUrl={reply.author.iconUrl}
             />
-            <div className="ml-2 border-gray-200	border-l-4">
+            <div className="ml-2 border-gray-200 dark:border-gray-800	border-l-4">
               <CardContent content={reply.content} isPost={false} imageUrls={reply.imageUrls} />
               <CardMeta isPost={false}>
                 {reply.author.name === userState.currentPersona?.name ? (

@@ -53,6 +53,14 @@ export enum ContentType {
   Video = 'VIDEO'
 }
 
+export type DirectMessage = {
+  __typename?: 'DirectMessage';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  receiver: Persona;
+  sender: Persona;
+};
+
 export type File = {
   __typename?: 'File';
   encoding?: Maybe<Scalars['String']>;
@@ -74,6 +82,7 @@ export type FollowingBoard = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBoard: Board;
+  createDirectMessage: DirectMessage;
   createFollowingBoard: FollowingBoard;
   createPersona: Persona;
   createPost: Post;
@@ -92,6 +101,13 @@ export type MutationCreateBoardArgs = {
   description: Scalars['String'];
   personaId: Scalars['Int'];
   title: Scalars['String'];
+};
+
+
+export type MutationCreateDirectMessageArgs = {
+  rawContent: Scalars['String'];
+  receiverId: Scalars['Int'];
+  senderId: Scalars['Int'];
 };
 
 
@@ -449,6 +465,15 @@ export type CreateThirdPartyApiKeyMutationVariables = Exact<{
 
 export type CreateThirdPartyApiKeyMutation = { __typename?: 'Mutation', createThirdPartyAPIKey: { __typename?: 'ThirdPartyAPIKey', token: string } };
 
+export type CreateDirectMessageMutationVariables = Exact<{
+  senderId: Scalars['Int'];
+  receiverId: Scalars['Int'];
+  rawContent: Scalars['String'];
+}>;
+
+
+export type CreateDirectMessageMutation = { __typename?: 'Mutation', createDirectMessage: { __typename?: 'DirectMessage', id: string } };
+
 
 export const GetActivitiesDocument = gql`
     query getActivities($personaId: Int) {
@@ -775,6 +800,17 @@ export const CreateThirdPartyApiKeyDocument = gql`
   }
 }
     `;
+export const CreateDirectMessageDocument = gql`
+    mutation createDirectMessage($senderId: Int!, $receiverId: Int!, $rawContent: String!) {
+  createDirectMessage(
+    senderId: $senderId
+    receiverId: $receiverId
+    rawContent: $rawContent
+  ) {
+    id
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string) => Promise<T>;
 
@@ -836,6 +872,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     createThirdPartyAPIKey(variables: CreateThirdPartyApiKeyMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateThirdPartyApiKeyMutation> {
       return withWrapper((wrappedRequestHeaders) => client.request<CreateThirdPartyApiKeyMutation>(CreateThirdPartyApiKeyDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createThirdPartyAPIKey', 'mutation');
+    },
+    createDirectMessage(variables: CreateDirectMessageMutationVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<CreateDirectMessageMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CreateDirectMessageMutation>(CreateDirectMessageDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'createDirectMessage', 'mutation');
     }
   };
 }
