@@ -71,8 +71,9 @@ model Persona {
   modelatingBoards            Board[]                   @relation()
   followingUsers              PersonaRelation[]         @relation("destPersona")
   followedUsers               PersonaRelation[]         @relation("srcPersona")
-  votesOnComments             VoteOnComment[]
   votesOnPosts                VoteOnPost[]
+  votesOnThreads              VoteOnThread[]
+  votesOnReplies              VoteOnReply[]
   user                        User                      @relation(fields: [userId], references: [id])
   userId                      Int
   posts                       Post[]
@@ -106,7 +107,15 @@ model VoteOnPost {
   weight      Int
 }
 
-model VoteOnComment {
+model VoteOnThread {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   Persona  @relation(fields: [createdById], references: [id])
+  weight      Int
+}
+
+model VoteOnReply {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   createdById Int
