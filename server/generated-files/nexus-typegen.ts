@@ -439,6 +439,7 @@ export interface NexusGenArgTypes {
       threadId: string; // String!
     }
     createThirdPartyAPIKey: { // args
+      name: string; // String!
       type: NexusGenEnums['ThirdPartyAPIKeyType']; // ThirdPartyAPIKeyType!
     }
     createThread: { // args
