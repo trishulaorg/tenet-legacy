@@ -36,8 +36,3 @@ jobs:
       # Run tests
       - run: npm run migrate:test
       - run: npm run test
-      # Pubslish to chromatic (storybook related)
-      - name: Publish to Chromatic
-        uses: chromaui/action@v1
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
