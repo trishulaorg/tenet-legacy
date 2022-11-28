@@ -7,8 +7,12 @@ type Props = {
 }
 
 export default function ReactionButtons(props: Props) {
-  eslint - disable - next - line
-  const {} = props
+  const {likesCount, repliesCount} = props
 
-  return <div>{/* TODO */}</div>
+  return (
+  <div className='flex flex-row'>
+    <button onClick={() => (console.log("click like"))}>👍{likesCount}</button>
+    <button onClick={() => (console.log("click reply"))}>💬{repliesCount}</button>
+  </div>
+  )
 }

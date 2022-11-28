@@ -8,5 +8,7 @@ type Props = {
 export default function BodyText(props: Props) {
   const { text } = props
 
-  return <div>{/* TODO */}</div>
+  return <div className='text-med dark:text-med-dark'>
+    {text}
+  </div>
 }
