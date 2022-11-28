@@ -1,23 +1,28 @@
 import NotificationCard from './card/index'
 
-export default function NotificationList() {
-  return (
+type Props = {
+    notifications: string[][] /* List of notifications, [i][0] = category, [i][1] = title, [i][2] = body */
+    currentFilter: String
+}
+
+export default function NotificationList(props: Props) {
+  const { notifications, currentFilter } = props
+    return (
     <>
-      <NotificationCard
-        type="like"
-        title="@gutchom liked your post!"
-        body="gutchom liked your post, 'testing posting'!"
-      />
-      <NotificationCard
-        type="comment"
-        title="@fumetsu commented on 'testing posting'"
-        body="fumetsu commented on 'testing posting': 'wow nice post!'"
-      />
-      <NotificationCard
-        type="follower"
-        title="@ka followed you!"
-        body="New follower, @ka. Say hi!"
-      />
+      {notifications?.map((notification) => {
+        if(notification[0]! == currentFilter || currentFilter == "All"){
+            return(<NotificationCard 
+                type={notification[0]!}
+                title={notification[1]!}
+                body={notification[2]!}
+            />)
+        }
+        else{
+            return(
+                <></>
+            )
+        }
+      })}
     </>
   )
 }

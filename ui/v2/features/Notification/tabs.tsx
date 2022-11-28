@@ -1,10 +1,12 @@
-import { SetStateAction, useState } from 'react'
-type  Props = {
+import { Dispatch, SetStateAction } from 'react'
+
+type  TabProps = {
     label : string
     state : string
     setter : React.Dispatch<SetStateAction<string>>
 }
-function Tab(props: Props) {
+
+function Tab(props: TabProps) {
     const { label, state, setter } = props
     return(
         <div
@@ -20,15 +22,21 @@ function Tab(props: Props) {
     )
 }
 
-export default function NotificationsTabs(){
-  const [currentTab, setCurrentTab] = useState('All')
+type Props = {
+    filterSetter: Dispatch<SetStateAction<string>>
+    currentFilter: string
+}
+
+export default function NotificationsTabs(props:Props){
+//   const [currentTab, setCurrentTab] = useState('All')
+  const { filterSetter, currentFilter } = props
   return (
     <>
       <div className="flex flex-row justify-evenly pb-2">
-        <Tab label="All" state={currentTab} setter={setCurrentTab}/>
-        <Tab label="Comments" state={currentTab} setter={setCurrentTab}/>
-        <Tab label="Likes" state={currentTab} setter={setCurrentTab}/>
-        <Tab label="Followers" state={currentTab} setter={setCurrentTab}/>
+        <Tab label="All" state={currentFilter} setter={filterSetter}/>
+        <Tab label="Comments" state={currentFilter} setter={filterSetter}/>
+        <Tab label="Likes" state={currentFilter} setter={filterSetter}/>
+        <Tab label="Followers" state={currentFilter} setter={filterSetter}/>
       </div>
     </>
   )

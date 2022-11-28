@@ -10,7 +10,7 @@ export default function NotificationType(props: Props) {
         <>
             <div className="mr-2">
                 <div className="rounded-full bg-contentbg dark:bg-contentbg-dark p-2 text-2xl">
-                    {type == "comment" ? "🗨️" : (type == "like" ? "❤️" : "🙋‍♂️")}
+                    {type == "Comments" ? "🗨️" : (type == "Likes" ? "❤️" : "🙋‍♂️")}
                 </div>
             </div>
         </>
