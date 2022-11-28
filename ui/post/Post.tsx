@@ -81,8 +81,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     <motion.div
       initial={{ y: 10, opacity: 0, borderRadius: 100 }}
       animate={{ y: 0, opacity: 1, borderRadius: 20 }}
-      exit={{ y: -10, opacity: 0 }}
-      className="rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
+      className="drop-shadow-lg rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
       layout
     >
       <CardTitle title={post.title} />

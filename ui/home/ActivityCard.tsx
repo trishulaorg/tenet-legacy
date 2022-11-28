@@ -38,9 +38,8 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
       layout
       initial={{ y: 10, opacity: 0, borderRadius: 100 }}
       animate={{ y: 0, opacity: 1, borderRadius: 20 }}
-      exit={{ y: -10, opacity: 0 }}
       transition={{ ease: [0.17, 0.27, 0.83, 0.67] }}
-      className="max-w-2xl p-4 bg-contentbg dark:bg-contentbg-dark mb-5 opacity-95 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer"
+      className="drop-shadow-lg max-w-2xl p-4 bg-contentbg dark:bg-contentbg-dark mb-5 opacity-95 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer"
     >
       <CardTitle title={post.title} />
       <AuthorAndBoardLink
