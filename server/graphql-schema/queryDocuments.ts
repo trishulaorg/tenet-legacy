@@ -337,8 +337,8 @@ const queryDocuments: {
       }
     `,
     createThirdPartyAPIKey: gql`
-      mutation createThirdPartyAPIKey($type: ThirdPartyAPIKeyType!) {
-        createThirdPartyAPIKey(type: $type) {
+      mutation createThirdPartyAPIKey($type: ThirdPartyAPIKeyType!, $name: String!) {
+        createThirdPartyAPIKey(type: $type, name: $name) {
           token
         }
       }

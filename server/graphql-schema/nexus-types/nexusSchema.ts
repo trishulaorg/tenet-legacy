@@ -1140,8 +1140,11 @@ const MutationDef = objectType({
         type: arg({
           type: nonNull(ThirdPartyAPIKeyType.name),
         }),
+        name: arg({
+          type: nonNull('String'),
+        }),
       },
-      async resolve(_source, { type }, context) {
+      async resolve(_source, { type, name }, context) {
         if (!validateUserIsAnnonymous(context.accessor)) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
@@ -1155,6 +1158,23 @@ const MutationDef = objectType({
             },
             token: ulid(),
             type,
+            bot: {
+              create: {
+                id: ulid(),
+                persona: {
+                  create: {
+                    name,
+                    screenName: name,
+                    iconUrl: '',
+                    user: {
+                      connect: {
+                        id: context.accessor.user.id,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         })
         if (key === null) {
