@@ -1,7 +1,18 @@
-export const NotificationType: React.FC = () => {
+
+
+type Props = {
+    type : string
+}
+
+export default function NotificationType(props: Props) {
+    const { type } = props
     return (
         <>
-            <div>{/* TODO */}</div>
+            <div className="rounded-full bg-contentbg dark:bg-contentbg-dark p-2">
+                <div>
+                    {type == "comment" ? "🗨️" : (type == "like" ? "❤️" : "👀")}
+                </div>
+            </div>
         </>
     )
 }
