@@ -78,72 +78,74 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   }
 
   const content = (
-    <motion.div
-      initial={{ y: 10, opacity: 0, borderRadius: 100 }}
-      animate={{ y: 0, opacity: 1, borderRadius: 20 }}
-      className="drop-shadow-lg rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
-      layout
-    >
-      <CardTitle title={post.title} />
-      {isInPostPage ? (
-        <AuthorAndBoardLink
-          screenName={post.author.screenName}
-          name={post.author.name}
-          iconUrl={post.author.iconUrl}
-          boardLink={{
-            boardId: post.boardId,
-            boardName: post.parent?.title ?? boardState.title,
-          }}
-        />
-      ) : (
-        <AuthorAndBoardLink
-          screenName={post.author.screenName}
-          name={post.author.name}
-          iconUrl={post.author.iconUrl}
-        />
-      )}
-      <CardContent content={post.content} imageUrls={post.imageUrls} />
-      <CardMeta>
-        {post.privilege.deleteSelf ? (
-          <CardIcons
-            showCommentIcon={isInPostPage}
-            commentNumber={post.responseNumber}
-            upvote={post.upvote}
-            downvote={post.downvote}
-            replyCallback={() => {
-              postForm.replyTo = post
-              postForm.onSubmit = onSubmit
-              postForm.boardState = boardState
-              postForm.onChange = () => publishWritingStatus(post.id)
+    <div>
+      <motion.div
+        initial={{ y: 10, opacity: 0, borderRadius: 100 }}
+        animate={{ y: 0, opacity: 1, borderRadius: 20 }}
+        className="drop-shadow-lg rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
+        layout
+      >
+        <CardTitle title={post.title} />
+        {isInPostPage ? (
+          <AuthorAndBoardLink
+            screenName={post.author.screenName}
+            name={post.author.name}
+            iconUrl={post.author.iconUrl}
+            boardLink={{
+              boardId: post.boardId,
+              boardName: post.parent?.title ?? boardState.title,
             }}
-            deleteCallback={onPostDelete}
           />
         ) : (
-          <CardIcons
-            showCommentIcon={isInPostPage}
-            commentNumber={post.responseNumber}
-            upvote={post.upvote}
-            downvote={post.downvote}
-            replyCallback={() => {
-              postForm.replyTo = post
-              postForm.onSubmit = onSubmit
-              postForm.onChange = () => publishWritingStatus(post.id)
-            }}
+          <AuthorAndBoardLink
+            screenName={post.author.screenName}
+            name={post.author.name}
+            iconUrl={post.author.iconUrl}
           />
         )}
+        <CardContent content={post.content} imageUrls={post.imageUrls} />
+        <CardMeta>
+          {post.privilege.deleteSelf ? (
+            <CardIcons
+              showCommentIcon={isInPostPage}
+              commentNumber={post.responseNumber}
+              upvote={post.upvote}
+              downvote={post.downvote}
+              replyCallback={() => {
+                postForm.replyTo = post
+                postForm.onSubmit = onSubmit
+                postForm.boardState = boardState
+                postForm.onChange = () => publishWritingStatus(post.id)
+              }}
+              deleteCallback={onPostDelete}
+            />
+          ) : (
+            <CardIcons
+              showCommentIcon={isInPostPage}
+              commentNumber={post.responseNumber}
+              upvote={post.upvote}
+              downvote={post.downvote}
+              replyCallback={() => {
+                postForm.replyTo = post
+                postForm.onSubmit = onSubmit
+                postForm.onChange = () => publishWritingStatus(post.id)
+              }}
+            />
+          )}
 
-        <div className="pb-2" />
-        <CreatedAt created={post.createdAt} />
-        <TypingMemberListLabel members={debouncedMembers} />
-      </CardMeta>
-      <div className="pb-5" />
+          <div className="pb-2" />
+          <CreatedAt created={post.createdAt} />
+          <TypingMemberListLabel members={debouncedMembers} />
+        </CardMeta>
+        <div className="pb-5" />
+      </motion.div>
       {showThreads &&
         (post.hasRepsponse ? (
           <Thread threads={post.responses} parent={post} />
         ) : (
           <div>No Comments Yet</div>
         ))}
-    </motion.div>
+    </div>
   )
 
   return showThreads ? content : <Link href={'/post/' + post.id}>{content}</Link>
