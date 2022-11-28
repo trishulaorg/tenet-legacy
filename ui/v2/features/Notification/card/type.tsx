@@ -8,9 +8,9 @@ export default function NotificationType(props: Props) {
     const { type } = props
     return (
         <>
-            <div className="rounded-full bg-contentbg dark:bg-contentbg-dark p-2">
-                <div>
-                    {type == "comment" ? "🗨️" : (type == "like" ? "❤️" : "👀")}
+            <div className="mr-2">
+                <div className="rounded-full bg-contentbg dark:bg-contentbg-dark p-2 text-2xl">
+                    {type == "comment" ? "🗨️" : (type == "like" ? "❤️" : "🙋‍♂️")}
                 </div>
             </div>
         </>

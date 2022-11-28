@@ -1,19 +1,23 @@
 import NotificationCard from './card/index'
 
-export default function NotificationList(){
-    return (
-        <>
-            <NotificationCard />
-            <NotificationCard />
-            {/* Placeholder cards */}
-            <div className="flex flex-col">
-                <div className="h-[200px] w-[100%] p-[20px] m-[20px] bg-contentbg dark:bg-contentbg-dark rounded">
-                    Post 1
-                </div>
-                <div className="h-[200px] w-[100%] p-[20px] m-[20px] bg-contentbg dark:bg-contentbg-dark rounded">
-                    Post 2
-                </div>
-            </div>
-        </>
-    )
+export default function NotificationList() {
+  return (
+    <>
+      <NotificationCard
+        type="like"
+        title="@gutchom liked your post!"
+        body="gutchom liked your post, 'testing posting'!"
+      />
+      <NotificationCard
+        type="comment"
+        title="@fumetsu commented on 'testing posting'"
+        body="fumetsu commented on 'testing posting': 'wow nice post!'"
+      />
+      <NotificationCard
+        type="follower"
+        title="@ka followed you!"
+        body="New follower, @ka. Say hi!"
+      />
+    </>
+  )
 }

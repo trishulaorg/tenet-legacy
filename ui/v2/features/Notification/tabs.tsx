@@ -24,7 +24,7 @@ export default function NotificationsTabs(){
   const [currentTab, setCurrentTab] = useState('All')
   return (
     <>
-      <div className="flex flex-row justify-evenly">
+      <div className="flex flex-row justify-evenly pb-2">
         <Tab label="All" state={currentTab} setter={setCurrentTab}/>
         <Tab label="Comments" state={currentTab} setter={setCurrentTab}/>
         <Tab label="Likes" state={currentTab} setter={setCurrentTab}/>

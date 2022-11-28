@@ -3,14 +3,21 @@ import NotificationTitle from './title'
 import NotificationType from './type'
 // import { NotificationUserIcon } from './UserIcon'
 
-export default function NotificationCard(){
+type Props = {
+    type: string
+    title: string
+    body: string
+}
+
+export default function NotificationCard(props: Props){
+    const { type, title, body } = props
     return (
         <>
-            <div className="flex flex-row">
-                <NotificationType type="like"/>
-                <div className="flex flex-col">
-                    <NotificationTitle />
-                    <NotificationBody />
+            <div className="flex flex-row w-full py-3">
+                <NotificationType type={type}/>
+                <div className="flex flex-col w-full">
+                    <NotificationTitle title={title}/>
+                    <NotificationBody body={body}/>
                 </div>
             </div>
         </>
