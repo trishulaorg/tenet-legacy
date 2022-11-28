@@ -15,7 +15,6 @@
     "build:api": "npx graphql-codegen",
     "build:graphql": "npm run prisma:regenerate && npm run build:nexus && npm run build:api",
     "build": "next build && rimraf public/sw.js public/workbox-*.js && cpx .next/sw.js public && cpx .next/workbox-*.js public",
-    "build-storybook": "build-storybook",
     "dev": "next dev",
     "dev:docker-db": "cross-env NODE_ENV=test next dev",
     "predev:docker-db": "npm run count",
@@ -31,7 +30,6 @@
     "migrate:test": "dotenv -e .env.test prisma migrate dev",
     "seed:test": "prisma db seed",
     "start": "next start",
-    "storybook": "start-storybook -p 6006",
     "test": "npm run test:all",
     "test:all": "jest",
     "test:api": "echo to be implemented",
@@ -39,8 +37,6 @@
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "vercel-build": "prisma generate",
-    "chromatic:dev": "npx chromatic",
-    "chromatic:ci": "npx chromatic --exit-zero-on-changes",
     "count": "printf '\\e[36m\\n  This project has\\e[35m %s lines\\e[36m of source code!\\n\\n\\e[m' $(find . -name '*.html' -o -name '*.css' -o -name '*.ts' -o -name '*.tsx' | grep -v node_modules | xargs wc -l | tail -1 | awk '{print $1}')",
     "prepare": "husky install"
   },
@@ -64,11 +60,6 @@
     "@graphql-codegen/typescript-graphql-request": "^4.5.3",
     "@graphql-codegen/typescript-operations": "^2.5.3",
     "@heroicons/react": "^1.0.5",
-    "@storybook/addon-actions": "^6.4.18",
-    "@storybook/addon-essentials": "^6.1.21",
-    "@storybook/addon-links": "^6.4.18",
-    "@storybook/addon-postcss": "^2.0.0",
-    "@storybook/react": "^6.1.21",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@types/apollo-upload-client": "^17.0.1",
@@ -102,7 +93,6 @@
     "prettier": "^2.5.1",
     "prisma": "^4.5.0",
     "rimraf": "^3.0.2",
-    "storybook-addon-next-router": "^3.1.1",
     "tailwindcss": "^3.2.4",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
@@ -134,15 +124,15 @@
     "micro-cors": "^0.1.1",
     "mobx": "^6.3.13",
     "mobx-react": "^7.2.1",
-    "next": "^12.2.5",
+    "next": "^13.0.5",
     "next-pwa": "^5.6.0",
     "next-themes": "^0.2.1",
     "nexus": "^1.3.0",
     "nexus-prisma": "next",
     "pusher": "^5.1.1-beta",
     "pusher-js": "^7.3.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.2",
     "react-firebaseui": "^6.0.0",
     "react-markdown": "^8.0.3",
@@ -155,12 +145,10 @@
   },
   "overrides": {
     "@prisma/client": "^4.5.0",
-    "graphql": "^16.5.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "graphql": "^16.5.0"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "readme": "ERROR: No README data found!",
   "_id": "tenet@0.0.1"
