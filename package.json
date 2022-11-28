@@ -110,7 +110,7 @@
     "dotenv-cli": "^6.0.0",
     "file-type": "^17.1.6",
     "firebase": "^9.9.3",
-    "firebaseui": "^6.0.1",
+    "firebaseui": "^6.0.2",
     "framer-motion": "^7.6.12",
     "graphql": "^16.5.0",
     "graphql-iso-date": "^3.6.1",
