@@ -79,9 +79,9 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
 
   const content = (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ ease: [0.17, 0.27, 0.83, 0.67] }}
+      initial={{ y: 10, opacity: 0, borderRadius: 100 }}
+      animate={{ y: 0, opacity: 1, borderRadius: 20 }}
+      exit={{ y: -10, opacity: 0 }}
       className="rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
       layout
     >
