@@ -44,6 +44,9 @@ export const UserMenu: React.FC = observer(() => {
                   </Switch>
                 </UserMenuItem>
                 <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/notifications">Notifications</Link>
+                </UserMenuItem>
+                <UserMenuItem onClick={() => state.closeMenu()}>
                   <Link href="/auth">
                     <a
                       onClick={() => state.logOut()}
