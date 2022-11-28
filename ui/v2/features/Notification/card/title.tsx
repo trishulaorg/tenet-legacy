@@ -1,4 +1,4 @@
-export const NotificationTitle: React.FC = () => {
+export default function NotificationTitle() {
     return (
         <>
             <div>{/* TODO */}</div>

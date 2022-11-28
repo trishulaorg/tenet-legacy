@@ -1,4 +1,4 @@
-export const NotificationBody: React.FC = () => {
+export default function NotificationBody(){
     return (
         <>
             <div>{/* TODO */}</div>

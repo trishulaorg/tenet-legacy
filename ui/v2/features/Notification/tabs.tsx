@@ -1,10 +1,11 @@
 import { SetStateAction, useState } from 'react'
-interface Props{
+type  Props = {
     label : string
     state : string
     setter : React.Dispatch<SetStateAction<string>>
 }
-const Tab: React.FC<Props> =  ({label, state, setter}) => {
+function Tab(props: Props) {
+    const { label, state, setter } = props
     return(
         <div
           className={
@@ -19,7 +20,7 @@ const Tab: React.FC<Props> =  ({label, state, setter}) => {
     )
 }
 
-export const NotificationsTabs: React.FC = () => {
+export default function NotificationsTabs(){
   const [currentTab, setCurrentTab] = useState('All')
   return (
     <>
@@ -28,16 +29,6 @@ export const NotificationsTabs: React.FC = () => {
         <Tab label="Comments" state={currentTab} setter={setCurrentTab}/>
         <Tab label="Likes" state={currentTab} setter={setCurrentTab}/>
         <Tab label="Followers" state={currentTab} setter={setCurrentTab}/>
-      </div>
-      
-      {/* Placeholder cards */}
-      <div className="flex flex-col">
-        <div className="h-[200px] w-[100%] p-[20px] m-[20px] bg-contentbg dark:bg-contentbg-dark rounded">
-            Post 1
-        </div>
-        <div className="h-[200px] w-[100%] p-[20px] m-[20px] bg-contentbg dark:bg-contentbg-dark rounded">
-            Post 2
-        </div>
       </div>
     </>
   )

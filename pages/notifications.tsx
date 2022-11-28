@@ -15,7 +15,7 @@ import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 // import { makePusher } from '../libs/usePusher'
 // import type { Channel } from 'pusher-js'
 // import { swrKey } from '../libs/swrKey'
-import { Notifications } from '../ui/v2/features/Notification/index'
+import Notifications from '../ui/v2/features/Notification/index'
 
 const NotificationsPage: React.FC = () => {
   const token = getGqlToken()

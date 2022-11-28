@@ -1,4 +1,4 @@
-export const NotificationUserIcon: React.FC = () => {
+export default function NotificationUserIcon(){
     return (
         <>
             <div>{/* TODO */}</div>
