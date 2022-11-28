@@ -7,16 +7,15 @@ export interface UserIconProps {
 }
 
 export const UserIcon: React.FC<UserIconProps> = ({ size, src }) => {
-
   const sizes = {
-    small : {
+    small: {
       width: '20px',
-      height: '20px'
+      height: '20px',
     },
     medium: {
       width: '35px',
-      height: '35px'
-    }
+      height: '35px',
+    },
   }
 
   return !src ? (
