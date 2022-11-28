@@ -62,9 +62,5 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
       </CardMeta>
     </div>
   )
-  return (
-    <Link href={`/post/${post.id}`}>
-      <a>{content}</a>
-    </Link>
-  )
+  return <Link href={`/post/${post.id}`}>{content}</Link>
 })

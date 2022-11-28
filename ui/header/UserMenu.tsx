@@ -44,15 +44,14 @@ export const UserMenu: React.FC = observer(() => {
                   </Switch>
                 </UserMenuItem>
                 <UserMenuItem onClick={() => state.closeMenu()}>
-                  <Link href="/auth">
-                    <a
-                      onClick={() => state.logOut()}
-                      onKeyDown={() => state.logOut()}
-                      role="link"
-                      tabIndex={0}
-                    >
-                      Sign out
-                    </a>
+                  <Link
+                    href="/auth"
+                    onClick={() => state.logOut()}
+                    onKeyDown={() => state.logOut()}
+                    role="link"
+                    tabIndex={0}
+                  >
+                    Sign out
                   </Link>
                 </UserMenuItem>
               </Switch>
