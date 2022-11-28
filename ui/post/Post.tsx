@@ -21,6 +21,7 @@ import { parseISO, differenceInSeconds } from 'date-fns'
 import { useDebounce } from 'use-debounce'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export interface PostProps {
   post: PostState
@@ -77,7 +78,12 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   }
 
   const content = (
-    <div className="rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350">
+    <motion.div
+      initial={{ y: 10, opacity: 0, borderRadius: 100 }}
+      animate={{ y: 0, opacity: 1, borderRadius: 20 }}
+      className="drop-shadow-lg rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
+      layout
+    >
       <CardTitle title={post.title} />
       {isInPostPage ? (
         <AuthorAndBoardLink
@@ -137,14 +143,8 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
         ) : (
           <div>No Comments Yet</div>
         ))}
-    </div>
+    </motion.div>
   )
 
-  return showThreads ? (
-    content
-  ) : (
-    <Link href={'/post/' + post.id}>
-      <a>{content}</a>
-    </Link>
-  )
+  return showThreads ? content : <Link href={'/post/' + post.id}>{content}</Link>
 })
