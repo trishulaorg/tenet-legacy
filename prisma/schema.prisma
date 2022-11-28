@@ -62,28 +62,31 @@ model User {
 }
 
 model Persona {
-  id                       Int                       @id @default(autoincrement())
-  createdAt                DateTime                  @default(now())
-  name                     String                    @unique @db.VarChar(25)
-  screenName               String                    @db.VarChar(30)
-  iconUrl                  String                    @db.Text
-  FollowingBoards          FollowingBoard[]
-  modelatingBoards         Board[]                   @relation()
-  followingUsers           PersonaRelation[]         @relation("destPersona")
-  followedUsers            PersonaRelation[]         @relation("srcPersona")
-  votesOnComments          VoteOnComment[]
-  votesOnPosts             VoteOnPost[]
-  user                     User                      @relation(fields: [userId], references: [id])
-  userId                   Int
-  posts                    Post[]
-  threads                  Thread[]
-  replies                  Reply[]
-  systemAdministratorRoles SystemAdministratorRole[]
-  boardRoles               BoardRole[]
-  postRoles                PostRole[]
-  bot                      Bot?
-  notificationEvent_senders        NotificationEvent[] @relation("NotificationEvent_sender")
-  notificationEvent_receivers        NotificationEvent[] @relation("NotificationEvent_receiver")
+  id                          Int                       @id @default(autoincrement())
+  createdAt                   DateTime                  @default(now())
+  name                        String                    @unique @db.VarChar(25)
+  screenName                  String                    @db.VarChar(30)
+  iconUrl                     String                    @db.Text
+  FollowingBoards             FollowingBoard[]
+  modelatingBoards            Board[]                   @relation()
+  followingUsers              PersonaRelation[]         @relation("destPersona")
+  followedUsers               PersonaRelation[]         @relation("srcPersona")
+  votesOnComments             VoteOnComment[]
+  votesOnPosts                VoteOnPost[]
+  user                        User                      @relation(fields: [userId], references: [id])
+  userId                      Int
+  posts                       Post[]
+  threads                     Thread[]
+  replies                     Reply[]
+  systemAdministratorRoles    SystemAdministratorRole[]
+  boardRoles                  BoardRole[]
+  postRoles                   PostRole[]
+  bot                         Bot?
+  notificationEvent_senders   NotificationEvent[]       @relation("NotificationEvent_sender")
+  notificationEvent_receivers NotificationEvent[]       @relation("NotificationEvent_receiver")
+  directMesswage_senders      DirectMessage[]           @relation("DirectMessage_sender")
+  direectMessages_receivers   DirectMessage[]           @relation("DirectMessage_receiver")
+  PersonaProfile              PersonaProfile?
 }
 
 model PersonaRelation {
@@ -283,4 +286,23 @@ model NotificationEvent {
   type       NotificationEventType
   createdAt  DateTime              @default(now())
   readAt     DateTime?
+}
+
+model DirectMessage {
+  id               String   @id @db.Char(26)
+  sender           Persona  @relation("DirectMessage_sender", fields: [senderId], references: [id])
+  senderId         Int
+  receiver         Persona  @relation("DirectMessage_receiver", fields: [receiverId], references: [id])
+  receiverId       Int
+  encryptedContent String   @db.Text
+  createdAt        DateTime @default(now())
+}
+
+model PersonaProfile {
+  id          String   @id @db.Char(26)
+  persona     Persona  @relation(fields: [personaId], references: [id])
+  personaId   Int      @unique
+  createdAt   DateTime @default(now())
+  bio         String   @db.Text
+  headerImage String
 }
