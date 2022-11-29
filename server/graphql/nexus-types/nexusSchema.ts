@@ -43,7 +43,7 @@ import {
   validateUserIsAnnonymous,
   validateUserIsNotABot,
 } from '../domain/authorization'
-import type { Privilege } from '../../generated-files/frontend-graphql-definition'
+import type { Privilege } from '../../autogen/definition'
 
 const FileDef = objectType({
   name: 'File',

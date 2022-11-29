@@ -1,12 +1,7 @@
 import type { FC } from 'react'
-import type { GetFollowingBoardQuery } from '../../server/generated-files/frontend-graphql-definition'
 import Link from 'next/link'
 
-interface FollowingBoardCardProps {
-  boards: GetFollowingBoardQuery['getFollowingBoard']
-}
-
-const FollowingBoardCard: FC<FollowingBoardCardProps> = ({ boards }) => {
+const FollowingBoardCard: FC<any> = ({ boards }) => {
   if (boards.length === 0) {
     return null
   }
@@ -17,7 +12,7 @@ const FollowingBoardCard: FC<FollowingBoardCardProps> = ({ boards }) => {
           <tr className="font-bold text-xl text-high dark:text-high-dark mb-2">
             Following Boards:
           </tr>
-          {boards.map((board) => (
+          {boards.map((board: any) => (
             <tr
               className="text-med dark:text-med-dark text-base"
               key={`following_${board.board.id}`}

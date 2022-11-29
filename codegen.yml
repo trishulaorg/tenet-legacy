@@ -1,11 +1,11 @@
 overwrite: true
 schema: 'http://localhost:3000/api/graphql'
-documents: 'server/graphql-schema/queryDocuments.ts'
+documents: ['server/graphql/schema/**']
 generates:
-  server/generated-files/frontend-graphql-definition.ts:
+  server/autogen/definition.ts:
     config:
       scalars:
-        Upload: '../../server/graphql-schema/scalars/scalarDefinitions#Upload'
+        Upload: '../../server/graphql/scalars/scalarDefinitions#Upload'
     plugins:
       - 'typescript'
       - 'typescript-operations'

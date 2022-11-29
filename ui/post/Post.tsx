@@ -93,7 +93,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
             iconUrl={post.author.iconUrl}
             boardLink={{
               boardId: post.boardId,
-              boardName: post.parent?.title ?? boardState.title,
+              boardName: post.parent?.title ?? boardState.title ?? '',
             }}
           />
         ) : (

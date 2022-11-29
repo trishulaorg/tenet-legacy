@@ -1,15 +1,14 @@
 import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
+import { getUser, UserStateContext } from '../../states/UserState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { apiHooks, client, setAuthToken } from '../../libs/fetchAPI'
+import { apiHooks, client } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
@@ -22,21 +21,10 @@ const IndexPage: React.FC = () => {
     isReady,
     query: { board_id: rawBoardId },
   } = router
-  let user: UserState | undefined
-  if (!user) {
-    user = defaultUser()
-  }
-  if (token) {
-    setAuthToken(token)
-    user = new UserState(token, [], 0)
-  }
+  const user = getUser()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
 
-  const contentGraphqlQueryDocument = queryDocuments.Query.board
-
-  const [context, setContext] = useState<BoardState>(
-    new BoardState('', contentGraphqlQueryDocument)
-  )
+  const [context, setContext] = useState<BoardState>(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
   const { data: boardData, mutate } = apiHooks.useGetBoard(
@@ -82,19 +70,20 @@ const IndexPage: React.FC = () => {
       )
     }
     f()
-  }, [token, router, user, boardData?.board.posts])
+  }, [token, router, user, boardData?.board.posts, mutate, personaId])
 
   useEffect(() => {
     if (boardData) {
       setContext(
-        new BoardState(boardData.board.id, contentGraphqlQueryDocument, {
+        new BoardState({
+          id: boardData.board.id,
           title: boardData.board.title,
           description: boardData.board.description,
           posts: boardData.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
         })
       )
     }
-  }, [token, boardData, contentGraphqlQueryDocument])
+  }, [token, boardData])
 
   const following = followingBoardData?.getFollowingBoard.some(
     (boardData) => boardId && boardData.board.id === boardId
