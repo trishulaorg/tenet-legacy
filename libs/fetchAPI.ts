@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request'
 import { getSdk, getSdkWithHooks } from '../server/autogen/definition'
 
-const ENDPOINT = '/api/graphql'
+const ENDPOINT = 'https://coton.vercel.app/api/graphql'
 
 const defaultHeaders = {
   Accept: 'application/json',

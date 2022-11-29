@@ -1,13 +1,13 @@
 import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
+import { getUser, UserStateContext } from '../../states/UserState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { apiHooks, client, setAuthToken } from '../../libs/fetchAPI'
+import { apiHooks, client } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
@@ -21,14 +21,7 @@ const IndexPage: React.FC = () => {
     isReady,
     query: { board_id: rawBoardId },
   } = router
-  let user: UserState | undefined
-  if (!user) {
-    user = defaultUser()
-  }
-  if (token) {
-    setAuthToken(token)
-    user = new UserState(token, [], 0)
-  }
+  const user = getUser()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
 
   const [context, setContext] = useState<BoardState>(new BoardState({}))

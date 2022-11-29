@@ -1,27 +1,26 @@
 import { Header } from '../../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../../states/HeaderState'
 import React, { useEffect } from 'react'
-import { defaultUser, UserStateContext, UserState } from '../../../states/UserState'
-import { getGqlToken } from '../../../libs/cookies'
+import { getUser, UserStateContext } from '../../../states/UserState'
 import { PageContentLayout } from '../../../ui/layouts/PageContentLayout'
 
 import { PageBaseLayout } from '../../../ui/layouts/PageBaseLayout'
 import { PersonaIconForm } from '../../../ui/settings/PersonaIconForm'
+import router from 'next/router'
 
 const SetPersonaIconPage: React.FC = () => {
-  const token = getGqlToken()
-  let user = defaultUser()
-  if (token) {
-    user = new UserState(token, [], 0)
-  }
+  const user = getUser()
 
   useEffect(() => {
-    if (user) {
-      ;(async () => {
+    ;(async (): Promise<void> => {
+      if (user) {
         await user.request()
-      })()
-    }
-  })
+        if (user.token !== 'INVALID_TOKEN' && !user.currentPersona) {
+          await router.push('/persona/onboarding')
+        }
+      }
+    })()
+  }, [router, user])
   const main: React.FC = () => (
     <>
       <PersonaIconForm />

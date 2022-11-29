@@ -1,7 +1,7 @@
 import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, UserState, UserStateContext } from '../../states/UserState'
+import { getUser, UserStateContext } from '../../states/UserState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
@@ -19,11 +19,7 @@ const PostPage: React.FC = () => {
     isReady,
     query: { post_id: rawPostId },
   } = router
-  let user = defaultUser()
-  if (token) {
-    setAuthToken(token)
-    user = new UserState(token, [], 0)
-  }
+  const user = getUser()
 
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 

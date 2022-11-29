@@ -89,7 +89,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
     return (
       <div>
         <div>
-          {showPostCreate === true && user.isValidUser ? (
+          {showPostCreate === true && user.token !== 'INVALID_TOKEN' ? (
             <div>
               <div className="py-4">
                 <h2 className="my-2 text-med dark:text-med-dark text-1xl">Create New Post</h2>
