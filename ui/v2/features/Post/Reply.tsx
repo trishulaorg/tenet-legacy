@@ -14,7 +14,7 @@ type Props = {
 export default function Reply(props: Props) {
   const { authorUserId, authorScreenName, body, likesCount, repliesCount, createdAt, userIcon } =
     props
-
+  console.log(authorUserId, authorScreenName, body, likesCount, repliesCount, createdAt, userIcon)
   return (
     <div>
       <img />

@@ -24,6 +24,13 @@ export default function Post(props: Props) {
     userIcon,
     attachedImages,
   } = props
-
+  console.log(authorUserId,
+    authorScreenName,
+    body,
+    likesCount,
+    repliesCount,
+    createdAt,
+    userIcon,
+    attachedImages,)
   return <div>{/* TODO */}</div>
 }
