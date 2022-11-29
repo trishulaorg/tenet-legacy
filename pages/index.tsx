@@ -16,16 +16,22 @@ import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { swrKey } from '../libs/swrKey'
 import { init } from '../libs/initFirebase'
 import { isValidAuthInstance } from '../libs/isValidAuthInstance'
+import type { NextPage } from 'next'
+import { getSdk } from '../server/generated-files/frontend-graphql-definition'
+import { GraphQLClient } from 'graphql-request'
 
-const IndexPage: React.FC = () => {
+const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [token, setToken] = useState(getGqlToken())
   const [user, setUser] = useState(defaultUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
   const { data: activitiesData, mutate } = apiHooks.useGetActivities(
-    () => swrKey.useGetActivities(personaId ? { personaId } : undefined),
-    {}
+    () => swrKey.useGetActivities(undefined), // TODO: Not personalized yet
+    {},
+    {
+      initialData,
+    } as any
   )
 
   const { data: followingBoardsData } = apiHooks.useGetFollowingBoard(
@@ -104,6 +110,16 @@ const IndexPage: React.FC = () => {
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
+}
+
+export async function getStaticProps() {
+  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
+  const initialData = await client.getActivities()
+  return {
+    props: {
+      initialData,
+    },
+  }
 }
 
 export default IndexPage
