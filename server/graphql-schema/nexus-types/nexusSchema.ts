@@ -118,11 +118,9 @@ const BoardDef = objectType({
     t.field(Board.moderators)
     t.nonNull.field('privilege', {
       type: PrivilegeDef.name,
-      resolve(source) {
-        // @ts-expect-error pass privilege from mutation
+      resolve(source: any) {
         if ('privilege' in source && typeof source['privilege'] === 'object') {
-          // @ts-expect-error pass privilege from mutation
-          return source['privilege'] as unknown as Privilege
+          return source['privilege']
         } else {
           return {
             createChild: false,
@@ -135,10 +133,8 @@ const BoardDef = objectType({
     })
     t.field({
       ...Board.posts,
-      resolve: (source, ...rest) => {
-        // @ts-expect-error preserve imageUrls
+      resolve: (source: any, ...rest) => {
         if ('posts' in source && Array.isArray(source['posts'])) {
-          // @ts-expect-error preserve imageUrls
           return source['posts'] as unknown as PrismaPost[]
         } else {
           return Board.posts.resolve(source, ...rest)
@@ -163,10 +159,8 @@ const PostDef = objectType({
     t.field(Post.content)
     t.field({
       ...Post.threads,
-      resolve: (source, ...rest) => {
-        // @ts-expect-error preserve imageUrls
+      resolve: (source: any, ...rest) => {
         if ('threads' in source && Array.isArray(source['threads'])) {
-          // @ts-expect-error preserve imageUrls
           return source['threads'] as unknown as PrismaThread[]
         } else {
           return Post.threads.resolve(source, ...rest)
@@ -175,10 +169,8 @@ const PostDef = objectType({
     })
     t.nonNull.field('privilege', {
       type: PrivilegeDef.name,
-      resolve(source) {
-        // @ts-expect-error pass privilege from mutation
+      resolve(source: any) {
         if ('privilege' in source && typeof source['privilege'] === 'object') {
-          // @ts-expect-error preserve imageUrls
           return source['privilege'] as unknown as Privilege
         } else {
           return {
@@ -194,8 +186,7 @@ const PostDef = objectType({
     t.field(Post.createdAt)
     t.nonNull.list.field('imageUrls', {
       type: nonNull('String'),
-      resolve: (source) => {
-        // @ts-expect-error intentionally ignore
+      resolve: (source: any) => {
         return source['imageUrls'] ?? []
       },
     })
@@ -212,10 +203,8 @@ const ThreadDef = objectType({
     t.field(Thread.content)
     t.nonNull.field('privilege', {
       type: PrivilegeDef.name,
-      resolve(source) {
-        // @ts-expect-error pass privilege from mutation
+      resolve(source: any) {
         if ('privilege' in source && typeof source['privilege'] === 'object') {
-          // @ts-expect-error pass privilege from mutation
           return source['privilege'] as unknown as Privilege
         } else {
           return {
@@ -229,10 +218,8 @@ const ThreadDef = objectType({
     })
     t.field({
       ...Thread.replies,
-      resolve: (source, ...rest) => {
-        // @ts-expect-error preserve imageUrls
+      resolve: (source: any, ...rest) => {
         if ('replies' in source && Array.isArray(source['replies'])) {
-          // @ts-expect-error preserve imageUrls
           return source['replies'] as unknown as PrismaReply[]
         } else {
           return Thread.replies.resolve(source, ...rest)
@@ -243,8 +230,7 @@ const ThreadDef = objectType({
     t.field(Thread.createdAt)
     t.nonNull.list.field('imageUrls', {
       type: nonNull('String'),
-      resolve: (source) => {
-        // @ts-expect-error intentionally ignore
+      resolve: (source: any) => {
         return source['imageUrls'] ?? []
       },
     })
@@ -261,10 +247,8 @@ const ReplyDef = objectType({
     t.field(Reply.createdAt)
     t.nonNull.field('privilege', {
       type: PrivilegeDef.name,
-      resolve(source) {
-        // @ts-expect-error pass privilege from mutation
+      resolve(source: any) {
         if ('privilege' in source && typeof source['privilege'] === 'object') {
-          // @ts-expect-error pass privilege from mutation
           return source['privilege'] as unknown as Privilege
         } else {
           return {
@@ -278,8 +262,7 @@ const ReplyDef = objectType({
     })
     t.nonNull.list.field('imageUrls', {
       type: nonNull('String'),
-      resolve: (source) => {
-        // @ts-expect-error intentionally ignore
+      resolve: (source: any) => {
         return source['imageUrls'] ?? []
       },
     })
@@ -1157,8 +1140,11 @@ const MutationDef = objectType({
         type: arg({
           type: nonNull(ThirdPartyAPIKeyType.name),
         }),
+        name: arg({
+          type: nonNull('String'),
+        }),
       },
-      async resolve(_source, { type }, context) {
+      async resolve(_source, { type, name }, context) {
         if (!validateUserIsAnnonymous(context.accessor)) {
           throw new NotAuthenticatedError(defaultNotAuthenticatedErrorMessage)
         }
@@ -1172,6 +1158,23 @@ const MutationDef = objectType({
             },
             token: ulid(),
             type,
+            bot: {
+              create: {
+                id: ulid(),
+                persona: {
+                  create: {
+                    name,
+                    screenName: name,
+                    iconUrl: '',
+                    user: {
+                      connect: {
+                        id: context.accessor.user.id,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
         })
         if (key === null) {

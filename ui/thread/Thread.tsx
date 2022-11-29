@@ -14,6 +14,7 @@ import { mutate } from 'swr'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
+import { motion } from 'framer-motion'
 
 export interface ThreadProps {
   parent: PostState
@@ -49,13 +50,19 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
   return (
     <ul className="pl-4">
       {props.threads.map((thread, i) => (
-        <li key={i} className="py-4">
+        <motion.li
+          layout
+          initial={{ y: 20, opacity: 0, borderRadius: 100 }}
+          animate={{ y: 0, opacity: 0.85, borderRadius: 20 }}
+          className="my-4 ml-4 drop-shadow-lg p-6 bg-contentbg dark:bg-contentbg-dark mb-5 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer"
+          key={i}
+        >
           <AuthorAndBoardLink
             screenName={thread.author.screenName}
             name={thread.author.name}
             iconUrl={thread.author.iconUrl}
           />
-          <div className="ml-2 border-gray-200 dark:border-contentbg/25	border-l-4 transition-colors duration-350">
+          <div className="ml-2 transition-colors duration-350">
             <CardContent content={thread.content} isPost={false} imageUrls={thread.imageUrls} />
             <CardMeta isPost={false}>
               <CardIcons
@@ -76,7 +83,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
             </CardMeta>
             {thread.hasRepsponse ? <Reply replies={thread.responses} /> : undefined}
           </div>
-        </li>
+        </motion.li>
       ))}
     </ul>
   )

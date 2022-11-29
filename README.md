@@ -15,7 +15,7 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 ## Development Steps
 
 1. At first, you have to clone this repo
-2. Execute `npm install` and `cp .env.example .env`
+2. Execute `npm i --legacy-peer-deps` and `cp .env.example .env`
 3. `.env` file. Ask config for admin.
 4. Run `npm run docker:start-testdb`
 5. Run `npm run migrate:test`

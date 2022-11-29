@@ -55,7 +55,9 @@ const IndexPage: React.FC = () => {
               <div className="w-8 text-low dark:text-low-dark">#{idx + 1}</div>
               <div className="flex-1 text-med dark:text-med-dark">
                 <div className="text-2xl	text-high dark:text-high-dark">
-                  <Link href={`/board/${c.id}`}>{c.title}</Link>
+                  <Link href={`/board/${c.id}`} legacyBehavior>
+                    {c.title}
+                  </Link>
                 </div>
                 <div className="">Kind: {c.kind}</div>
               </div>

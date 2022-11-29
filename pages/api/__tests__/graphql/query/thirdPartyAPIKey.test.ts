@@ -106,7 +106,7 @@ describe('test third-party api', () => {
         authorization: `Bearer ${key.token}`,
       })
       try {
-        await client.createThirdPartyAPIKey({ type: ThirdPartyApiKeyType.Bot })
+        await client.createThirdPartyAPIKey({ type: ThirdPartyApiKeyType.Bot, name: ulid() })
       } catch {
         throw new Error()
       }
