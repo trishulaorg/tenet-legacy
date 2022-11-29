@@ -1,0 +1,301 @@
+
+query getActivities($personaId: Int) {
+  activities(personaId: $personaId) {
+    id
+    board {
+      id
+      title
+      description
+    }
+    boardId
+    title
+    content
+    createdAt
+    persona {
+      id
+      screenName
+      name
+      iconUrl
+    }
+    privilege {
+      deleteSelf
+    }
+    threads {
+      id
+      board {
+        id
+        title
+      }
+      postId
+      content
+      createdAt
+      persona {
+        id
+        screenName
+        name
+        iconUrl
+      }
+      privilege {
+        deleteSelf
+      }
+      replies {
+        id
+        threadId
+        content
+        createdAt
+        persona {
+          id
+          screenName
+          name
+          iconUrl
+        }
+        privilege {
+          deleteSelf
+        }
+      }
+    }
+  }
+}
+query getBoard($topicId: String!, $personaId: Int) {
+  board(id: $topicId, personaId: $personaId) {
+    id
+    title
+    description
+    privilege {
+      deleteSelf
+    }
+    posts {
+      id
+      boardId
+      board {
+        id
+        description
+        title
+      }
+      title
+      content
+      imageUrls
+      createdAt
+      persona {
+        id
+        screenName
+        name
+        iconUrl
+      }
+      privilege {
+        deleteSelf
+      }
+      threads {
+        id
+        board {
+          id
+          title
+        }
+        boardId
+        postId
+        content
+        imageUrls
+        createdAt
+        persona {
+          id
+          screenName
+          name
+          iconUrl
+        }
+        privilege {
+          deleteSelf
+        }
+        replies {
+          createdAt
+          threadId
+          id
+          content
+          imageUrls
+          privilege {
+            deleteSelf
+          }
+          persona {
+            id
+            screenName
+            name
+            iconUrl
+          }
+        }
+      }
+    }
+  }
+}
+query getMe {
+  me {
+    personas {
+      id
+      name
+      screenName
+      iconUrl
+    }
+  }
+}
+query getPost($id: String!, $personaId: Int) {
+  post(id: $id, personaId: $personaId) {
+    id
+    boardId
+    board {
+      id
+      title
+      description
+    }
+    title
+    content
+    imageUrls
+    createdAt
+    persona {
+      id
+      screenName
+      name
+      iconUrl
+    }
+    privilege {
+      deleteSelf
+    }
+    threads {
+      id
+      board {
+        id
+        title
+      }
+      postId
+      content
+      imageUrls
+      createdAt
+      persona {
+        id
+        screenName
+        name
+        iconUrl
+      }
+      privilege {
+        deleteSelf
+      }
+      replies {
+        createdAt
+        id
+        threadId
+        content
+        imageUrls
+        persona {
+          id
+          screenName
+          name
+          iconUrl
+        }
+        privilege {
+          deleteSelf
+        }
+      }
+    }
+  }
+}
+query Search($query: String!) {
+  search(query: $query) {
+    kind
+    id
+    title
+  }
+}
+query getFollowingBoard($personaId: Int!) {
+  getFollowingBoard(personaId: $personaId) {
+    board {
+      title
+      id
+    }
+  }
+}
+mutation createBoard($title: String!, $description: String!, $personaId: Int!) {
+  createBoard(title: $title, description: $description, personaId: $personaId) {
+    id
+  }
+}
+mutation createPersona($screenName: String!, $name: String!, $iconPath: String!) {
+  createPersona(screenName: $screenName, name: $name, iconPath: $iconPath) {
+    name
+    screenName
+  }
+}
+mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
+  createPost(
+    title: $title
+    content: $content
+    contentType: TEXT
+    personaId: $personaId
+    boardId: $boardId
+  ) {
+    id
+  }
+}
+mutation createReply($content: String!, $personaId: Int!, $threadId: String!) {
+  createReply(
+    content: $content
+    contentType: TEXT
+    personaId: $personaId
+    threadId: $threadId
+  ) {
+    id
+  }
+}
+mutation createThread(
+  $content: String!
+  $postId: String!
+  $personaId: Int!
+  $boardId: String!
+) {
+  createThread(
+    content: $content
+    contentType: TEXT
+    personaId: $personaId
+    boardId: $boardId
+    postId: $postId
+  ) {
+    id
+  }
+}
+mutation putAttachedImage($postId: String!, $files: [Upload!]!) {
+  putAttachedImage(postId: $postId, files: $files) {
+    filename
+  }
+}
+mutation setPersonaIcon($personaId: Int!, $file: Upload!) {
+  setPersonaIcon(personaId: $personaId, file: $file) {
+    filename
+  }
+}
+mutation setTypingStateOnBoard($personaId: Int!, $postId: String!) {
+  setTypingStateOnBoard(personaId: $personaId, postId: $postId) {
+    id
+  }
+}
+mutation deletePost($personaId: Int!, $postId: String!) {
+  deletePost(personaId: $personaId, postId: $postId) {
+    id
+  }
+}
+mutation createFollowingBoard($personaId: Int!, $boardId: String!) {
+  createFollowingBoard(personaId: $personaId, boardId: $boardId) {
+    id
+  }
+}
+mutation unfollowBoard($personaId: Int!, $boardId: String!) {
+  unfollowBoard(personaId: $personaId, boardId: $boardId) {
+    id
+  }
+}
+mutation createThirdPartyAPIKey($type: ThirdPartyAPIKeyType!, $name: String!) {
+  createThirdPartyAPIKey(type: $type, name: $name) {
+    token
+  }
+}
+mutation createDirectMessage($senderId: Int!, $receiverId: Int!, $rawContent: String!) {
+  createDirectMessage(senderId: $senderId, receiverId: $receiverId, rawContent: $rawContent) {
+    id
+  }
+}
+
