@@ -4,11 +4,10 @@ import Cors from 'micro-cors'
 import processRequest from 'graphql-upload/processRequest.mjs'
 import type { MicroRequest } from 'apollo-server-micro/dist/types'
 import type { ServerResponse } from 'http'
-import schema from '../../server/graphql-schema/nexus'
+import schema from '../../server/graphql/nexus'
 import { context } from '../../server'
 import type { ApolloServerPlugin } from 'apollo-server-plugin-base/src'
 import type { GraphQLRequestListener } from 'apollo-server-plugin-base/src'
-import type { EndpointsType } from '../../server/validation/validationSchema'
 import { validationSchema } from '../../server/validation/validationSchema'
 import { ValidationError } from '../../server/errors/BadRequest/ValidationError'
 import { ZodError } from 'zod'
@@ -23,7 +22,9 @@ const validationPlugin: ApolloServerPlugin = {
           return
         }
         try {
-          validationSchema[operationName as keyof EndpointsType].parse(request.variables as never)
+          validationSchema[operationName as unknown as keyof typeof validationSchema]!.parse(
+            request.variables as never
+          )
         } catch (e) {
           if (e instanceof ZodError) {
             // same format as ZodError thrown in resolver

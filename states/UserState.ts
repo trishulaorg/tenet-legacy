@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import type { Channel } from 'pusher-js/with-encryption'
 import { createContext } from 'react'
-import { queryDocuments } from '../server/graphql-schema/queryDocuments'
+import { client, setAuthToken } from '../libs/fetchAPI'
 
 export class UserState {
   _personas: PersonaState[]
@@ -24,19 +24,10 @@ export class UserState {
     this.requested = value
   }
   async request(): Promise<void> {
-    const result = await fetch('/api/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: 'Bearer ' + this.token,
-      },
-      body: JSON.stringify({
-        query: queryDocuments.Query.me,
-      }),
-    }).then((r) => r.json())
+    setAuthToken(this.token)
+    const result = await client.getMe()
     this.isValidUser = !result.me
-    this.personas = result.data.me?.personas?.map(
+    this.personas = result.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )
   }

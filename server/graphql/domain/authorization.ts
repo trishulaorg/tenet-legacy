@@ -11,7 +11,7 @@ import {
 } from '../../errors/NotAuthenticatedError'
 import { NotFoundError } from '../../errors/NotFoundError'
 import { NotAuthorizedError } from '../../errors/NotAuthorizedError'
-import type { Privilege } from '../../generated-files/frontend-graphql-definition'
+import type { Privilege } from '../../autogen/definition'
 import type { BotAccesorType, UniversalAccessorType, UserAccesorType } from '../..'
 
 const validatePersona = async (

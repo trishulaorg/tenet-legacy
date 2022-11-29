@@ -8,7 +8,6 @@ import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 
@@ -26,11 +25,7 @@ const PostPage: React.FC = () => {
     user = new UserState(token, [], 0)
   }
 
-  const contentGraphqlQueryDocument = queryDocuments.Query.post
-
-  const [context, setContext] = useState<BoardState>(
-    new BoardState('', contentGraphqlQueryDocument)
-  )
+  const [context, setContext] = useState<BoardState>(new BoardState({}))
 
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
   const { data, mutate } = apiHooks.useGetPost(
@@ -57,14 +52,15 @@ const PostPage: React.FC = () => {
   useEffect(() => {
     if (data) {
       setContext(
-        new BoardState(data.post.board.id, contentGraphqlQueryDocument, {
+        new BoardState({
+          id: data.post.board.id,
           title: data.post.board.title,
           description: data.post.board.description,
           posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
         })
       )
     }
-  }, [token, data, contentGraphqlQueryDocument])
+  }, [token, data])
   const main: React.FC = () => (
     <>
       <BoardStateContext.Provider value={context}>

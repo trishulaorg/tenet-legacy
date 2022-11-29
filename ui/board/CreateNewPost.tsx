@@ -5,7 +5,6 @@ import { client, setAuthToken } from '../../libs/fetchAPI'
 import { BoardState } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { mutate } from 'swr'
-import { queryDocuments } from '../../server/graphql-schema/queryDocuments'
 import { useRouter } from 'next/router'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { useDropzone } from 'react-dropzone'
@@ -18,7 +17,9 @@ interface CreateNewPostProps {
 
 export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
   ({ boardId, showPostCreate = true }) => {
-    const state = new BoardState(boardId, queryDocuments.Query.post)
+    const state = new BoardState({
+      id: boardId,
+    })
     const user = useContext(UserStateContext)
     const router = useRouter()
     const [title, setTitle] = useState('')
@@ -37,7 +38,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
         title,
         content,
         personaId: user.currentPersona?.id ?? -1,
-        boardId: state.id,
+        boardId: state.id ?? '',
       })
 
       await client.putAttachedImage({ postId: createdPostId, files: files })

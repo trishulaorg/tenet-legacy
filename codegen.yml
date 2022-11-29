@@ -5,7 +5,7 @@ generates:
   server/autogen/definition.ts:
     config:
       scalars:
-        Upload: '../../server/graphql-schema/scalars/scalarDefinitions#Upload'
+        Upload: '../../server/graphql/scalars/scalarDefinitions#Upload'
     plugins:
       - 'typescript'
       - 'typescript-operations'

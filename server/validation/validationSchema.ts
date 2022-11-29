@@ -1,7 +1,7 @@
 import type { ZodNumber } from 'zod'
 import { z } from 'zod'
 import type { ZodString } from 'zod/lib/types'
-import type { getSdk } from '../generated-files/frontend-graphql-definition'
+import type { getSdk } from '../autogen/definition'
 
 export type EndpointsType = ReturnType<typeof getSdk>
 

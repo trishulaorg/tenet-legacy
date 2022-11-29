@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { defaultUser, UserState, UserStateContext } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
-import { getGqlToken } from '../libs/cookies'
+import { getGqlToken, getCookies } from '../libs/cookies'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
@@ -62,6 +62,7 @@ const IndexPage: React.FC = () => {
       const r = init()
       const { auth } = r
       if (!isValidAuthInstance(auth) || !auth.currentUser) return
+      if (getCookies().has('gqltoken')) return
       const localToken = jwt.sign(
         { uid: auth.currentUser.uid },
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

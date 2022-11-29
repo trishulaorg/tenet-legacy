@@ -1,8 +1,7 @@
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { PersonaState } from './UserState'
-import { queryDocuments } from '../server/graphql-schema/queryDocuments'
-import type { GetPostQuery } from '../server/generated-files/frontend-graphql-definition'
+import type { GetPostQuery } from '../server/autogen/definition'
 
 export interface PersonaType {
   id: number
@@ -129,35 +128,24 @@ export class PostState {
 }
 
 export class BoardState {
-  private readonly _id: string
-  private readonly _title: string = ''
-  private readonly _description: string = ''
+  private readonly _id: string | null
+  private readonly _title: string | null
+  private readonly _description: string | null
   private readonly _posts: PostState[] = []
-  private readonly _fetcherDocument: string
-  constructor(
-    id: string,
-    fetcherDocument: string,
-    opts?: { title: string; description: string; posts: PostState[] }
-  ) {
-    this._id = id
-    this._fetcherDocument = fetcherDocument
-    if (opts) {
-      this._title = opts.title
-      this._description = opts.description
-      this._posts = opts.posts
-    }
+  constructor(args: { id?: string; title?: string; description?: string; posts?: PostState[] }) {
+    this._id = args.id ?? null
+    this._title = args.title ?? null
+    this._description = args.description ?? null
+    this._posts = args.posts ?? []
     makeAutoObservable(this)
   }
-  get id(): string {
+  get id(): string | null {
     return this._id
   }
-  get fetcherDocument(): string {
-    return this._fetcherDocument
-  }
-  get description(): string {
+  get description(): string | null {
     return this._description
   }
-  get title(): string {
+  get title(): string | null {
     return this._title
   }
   get posts(): PostState[] {
@@ -165,4 +153,4 @@ export class BoardState {
   }
 }
 
-export const BoardStateContext = createContext(new BoardState('', queryDocuments.Query.board))
+export const BoardStateContext = createContext(new BoardState({}))
