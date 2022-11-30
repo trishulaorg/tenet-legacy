@@ -14,7 +14,7 @@ const MultiLineText: FC<{ text: string }> = ({ text }: { text: string }) => {
   const result = splittedTexts.map((item, index) => {
     return (
       <Fragment key={index}>
-        <Linkify options={options} tagName="span">
+        <Linkify options={options} tagName="div">
           {item}
         </Linkify>
         {index !== splittedTexts.length - 1 ? <br /> : null}
