@@ -30,8 +30,8 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
     () => swrKey.useGetActivities(undefined), // TODO: Not personalized yet
     {},
     {
-      initialData,
-    } as any
+      fallbackData: initialData,
+    }
   )
 
   const { data: followingBoardsData } = apiHooks.useGetFollowingBoard(

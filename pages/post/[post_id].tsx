@@ -13,7 +13,7 @@ import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { getSdk } from '../../server/generated-files/frontend-graphql-definition'
 import { GraphQLClient } from 'graphql-request'
-import { NextPage } from 'next'
+import type { NextPage } from 'next'
 
 const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const token = getGqlToken()
@@ -39,7 +39,7 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const { data, mutate } = apiHooks.useGetPost(
     () => postId,
     personaId ? { id: postId, personaId } : { id: postId },
-    { initialData } as any
+    { fallbackData: initialData }
   )
 
   useEffect(() => {
@@ -93,9 +93,9 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
 export async function getServerSideProps(context: any) {
   const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
   const req = await context.req
-  var postURL = req.url.toString()
+  const postURL = req.url.toString()
   const postID = postURL.slice(
-    postURL.indexOf('post/') + 5,
+    postURL.indexOf('post/') + 5
     // postURL.indexOf('.json')
   )
   const initialData = await client.getPost({ id: postID })

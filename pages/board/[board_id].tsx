@@ -16,7 +16,7 @@ import type { Channel } from 'pusher-js'
 import { swrKey } from '../../libs/swrKey'
 import { getSdk } from '../../server/generated-files/frontend-graphql-definition'
 import { GraphQLClient } from 'graphql-request'
-import { NextPage } from 'next'
+import type { NextPage } from 'next'
 
 const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) => {
   const token = getGqlToken()
@@ -50,9 +50,9 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
           personaId,
         }
       : { topicId: boardId },
-      {
-        initialBoardData
-      } as any
+    {
+      initialBoardData,
+    } as any
   )
 
   const { data: followingBoardData, mutate: mutateFollowingBoard } = apiHooks.useGetFollowingBoard(
@@ -150,13 +150,15 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
   )
 }
 
-export async function getServerSideProps(context:any) {
+export async function getServerSideProps(context: any) {
   const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
   const req = await context.req
-  var boardURL = req.url.toString()
-  const boardId = boardURL.slice(boardURL.indexOf("board/")+6) /* Add 6 to get only ID, without 'board/' */
+  const boardURL = req.url.toString()
+  const boardId = boardURL.slice(
+    boardURL.indexOf('board/') + 6
+  ) /* Add 6 to get only ID, without 'board/' */
 
-  const initialBoardData = await client.getBoard({topicId: boardId} as any)
+  const initialBoardData = await client.getBoard({ topicId: boardId } as any)
   return {
     props: {
       initialBoardData,
