@@ -83,7 +83,9 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
         {(activitiesData?.activities ?? [])
           .map((v) => PostState.fromPostTypeJSON(v))
           .map((v) => (
-            <ActivityCard key={v.id} post={v} />
+            <li key={v.id}>
+              <ActivityCard post={v} />
+            </li>
           ))}
       </ul>
     </>
