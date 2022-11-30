@@ -8,12 +8,15 @@ import { defaultUser, UserState } from '../../states/UserState'
 import { Header } from '../../ui/header/Header'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
+import { getSdk } from '../../server/generated-files/frontend-graphql-definition'
+import { GraphQLClient } from 'graphql-request'
+import { NextPage } from 'next'
 
 const SearchResultList: React.FC = (props) => {
   return <ul>{props.children}</ul>
 }
 
-const IndexPage: React.FC = () => {
+const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const token = getGqlToken()
   let user = defaultUser()
   if (token) user = new UserState(token, [], 0)
@@ -39,7 +42,7 @@ const IndexPage: React.FC = () => {
 
   const { data } = apiHooks.useSearch(
     () => word && apiHooks.useSearch.name + JSON.stringify(searchQuery),
-    searchQuery
+    searchQuery, { initialData } as any
   )
 
   const main: React.FC = () => (
@@ -74,6 +77,22 @@ const IndexPage: React.FC = () => {
       <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
     </div>
   )
+}
+
+export async function getServerSideProps(context: any) {
+  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
+  const req = await context.req
+  var searchURL = req.url.toString()
+  const searchTerm = searchURL.slice(
+    searchURL.indexOf('search/') + 7, /* Add 7 to get only term, without 'search/' */
+    searchURL.indexOf('.json')
+  )
+  const initialData = await client.Search({ query: searchTerm })
+  return {
+    props: {
+      initialData,
+    },
+  }
 }
 
 export default IndexPage
