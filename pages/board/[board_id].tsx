@@ -39,8 +39,8 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
         }
       : { topicId: boardId },
     {
-      initialBoardData,
-    } as any
+      fallbackData: initialBoardData,
+    }
   )
 
   const { data: followingBoardData, mutate: mutateFollowingBoard } = apiHooks.useGetFollowingBoard(
