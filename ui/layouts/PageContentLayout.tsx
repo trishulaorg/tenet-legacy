@@ -13,7 +13,16 @@ export const PageContentLayout: React.FC<{ Main: React.FC; Side: React.FC }> = o
   ({ Main, Side }) => {
     return (
       <div className="max-w-md mt-5 mx-auto md:max-w-4xl px-2 md:pl-2 md:pr-0">
-        <div className="flex justify-center">
+        <div
+          style={{
+            backgroundImage: "url('/wallpaper.jpg')",
+            filter: 'blur(5px)',
+            position: 'fixed',
+            width: '100%',
+            height: '100%',
+          }}
+        />
+        <div className="flex justify-center fixed">
           <PageLayout size={2} displayName={'Main'}>
             <Main />
           </PageLayout>
