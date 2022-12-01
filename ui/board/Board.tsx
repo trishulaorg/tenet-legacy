@@ -51,7 +51,7 @@ export const Board: React.FC<BoardProps> = observer(
             </Link>
           </h1>
           <div className="text-med dark:text-med-dark">
-            <MultiLineText text={state.description} />
+            <MultiLineText text={state.description ?? ''} />
           </div>
           <div className={'flex ml-auto'}>
             {onFollowButtonClick ? (

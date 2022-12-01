@@ -1,4 +1,4 @@
-import { getSdk } from '../../../../../server/generated-files/frontend-graphql-definition'
+import { getSdk } from '../../../../../server/autogen/definition'
 import { GraphQLClient } from 'graphql-request'
 import { PrismaClient } from '@prisma/client'
 

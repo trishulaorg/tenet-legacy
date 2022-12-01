@@ -1,37 +1,34 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { getGqlToken } from '../../libs/cookies'
-import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
+import { apiHooks } from '../../libs/fetchAPI'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
-import { defaultUser, UserState } from '../../states/UserState'
 import { Header } from '../../ui/header/Header'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-import { getSdk } from '../../server/generated-files/frontend-graphql-definition'
+import { getSdk } from '../../server/autogen/definition'
 import { GraphQLClient } from 'graphql-request'
 import type { NextPage } from 'next'
+import { getUser } from '../../states/UserState'
 
 const SearchResultList: React.FC = (props) => {
   return <ul>{props.children}</ul>
 }
 
 const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
-  const token = getGqlToken()
-  let user = defaultUser()
-  if (token) user = new UserState(token, [], 0)
+  const user = getUser()
+  const router = useRouter()
+
   useEffect(() => {
-    const f = async (): Promise<void> => {
+    ;(async (): Promise<void> => {
       if (user) {
         await user.request()
+        if (user.token !== 'INVALID_TOKEN' && !user.currentPersona) {
+          await router.push('/persona/onboarding')
+        }
       }
-      if (token) {
-        setAuthToken(token)
-      }
-    }
-    f()
-  }, [token, user])
-  const router = useRouter()
+    })()
+  }, [router, user])
   const {
     isReady,
     query: { word: rawWord },

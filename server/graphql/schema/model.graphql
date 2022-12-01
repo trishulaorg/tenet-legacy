@@ -1,0 +1,30 @@
+# TODO: Need to be refactored
+
+# scalar Date
+# 
+# schema {
+#   query: Query
+# }
+# 
+# type Board {
+#   id: ID!
+# }
+# 
+# union Edges = Board
+# 
+# type PageInfo {
+#   endCursor: Number!
+#   hasNextPage: Boolean!
+# }
+# 
+# type ArrayResult {
+#   totalCount: Number!
+#   edges: [Edge]!
+#   cursor: Number!
+#   pageInfo: PageInfo!
+# }
+# 
+# type Query {
+#   id: ID!
+# }
+# 

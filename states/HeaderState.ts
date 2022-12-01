@@ -3,7 +3,7 @@ import { createContext } from 'react'
 import { removeGqlCookie } from '../libs/cookies'
 
 import type { UserState } from './UserState'
-import { defaultUser } from './UserState'
+import { getUser } from './UserState'
 
 export class HeaderState {
   userState: UserState
@@ -11,7 +11,7 @@ export class HeaderState {
   personaListVisibility = false
   menuAnchorElement?: HTMLButtonElement
   constructor(userState?: UserState) {
-    this.userState = userState ?? defaultUser()
+    this.userState = userState ?? getUser()
     makeAutoObservable(this)
   }
   toggleMenu(): void {
@@ -36,11 +36,11 @@ export class HeaderState {
     this.userState = userState
   }
   logOut(): void {
-    this.userState = defaultUser()
+    this.userState = getUser()
     removeGqlCookie()
   }
   get isLoggedIn(): boolean {
-    return Boolean(this.userState.isValidUser)
+    return this.userState.token !== 'INVALID_TOKEN'
   }
 }
 

@@ -2,10 +2,10 @@ import { Header } from '../ui/header/Header'
 import jwt from 'jsonwebtoken'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { defaultUser, UserState, UserStateContext } from '../states/UserState'
+import { UserStateContext, getUser } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
-import { getGqlToken } from '../libs/cookies'
+import { getCookies } from '../libs/cookies'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
@@ -16,13 +16,13 @@ import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { swrKey } from '../libs/swrKey'
 import { init } from '../libs/initFirebase'
 import { isValidAuthInstance } from '../libs/isValidAuthInstance'
+import { observer } from 'mobx-react'
 import type { NextPage } from 'next'
-import { getSdk } from '../server/generated-files/frontend-graphql-definition'
+import { getSdk } from '../server/autogen/definition'
 import { GraphQLClient } from 'graphql-request'
 
 const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
-  const [token, setToken] = useState(getGqlToken())
-  const [user, setUser] = useState(defaultUser())
+  const [user] = useState(getUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
@@ -40,14 +40,10 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   )
 
   useEffect(() => {
-    if (token) setUser(new UserState(token, [], 0))
-  }, [token])
-
-  useEffect(() => {
     const f = async (): Promise<void> => {
-      if (user) {
+      if (user.token !== 'INVALID_TOKEN') {
         await user.request()
-        if (user.isValidUser && !user.currentPersona) {
+        if (user.token !== 'INVALID_TOKEN' && !user.currentPersona) {
           await router.push('/persona/onboarding')
         }
         if (user.currentPersona?.id) {
@@ -56,25 +52,29 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       }
     }
     f()
-  }, [token, router, user])
+  }, [user, router])
   useEffect(() => {
-    if (token) {
+    if (user.token) {
       mutate()
     }
-  }, [token, mutate])
+  }, [user.token, mutate])
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ;(async () => {
       const r = init()
       const { auth } = r
       if (!isValidAuthInstance(auth) || !auth.currentUser) return
+      if (getCookies().has('gqltoken') && getCookies().get('gqltoken') !== '') {
+        user.token = getCookies().get('gqltoken') ?? ''
+        return
+      }
       const localToken = jwt.sign(
         { uid: auth.currentUser.uid },
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         process.env['NEXT_PUBLIC_API_TOKEN_SECRET']!
       )
       document.cookie = `gqltoken=${localToken}`
-      setToken(localToken)
+      user.token = localToken
     })()
   })
   const main: React.FC = () => (
@@ -124,4 +124,4 @@ export async function getStaticProps() {
   }
 }
 
-export default IndexPage
+export default observer(IndexPage)

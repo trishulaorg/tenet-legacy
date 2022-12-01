@@ -72,7 +72,7 @@ type Mutation {
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
   createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
   createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
-  createThirdPartyAPIKey(type: ThirdPartyAPIKeyType!): ThirdPartyAPIKey!
+  createThirdPartyAPIKey(name: String!, type: ThirdPartyAPIKeyType!): ThirdPartyAPIKey!
   createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
   deletePost(personaId: Int!, postId: String!): Post!
   putAttachedImage(files: [Upload!]!, postId: String!): [File!]!

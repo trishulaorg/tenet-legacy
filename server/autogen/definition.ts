@@ -1,4 +1,4 @@
-import { Upload } from '../../server/graphql-schema/scalars/scalarDefinitions';
+import { Upload } from '../../server/graphql/scalars/scalarDefinitions';
 import { GraphQLClient } from 'graphql-request';
 import * as Dom from 'graphql-request/dist/types.dom';
 import gql from 'graphql-tag';
@@ -142,6 +142,7 @@ export type MutationCreateReplyArgs = {
 
 
 export type MutationCreateThirdPartyApiKeyArgs = {
+  name: Scalars['String'];
   type: ThirdPartyApiKeyType;
 };
 
@@ -460,6 +461,7 @@ export type UnfollowBoardMutation = { __typename?: 'Mutation', unfollowBoard: { 
 
 export type CreateThirdPartyApiKeyMutationVariables = Exact<{
   type: ThirdPartyApiKeyType;
+  name: Scalars['String'];
 }>;
 
 
@@ -794,8 +796,8 @@ export const UnfollowBoardDocument = gql`
 }
     `;
 export const CreateThirdPartyApiKeyDocument = gql`
-    mutation createThirdPartyAPIKey($type: ThirdPartyAPIKeyType!) {
-  createThirdPartyAPIKey(type: $type) {
+    mutation createThirdPartyAPIKey($type: ThirdPartyAPIKeyType!, $name: String!) {
+  createThirdPartyAPIKey(type: $type, name: $name) {
     token
   }
 }
