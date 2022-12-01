@@ -5,8 +5,8 @@ type BoardFollowCountProps = {
 export default function BoardBackground(props: BoardFollowCountProps) {
     const { count } = props
     return (
-      <div>
-          {count}
+      <div className="text-white">
+          {count} Followers
       </div>
     )
   }
