@@ -31,9 +31,9 @@ export const CardContent: React.FC<CardContentProps> = ({
     : 'pl-4 pb-8 text-med dark:text-med-dark'
   return (
     <div className={style}>
-      <p>
+      <div>
         <MultiLineText text={content} />
-      </p>
+      </div>
       <div className={'mt-4 grid grid-cols-2 items-center gap-2'}>
         {imageUrls.map((imageUrl, index) => (
           <button onClick={() => openImageViewer(index)} key={imageUrl}>

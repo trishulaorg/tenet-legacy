@@ -62,9 +62,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
         <CreatedAt created={post.createdAt} />
         {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */}
-        <span onClick={(e) => e.stopPropagation()}>
-          <Link href={`/board/${post.boardId}`}>Show board</Link>
-        </span>
+        <Link href={`/board/${post.boardId}`} legacyBehavior>
+          <div>Show board</div>
+        </Link>
       </CardMeta>
     </motion.div>
   )

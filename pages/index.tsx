@@ -17,15 +17,21 @@ import { swrKey } from '../libs/swrKey'
 import { init } from '../libs/initFirebase'
 import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 import { observer } from 'mobx-react'
+import type { NextPage } from 'next'
+import { getSdk } from '../server/autogen/definition'
+import { GraphQLClient } from 'graphql-request'
 
-const IndexPage: React.FC = () => {
+const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [user] = useState(getUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
   const { data: activitiesData, mutate } = apiHooks.useGetActivities(
-    () => swrKey.useGetActivities(personaId ? { personaId } : undefined),
-    {}
+    () => swrKey.useGetActivities(undefined), // TODO: Not personalized yet
+    {},
+    {
+      fallbackData: initialData,
+    }
   )
 
   const { data: followingBoardsData } = apiHooks.useGetFollowingBoard(
@@ -77,7 +83,9 @@ const IndexPage: React.FC = () => {
         {(activitiesData?.activities ?? [])
           .map((v) => PostState.fromPostTypeJSON(v))
           .map((v) => (
-            <ActivityCard key={v.id} post={v} />
+            <li key={v.id}>
+              <ActivityCard post={v} />
+            </li>
           ))}
       </ul>
     </>
@@ -104,6 +112,16 @@ const IndexPage: React.FC = () => {
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
+}
+
+export async function getStaticProps() {
+  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
+  const initialData = await client.getActivities()
+  return {
+    props: {
+      initialData,
+    },
+  }
 }
 
 export default observer(IndexPage)

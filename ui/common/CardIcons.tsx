@@ -87,7 +87,7 @@ export const CardIcons: React.FC<CardIconsProps> = observer(
                   <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
                     <icon.name className="h-5 w-5" />
                     {icon.value === undefined || icon.value > 0 ? (
-                      <p className={textStyle}>{icon.text}</p>
+                      <div className={textStyle}>{icon.text}</div>
                     ) : null}
                   </button>
                 ) : null}

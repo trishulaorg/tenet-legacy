@@ -10,8 +10,11 @@ import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
+import { getSdk } from '../../server/autogen/definition'
+import { GraphQLClient } from 'graphql-request'
+import type { NextPage } from 'next'
 
-const PostPage: React.FC = () => {
+const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const token = getGqlToken()
   const router = useRouter()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
@@ -26,7 +29,8 @@ const PostPage: React.FC = () => {
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
   const { data, mutate } = apiHooks.useGetPost(
     () => postId,
-    personaId ? { id: postId, personaId } : { id: postId }
+    personaId ? { id: postId, personaId } : { id: postId },
+    { fallbackData: initialData }
   )
 
   useEffect(() => {
@@ -76,6 +80,22 @@ const PostPage: React.FC = () => {
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
+}
+
+export async function getServerSideProps(context: any) {
+  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
+  const req = await context.req
+  const postURL = req.url.toString()
+  const postID = postURL.slice(
+    postURL.indexOf('post/') + 5
+    // postURL.indexOf('.json')
+  )
+  const initialData = await client.getPost({ id: postID })
+  return {
+    props: {
+      initialData,
+    },
+  }
 }
 
 export default PostPage
