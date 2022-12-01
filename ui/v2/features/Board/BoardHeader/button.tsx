@@ -24,14 +24,14 @@ export default function BoardButton(props: BoardButtonProps) {
   return (
     <div>
       <div className={'flex ml-auto'}>
-        <div className='my-2 py-2 px-2 md:px-4 ml-2 lg:px-6 block text-white hover:bg-primary-dark rounded-full border border-slate-300 bg-primary transition-colors'>
+        <div className='my-2 py-2 px-2 md:px-4 ml-2 lg:px-6 block text-white hover:bg-primary-dark rounded-full bg-primary transition-colors'>
         <Link href={buttonType == "post" ? { pathname: `/o/cp`, query: { boardId: id } } : "#"} legacyBehavior>
           <button
             onClick={buttonOnClick}
             className="flex block py-2 -my-2 px-2 -mx-2 md:px-4 md:-mx-4 lg:px-6 lg:-mx-6"
           >
             {buttonIcon[buttonType]}
-            <span className="px-2 ">{buttonLabel[buttonType]}</span>
+            <span className="px-2 font-semibold">{buttonLabel[buttonType]}</span>
           </button>
           </Link>
         </div>

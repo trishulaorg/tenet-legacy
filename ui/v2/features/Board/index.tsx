@@ -20,7 +20,7 @@ type BoardProps = {
 }
 
 export default function Board(props: BoardProps) {
-  const { showPostCreate = true, followButtonType = 'follow', onFollowButtonClick } = props
+  const { showPostCreate = false, followButtonType = 'follow', onFollowButtonClick } = props
   const state = useContext(BoardStateContext)
   return (
     <>
