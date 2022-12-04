@@ -151,8 +151,8 @@ enum ThirdPartyAPIKeyType {
 }
 
 type Thread {
-  board: Board!
-  boardId: String!
+  board: Board
+  boardId: String
   content: String!
   createdAt: DateTime!
   id: ID!
