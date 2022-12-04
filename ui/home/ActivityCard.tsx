@@ -33,11 +33,16 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
     setCommentVisibility(false)
   }
 
+  const variants = {
+    hidden: { y: 20, opacity: 0, borderRadius: 100 },
+    visible: { y: 0, opacity: 0.85, borderRadius: 10 },
+  }
   const content = (
     <motion.div
       layout
-      initial={{ y: 20, opacity: 0, borderRadius: 100 }}
-      animate={{ y: 0, opacity: 0.85, borderRadius: 20 }}
+      variants={variants}
+      initial="hidden"
+      animate="visible"
       className="break-words drop-shadow-lg max-w-2xl p-4 bg-contentbg dark:bg-contentbg-dark mb-5 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer"
     >
       <CardTitle title={post.title} />
@@ -61,7 +66,6 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         <div className="pb-2" />
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
         <CreatedAt created={post.createdAt} />
-        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */}
         <Link href={`/board/${post.boardId}`} legacyBehavior>
           <div>Show board</div>
         </Link>

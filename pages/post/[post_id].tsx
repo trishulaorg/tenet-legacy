@@ -6,7 +6,7 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
-import { apiHooks, setAuthToken } from '../../libs/fetchAPI'
+import { apiHooks } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
@@ -27,7 +27,7 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data, mutate } = apiHooks.useGetPost(
+  const { data } = apiHooks.useGetPost(
     () => postId,
     personaId ? { id: postId, personaId } : { id: postId },
     { fallbackData: initialData }
@@ -35,19 +35,18 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
 
   useEffect(() => {
     const f = async (): Promise<void> => {
-      if (user) {
+      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
         await user.request()
+        if (user.personas.length < 1) {
+          await router.push('/persona/onboarding')
+        }
         if (user.currentPersona?.id) {
           setPersonaId(user.currentPersona.id)
-          await mutate()
         }
-      }
-      if (token) {
-        setAuthToken(token)
       }
     }
     f()
-  }, [token, router, user, mutate])
+  }, [user, router])
 
   useEffect(() => {
     if (data) {

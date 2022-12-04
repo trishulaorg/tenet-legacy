@@ -77,11 +77,17 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     }
   }
 
+  const variants = {
+    hidden: { y: 20, opacity: 0, borderRadius: 100 },
+    visible: { y: 0, opacity: 0.85, borderRadius: 10 },
+  }
+
   const content = (
     <div>
       <motion.div
-        initial={{ y: 10, opacity: 0, borderRadius: 100 }}
-        animate={{ y: 0, opacity: 0.85, borderRadius: 20 }}
+        variants={variants}
+        initial="hidden"
+        animate="visible"
         className="break-words drop-shadow-lg rounded-lg p-4 bg-contentbg dark:bg-contentbg-dark transition-colors duration-350"
         layout
       >
