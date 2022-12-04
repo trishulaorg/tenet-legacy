@@ -20,7 +20,7 @@ export const WithPrimaryButtonStyling: React.FC = ({ children }) => {
   return (
     <div
       className={
-        'mb-4 py-2 px-2 md:px-4 ml-2 lg:px-6 block text-white hover:bg-primary-dark rounded-xl border border-slate-300 dark:border-low bg-primary transition-colors'
+        'mb-4 py-2 px-2 md:px-4 ml-2 lg:px-6 block text-white border-primary dark:border-primary-dark rounded-xl border border-double border-4 transition-colors'
       }
     >
       {children}
