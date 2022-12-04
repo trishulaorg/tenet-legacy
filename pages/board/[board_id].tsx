@@ -40,6 +40,10 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
       fallbackData: initialBoardData,
     }
   )
+  context.id = boardData?.board.id ?? null
+  context.title = boardData?.board.title ?? null
+  context.description = boardData?.board.description ?? null
+  context.posts = boardData?.board.posts.map((v) => PostState.fromPostTypeJSON(v)) ?? []
 
   const { data: followingBoardData, mutate: mutateFollowingBoard } = apiHooks.useGetFollowingBoard(
     () => (personaId ? swrKey.useGetFollowingBoard({ personaId: personaId }) : undefined),
@@ -77,15 +81,6 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
     }
     f()
   })
-
-  useEffect(() => {
-    if (boardData) {
-      context.id = boardData.board.id
-      context.title = boardData.board.title
-      context.description = boardData.board.description
-      context.posts = boardData.board.posts.map((v) => PostState.fromPostTypeJSON(v))
-    }
-  }, [boardData])
 
   const following = followingBoardData?.getFollowingBoard.some(
     (boardData) => boardId && boardData.board.id === boardId
