@@ -93,7 +93,7 @@ export interface NexusGenObjects {
     screenName: string; // String!
   }
   Post: { // root type
-    boardId: string; // String!
+    boardId?: string | null; // String
     content: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
@@ -207,8 +207,8 @@ export interface NexusGenFieldTypes {
     screenName: string; // String!
   }
   Post: { // field return type
-    board: NexusGenRootTypes['Board']; // Board!
-    boardId: string; // String!
+    board: NexusGenRootTypes['Board'] | null; // Board
+    boardId: string | null; // String
     content: string; // String!
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     id: string; // ID!
@@ -426,7 +426,7 @@ export interface NexusGenArgTypes {
       screenName: string; // String!
     }
     createPost: { // args
-      boardId: string; // String!
+      boardId?: string | null; // String
       content: string; // String!
       contentType: NexusGenEnums['ContentType']; // ContentType!
       personaId: number; // Int!
@@ -443,7 +443,7 @@ export interface NexusGenArgTypes {
       type: NexusGenEnums['ThirdPartyAPIKeyType']; // ThirdPartyAPIKeyType!
     }
     createThread: { // args
-      boardId: string; // String!
+      boardId?: string | null; // String
       content: string; // String!
       contentType: NexusGenEnums['ContentType']; // ContentType!
       personaId: number; // Int!
@@ -475,7 +475,7 @@ export interface NexusGenArgTypes {
       personaId?: number | null; // Int
     }
     board: { // args
-      id: string; // String!
+      id?: string | null; // String
       personaId?: number | null; // Int
     }
     getFollowingBoard: { // args

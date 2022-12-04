@@ -8,7 +8,7 @@ type SwrKey = {
 
 const swrKey: SwrKey = {
   useGetActivities: (args) => `useGetActivities_${args?.personaId}`,
-  useGetBoard: ({ personaId, topicId }) => `useGetFollowingBoard_${topicId}_${personaId}`,
+  useGetBoard: (args) => `useGetFollowingBoard_${args?.topicId}_${args?.personaId}`,
   useGetFollowingBoard: ({ personaId }) => `useGetFollowingBoard_${personaId}`,
   useGetMe: () => `useGetMe`,
   useGetPost: ({ id, personaId }) => `useGetPost_${id}_${personaId}`,

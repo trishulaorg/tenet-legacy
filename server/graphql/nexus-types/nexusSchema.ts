@@ -1,4 +1,4 @@
-import { arg, enumType, list, nonNull, objectType } from 'nexus'
+import { arg, enumType, list, nonNull, nullable, objectType } from 'nexus'
 import crypto from 'crypto'
 import { getPostsWithImageUrls } from './getImageUrls'
 import {
@@ -371,7 +371,7 @@ const QueryDef = objectType({
       type: BoardDef.name,
       args: {
         id: arg({
-          type: nonNull('String'),
+          type: nullable('String'),
         }),
         personaId: arg({
           type: 'Int',
@@ -385,10 +385,14 @@ const QueryDef = objectType({
           deleteSelf: false,
         }
         const board = await context.prisma.board.findFirstOrThrow({
-          where: {
-            id,
-            deletedAt: null,
-          },
+          where: id
+            ? {
+                id: id,
+                deletedAt: null,
+              }
+            : {
+                deletedAt: null,
+              },
           include: {
             posts: {
               where: {
@@ -727,7 +731,7 @@ const MutationDef = objectType({
           type: nonNull('Int'),
         }),
         boardId: arg({
-          type: nonNull('String'),
+          type: nullable('String'),
         }),
       },
       async resolve(_source, { boardId, content, contentType, personaId, title }, context) {
@@ -748,16 +752,18 @@ const MutationDef = objectType({
                   id: currentPersona.id,
                 },
               },
-              board: {
-                connect: {
-                  id: boardId,
-                },
-              },
               defaultPostRole: {
                 create: {
                   read: true,
                 },
               },
+              board: boardId
+                ? {
+                    connect: {
+                      id: boardId,
+                    },
+                  }
+                : {},
               defaultThreadRole: {
                 create: {
                   create: true,
@@ -789,7 +795,7 @@ const MutationDef = objectType({
           type: nonNull(ContentTypeDef.name),
         }),
         boardId: arg({
-          type: nonNull('String'),
+          type: nullable('String'),
         }),
         postId: arg({
           type: nonNull('String'),
@@ -811,11 +817,13 @@ const MutationDef = objectType({
                   id: personaId,
                 },
               },
-              board: {
-                connect: {
-                  id: boardId,
-                },
-              },
+              board: boardId
+                ? {
+                    connect: {
+                      id: boardId,
+                    },
+                  }
+                : {},
               Post: {
                 connect: {
                   id: postId,
@@ -1031,7 +1039,7 @@ const MutationDef = objectType({
           throw new NotFoundError('Invalid Post id')
         }
 
-        if (!hasPriviledgeToDeletePost(currentPersona, post)) {
+        if (post.board !== null && !hasPriviledgeToDeletePost(currentPersona, post as any)) {
           throw new NotAuthorizedError('You do not have permission to delete post.')
         }
         return context.prisma.post.update({

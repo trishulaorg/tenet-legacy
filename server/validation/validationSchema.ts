@@ -63,7 +63,7 @@ const validationSchema: ValidationSchemaType = {
   createPost: z.object({
     title: z.string().min(1).max(50),
     content: z.string().min(1).max(2000),
-    boardId: z.string().min(26).max(26),
+    boardId: z.string().min(26).max(26).nullable(),
     personaId: z.number().int().min(1),
   }),
   createThread: z.object({

@@ -27,8 +27,8 @@ export interface BoardType extends BaseContentType {
 }
 
 export interface PostType extends BaseContentType {
-  board: Pick<BoardType, 'id' | 'title' | 'description'>
-  boardId: string
+  board?: Pick<BoardType, 'id' | 'title' | 'description'> | null
+  boardId?: string | null
   title: string
   threads: ThreadType[]
   persona: PersonaType
@@ -45,7 +45,7 @@ export class PostState {
   private readonly children: PostState[] = []
   parent: PostState | undefined
   id: string
-  boardId: string
+  boardId: string | null
   title: string
   content: string
   author: PersonaState
@@ -68,7 +68,7 @@ export class PostState {
     }
   ) {
     this.id = data.id
-    this.boardId = data.boardId
+    this.boardId = data.boardId ?? null
     this.title = data.title
     this.content = data.content
     this.author = data.author

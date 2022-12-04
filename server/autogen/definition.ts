@@ -125,7 +125,7 @@ export type MutationCreatePersonaArgs = {
 
 
 export type MutationCreatePostArgs = {
-  boardId: Scalars['String'];
+  boardId?: InputMaybe<Scalars['String']>;
   content: Scalars['String'];
   contentType: ContentType;
   personaId: Scalars['Int'];
@@ -148,7 +148,7 @@ export type MutationCreateThirdPartyApiKeyArgs = {
 
 
 export type MutationCreateThreadArgs = {
-  boardId: Scalars['String'];
+  boardId?: InputMaybe<Scalars['String']>;
   content: Scalars['String'];
   contentType: ContentType;
   personaId: Scalars['Int'];
@@ -195,8 +195,8 @@ export type Persona = {
 
 export type Post = {
   __typename?: 'Post';
-  board: Board;
-  boardId: Scalars['String'];
+  board?: Maybe<Board>;
+  boardId?: Maybe<Scalars['String']>;
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
@@ -235,7 +235,7 @@ export type QueryActivitiesArgs = {
 
 
 export type QueryBoardArgs = {
-  id: Scalars['String'];
+  id?: InputMaybe<Scalars['String']>;
   personaId?: InputMaybe<Scalars['Int']>;
 };
 
@@ -327,15 +327,15 @@ export type GetActivitiesQueryVariables = Exact<{
 }>;
 
 
-export type GetActivitiesQuery = { __typename?: 'Query', activities: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', id: string, threadId: string, content: string, createdAt: any, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean } }> }> }> };
+export type GetActivitiesQuery = { __typename?: 'Query', activities: Array<{ __typename?: 'Post', id: string, boardId?: string | null, title: string, content: string, createdAt: any, board?: { __typename?: 'Board', id: string, title: string, description: string } | null, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', id: string, threadId: string, content: string, createdAt: any, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean } }> }> }> };
 
 export type GetBoardQueryVariables = Exact<{
-  topicId: Scalars['String'];
+  topicId?: InputMaybe<Scalars['String']>;
   personaId?: InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetBoardQuery = { __typename?: 'Query', board: { __typename?: 'Board', id: string, title: string, description: string, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, posts: Array<{ __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, description: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, boardId: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', createdAt: any, threadId: string, id: string, content: string, imageUrls: Array<string>, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> } };
+export type GetBoardQuery = { __typename?: 'Query', board: { __typename?: 'Board', id: string, title: string, description: string, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, posts: Array<{ __typename?: 'Post', id: string, boardId?: string | null, title: string, content: string, imageUrls: Array<string>, createdAt: any, board?: { __typename?: 'Board', id: string, description: string, title: string } | null, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, boardId: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', createdAt: any, threadId: string, id: string, content: string, imageUrls: Array<string>, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string } }> }> }> } };
 
 export type GetMeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -348,7 +348,7 @@ export type GetPostQueryVariables = Exact<{
 }>;
 
 
-export type GetPostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, boardId: string, title: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string, description: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, threadId: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean } }> }> } };
+export type GetPostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, boardId?: string | null, title: string, content: string, imageUrls: Array<string>, createdAt: any, board?: { __typename?: 'Board', id: string, title: string, description: string } | null, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, threads: Array<{ __typename?: 'Thread', id: string, postId: string, content: string, imageUrls: Array<string>, createdAt: any, board: { __typename?: 'Board', id: string, title: string }, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean }, replies: Array<{ __typename?: 'Reply', createdAt: any, id: string, threadId: string, content: string, imageUrls: Array<string>, persona: { __typename?: 'Persona', id: number, screenName: string, name: string, iconUrl: string }, privilege: { __typename?: 'Privilege', deleteSelf: boolean } }> }> } };
 
 export type SearchQueryVariables = Exact<{
   query: Scalars['String'];
@@ -386,7 +386,7 @@ export type CreatePostMutationVariables = Exact<{
   title: Scalars['String'];
   content: Scalars['String'];
   personaId: Scalars['Int'];
-  boardId: Scalars['String'];
+  boardId?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -405,7 +405,7 @@ export type CreateThreadMutationVariables = Exact<{
   content: Scalars['String'];
   postId: Scalars['String'];
   personaId: Scalars['Int'];
-  boardId: Scalars['String'];
+  boardId?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -537,7 +537,7 @@ export const GetActivitiesDocument = gql`
 }
     `;
 export const GetBoardDocument = gql`
-    query getBoard($topicId: String!, $personaId: Int) {
+    query getBoard($topicId: String, $personaId: Int) {
   board(id: $topicId, personaId: $personaId) {
     id
     title
@@ -716,7 +716,7 @@ export const CreatePersonaDocument = gql`
 }
     `;
 export const CreatePostDocument = gql`
-    mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
+    mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String) {
   createPost(
     title: $title
     content: $content
@@ -741,7 +741,7 @@ export const CreateReplyDocument = gql`
 }
     `;
 export const CreateThreadDocument = gql`
-    mutation createThread($content: String!, $postId: String!, $personaId: Int!, $boardId: String!) {
+    mutation createThread($content: String!, $postId: String!, $personaId: Int!, $boardId: String) {
   createThread(
     content: $content
     contentType: TEXT
@@ -824,7 +824,7 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     getActivities(variables?: GetActivitiesQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetActivitiesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetActivitiesQuery>(GetActivitiesDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getActivities', 'query');
     },
-    getBoard(variables: GetBoardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBoardQuery> {
+    getBoard(variables?: GetBoardQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetBoardQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetBoardQuery>(GetBoardDocument, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getBoard', 'query');
     },
     getMe(variables?: GetMeQueryVariables, requestHeaders?: Dom.RequestInit["headers"]): Promise<GetMeQuery> {
@@ -888,7 +888,7 @@ export function getSdkWithHooks(client: GraphQLClient, withWrapper: SdkFunctionW
     useGetActivities(key: SWRKeyInterface, variables?: GetActivitiesQueryVariables, config?: SWRConfigInterface<GetActivitiesQuery, ClientError>) {
       return useSWR<GetActivitiesQuery, ClientError>(key, () => sdk.getActivities(variables), config);
     },
-    useGetBoard(key: SWRKeyInterface, variables: GetBoardQueryVariables, config?: SWRConfigInterface<GetBoardQuery, ClientError>) {
+    useGetBoard(key: SWRKeyInterface, variables?: GetBoardQueryVariables, config?: SWRConfigInterface<GetBoardQuery, ClientError>) {
       return useSWR<GetBoardQuery, ClientError>(key, () => sdk.getBoard(variables), config);
     },
     useGetMe(key: SWRKeyInterface, variables?: GetMeQueryVariables, config?: SWRConfigInterface<GetMeQuery, ClientError>) {

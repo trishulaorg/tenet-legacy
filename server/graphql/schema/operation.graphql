@@ -56,7 +56,7 @@ query getActivities($personaId: Int) {
     }
   }
 }
-query getBoard($topicId: String!, $personaId: Int) {
+query getBoard($topicId: String, $personaId: Int) {
   board(id: $topicId, personaId: $personaId) {
     id
     title
@@ -221,7 +221,7 @@ mutation createPersona($screenName: String!, $name: String!, $iconPath: String!)
     screenName
   }
 }
-mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String!) {
+mutation createPost($title: String!, $content: String!, $personaId: Int!, $boardId: String) {
   createPost(
     title: $title
     content: $content
@@ -246,7 +246,7 @@ mutation createThread(
   $content: String!
   $postId: String!
   $personaId: Int!
-  $boardId: String!
+  $boardId: String
 ) {
   createThread(
     content: $content

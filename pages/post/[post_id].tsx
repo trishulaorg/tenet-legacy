@@ -51,12 +51,14 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   useEffect(() => {
     if (data) {
       setContext(
-        new BoardState({
-          id: data.post.board.id,
-          title: data.post.board.title,
-          description: data.post.board.description,
-          posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
-        })
+        data.post.board
+          ? new BoardState({
+              id: data.post.board.id,
+              title: data.post.board.title,
+              description: data.post.board.description,
+              posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
+            })
+          : new BoardState({})
       )
     }
   }, [token, data])

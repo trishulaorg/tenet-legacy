@@ -10,7 +10,7 @@ import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
-import { apiHooks } from '../libs/fetchAPI'
+import { apiHooks, client, setAuthToken } from '../libs/fetchAPI'
 import Link from 'next/link'
 import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { swrKey } from '../libs/swrKey'
@@ -20,6 +20,7 @@ import { observer } from 'mobx-react'
 import type { NextPage } from 'next'
 import { getSdk } from '../server/autogen/definition'
 import { GraphQLClient } from 'graphql-request'
+import { CommentInput } from '../ui/thread/CommentInput'
 
 const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [user] = useState(getUser())
@@ -72,8 +73,17 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       user.token = localToken
     })()
   })
+  const onSubmit: (comment: string) => void = async (comment: string) => {
+    setAuthToken(user.token)
+    await client.createPost({
+      title: 'memo',
+      content: comment,
+      personaId: user.currentPersona?.id ?? -1,
+    })
+  }
   const main: React.FC = () => (
-    <>
+    <div>
+      <CommentInput onSubmit={onSubmit} />
       <ul>
         {(activitiesData?.activities ?? [])
           .map((v) => PostState.fromPostTypeJSON(v))
@@ -83,7 +93,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
             </li>
           ))}
       </ul>
-    </>
+    </div>
   )
   return (
     <PageBaseLayout>

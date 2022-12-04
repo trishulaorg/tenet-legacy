@@ -70,10 +70,10 @@ type Mutation {
   createDirectMessage(rawContent: String!, receiverId: Int!, senderId: Int!): DirectMessage!
   createFollowingBoard(boardId: String!, personaId: Int!): FollowingBoard!
   createPersona(iconPath: String, name: String!, screenName: String!): Persona!
-  createPost(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
+  createPost(boardId: String, content: String!, contentType: ContentType!, personaId: Int!, title: String!): Post!
   createReply(content: String!, contentType: ContentType!, personaId: Int!, threadId: String!): Reply!
   createThirdPartyAPIKey(name: String!, type: ThirdPartyAPIKeyType!): ThirdPartyAPIKey!
-  createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
+  createThread(boardId: String, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
   deletePost(personaId: Int!, postId: String!): Post!
   putAttachedImage(files: [Upload!]!, postId: String!): [File!]!
   setPersonaIcon(file: Upload, personaId: Int!): File!
@@ -89,8 +89,8 @@ type Persona {
 }
 
 type Post {
-  board: Board!
-  boardId: String!
+  board: Board
+  boardId: String
   content: String!
   createdAt: DateTime!
   id: ID!
@@ -110,7 +110,7 @@ type Privilege {
 
 type Query {
   activities(personaId: Int): [Post!]!
-  board(id: String!, personaId: Int): Board!
+  board(id: String, personaId: Int): Board!
   getFollowingBoard(personaId: Int!): [FollowingBoard!]!
   me: User
   persona(name: String!): Persona!
