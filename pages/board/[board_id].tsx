@@ -30,7 +30,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
   const [context, setContext] = useState<BoardState>(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
-  const { data: boardData, mutate } = apiHooks.useGetBoard(
+  const { data: boardData } = apiHooks.useGetBoard(
     () => boardId,
     personaId
       ? {
@@ -50,11 +50,13 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
 
   useEffect(() => {
     const f = async (): Promise<void> => {
-      if (user) {
+      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
         await user.request()
-        if (user.currentPersona?.id !== personaId) {
-          setPersonaId(user.currentPersona?.id)
-          mutate()
+        if (user.personas.length < 1) {
+          await router.push('/persona/onboarding')
+        }
+        if (user.currentPersona?.id) {
+          setPersonaId(user.currentPersona.id)
         }
       }
 
@@ -76,7 +78,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
       )
     }
     f()
-  }, [token, router, user, boardData?.board.posts, mutate, personaId])
+  })
 
   useEffect(() => {
     if (boardData) {

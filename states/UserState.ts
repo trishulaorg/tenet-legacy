@@ -9,19 +9,32 @@ export class UserState {
   token
   currentPersonaIndex: number
   _notifications: Notification[]
+  _requested = false
   constructor(token: string, personas: PersonaState[], currentPersonaIndex: number) {
     this.token = token
     this._personas = personas
     this.currentPersonaIndex = currentPersonaIndex
     this._notifications = []
+    this._requested = false
     makeAutoObservable(this)
   }
-  async request(): Promise<void> {
+  set requested(value: boolean) {
+    this._requested = value
+  }
+  get requested(): boolean {
+    return this._requested
+  }
+  async request(): Promise<UserState> {
+    if (this.requested) {
+      return this
+    }
     setAuthToken(this.token)
     const result = await client.getMe()
     this.personas = result.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )
+    this.requested = true
+    return this
   }
   set personas(personas: PersonaState[] | undefined) {
     this._personas = personas ?? []

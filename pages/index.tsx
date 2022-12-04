@@ -26,7 +26,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
-  const { data: activitiesData, mutate } = apiHooks.useGetActivities(
+  const { data: activitiesData } = apiHooks.useGetActivities(
     () => swrKey.useGetActivities(undefined), // TODO: Not personalized yet
     {},
     {
@@ -41,9 +41,9 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
 
   useEffect(() => {
     const f = async (): Promise<void> => {
-      if (user.token !== 'INVALID_TOKEN') {
+      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
         await user.request()
-        if (user.token !== 'INVALID_TOKEN' && !user.currentPersona) {
+        if (user.personas.length < 1) {
           await router.push('/persona/onboarding')
         }
         if (user.currentPersona?.id) {
@@ -52,12 +52,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       }
     }
     f()
-  }, [user, router])
-  useEffect(() => {
-    if (user.token) {
-      mutate()
-    }
-  }, [user.token, mutate])
+  })
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ;(async () => {
