@@ -8,7 +8,7 @@ module.exports = {
         /* theme colors */
         'primary': {
           'DEFAULT': '#33AEBC',
-          'dark': '#116999'
+          'dark': '#814bdc'
         },
         'secondary': {
           'DEFAULT' : '#00EB9C'

@@ -5,10 +5,12 @@ const PageBaseLayout: FC = ({ children }) => (
     <div
       style={{
         backgroundImage: "url('/wallpaper.jpg')",
-        filter: 'blur(5px)',
+        backgroundSize: 'cover',
+        filter: 'blur(3px)',
         position: 'fixed',
         width: '100%',
         height: '100%',
+        zIndex: -1,
       }}
     />
     {children}
