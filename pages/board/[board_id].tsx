@@ -3,7 +3,6 @@ import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
 import { getUser, UserStateContext } from '../../states/UserState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
-import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
@@ -18,7 +17,6 @@ import { GraphQLClient } from 'graphql-request'
 import type { NextPage } from 'next'
 
 const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) => {
-  const token = getGqlToken()
   const router = useRouter()
   const {
     isReady,
@@ -27,7 +25,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
   const user = getUser()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
 
-  const [context, setContext] = useState<BoardState>(new BoardState({}))
+  const [context] = useState<BoardState>(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
   const { data: boardData } = apiHooks.useGetBoard(
@@ -82,16 +80,12 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
 
   useEffect(() => {
     if (boardData) {
-      setContext(
-        new BoardState({
-          id: boardData.board.id,
-          title: boardData.board.title,
-          description: boardData.board.description,
-          posts: boardData.board.posts.map((v) => PostState.fromPostTypeJSON(v)),
-        })
-      )
+      context.id = boardData.board.id
+      context.title = boardData.board.title
+      context.description = boardData.board.description
+      context.posts = boardData.board.posts.map((v) => PostState.fromPostTypeJSON(v))
     }
-  }, [token, boardData])
+  }, [boardData])
 
   const following = followingBoardData?.getFollowingBoard.some(
     (boardData) => boardId && boardData.board.id === boardId

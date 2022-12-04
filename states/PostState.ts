@@ -128,10 +128,10 @@ export class PostState {
 }
 
 export class BoardState {
-  private readonly _id: string | null
-  private readonly _title: string | null
-  private readonly _description: string | null
-  private readonly _posts: PostState[] = []
+  private _id: string | null
+  private _title: string | null
+  private _description: string | null
+  private _posts: PostState[] = []
   constructor(args: { id?: string; title?: string; description?: string; posts?: PostState[] }) {
     this._id = args.id ?? null
     this._title = args.title ?? null
@@ -142,14 +142,26 @@ export class BoardState {
   get id(): string | null {
     return this._id
   }
+  set id(value: string | null) {
+    this._id = value
+  }
   get description(): string | null {
     return this._description
+  }
+  set description(value: string | null) {
+    this._description = value
   }
   get title(): string | null {
     return this._title
   }
+  set title(value: string | null) {
+    this._title = value
+  }
   get posts(): PostState[] {
     return this._posts
+  }
+  set posts(value: PostState[]) {
+    this._posts = value
   }
 }
 
