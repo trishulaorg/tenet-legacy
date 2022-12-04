@@ -184,8 +184,8 @@ model Thread {
   content     String      @db.VarChar(500)
   contentType ContentType
   replies     Reply[]
-  board       Board       @relation(fields: [boardId], references: [id])
-  boardId     String
+  board       Board?       @relation(fields: [boardId], references: [id])
+  boardId     String?
   postId      String
   Post        Post        @relation(fields: [postId], references: [id])
   persona     Persona     @relation(fields: [personaId], references: [id])
