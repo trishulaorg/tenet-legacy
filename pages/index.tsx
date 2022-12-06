@@ -18,14 +18,15 @@ import { observer } from 'mobx-react'
 import type { NextPage } from 'next'
 import { GraphQLClient } from 'graphql-request'
 import { CommentInput } from '../ui/thread/CommentInput'
-import {client, operations} from '../libs/getClient'
+import { client, operations, useTenet } from '../libs/getClient'
 
 const IndexPage: NextPage = () => {
   const [user] = useState(getUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
-  console.log(user)
 
+  const { data } = useTenet({ token: user.token, variables: {}, operationName: 'getMe' })
+  console.log('result', data)
   // const { data: activitiesData } = apiHooks.useGetActivities(
   //   () => swrKey.useGetActivities(undefined), // TODO: Not personalized yet
   //   {},
@@ -61,10 +62,6 @@ const IndexPage: NextPage = () => {
       if (!isValidAuthInstance(auth) || !auth.currentUser) return
       if (getCookies().has('gqltoken') && getCookies().get('gqltoken') !== '') {
         user.token = getCookies().get('gqltoken') ?? ''
-
-  const result = client('https://coton.vercel.app/api/graphql', operations.getMe, null, {
-    authorization: 'Bearer '  + user.token
-  }).then(v => console.log(v))
         return
       }
       const localToken = jwt.sign(
@@ -74,7 +71,6 @@ const IndexPage: NextPage = () => {
       )
       document.cookie = `gqltoken=${localToken}`
       user.token = localToken
-
     })()
   })
   const onSubmit: (comment: string) => void = async (comment: string) => {
