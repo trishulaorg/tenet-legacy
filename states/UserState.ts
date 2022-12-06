@@ -1,8 +1,8 @@
 import { makeAutoObservable } from 'mobx'
 import type { Channel } from 'pusher-js/with-encryption'
 import { createContext } from 'react'
-import { client, setAuthToken } from '../libs/fetchAPI'
 import { getCookies } from '../libs/cookies'
+import { fetcher } from '../libs/getClient'
 
 export class UserState {
   _personas: PersonaState[]
@@ -28,8 +28,8 @@ export class UserState {
     if (this.requested) {
       return this
     }
-    setAuthToken(this.token)
-    const result = await client.getMe()
+
+    const result = await fetcher({ token: this.token, operationName: 'getMe', variables: {} })
     this.personas = result.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )

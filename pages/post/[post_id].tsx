@@ -6,13 +6,11 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
-import { apiHooks } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
-import { getSdk } from '../../server/autogen/definition'
-import { GraphQLClient } from 'graphql-request'
 import type { NextPage } from 'next'
+import { fetcher, useTenet } from '../../libs/getClient'
 
 const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const token = getGqlToken()
@@ -27,11 +25,11 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data } = apiHooks.useGetPost(
-    () => postId,
-    personaId ? { id: postId, personaId } : { id: postId },
-    { fallbackData: initialData }
-  )
+  const { data } = useTenet<{ post: any }>({
+    operationName: 'getPost',
+    variables: personaId ? { id: postId, personaId } : { id: postId },
+    fallbackData: initialData,
+  })
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -51,12 +49,14 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   useEffect(() => {
     if (data) {
       setContext(
-        new BoardState({
-          id: data.post.board.id,
-          title: data.post.board.title,
-          description: data.post.board.description,
-          posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
-        })
+        data.post.board
+          ? new BoardState({
+              id: data.post.board.id,
+              title: data.post.board.title,
+              description: data.post.board.description,
+              posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
+            })
+          : new BoardState({})
       )
     }
   }, [token, data])
@@ -82,14 +82,10 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
 }
 
 export async function getServerSideProps(context: any) {
-  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
   const req = await context.req
   const postURL = req.url.toString()
-  const postID = postURL.slice(
-    postURL.indexOf('post/') + 5
-    // postURL.indexOf('.json')
-  )
-  const initialData = await client.getPost({ id: postID })
+  const postID = postURL.slice(postURL.indexOf('post/') + 5)
+  const initialData = await fetcher({ operationName: 'getPost', variables: { id: postID } })
   return {
     props: {
       initialData,

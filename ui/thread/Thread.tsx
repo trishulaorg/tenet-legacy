@@ -9,12 +9,13 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { UserStateContext } from '../../states/UserState'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { motion } from 'framer-motion'
+import { fetcher } from '../../libs/getClient'
+import { getGqlToken } from '../../libs/cookies'
 
 export interface ThreadProps {
   parent: PostState
@@ -32,16 +33,22 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
     files,
     thread
   ) => {
-    setAuthToken(userState.token)
-
     const {
       createReply: { id },
-    } = await client.createReply({
-      content: comment,
-      personaId: userState.currentPersona?.id ?? -1,
-      threadId: thread.id,
+    } = await fetcher({
+      operationName: 'createReply',
+      variables: {
+        content: comment,
+        personaId: userState.currentPersona?.id ?? -1,
+        threadId: thread.id,
+      },
+      token: getGqlToken(),
     })
-    await client.putAttachedImage({ postId: id, files: files })
+    await fetcher({
+      token: getGqlToken(),
+      operationName: 'putAttachedImage',
+      variables: { postId: id, files: files },
+    })
 
     await mutate(boardState.id)
     await mutate(props.parent.id)

@@ -27,7 +27,7 @@ export function removeGqlCookie(): boolean {
   return false
 }
 
-export function getGqlToken(): string | undefined {
+export function getGqlToken(): string {
   const cookies = getCookies()
-  return cookies.get('gqltoken')
+  return cookies.get('gqltoken') ?? 'INVALID_TOKEN'
 }

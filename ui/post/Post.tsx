@@ -11,7 +11,6 @@ import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import type { TypingStateNotification } from '../../states/UserState'
 import { UserStateContext } from '../../states/UserState'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 import { mutate } from 'swr'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
@@ -22,6 +21,8 @@ import { useDebounce } from 'use-debounce'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { fetcher } from '../../libs/getClient'
+import { getGqlToken } from '../../libs/cookies'
 
 export interface PostProps {
   post: PostState
@@ -55,23 +56,33 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   const isInPostPage = route.startsWith('/post/')
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
-    setAuthToken(userState.token)
     const {
       createThread: { id },
-    } = await client.createThread({
-      content: comment,
-      personaId: userState.currentPersona?.id ?? -1,
-      postId: post.id,
-      boardId: post.boardId,
+    } = await fetcher({
+      operationName: 'createThread',
+      variables: {
+        content: comment,
+        personaId: userState.currentPersona?.id ?? -1,
+        postId: post.id,
+        boardId: post.boardId,
+      },
+      token: getGqlToken() ?? 'INVALID_TOKEN',
     })
 
-    await client.putAttachedImage({ postId: id, files: files })
+    await fetcher({
+      token: getGqlToken(),
+      operationName: 'putAttachedImage',
+      variables: { postId: id, files: files },
+    })
     await mutate(post.id)
   }
 
   const onPostDelete = async (): Promise<void> => {
     if (prompt('Type "delete" if you really want to delete:') === 'delete') {
-      await client.deletePost({ postId: post.id, personaId: userState.currentPersona?.id || 0 })
+      await fetcher({
+        operationName: 'deletePost',
+        variables: { postId: post.id, personaId: userState.currentPersona?.id || 0 },
+      })
       await mutate(post.id)
       await mutate(post.boardId)
     }
@@ -98,7 +109,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
             name={post.author.name}
             iconUrl={post.author.iconUrl}
             boardLink={{
-              boardId: post.boardId,
+              boardId: post.boardId ?? '',
               boardName: post.parent?.title ?? boardState.title ?? '',
             }}
           />

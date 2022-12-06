@@ -9,10 +9,12 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { CommentInput } from '../thread/CommentInput'
-import { client, setAuthToken } from '../../libs/fetchAPI'
+// import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { getGqlToken } from '../../libs/cookies'
+import { fetcher } from '../../libs/getClient'
 
 interface ActivityCardProps {
   post: PostState
@@ -22,14 +24,16 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
   const [commentVisibility, setCommentVisibility] = useState(false)
   const userState = useContext(UserStateContext)
   const onSubmit: (comment: string) => void = async (comment: string) => {
-    setAuthToken(userState.token)
-    await client.createThread({
-      content: comment,
-      personaId: userState.currentPersona?.id ?? -1,
-      postId: post.id,
-      boardId: post.boardId,
+    await fetcher({
+      operationName: 'createThread',
+      token: getGqlToken(),
+      variables: {
+        content: comment,
+        personaId: userState.currentPersona?.id ?? -1,
+        postId: post.id,
+        boardId: post.boardId,
+      },
     })
-
     setCommentVisibility(false)
   }
 
