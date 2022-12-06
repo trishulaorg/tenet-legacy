@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { UserStateContext, getUser } from '../states/UserState'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { PostState } from '../states/PostState'
-import { getCookies } from '../libs/cookies'
+import { getCookies, getGqlToken } from '../libs/cookies'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
@@ -18,22 +18,20 @@ import { observer } from 'mobx-react'
 import type { NextPage } from 'next'
 import { GraphQLClient } from 'graphql-request'
 import { CommentInput } from '../ui/thread/CommentInput'
-import { client, operations, useTenet } from '../libs/getClient'
+import { client, fetcher, operations, useTenet } from '../libs/getClient'
 
 const IndexPage: NextPage = () => {
   const [user] = useState(getUser())
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
-  const { data } = useTenet({ token: user.token, variables: {}, operationName: 'getMe' })
-  console.log('result', data)
-  // const { data: activitiesData } = apiHooks.useGetActivities(
-  //   () => swrKey.useGetActivities(undefined), // TODO: Not personalized yet
-  //   {},
-  //   {
-  //     fallbackData: initialData,
-  //   }
-  // )
+  const { data: me } = useTenet({ token: user.token, variables: {}, operationName: 'getMe' })
+  const { data: activitiesData } = useTenet({
+    operationName: 'getActivities',
+    variables: {},
+    token: getGqlToken()!,
+  })
+  console.log(activitiesData)
 
   // const { data: followingBoardsData } = apiHooks.useGetFollowingBoard(
   //   () => (personaId ? swrKey.useGetFollowingBoard({ personaId }) : undefined),
@@ -74,24 +72,27 @@ const IndexPage: NextPage = () => {
     })()
   })
   const onSubmit: (comment: string) => void = async (comment: string) => {
-    // setAuthToken(user.token)
-    // await client.createPost({
-    //   title: 'memo',
-    //   content: comment,
-    //   personaId: user.currentPersona?.id ?? -1,
+    // await fetcher({
+    //   operationName: 'createPost',
+    //   variables: {
+    //     title: 'memo',
+    //     content: comment,
+    //     personaId: user.currentPersona?.id ?? -1,
+    //   },
+    //   token: user.token,
     // })
   }
   const main: React.FC = () => (
     <div>
       <CommentInput onSubmit={onSubmit} />
       <ul>
-        {/* {(activitiesData?.activities ?? [])
+        {(((activitiesData as any).data as any['activities']) ?? [])
           .map((v) => PostState.fromPostTypeJSON(v))
           .map((v) => (
             <li key={v.id}>
               <ActivityCard post={v} />
             </li>
-          ))} */}
+          ))}
       </ul>
     </div>
   )
