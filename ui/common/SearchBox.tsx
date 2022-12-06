@@ -11,12 +11,6 @@ export const SearchBox: React.FC = () => {
     if (ref.current && !ref.current.contains(ev.target as HTMLElement)) setVisibility(false)
   }
 
-  const queryArguments = { query }
-
-  // const { data } = apiHooks.useSearch(
-  //   () => query && apiHooks.useSearch.name + JSON.stringify(queryArguments),
-  // //   queryArguments
-  // )
   const onChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setQuery(e.currentTarget.value)
     setVisibility(true)

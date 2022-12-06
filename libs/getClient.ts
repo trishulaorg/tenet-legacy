@@ -13,17 +13,19 @@ const fetcher: (args: {
   client(endpoint, operations[operationName], variables, {
     authorization: 'Bearer ' + token ?? 'INVALID_TOKEN',
   })
-const useTenet: (args: {
+const useTenet: <Data = Record<string, unknown>>(args: {
   token?: string
   operationName: string
   variables: Record<string, unknown>
-}) => ReturnType<typeof useSWR> = ({ token, operationName, variables }) => {
+  fallbackData?: Record<string, unknown>
+}) => ReturnType<typeof useSWR<Data>> = ({ fallbackData, token, operationName, variables }) => {
   const swr = useSWR(
     key(operationName, variables),
     async () =>
       await client(endpoint, operations[operationName], variables, {
         authorization: 'Bearer ' + token ?? 'INVALID_TOKEN',
-      })
+      }),
+    { fallbackData }
   )
   return swr
 }

@@ -1,20 +1,21 @@
 import { useContext } from 'react'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
 import type { DebouncedState } from 'use-debounce'
 import { useDebouncedCallback } from 'use-debounce'
-import type { SetTypingStateOnBoardMutation } from '../../server/autogen/definition'
+import { fetcher } from '../../libs/getClient'
+import { getGqlToken } from '../../libs/cookies'
 
-export const usePublishWritingStatus = (): DebouncedState<
-  (postId: string) => Promise<SetTypingStateOnBoardMutation>
-> => {
+export const usePublishWritingStatus = (): DebouncedState<(postId: string) => Promise<unknown>> => {
   const user = useContext(UserStateContext)
-  setAuthToken(user.token)
   const debounced = useDebouncedCallback(
     (postId: string) =>
-      client.setTypingStateOnBoard({
-        personaId: user.currentPersona?.id ?? 0,
-        postId,
+      fetcher({
+        token: getGqlToken() ?? 'INVALID_TOKEN',
+        operationName: 'setTypingStateOnBoard',
+        variables: {
+          personaId: user.currentPersona?.id ?? 0,
+          postId,
+        },
       }),
     200
   )

@@ -1,15 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import { apiHooks } from '../../libs/fetchAPI'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import { Header } from '../../ui/header/Header'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-import { getSdk } from '../../server/autogen/definition'
-import { GraphQLClient } from 'graphql-request'
 import type { NextPage } from 'next'
 import { getUser } from '../../states/UserState'
+import { fetcher, useTenet } from '../../libs/getClient'
 
 const SearchResultList: React.FC = (props) => {
   return <ul>{props.children}</ul>
@@ -37,11 +35,11 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const word = isReady && typeof rawWord === 'string' ? rawWord : ''
   const searchQuery = { query: word }
 
-  const { data } = apiHooks.useSearch(
-    () => word && apiHooks.useSearch.name + JSON.stringify(searchQuery),
-    searchQuery,
-    { fallbackData: initialData }
-  )
+  const { data } = useTenet<{ search: any }>({
+    operationName: 'search',
+    variables: searchQuery,
+    fallbackData: initialData,
+  })
 
   const main: React.FC = () => (
     <PageBaseLayout>
@@ -78,14 +76,13 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
 }
 
 export async function getServerSideProps(context: any) {
-  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
   const req = await context.req
   const searchURL = req.url.toString()
   const searchTerm = searchURL.slice(
     searchURL.indexOf('search/') + 7 /* Add 7 to get only term, without 'search/' */,
     searchURL.indexOf('.json')
   )
-  const initialData = await client.Search({ query: searchTerm })
+  const initialData = await fetcher({ operationName: 'Search', variables: { query: searchTerm } })
   return {
     props: {
       initialData,

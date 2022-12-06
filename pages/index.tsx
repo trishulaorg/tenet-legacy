@@ -11,47 +11,40 @@ import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import Link from 'next/link'
-import { FollowingBoardCard } from '../ui/menu/FollowingBoardCard'
 import { init } from '../libs/initFirebase'
 import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 import { observer } from 'mobx-react'
 import type { NextPage } from 'next'
-import { GraphQLClient } from 'graphql-request'
 import { CommentInput } from '../ui/thread/CommentInput'
-import { client, fetcher, operations, useTenet } from '../libs/getClient'
+import { fetcher, useTenet } from '../libs/getClient'
 
-const IndexPage: NextPage = () => {
+const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [user] = useState(getUser())
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
-  const { data: me } = useTenet({ token: user.token, variables: {}, operationName: 'getMe' })
   const { data: activitiesData } = useTenet({
     operationName: 'getActivities',
     variables: {},
     token: getGqlToken()!,
+    fallbackData: initialData,
   })
-  console.log(activitiesData)
 
-  // const { data: followingBoardsData } = apiHooks.useGetFollowingBoard(
-  //   () => (personaId ? swrKey.useGetFollowingBoard({ personaId }) : undefined),
-  //   { personaId: personaId ?? 0 }
-  // )
-
-  // useEffect(() => {
-  //   const f = async (): Promise<void> => {
-  //     if (user.token !== 'INVALID_TOKEN' && !user.requested) {
-  //       await user.request()
-  //       if (user.personas.length < 1) {
-  //         await router.push('/persona/onboarding')
-  //       }
-  //       if (user.currentPersona?.id) {
-  //         setPersonaId(user.currentPersona.id)
-  //       }
-  //     }
-  //   }
-  //   f()
-  // })
+  useEffect(() => {
+    const f = async (): Promise<void> => {
+      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
+        await user.request()
+        if (user.personas.length < 1) {
+          await router.push('/persona/onboarding')
+        }
+        if (user.currentPersona?.id) {
+          setPersonaId(user.currentPersona.id)
+        }
+      }
+    }
+    f()
+  })
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ;(async () => {
@@ -72,23 +65,23 @@ const IndexPage: NextPage = () => {
     })()
   })
   const onSubmit: (comment: string) => void = async (comment: string) => {
-    // await fetcher({
-    //   operationName: 'createPost',
-    //   variables: {
-    //     title: 'memo',
-    //     content: comment,
-    //     personaId: user.currentPersona?.id ?? -1,
-    //   },
-    //   token: user.token,
-    // })
+    await fetcher({
+      operationName: 'createPost',
+      variables: {
+        title: 'memo',
+        content: comment,
+        personaId: user.currentPersona?.id ?? -1,
+      },
+      token: user.token,
+    })
   }
   const main: React.FC = () => (
     <div>
       <CommentInput onSubmit={onSubmit} />
       <ul>
-        {(((activitiesData as any).data as any['activities']) ?? [])
-          .map((v) => PostState.fromPostTypeJSON(v))
-          .map((v) => (
+        {(activitiesData ? (activitiesData as any)['activities'] : [])
+          .map((v: any) => PostState.fromPostTypeJSON(v))
+          .map((v: any) => (
             <li key={v.id}>
               <ActivityCard post={v} />
             </li>
@@ -120,14 +113,13 @@ const IndexPage: NextPage = () => {
   )
 }
 
-// export async function getStaticProps() {
-//   const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
-//   const initialData = await client.getActivities()
-//   return {
-//     props: {
-//       initialData,
-//     },
-//   }
-// }
+export async function getStaticProps() {
+  const initialData = await fetcher({ operationName: 'getActivities', variables: {} })
+  return {
+    props: {
+      initialData,
+    },
+  }
+}
 
 export default observer(IndexPage)

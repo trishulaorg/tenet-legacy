@@ -6,15 +6,13 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { apiHooks, client } from '../../libs/fetchAPI'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
-import { swrKey } from '../../libs/swrKey'
-import { getSdk } from '../../server/autogen/definition'
-import { GraphQLClient } from 'graphql-request'
 import type { NextPage } from 'next'
+import { fetcher, useTenet } from '../../libs/getClient'
+import { getGqlToken } from '../../libs/cookies'
 
 const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) => {
   const router = useRouter()
@@ -28,27 +26,28 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
   const [context] = useState<BoardState>(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
-  const { data: boardData } = apiHooks.useGetBoard(
-    () => boardId,
-    personaId
+  const { data: boardData } = useTenet<{ board: any }>({
+    operationName: 'getBoard',
+    variables: personaId
       ? {
           topicId: boardId,
           personaId,
         }
       : { topicId: boardId },
-    {
-      fallbackData: initialBoardData,
-    }
-  )
+    fallbackData: initialBoardData,
+  })
   context.id = boardData?.board.id ?? null
   context.title = boardData?.board.title ?? null
   context.description = boardData?.board.description ?? null
   context.posts = boardData?.board.posts.map((v) => PostState.fromPostTypeJSON(v)) ?? []
 
-  const { data: followingBoardData, mutate: mutateFollowingBoard } = apiHooks.useGetFollowingBoard(
-    () => (personaId ? swrKey.useGetFollowingBoard({ personaId: personaId }) : undefined),
-    { personaId: personaId ?? 0 }
-  )
+  const { data: followingBoardData, mutate: mutateFollowingBoard } = useTenet<{
+    getFollowingBoard: any
+  }>({
+    operationName: 'getFollowingBoard',
+    variables: { personaId: personaId ?? 0 },
+    token: getGqlToken(),
+  })
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -88,15 +87,23 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
 
   const onFollowButtonClick = async (): Promise<void> => {
     if (!following) {
-      await client.createFollowingBoard({
-        personaId: personaId ?? 0,
-        boardId: boardId,
+      await fetcher({
+        operationName: 'createFollowingBoard',
+        variables: {
+          personaId: personaId ?? 0,
+          boardId: boardId,
+        },
+        token: getGqlToken(),
       })
       await mutateFollowingBoard()
     } else {
-      await client.unfollowBoard({
-        personaId: personaId ?? 0,
-        boardId: boardId,
+      await fetcher({
+        operationName: 'unfollowBoard',
+        variables: {
+          personaId: personaId ?? 0,
+          boardId: boardId,
+        },
+        token: getGqlToken(),
       })
       await mutateFollowingBoard()
     }
@@ -131,14 +138,16 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
 }
 
 export async function getServerSideProps(context: any) {
-  const client = getSdk(new GraphQLClient('https://coton.vercel.app/api/graphql'))
   const req = await context.req
   const boardURL = req.url.toString()
   const boardId = boardURL.slice(
     boardURL.indexOf('board/') + 6
   ) /* Add 6 to get only ID, without 'board/' */
 
-  const initialBoardData = await client.getBoard({ topicId: boardId } as any)
+  const initialBoardData = await fetcher({
+    operationName: 'getBoard',
+    variables: { topicId: boardId },
+  })
   return {
     props: {
       initialBoardData,

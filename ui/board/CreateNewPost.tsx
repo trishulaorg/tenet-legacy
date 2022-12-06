@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 import { BoardState } from '../../states/PostState'
 import { UserStateContext } from '../../states/UserState'
 import { mutate } from 'swr'
@@ -9,6 +8,8 @@ import { useRouter } from 'next/router'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { useDropzone } from 'react-dropzone'
 import { ImageUpload } from '../common/ImageUpload'
+import { fetcher } from '../../libs/getClient'
+import { getGqlToken } from '../../libs/cookies'
 
 interface CreateNewPostProps {
   boardId: string
@@ -30,18 +31,24 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
     const onClick: FormEventHandler = async (e) => {
       e.preventDefault()
       e.stopPropagation()
-      setAuthToken(user.token)
-
       const {
         createPost: { id: createdPostId },
-      } = await client.createPost({
-        title,
-        content,
-        personaId: user.currentPersona?.id ?? -1,
-        boardId: state.id,
+      } = await fetcher({
+        operationName: 'createPost',
+        variables: {
+          title,
+          content,
+          personaId: user.currentPersona?.id ?? -1,
+          boardId: state.id,
+        },
+        token: getGqlToken(),
       })
 
-      await client.putAttachedImage({ postId: createdPostId, files: files })
+      await fetcher({
+        operationName: 'putAttachedImage',
+        variables: { postId: createdPostId, files: files },
+        token: getGqlToken(),
+      })
 
       await mutate(boardId)
       await router.push(`/post/${createdPostId}`)

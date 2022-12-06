@@ -2,6 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import type { Channel } from 'pusher-js/with-encryption'
 import { createContext } from 'react'
 import { getCookies } from '../libs/cookies'
+import { fetcher } from '../libs/getClient'
 
 export class UserState {
   _personas: PersonaState[]
@@ -23,18 +24,18 @@ export class UserState {
   get requested(): boolean {
     return this._requested
   }
-  // async request(): Promise<UserState> {
-  //   if (this.requested) {
-  //     return this
-  //   }
-  //   setAuthToken(this.token)
-  //   const result = await client.getMe()
-  //   this.personas = result.me?.personas?.map(
-  //     (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
-  //   )
-  //   this.requested = true
-  //   return this
-  // }
+  async request(): Promise<UserState> {
+    if (this.requested) {
+      return this
+    }
+
+    const result = await fetcher({ token: this.token, operationName: 'getMe', variables: {} })
+    this.personas = result.me?.personas?.map(
+      (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
+    )
+    this.requested = true
+    return this
+  }
   set personas(personas: PersonaState[] | undefined) {
     this._personas = personas ?? []
   }
