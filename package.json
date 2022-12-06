@@ -15,6 +15,7 @@
     "dev": "next dev",
     "dev:docker-db": "cross-env NODE_ENV=test next dev",
     "predev:docker-db": "npm run count",
+    "prisma:generate": "prisma generate",
     "docker:start-testdb": "docker compose -f docker-compose.api-test.yml up -d",
     "lint": "eslint . --ext ts,tsx --fix",
     "lint:test": "eslint . --ext ts,tsx",

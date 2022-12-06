@@ -1,18 +1,12 @@
 import type { apiHooks, client } from './fetchAPI'
 
-type SwrKey = {
-  [key in Exclude<keyof typeof apiHooks, keyof typeof client>]: (
-    args: Parameters<typeof apiHooks[key]>[1]
-  ) => string
-}
-
-const swrKey: SwrKey = {
-  useGetActivities: (args) => `useGetActivities_${args?.personaId}`,
-  useGetBoard: (args) => `useGetFollowingBoard_${args?.topicId}_${args?.personaId}`,
-  useGetFollowingBoard: ({ personaId }) => `useGetFollowingBoard_${personaId}`,
-  useGetMe: () => `useGetMe`,
-  useGetPost: ({ id, personaId }) => `useGetPost_${id}_${personaId}`,
-  useSearch: ({ query }) => `useSearch_${query}`,
+const swrKey: Record<string, (args: Record<string, any>) => string> = {
+  getActivities: ({personaId}) => `useGetActivities_${personaId}`,
+  getBoard: ({topicId, personaId}) => `useGetFollowingBoard_${topicId}_${personaId}`,
+  getFollowingBoard: ({ personaId }) => `useGetFollowingBoard_${personaId}`,
+  getMe: () => `useGetMe`,
+  getPost: ({ id, personaId }) => `useGetPost_${id}_${personaId}`,
+  gearch: ({ query }) => `useSearch_${query}`,
 } as const
 
 export { swrKey }

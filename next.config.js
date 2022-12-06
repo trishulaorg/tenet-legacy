@@ -6,6 +6,14 @@ const nextConfig = {
   env: {
     AUTH0_BASE_URL: process.env.VERCEL_URL || 'http://localhost:3000',
   },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(graphql|gql)$/,
+      exclude: /node_modules/,
+      loader: 'graphql-tag/loader',
+    });
+    return config;
+  },
 }
 
 const withPWA = require('next-pwa')({
