@@ -60,22 +60,23 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       )
     }
   }, [token, data])
-  const main: React.FC = () => (
-    <>
-      <BoardStateContext.Provider value={context}>
-        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-          <PostWrapper />
-        </PostFormStateContext.Provider>
-      </BoardStateContext.Provider>
-    </>
-  )
+
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
-        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PageContentLayout
+          main={
+            <BoardStateContext.Provider value={context}>
+              <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+                <PostWrapper />
+              </PostFormStateContext.Provider>
+            </BoardStateContext.Provider>
+          }
+          side={<div className="max-w-xs">test</div>}
+        />
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
