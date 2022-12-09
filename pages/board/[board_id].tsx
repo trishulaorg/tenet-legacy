@@ -93,7 +93,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
         operationName: 'createFollowingBoard',
         variables: {
           personaId: personaId ?? 0,
-          boardId: boardId,
+          boardId,
         },
         token: getGqlToken(),
       })
@@ -103,7 +103,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
         operationName: 'unfollowBoard',
         variables: {
           personaId: personaId ?? 0,
-          boardId: boardId,
+          boardId,
         },
         token: getGqlToken(),
       })
