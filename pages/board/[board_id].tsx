@@ -14,7 +14,9 @@ import type { NextPage } from 'next'
 import { fetcher, useTenet } from '../../libs/getClient'
 import { getGqlToken } from '../../libs/cookies'
 
-const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) => {
+type BoardPageProps = { initialBoardData: any }
+
+const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
   const router = useRouter()
   const {
     isReady,
@@ -155,4 +157,4 @@ export async function getServerSideProps(context: any) {
   }
 }
 
-export default IndexPage
+export default BoardPage
