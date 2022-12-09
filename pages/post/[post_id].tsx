@@ -9,10 +9,12 @@ import { useRouter } from 'next/router'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { fetcher, useTenet } from '../../libs/getClient'
 
-const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
+type Props = { initialData: any }
+
+const PostPage: NextPage<Props> = ({ initialData }) => {
   const token = getGqlToken()
   const router = useRouter()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
@@ -82,16 +84,16 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   )
 }
 
-export async function getServerSideProps(context: any) {
-  const req = await context.req
-  const postURL = req.url.toString()
-  const postID = postURL.slice(postURL.indexOf('post/') + 5)
-  const initialData = await fetcher({ operationName: 'getPost', variables: { id: postID } })
-  return {
-    props: {
-      initialData,
-    },
-  }
+type Params = {
+  post_id: string
+}
+
+export const getServerSideProps: GetServerSideProps<Props, Params> = async (context) => {
+  const { params } = context
+  if (!params) throw new Error('params is undefined')
+  const { post_id } = params
+  const initialData = await fetcher({ operationName: 'getPost', variables: { id: post_id } })
+  return { props: { initialData } }
 }
 
 export default PostPage
