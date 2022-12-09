@@ -5,15 +5,13 @@ import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import { Header } from '../../ui/header/Header'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { getUser } from '../../states/UserState'
 import { fetcher, useTenet } from '../../libs/getClient'
 
-const SearchResultList: React.FC = (props) => {
-  return <ul>{props.children}</ul>
-}
+type Props = { initialData: any }
 
-const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
+const SearchResultPage: NextPage<Props> = ({ initialData }) => {
   const user = getUser()
   const router = useRouter()
 
@@ -50,7 +48,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
         main={
           <PageBaseLayout>
             <h1 className="text-xl">Search Result</h1>
-            <SearchResultList>
+            <ul>
               {data &&
                 data.search.map((c, idx) => (
                   <li
@@ -68,7 +66,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
                     </div>
                   </li>
                 ))}
-            </SearchResultList>
+            </ul>
           </PageBaseLayout>
         }
         side={<div className="max-w-xs">test</div>}
@@ -77,14 +75,15 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   )
 }
 
-export async function getServerSideProps(context: any) {
-  const req = await context.req
-  const searchURL = req.url.toString()
-  const searchTerm = searchURL.slice(
-    searchURL.indexOf('search/') + 7 /* Add 7 to get only term, without 'search/' */,
-    searchURL.indexOf('.json')
-  )
-  const initialData = await fetcher({ operationName: 'Search', variables: { query: searchTerm } })
+type Params = {
+  word: string
+}
+
+export const getServerSideProps: GetServerSideProps<Props, Params> = async (context) => {
+  const { params } = context
+  if (!params) throw new Error('params is undefined')
+  const { word } = params
+  const initialData = await fetcher({ operationName: 'Search', variables: { query: word } })
   return {
     props: {
       initialData,
@@ -92,4 +91,4 @@ export async function getServerSideProps(context: any) {
   }
 }
 
-export default IndexPage
+export default SearchResultPage
