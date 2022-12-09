@@ -41,7 +41,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
   context.id = boardData?.board.id ?? null
   context.title = boardData?.board.title ?? null
   context.description = boardData?.board.description ?? null
-  context.posts = boardData?.board.posts.map((v) => PostState.fromPostTypeJSON(v)) ?? []
+  context.posts = boardData?.board.posts.map((v: any) => PostState.fromPostTypeJSON(v)) ?? []
 
   const { data: followingBoardData, mutate: mutateFollowingBoard } = useTenet<{
     getFollowingBoard: any
@@ -64,11 +64,11 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
       }
 
       const pusher = await makePusher()
-      const postIds = boardData?.board.posts.map((post) => post.id) ?? []
+      const postIds = boardData?.board.posts.map((post: any) => post.id) ?? []
 
       const postChannels: Channel[] = []
 
-      postIds.forEach((postId) => {
+      postIds.forEach((postId: any) => {
         if (user?.notifications.every((notification) => notification.channel !== postId)) {
           postChannels.push(pusher.subscribe(postId))
         }
@@ -84,7 +84,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
   })
 
   const following = followingBoardData?.getFollowingBoard.some(
-    (boardData) => boardId && boardData.board.id === boardId
+    (boardData: any) => boardId && boardData.board.id === boardId
   )
 
   const onFollowButtonClick = async (): Promise<void> => {
