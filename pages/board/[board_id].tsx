@@ -111,20 +111,13 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
     }
   }
 
-  const main: React.FC = () => (
-    <>
-      <BoardStateContext.Provider value={context}>
-        {boardId ? (
-          <Board
-            followButtonType={following ? 'unfollow' : 'follow'}
-            onFollowButtonClick={onFollowButtonClick}
-          />
-        ) : (
-          <Board />
-        )}
-      </BoardStateContext.Provider>
-    </>
-  )
+  const boardProps = boardId
+    ? {
+        followButtonType: (following ? 'unfollow' : 'follow') as 'unfollow' | 'follow',
+        onFollowButtonClick,
+      }
+    : {}
+
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
@@ -132,7 +125,14 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
           <HeaderStateContext.Provider value={new HeaderState(user)}>
             <Header />
           </HeaderStateContext.Provider>
-          <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+          <PageContentLayout
+            main={
+              <BoardStateContext.Provider value={context}>
+                <Board {...boardProps} />
+              </BoardStateContext.Provider>
+            }
+            side={<div className="max-w-xs">test</div>}
+          />
         </PostFormStateContext.Provider>
       </UserStateContext.Provider>
     </PageBaseLayout>
