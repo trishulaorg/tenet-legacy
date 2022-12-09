@@ -21,18 +21,17 @@ const IndexPage: React.FC = () => {
       }
     })()
   }, [router, user])
-  const main: React.FC = () => (
-    <>
-      <CreateNewPost boardId={router.query['boardId'] as string} />
-    </>
-  )
+
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
-        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PageContentLayout
+          main={<CreateNewPost boardId={router.query['boardId'] as string} />}
+          side={<div className="max-w-xs">test</div>}
+        />
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
