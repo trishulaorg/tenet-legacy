@@ -20,8 +20,7 @@ import { fetcher, useTenet } from '../libs/getClient'
 
 const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [user] = useState(getUser())
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const [, setPersonaId] = useState<number | undefined>(undefined)
   const router = useRouter()
 
   const { data: activitiesData } = useTenet({
@@ -75,20 +74,6 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       token: user.token,
     })
   }
-  const main: React.FC = () => (
-    <div>
-      <CommentInput onSubmit={onSubmit} />
-      <ul>
-        {(activitiesData ? (activitiesData as any)['activities'] : [])
-          .map((v: any) => PostState.fromPostTypeJSON(v))
-          .map((v: any) => (
-            <li key={v.id}>
-              <ActivityCard post={v} />
-            </li>
-          ))}
-      </ul>
-    </div>
-  )
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
@@ -97,15 +82,28 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
             <Header />
           </HeaderStateContext.Provider>
           <PageContentLayout
-            Main={main}
-            Side={() => (
+            main={
+              <div>
+                <CommentInput onSubmit={onSubmit} />
+                <ul>
+                  {(activitiesData ? (activitiesData as any)['activities'] : [])
+                    .map((v: any) => PostState.fromPostTypeJSON(v))
+                    .map((v: any) => (
+                      <li key={v.id}>
+                        <ActivityCard post={v} />
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            }
+            side={
               <div className="w-56">
                 {/* <FollowingBoardCard boards={followingBoardsData?.getFollowingBoard ?? []} /> */}
                 <div className="rounded overflow-hidden my-2 py-2 text-high dark:text-high-dark">
                   <Link href="/tos">Terms of Service</Link>
                 </div>
               </div>
-            )}
+            }
           />
         </PostFormStateContext.Provider>
       </UserStateContext.Provider>
