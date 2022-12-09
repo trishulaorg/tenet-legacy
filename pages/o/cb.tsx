@@ -5,7 +5,6 @@ import { getUser, UserStateContext } from '../../states/UserState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { CreateNewBoard } from '../../ui/board/CreateNewBoard'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 
 const IndexPage: React.FC = () => {
   const router = useRouter()

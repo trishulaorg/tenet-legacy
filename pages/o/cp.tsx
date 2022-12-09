@@ -4,7 +4,6 @@ import React, { useEffect } from 'react'
 import { getUser, UserStateContext } from '../../states/UserState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { CreateNewPost } from '../../ui/board/CreateNewPost'
 
 const IndexPage: React.FC = () => {

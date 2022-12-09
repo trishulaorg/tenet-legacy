@@ -3,8 +3,6 @@ import { HeaderState, HeaderStateContext } from '../../../states/HeaderState'
 import React, { useEffect } from 'react'
 import { getUser, UserStateContext } from '../../../states/UserState'
 import { PageContentLayout } from '../../../ui/layouts/PageContentLayout'
-
-import { PageBaseLayout } from '../../../ui/layouts/PageBaseLayout'
 import { PersonaIconForm } from '../../../ui/settings/PersonaIconForm'
 import router from 'next/router'
 
