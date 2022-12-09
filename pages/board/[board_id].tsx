@@ -10,7 +10,7 @@ import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { fetcher, useTenet } from '../../libs/getClient'
 import { getGqlToken } from '../../libs/cookies'
 
@@ -139,22 +139,23 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
   )
 }
 
-export async function getServerSideProps(context: any) {
-  const req = await context.req
-  const boardURL = req.url.toString()
-  const boardId = boardURL.slice(
-    boardURL.indexOf('board/') + 6
-  ) /* Add 6 to get only ID, without 'board/' */
+type BoardPageParams = {
+  boardId: string
+}
+
+export const getServerSideProps: GetServerSideProps<BoardPageProps, BoardPageParams> = async (
+  context
+) => {
+  const { params } = context
+  if (!params) throw new Error('params of board page is undefined')
+  const { boardId } = params
 
   const initialBoardData = await fetcher({
     operationName: 'getBoard',
     variables: { topicId: boardId },
   })
-  return {
-    props: {
-      initialBoardData,
-    },
-  }
+
+  return { props: { initialBoardData } }
 }
 
 export default BoardPage
