@@ -140,7 +140,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
 }
 
 type BoardPageParams = {
-  boardId: string
+  board_id: string
 }
 
 export const getServerSideProps: GetServerSideProps<BoardPageProps, BoardPageParams> = async (
@@ -148,11 +148,11 @@ export const getServerSideProps: GetServerSideProps<BoardPageProps, BoardPagePar
 ) => {
   const { params } = context
   if (!params) throw new Error('params of board page is undefined')
-  const { boardId } = params
+  const { board_id } = params
 
   const initialBoardData = await fetcher({
     operationName: 'getBoard',
-    variables: { topicId: boardId },
+    variables: { topicId: board_id },
   })
 
   return { props: { initialBoardData } }
