@@ -167,7 +167,7 @@ const IndexPage: React.FC = () => {
           <HeaderStateContext.Provider value={new HeaderState(user)}>
             <Header />
           </HeaderStateContext.Provider>
-          <PageContentLayout Main={main} Side={() => null} />
+          <PageContentLayout main={main} side={null} />
         </PostFormStateContext.Provider>
       </UserStateContext.Provider>
     </PageBaseLayout>
