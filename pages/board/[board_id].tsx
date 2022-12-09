@@ -6,7 +6,6 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
@@ -119,23 +118,21 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
     : {}
 
   return (
-    <PageBaseLayout>
-      <UserStateContext.Provider value={user}>
-        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-          <HeaderStateContext.Provider value={new HeaderState(user)}>
-            <Header />
-          </HeaderStateContext.Provider>
-          <PageContentLayout
-            main={
-              <BoardStateContext.Provider value={context}>
-                <Board {...boardProps} />
-              </BoardStateContext.Provider>
-            }
-            side={<div className="max-w-xs">test</div>}
-          />
-        </PostFormStateContext.Provider>
-      </UserStateContext.Provider>
-    </PageBaseLayout>
+    <UserStateContext.Provider value={user}>
+      <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+        <HeaderStateContext.Provider value={new HeaderState(user)}>
+          <Header />
+        </HeaderStateContext.Provider>
+        <PageContentLayout
+          main={
+            <BoardStateContext.Provider value={context}>
+              <Board {...boardProps} />
+            </BoardStateContext.Provider>
+          }
+          side={<div className="max-w-xs">test</div>}
+        />
+      </PostFormStateContext.Provider>
+    </UserStateContext.Provider>
   )
 }
 

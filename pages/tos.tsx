@@ -5,7 +5,6 @@ import React, { useEffect } from 'react'
 import { getUser, UserStateContext } from '../states/UserState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
-import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 
 const tos = `
@@ -155,22 +154,22 @@ const IndexPage: React.FC = () => {
     })()
   }, [router, user])
 
-  const main: React.FC = () => (
-    <div className="text-med dark:text-med-dark">
-      <ReactMarkdown>{tos}</ReactMarkdown>
-    </div>
-  )
   return (
-    <PageBaseLayout>
-      <UserStateContext.Provider value={user}>
-        <PostFormStateContext.Provider value={new PostFormState({})}>
-          <HeaderStateContext.Provider value={new HeaderState(user)}>
-            <Header />
-          </HeaderStateContext.Provider>
-          <PageContentLayout main={main} side={null} />
-        </PostFormStateContext.Provider>
-      </UserStateContext.Provider>
-    </PageBaseLayout>
+    <UserStateContext.Provider value={user}>
+      <PostFormStateContext.Provider value={new PostFormState({})}>
+        <HeaderStateContext.Provider value={new HeaderState(user)}>
+          <Header />
+        </HeaderStateContext.Provider>
+        <PageContentLayout
+          main={
+            <div className="text-med dark:text-med-dark">
+              <ReactMarkdown>{tos}</ReactMarkdown>
+            </div>
+          }
+          side={null}
+        />
+      </PostFormStateContext.Provider>
+    </UserStateContext.Provider>
   )
 }
 

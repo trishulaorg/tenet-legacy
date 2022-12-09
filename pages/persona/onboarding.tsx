@@ -22,19 +22,17 @@ const OnboardingPage: React.FC = () => {
   }, [router, user])
 
   return (
-    <PageBaseLayout>
-      <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header />
-      </HeaderStateContext.Provider>
-      <PersonaStateContext.Provider
-        value={new PersonaState(user.currentPersona ?? { id: -1, name: '', screenName: '' })}
-      >
-        <PageContentLayout
-          main={<PersonaCreateSteps />}
-          side={<div className="max-w-xs">test</div>}
-        />
-      </PersonaStateContext.Provider>
-    </PageBaseLayout>
+    <HeaderStateContext.Provider value={new HeaderState(user)}>
+      <Header />
+    </HeaderStateContext.Provider>
+    <PersonaStateContext.Provider
+      value={new PersonaState(user.currentPersona ?? { id: -1, name: '', screenName: '' })}
+    >
+      <PageContentLayout
+        main={<PersonaCreateSteps />}
+        side={<div className="max-w-xs">test</div>}
+      />
+    </PersonaStateContext.Provider>
   )
 }
 

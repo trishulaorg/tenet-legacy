@@ -6,7 +6,6 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { getGqlToken } from '../../libs/cookies'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import type { GetServerSideProps, NextPage } from 'next'
@@ -64,23 +63,21 @@ const PostPage: NextPage<Props> = ({ initialData }) => {
   }, [token, data])
 
   return (
-    <PageBaseLayout>
-      <UserStateContext.Provider value={user}>
-        <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header />
-        </HeaderStateContext.Provider>
-        <PageContentLayout
-          main={
-            <BoardStateContext.Provider value={context}>
-              <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-                <PostWrapper />
-              </PostFormStateContext.Provider>
-            </BoardStateContext.Provider>
-          }
-          side={<div className="max-w-xs">test</div>}
-        />
-      </UserStateContext.Provider>
-    </PageBaseLayout>
+    <UserStateContext.Provider value={user}>
+      <HeaderStateContext.Provider value={new HeaderState(user)}>
+        <Header />
+      </HeaderStateContext.Provider>
+      <PageContentLayout
+        main={
+          <BoardStateContext.Provider value={context}>
+            <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+              <PostWrapper />
+            </PostFormStateContext.Provider>
+          </BoardStateContext.Provider>
+        }
+        side={<div className="max-w-xs">test</div>}
+      />
+    </UserStateContext.Provider>
   )
 }
 

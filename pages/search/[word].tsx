@@ -46,7 +46,7 @@ const SearchResultPage: NextPage<Props> = ({ initialData }) => {
       </HeaderStateContext.Provider>
       <PageContentLayout
         main={
-          <PageBaseLayout>
+          <>
             <h1 className="text-xl">Search Result</h1>
             <ul>
               {data &&
@@ -67,7 +67,7 @@ const SearchResultPage: NextPage<Props> = ({ initialData }) => {
                   </li>
                 ))}
             </ul>
-          </PageBaseLayout>
+          </>
         }
         side={<div className="max-w-xs">test</div>}
       />

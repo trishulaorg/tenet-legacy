@@ -1,6 +1,6 @@
-import type { FC } from 'react'
+import type { ReactNode } from 'react'
 
-const PageBaseLayout: FC = ({ children }) => (
+export const PageBaseLayout = ({ children }: { children: ReactNode }) => (
   <div className="transition-colors duration-350 h-max min-h-screen">
     <div
       style={{
@@ -16,5 +16,3 @@ const PageBaseLayout: FC = ({ children }) => (
     {children}
   </div>
 )
-
-export { PageBaseLayout }

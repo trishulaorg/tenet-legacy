@@ -2,13 +2,14 @@ import type { AppProps } from 'next/app'
 import type { ReactElement } from 'react'
 import { ThemeProvider } from 'next-themes'
 import '../styles/global.css'
+import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 
-function MyApp({ Component, pageProps }: AppProps): ReactElement {
+export default function App({ Component, pageProps }: AppProps): ReactElement {
   return (
     <ThemeProvider attribute="class">
-      <Component {...pageProps} />
+      <PageBaseLayout>
+        <Component {...pageProps} />
+      </PageBaseLayout>
     </ThemeProvider>
   )
 }
-
-export default MyApp
