@@ -21,18 +21,14 @@ const SetPersonaIconPage: React.FC = () => {
       }
     })()
   }, [router, user])
-  const main: React.FC = () => (
-    <>
-      <PersonaIconForm />
-    </>
-  )
+
   return (
     <PageBaseLayout>
       <UserStateContext.Provider value={user}>
         <HeaderStateContext.Provider value={new HeaderState(user)}>
           <Header />
         </HeaderStateContext.Provider>
-        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
+        <PageContentLayout main={<PersonaIconForm />} side={<div className="max-w-xs">test</div>} />
       </UserStateContext.Provider>
     </PageBaseLayout>
   )
