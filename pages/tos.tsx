@@ -1,11 +1,6 @@
 import ReactMarkdown from 'react-markdown'
-import { Header } from '../ui/header/Header'
-import { HeaderState, HeaderStateContext } from '../states/HeaderState'
-import React, { useEffect } from 'react'
-import { getUser, UserStateContext } from '../states/UserState'
-import { PageContentLayout } from '../ui/layouts/PageContentLayout'
-import { useRouter } from 'next/router'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
+import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 
 const tos = `
 
@@ -141,35 +136,17 @@ const tos = `
 `
 
 const IndexPage: React.FC = () => {
-  const user = getUser()
-  const router = useRouter()
-  useEffect(() => {
-    ;(async (): Promise<void> => {
-      if (user) {
-        await user.request()
-        if (user.token !== 'INVALID_TOKEN' && !user.currentPersona) {
-          await router.push('/persona/onboarding')
-        }
-      }
-    })()
-  }, [router, user])
-
   return (
-    <UserStateContext.Provider value={user}>
-      <PostFormStateContext.Provider value={new PostFormState({})}>
-        <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header />
-        </HeaderStateContext.Provider>
-        <PageContentLayout
-          main={
-            <div className="text-med dark:text-med-dark">
-              <ReactMarkdown>{tos}</ReactMarkdown>
-            </div>
-          }
-          side={null}
-        />
-      </PostFormStateContext.Provider>
-    </UserStateContext.Provider>
+    <PageContentLayout
+      main={
+        <div className="text-med dark:text-med-dark">
+          <PostFormStateContext.Provider value={new PostFormState({})}>
+            <ReactMarkdown>{tos}</ReactMarkdown>
+          </PostFormStateContext.Provider>
+        </div>
+      }
+      side={null}
+    />
   )
 }
 

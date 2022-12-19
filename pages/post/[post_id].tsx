@@ -1,19 +1,18 @@
-import { Header } from '../../ui/header/Header'
-import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
-import React, { useEffect, useState } from 'react'
-import { getUser, UserStateContext } from '../../states/UserState'
-import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
-import { getGqlToken } from '../../libs/cookies'
-import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
-import { useRouter } from 'next/router'
-import { PostWrapper } from '../../ui/post/PostWrapper'
-import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import type { GetServerSideProps, NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { getGqlToken } from '../../libs/cookies'
 import { fetcher, useTenet } from '../../libs/getClient'
+import { getUser } from '../../states/UserState'
+import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
+import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
+import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
+import { PostWrapper } from '../../ui/post/PostWrapper'
 
 type Props = { initialData: any }
 
 const PostPage: NextPage<Props> = ({ initialData }) => {
+  const user = getUser()
   const token = getGqlToken()
   const router = useRouter()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
@@ -21,7 +20,6 @@ const PostPage: NextPage<Props> = ({ initialData }) => {
     isReady,
     query: { post_id: rawPostId },
   } = router
-  const user = getUser()
 
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 
@@ -63,21 +61,16 @@ const PostPage: NextPage<Props> = ({ initialData }) => {
   }, [token, data])
 
   return (
-    <UserStateContext.Provider value={user}>
-      <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header />
-      </HeaderStateContext.Provider>
-      <PageContentLayout
-        main={
-          <BoardStateContext.Provider value={context}>
-            <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-              <PostWrapper />
-            </PostFormStateContext.Provider>
-          </BoardStateContext.Provider>
-        }
-        side={<div className="max-w-xs">test</div>}
-      />
-    </UserStateContext.Provider>
+    <PageContentLayout
+      main={
+        <BoardStateContext.Provider value={context}>
+          <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+            <PostWrapper />
+          </PostFormStateContext.Provider>
+        </BoardStateContext.Provider>
+      }
+      side={<div className="max-w-xs">test</div>}
+    />
   )
 }
 

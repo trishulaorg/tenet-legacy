@@ -1,29 +1,14 @@
+import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
-import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
-import { Header } from '../../ui/header/Header'
-import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
-import type { GetServerSideProps, NextPage } from 'next'
-import { getUser } from '../../states/UserState'
 import { fetcher, useTenet } from '../../libs/getClient'
+import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 
 type Props = { initialData: any }
 
 const SearchResultPage: NextPage<Props> = ({ initialData }) => {
-  const user = getUser()
   const router = useRouter()
 
-  useEffect(() => {
-    ;(async (): Promise<void> => {
-      if (user) {
-        await user.request()
-        if (user.token !== 'INVALID_TOKEN' && !user.currentPersona) {
-          await router.push('/persona/onboarding')
-        }
-      }
-    })()
-  }, [router, user])
   const {
     isReady,
     query: { word: rawWord },
@@ -40,16 +25,13 @@ const SearchResultPage: NextPage<Props> = ({ initialData }) => {
 
   return (
     <div className="bg-pagebg dark:bg-pagebg-dark transition-colors duration-350">
-      <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header />
-      </HeaderStateContext.Provider>
       <PageContentLayout
         main={
           <>
             <h1 className="text-xl">Search Result</h1>
             <ul>
               {data &&
-                data.search.map((c, idx) => (
+                data.search.map((c: any, idx: any) => (
                   <li
                     key={c.id}
                     className="flex my-2 p-2 rounded bg-contentbg/75 hover:bg-contentbg dark:bg-contentbg-dark/75 dark:hover:bg-contentbg-dark transition-colors duration-350 cursor-pointer border dark:border-med"

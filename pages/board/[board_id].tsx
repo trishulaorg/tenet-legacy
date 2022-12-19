@@ -22,9 +22,9 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
     query: { board_id: rawBoardId },
   } = router
   const user = getUser()
-  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const [personaId, setPersonaId] = useState<number>()
 
-  const [context] = useState<BoardState>(new BoardState({}))
+  const [context] = useState(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
   const { data: boardData } = useTenet<{ board: any }>({
@@ -119,19 +119,19 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
 
   return (
     <UserStateContext.Provider value={user}>
-      <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-        <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header />
-        </HeaderStateContext.Provider>
-        <PageContentLayout
-          main={
+      <HeaderStateContext.Provider value={new HeaderState(user)}>
+        <Header />
+      </HeaderStateContext.Provider>
+      <PageContentLayout
+        main={
+          <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
             <BoardStateContext.Provider value={context}>
               <Board {...boardProps} />
             </BoardStateContext.Provider>
-          }
-          side={<div className="max-w-xs">test</div>}
-        />
-      </PostFormStateContext.Provider>
+          </PostFormStateContext.Provider>
+        }
+        side={<div className="max-w-xs">test</div>}
+      />
     </UserStateContext.Provider>
   )
 }
