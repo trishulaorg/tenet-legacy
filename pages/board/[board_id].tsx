@@ -6,24 +6,25 @@ import { BoardState, BoardStateContext, PostState } from '../../states/PostState
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import { fetcher, useTenet } from '../../libs/getClient'
 import { getGqlToken } from '../../libs/cookies'
 
-const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) => {
+type BoardPageProps = { initialBoardData: any }
+
+const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
   const router = useRouter()
   const {
     isReady,
     query: { board_id: rawBoardId },
   } = router
   const user = getUser()
-  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const [personaId, setPersonaId] = useState<number>()
 
-  const [context] = useState<BoardState>(new BoardState({}))
+  const [context] = useState(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
   const { data: boardData } = useTenet<{ board: any }>({
@@ -39,7 +40,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
   context.id = boardData?.board.id ?? null
   context.title = boardData?.board.title ?? null
   context.description = boardData?.board.description ?? null
-  context.posts = boardData?.board.posts.map((v) => PostState.fromPostTypeJSON(v)) ?? []
+  context.posts = boardData?.board.posts.map((v: any) => PostState.fromPostTypeJSON(v)) ?? []
 
   const { data: followingBoardData, mutate: mutateFollowingBoard } = useTenet<{
     getFollowingBoard: any
@@ -62,11 +63,11 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
       }
 
       const pusher = await makePusher()
-      const postIds = boardData?.board.posts.map((post) => post.id) ?? []
+      const postIds = boardData?.board.posts.map((post: any) => post.id) ?? []
 
       const postChannels: Channel[] = []
 
-      postIds.forEach((postId) => {
+      postIds.forEach((postId: any) => {
         if (user?.notifications.every((notification) => notification.channel !== postId)) {
           postChannels.push(pusher.subscribe(postId))
         }
@@ -82,7 +83,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
   })
 
   const following = followingBoardData?.getFollowingBoard.some(
-    (boardData) => boardId && boardData.board.id === boardId
+    (boardData: any) => boardId && boardData.board.id === boardId
   )
 
   const onFollowButtonClick = async (): Promise<void> => {
@@ -91,7 +92,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
         operationName: 'createFollowingBoard',
         variables: {
           personaId: personaId ?? 0,
-          boardId: boardId,
+          boardId,
         },
         token: getGqlToken(),
       })
@@ -101,7 +102,7 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
         operationName: 'unfollowBoard',
         variables: {
           personaId: personaId ?? 0,
-          boardId: boardId,
+          boardId,
         },
         token: getGqlToken(),
       })
@@ -109,50 +110,49 @@ const IndexPage: NextPage<{ initialBoardData: any }> = ({ initialBoardData }) =>
     }
   }
 
-  const main: React.FC = () => (
-    <>
-      <BoardStateContext.Provider value={context}>
-        {boardId ? (
-          <Board
-            followButtonType={following ? 'unfollow' : 'follow'}
-            onFollowButtonClick={onFollowButtonClick}
-          />
-        ) : (
-          <Board />
-        )}
-      </BoardStateContext.Provider>
-    </>
-  )
+  const boardProps = boardId
+    ? {
+        followButtonType: (following ? 'unfollow' : 'follow') as 'unfollow' | 'follow',
+        onFollowButtonClick,
+      }
+    : {}
+
   return (
-    <PageBaseLayout>
-      <UserStateContext.Provider value={user}>
-        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-          <HeaderStateContext.Provider value={new HeaderState(user)}>
-            <Header />
-          </HeaderStateContext.Provider>
-          <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
-        </PostFormStateContext.Provider>
-      </UserStateContext.Provider>
-    </PageBaseLayout>
+    <UserStateContext.Provider value={user}>
+      <HeaderStateContext.Provider value={new HeaderState(user)}>
+        <Header />
+      </HeaderStateContext.Provider>
+      <PageContentLayout
+        main={
+          <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+            <BoardStateContext.Provider value={context}>
+              <Board {...boardProps} />
+            </BoardStateContext.Provider>
+          </PostFormStateContext.Provider>
+        }
+        side={<div className="max-w-xs">test</div>}
+      />
+    </UserStateContext.Provider>
   )
 }
 
-export async function getServerSideProps(context: any) {
-  const req = await context.req
-  const boardURL = req.url.toString()
-  const boardId = boardURL.slice(
-    boardURL.indexOf('board/') + 6
-  ) /* Add 6 to get only ID, without 'board/' */
+type BoardPageParams = {
+  board_id: string
+}
+
+export const getServerSideProps: GetServerSideProps<BoardPageProps, BoardPageParams> = async (
+  context
+) => {
+  const { params } = context
+  if (!params) throw new Error('params of board page is undefined')
+  const { board_id } = params
 
   const initialBoardData = await fetcher({
     operationName: 'getBoard',
-    variables: { topicId: boardId },
+    variables: { topicId: board_id },
   })
-  return {
-    props: {
-      initialBoardData,
-    },
-  }
+
+  return { props: { initialBoardData } }
 }
 
-export default IndexPage
+export default BoardPage

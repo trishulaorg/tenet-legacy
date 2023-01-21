@@ -1,13 +1,11 @@
 export function getCookies(): Map<string, string> {
-  if (process.browser) {
-    return new Map(
-      document.cookie
-        .split(';')
-        .filter((v) => v.trim())
-        .map((v) => v.split('=').map((v) => v.trim()) as [string, string])
-    )
-  }
-  return new Map()
+  if (typeof window === 'undefined') return new Map()
+  return new Map(
+    document.cookie
+      .split(';')
+      .filter((v) => v.trim())
+      .map((v) => v.split('=').map((v) => decodeURIComponent(v.trim())) as [string, string])
+  )
 }
 
 export function convertToString(cookies: Map<string, string>): string {

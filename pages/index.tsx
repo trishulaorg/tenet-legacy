@@ -1,28 +1,18 @@
-import { Header } from '../ui/header/Header'
-import jwt from 'jsonwebtoken'
-import { HeaderState, HeaderStateContext } from '../states/HeaderState'
-import React, { useEffect, useState } from 'react'
-import { UserStateContext, getUser } from '../states/UserState'
-import { ActivityCard } from '../ui/home/ActivityCard'
-import { PostState } from '../states/PostState'
-import { getCookies, getGqlToken } from '../libs/cookies'
-import { PageContentLayout } from '../ui/layouts/PageContentLayout'
-import { useRouter } from 'next/router'
-import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
-import { PostFormState, PostFormStateContext } from '../states/PostFormState'
+import type { GetStaticProps, NextPage } from 'next'
 import Link from 'next/link'
-import { init } from '../libs/initFirebase'
-import { isValidAuthInstance } from '../libs/isValidAuthInstance'
+import { useState } from 'react'
 import { observer } from 'mobx-react'
-import type { NextPage } from 'next'
 import { CommentInput } from '../ui/thread/CommentInput'
 import { fetcher, useTenet } from '../libs/getClient'
+import { getGqlToken } from '../libs/cookies'
+import { getUser } from '../states/UserState'
+import { PostState } from '../states/PostState'
+import { PostFormState, PostFormStateContext } from '../states/PostFormState'
+import { PageContentLayout } from '../ui/layouts/PageContentLayout'
+import { ActivityCard } from '../ui/home/ActivityCard'
 
 const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
   const [user] = useState(getUser())
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
-  const router = useRouter()
 
   const { data: activitiesData } = useTenet({
     operationName: 'getActivities',
@@ -31,39 +21,6 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
     fallbackData: initialData,
   })
 
-  useEffect(() => {
-    const f = async (): Promise<void> => {
-      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
-        await user.request()
-        if (user.personas.length < 1) {
-          await router.push('/persona/onboarding')
-        }
-        if (user.currentPersona?.id) {
-          setPersonaId(user.currentPersona.id)
-        }
-      }
-    }
-    f()
-  })
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    ;(async () => {
-      const r = init()
-      const { auth } = r
-      if (!isValidAuthInstance(auth) || !auth.currentUser) return
-      if (getCookies().has('gqltoken') && getCookies().get('gqltoken') !== '') {
-        user.token = getCookies().get('gqltoken') ?? ''
-        return
-      }
-      const localToken = jwt.sign(
-        { uid: auth.currentUser.uid },
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        process.env['NEXT_PUBLIC_API_TOKEN_SECRET']!
-      )
-      document.cookie = `gqltoken=${localToken}`
-      user.token = localToken
-    })()
-  })
   const onSubmit: (comment: string) => void = async (comment: string) => {
     await fetcher({
       operationName: 'createPost',
@@ -75,51 +32,40 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       token: user.token,
     })
   }
-  const main: React.FC = () => (
-    <div>
-      <CommentInput onSubmit={onSubmit} />
-      <ul>
-        {(activitiesData ? (activitiesData as any)['activities'] : [])
-          .map((v: any) => PostState.fromPostTypeJSON(v))
-          .map((v: any) => (
-            <li key={v.id}>
-              <ActivityCard post={v} />
-            </li>
-          ))}
-      </ul>
-    </div>
-  )
+
   return (
-    <PageBaseLayout>
-      <UserStateContext.Provider value={user}>
-        <PostFormStateContext.Provider value={new PostFormState({})}>
-          <HeaderStateContext.Provider value={new HeaderState(user)}>
-            <Header />
-          </HeaderStateContext.Provider>
-          <PageContentLayout
-            Main={main}
-            Side={() => (
-              <div className="w-56">
-                {/* <FollowingBoardCard boards={followingBoardsData?.getFollowingBoard ?? []} /> */}
-                <div className="rounded overflow-hidden my-2 py-2 text-high dark:text-high-dark">
-                  <Link href="/tos">Terms of Service</Link>
-                </div>
-              </div>
-            )}
-          />
-        </PostFormStateContext.Provider>
-      </UserStateContext.Provider>
-    </PageBaseLayout>
+    <PageContentLayout
+      main={
+        <div>
+          <CommentInput onSubmit={onSubmit} />
+          <PostFormStateContext.Provider value={new PostFormState({})}>
+            <ul>
+              {(activitiesData ? (activitiesData as any)['activities'] : [])
+                .map((v: any) => PostState.fromPostTypeJSON(v))
+                .map((v: any) => (
+                  <li key={v.id}>
+                    <ActivityCard post={v} />
+                  </li>
+                ))}
+            </ul>
+          </PostFormStateContext.Provider>
+        </div>
+      }
+      side={
+        <div className="w-56">
+          {/* <FollowingBoardCard boards={followingBoardsData?.getFollowingBoard ?? []} /> */}
+          <div className="rounded overflow-hidden my-2 py-2 text-high dark:text-high-dark">
+            <Link href="/tos">Terms of Service</Link>
+          </div>
+        </div>
+      }
+    />
   )
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
   const initialData = await fetcher({ operationName: 'getActivities', variables: {} })
-  return {
-    props: {
-      initialData,
-    },
-  }
+  return { props: { initialData } }
 }
 
 export default observer(IndexPage)

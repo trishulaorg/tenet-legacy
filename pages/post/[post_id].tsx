@@ -1,18 +1,18 @@
-import { Header } from '../../ui/header/Header'
-import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
-import React, { useEffect, useState } from 'react'
-import { getUser, UserStateContext } from '../../states/UserState'
-import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
-import { getGqlToken } from '../../libs/cookies'
-import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
+import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
-import { PostWrapper } from '../../ui/post/PostWrapper'
-import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
-import type { NextPage } from 'next'
+import { useEffect, useState } from 'react'
+import { getGqlToken } from '../../libs/cookies'
 import { fetcher, useTenet } from '../../libs/getClient'
+import { getUser } from '../../states/UserState'
+import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
+import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
+import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
+import { PostWrapper } from '../../ui/post/PostWrapper'
 
-const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
+type Props = { initialData: any }
+
+const PostPage: NextPage<Props> = ({ initialData }) => {
+  const user = getUser()
   const token = getGqlToken()
   const router = useRouter()
   const [personaId, setPersonaId] = useState<number | undefined>(undefined)
@@ -20,7 +20,6 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
     isReady,
     query: { post_id: rawPostId },
   } = router
-  const user = getUser()
 
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 
@@ -60,37 +59,31 @@ const PostPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       )
     }
   }, [token, data])
-  const main: React.FC = () => (
-    <>
-      <BoardStateContext.Provider value={context}>
-        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-          <PostWrapper />
-        </PostFormStateContext.Provider>
-      </BoardStateContext.Provider>
-    </>
-  )
+
   return (
-    <PageBaseLayout>
-      <UserStateContext.Provider value={user}>
-        <HeaderStateContext.Provider value={new HeaderState(user)}>
-          <Header />
-        </HeaderStateContext.Provider>
-        <PageContentLayout Main={main} Side={() => <div className="max-w-xs">test</div>} />
-      </UserStateContext.Provider>
-    </PageBaseLayout>
+    <PageContentLayout
+      main={
+        <BoardStateContext.Provider value={context}>
+          <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+            <PostWrapper />
+          </PostFormStateContext.Provider>
+        </BoardStateContext.Provider>
+      }
+      side={<div className="max-w-xs">test</div>}
+    />
   )
 }
 
-export async function getServerSideProps(context: any) {
-  const req = await context.req
-  const postURL = req.url.toString()
-  const postID = postURL.slice(postURL.indexOf('post/') + 5)
-  const initialData = await fetcher({ operationName: 'getPost', variables: { id: postID } })
-  return {
-    props: {
-      initialData,
-    },
-  }
+type Params = {
+  post_id: string
+}
+
+export const getServerSideProps: GetServerSideProps<Props, Params> = async (context) => {
+  const { params } = context
+  if (!params) throw new Error('params is undefined')
+  const { post_id } = params
+  const initialData = await fetcher({ operationName: 'getPost', variables: { id: post_id } })
+  return { props: { initialData } }
 }
 
 export default PostPage

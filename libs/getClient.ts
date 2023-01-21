@@ -9,10 +9,11 @@ const fetcher: (args: {
   token?: string
   operationName: string
   variables: Record<string, unknown>
-}) => Promise<any> = ({ token, operationName, variables }) =>
-  client(endpoint, operations[operationName], variables, {
+}) => Promise<unknown> = ({ token, variables }) =>
+  client(endpoint, operations, variables, {
     authorization: 'Bearer ' + token ?? 'INVALID_TOKEN',
   })
+
 const useTenet: <Data = Record<string, unknown>>(args: {
   token?: string
   operationName: string
@@ -22,7 +23,7 @@ const useTenet: <Data = Record<string, unknown>>(args: {
   const swr = useSWR(
     key(operationName, variables),
     async () =>
-      await client(endpoint, operations[operationName], variables, {
+      await client(endpoint, operations, variables, {
         authorization: 'Bearer ' + token ?? 'INVALID_TOKEN',
       }),
     { fallbackData }
