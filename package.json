@@ -21,13 +21,15 @@
     "lint:test": "eslint . --ext ts,tsx",
     "postinstall": "husky install && npm run prisma:generate",
     "start": "next start",
+    "storybook": "start-storybook -p 6006",
     "test": "npm run test:all",
     "test:all": "jest",
     "ts-node": "ts-node --compiler-options '{\"module\":\"CommonJS\"}'",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "vercel-build": "prisma generate",
     "count": "printf '\\e[36m\\n  This project has\\e[35m %s lines\\e[36m of source code!\\n\\n\\e[m' $(find . -name '*.html' -o -name '*.css' -o -name '*.ts' -o -name '*.tsx' | grep -v node_modules | xargs wc -l | tail -1 | awk '{print $1}')",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -49,6 +51,14 @@
     "@graphql-codegen/typescript-graphql-request": "^4.5.3",
     "@graphql-codegen/typescript-operations": "^2.5.3",
     "@heroicons/react": "^1.0.5",
+    "@storybook/addon-actions": "^6.5.15",
+    "@storybook/addon-essentials": "^6.5.15",
+    "@storybook/addon-interactions": "^6.5.15",
+    "@storybook/addon-links": "^6.5.15",
+    "@storybook/builder-webpack5": "^6.5.15",
+    "@storybook/manager-webpack5": "^6.5.15",
+    "@storybook/react": "^6.5.15",
+    "@storybook/testing-library": "^0.0.13",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@types/apollo-upload-client": "^17.0.1",
@@ -85,7 +95,8 @@
     "rimraf": "^3.0.2",
     "tailwindcss": "^3.2.4",
     "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "webpack": "^5.75.0"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^1.9.1",
