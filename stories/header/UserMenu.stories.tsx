@@ -1,3 +1,4 @@
+import React from 'react'
 import { UserMenu } from '../../ui/header/UserMenu'
 
 export default{
