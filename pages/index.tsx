@@ -41,7 +41,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
           <PostFormStateContext.Provider value={new PostFormState({})}>
             <ul>
               {(activitiesData ? (activitiesData as any)['activities'] : [])
-                ?.map((v: any) => PostState.fromPostTypeJSON(v))
+                .map((v: any) => PostState.fromPostTypeJSON(v))
                 .map((v: any) => (
                   <li key={v.id}>
                     <ActivityCard post={v} />

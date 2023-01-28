@@ -22,7 +22,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
     query: { board_id: rawBoardId },
   } = router
   const user = getUser()
-  const [personaId, setPersonaId] = useState<number>()
+  const [personaId, setPersonaId] = useState<string>()
 
   const [context] = useState(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''

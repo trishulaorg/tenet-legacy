@@ -3,11 +3,15 @@ import type { Channel } from 'pusher-js/with-encryption'
 import { createContext } from 'react'
 import { getCookies } from '../libs/cookies'
 import { fetcher } from '../libs/getClient'
-import type { Persona } from '@prisma/client'
 
 interface GetMe {
   me: {
-    personas: Persona[]
+    personas: {
+      id: string
+      name: string
+      screenName: string
+      iconUrl: string
+    }[]
   }
 }
 export class UserState {
@@ -41,7 +45,7 @@ export class UserState {
       variables: {},
     })) as GetMe
     this.personas = result.me?.personas?.map(
-      (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
+      (v: { id: string; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )
     this.requested = true
     return this
@@ -84,9 +88,9 @@ export class UserState {
 export class PersonaState {
   name: string
   iconUrl: string
-  id: number
+  id: string
   screenName: string
-  constructor(data: { id: number; name: string; screenName: string; iconUrl?: string }) {
+  constructor(data: { id: string; name: string; screenName: string; iconUrl?: string }) {
     this.name = data.name
     this.screenName = data.screenName
     this.iconUrl = data.iconUrl ?? ''
@@ -103,7 +107,7 @@ export class PersonaState {
 
 export const UserStateContext = createContext(new UserState('', [], 0))
 export const PersonaStateContext = createContext(
-  new PersonaState({ id: -1, name: '', screenName: '' })
+  new PersonaState({ id: '', name: '', screenName: '' })
 )
 
 export const getUser: () => UserState = () =>
@@ -118,7 +122,7 @@ export interface Notification<T = unknown> {
 export interface TypingStateNotification
   extends Notification<{
     createdAt: string
-    authorPersonaId: number
+    authorPersonaId: string
     authorPersonaScreenName: string
   }> {
   eventName: 'typing'
