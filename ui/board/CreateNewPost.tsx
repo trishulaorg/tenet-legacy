@@ -33,7 +33,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
       e.stopPropagation()
       const {
         createPost: { id: createdPostId },
-      } = await fetcher({
+      } = (await fetcher({
         operationName: 'createPost',
         variables: {
           title,
@@ -42,7 +42,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
           boardId: state.id,
         },
         token: getGqlToken(),
-      })
+      })) as any
 
       await fetcher({
         operationName: 'putAttachedImage',

@@ -1,43 +1,19 @@
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
-import React, { useContext, useState } from 'react'
-import { getGqlToken } from '../../libs/cookies'
+import React, { useContext } from 'react'
 import { UserStateContext } from '../../states/UserState'
-import { ErrorMessage } from '../form/ErrorMessage'
-import { ApolloError } from '@apollo/client'
-import { SuccessMessage } from '../form/SuccessMessage'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 
 const PersonaIconForm: React.FC = observer(() => {
   const userState = useContext(UserStateContext)
-  const token = getGqlToken()
-  const [personaIconErrorMessage, setPersonaIconErrorMessage] = useState<string | null>(null)
-  const [personaIconSuccessMessage, setPersonaIconSuccessMessage] = useState<string | null>(null)
-  const [files, setFile] = useState<{ [index: number]: File }>([])
 
   const onIconSet = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (!e.target.files) {
       return
     }
-    setFile(e.target.files)
   }
 
   const setPersonaIcon: FormEventHandler = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault()
-    setPersonaIconSuccessMessage(null)
-    setPersonaIconErrorMessage(null)
-    try {
-      setAuthToken(token)
-      await client.setPersonaIcon({
-        personaId: userState.currentPersona?.id ?? -1,
-        file: files[0] ?? new File([], ''),
-      })
-      setPersonaIconSuccessMessage('New icon is Successfully set!')
-    } catch (error) {
-      if (error instanceof ApolloError) {
-        setPersonaIconErrorMessage(error.message)
-      }
-    }
   }
 
   return (
@@ -53,9 +29,6 @@ const PersonaIconForm: React.FC = observer(() => {
           accept="image/png, image/jpeg, image/gif, image/svg+xml"
           className="text-high dark:text-high-dark"
         />
-
-        {personaIconErrorMessage && <ErrorMessage errorMessage={personaIconErrorMessage} />}
-        {personaIconSuccessMessage && <SuccessMessage successMessage={personaIconSuccessMessage} />}
 
         <button
           onClick={(e) => setPersonaIcon(e)}

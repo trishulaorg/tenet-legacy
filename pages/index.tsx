@@ -27,7 +27,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
       variables: {
         title: 'memo',
         content: comment,
-        personaId: user.currentPersona?.id ?? -1,
+        personaId: user.currentPersona?.id,
       },
       token: user.token,
     })
@@ -41,7 +41,7 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
           <PostFormStateContext.Provider value={new PostFormState({})}>
             <ul>
               {(activitiesData ? (activitiesData as any)['activities'] : [])
-                .map((v: any) => PostState.fromPostTypeJSON(v))
+                ?.map((v: any) => PostState.fromPostTypeJSON(v))
                 .map((v: any) => (
                   <li key={v.id}>
                     <ActivityCard post={v} />

@@ -1,14 +1,6 @@
-import { useRouter } from 'next/router'
 import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
-import { getGqlToken } from '../../libs/cookies'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 import { UserStateContext } from '../../states/UserState'
-import {
-  getValidationErrors,
-  isClientError,
-  isUniqueConstraintError,
-} from '../../server/errorResolver'
 import { InputWithLabel } from '../form/InputWithLabel'
 import { ErrorMessage } from '../form/ErrorMessage'
 
@@ -20,8 +12,6 @@ export const CreateNewBoard: React.FC = () => {
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState('')
   const user = useContext(UserStateContext)
   const persona = user.currentPersona
-  const token = getGqlToken()
-  const router = useRouter()
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
     setTitleErrorMessage('')
@@ -29,37 +19,6 @@ export const CreateNewBoard: React.FC = () => {
     if (!persona) {
       setOverallErrorMessage('You must sign in to create a Board.')
       return
-    }
-    try {
-      setAuthToken(token)
-      const {
-        createBoard: { id },
-      } = await client.createBoard({ title: name, description: desc, personaId: persona.id })
-
-      await router.push(`/o/cp?boardId=${id}`)
-    } catch (error) {
-      if (isClientError(error)) {
-        const validationErrors = getValidationErrors(error)
-        validationErrors.forEach((zodIssue) => {
-          switch (zodIssue.path.join('')) {
-            case 'title':
-              setTitleErrorMessage(
-                titleErrorMessage ? zodIssue.message : titleErrorMessage + '\n' + zodIssue.message
-              )
-              break
-            case 'description':
-              setDescriptionErrorMessage(
-                titleErrorMessage ? zodIssue.message : titleErrorMessage + '\n' + zodIssue.message
-              )
-              break
-            default:
-              break
-          }
-        })
-        if (isUniqueConstraintError(error)) {
-          setTitleErrorMessage('A Board with the title already exists!')
-        }
-      }
     }
   }
   return (

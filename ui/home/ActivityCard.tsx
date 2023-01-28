@@ -69,7 +69,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
         />
         <div className="pb-2" />
         {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
-        <CreatedAt created={post.createdAt} />
+        <CreatedAt createdAt={post.createdAt} />
         <Link href={`/board/${post.boardId}`} legacyBehavior>
           <div>Show board</div>
         </Link>
