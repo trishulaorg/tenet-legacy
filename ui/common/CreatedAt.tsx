@@ -1,8 +1,7 @@
 import React from 'react'
-import { formatDistanceToNow, isValid, parseISO } from 'date-fns'
+import { formatDistanceToNow, isValid } from 'date-fns'
 
-export const CreatedAt: React.FC<{ created: string }> = ({ created }) => {
-  const createdAt = parseISO(created)
+export const CreatedAt: React.FC<{ createdAt: Date }> = ({ createdAt }) => {
   const validDate = isValid(createdAt) ? createdAt : new Date()
   return (
     <div className="text-xs text-high dark:text-high-dark opacity-50">

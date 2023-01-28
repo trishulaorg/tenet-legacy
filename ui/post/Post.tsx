@@ -58,7 +58,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
     const {
       createThread: { id },
-    } = await fetcher({
+    } = (await fetcher({
       operationName: 'createThread',
       variables: {
         content: comment,
@@ -67,7 +67,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
         boardId: post.boardId,
       },
       token: getGqlToken() ?? 'INVALID_TOKEN',
-    })
+    })) as any
 
     await fetcher({
       token: getGqlToken(),
@@ -122,36 +122,22 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
         )}
         <CardContent content={post.content} imageUrls={post.imageUrls} />
         <CardMeta>
-          {post.privilege.deleteSelf ? (
-            <CardIcons
-              showCommentIcon={isInPostPage}
-              commentNumber={post.responseNumber}
-              upvote={post.upvote}
-              downvote={post.downvote}
-              replyCallback={() => {
-                postForm.replyTo = post
-                postForm.onSubmit = onSubmit
-                postForm.boardState = boardState
-                postForm.onChange = () => publishWritingStatus(post.id)
-              }}
-              deleteCallback={onPostDelete}
-            />
-          ) : (
-            <CardIcons
-              showCommentIcon={isInPostPage}
-              commentNumber={post.responseNumber}
-              upvote={post.upvote}
-              downvote={post.downvote}
-              replyCallback={() => {
-                postForm.replyTo = post
-                postForm.onSubmit = onSubmit
-                postForm.onChange = () => publishWritingStatus(post.id)
-              }}
-            />
-          )}
+          <CardIcons
+            showCommentIcon={isInPostPage}
+            commentNumber={post.responseNumber}
+            upvote={post.upvote}
+            downvote={post.downvote}
+            replyCallback={() => {
+              postForm.replyTo = post
+              postForm.onSubmit = onSubmit
+              postForm.boardState = boardState
+              postForm.onChange = () => publishWritingStatus(post.id)
+            }}
+            deleteCallback={onPostDelete}
+          />
 
           <div className="pb-2" />
-          <CreatedAt created={post.createdAt} />
+          <CreatedAt createdAt={post.createdAt} />
           <TypingMemberListLabel members={debouncedMembers} />
         </CardMeta>
         <div className="pb-5" />

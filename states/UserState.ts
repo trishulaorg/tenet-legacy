@@ -3,7 +3,13 @@ import type { Channel } from 'pusher-js/with-encryption'
 import { createContext } from 'react'
 import { getCookies } from '../libs/cookies'
 import { fetcher } from '../libs/getClient'
+import type { Persona } from '@prisma/client'
 
+interface GetMe {
+  me: {
+    personas: Persona[]
+  }
+}
 export class UserState {
   _personas: PersonaState[]
   token
@@ -29,7 +35,11 @@ export class UserState {
       return this
     }
 
-    const result = await fetcher({ token: this.token, operationName: 'getMe', variables: {} })
+    const result = (await fetcher({
+      token: this.token,
+      operationName: 'getMe',
+      variables: {},
+    })) as GetMe
     this.personas = result.me?.personas?.map(
       (v: { id: number; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )

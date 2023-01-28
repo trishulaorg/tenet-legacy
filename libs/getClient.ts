@@ -9,10 +9,7 @@ const fetcher: (args: {
   token?: string
   operationName: string
   variables: Record<string, unknown>
-}) => Promise<unknown> = ({ token, variables }) =>
-  client(endpoint, operations, variables, {
-    authorization: 'Bearer ' + token ?? 'INVALID_TOKEN',
-  })
+}) => Promise<unknown> = async () => null
 
 const useTenet: <Data = Record<string, unknown>>(args: {
   token?: string

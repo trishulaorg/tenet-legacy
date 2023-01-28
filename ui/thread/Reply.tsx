@@ -47,7 +47,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
                   />
                 )}
                 <div className="pb-2" />
-                <CreatedAt created={reply.createdAt} />
+                <CreatedAt createdAt={reply.createdAt} />
               </CardMeta>
             </div>
           </li>

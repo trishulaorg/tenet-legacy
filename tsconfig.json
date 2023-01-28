@@ -10,7 +10,6 @@
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "importsNotUsedAsValues": "preserve",
     "incremental": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -30,7 +29,6 @@
     "strictPropertyInitialization": true,
     "typeRoots": ["node_modules/@types", "src/@types"]
   },
-  "files": ["src/@types/graphql.d.ts"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "api", "server/generated-files/frontend-graphql-definition.ts"]
 }

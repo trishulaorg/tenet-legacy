@@ -35,7 +35,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
   ) => {
     const {
       createReply: { id },
-    } = await fetcher({
+    } = (await fetcher({
       operationName: 'createReply',
       variables: {
         content: comment,
@@ -43,7 +43,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
         threadId: thread.id,
       },
       token: getGqlToken(),
-    })
+    })) as any
     await fetcher({
       token: getGqlToken(),
       operationName: 'putAttachedImage',
@@ -86,7 +86,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                 }}
               />
               <div className="pb-2" />
-              <CreatedAt created={thread.createdAt} />
+              <CreatedAt createdAt={thread.createdAt} />
             </CardMeta>
             {thread.hasRepsponse ? <Reply replies={thread.responses} /> : undefined}
           </div>

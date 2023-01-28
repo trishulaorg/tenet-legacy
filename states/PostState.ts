@@ -1,7 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
 import { PersonaState } from './UserState'
-import type { GetPostQuery } from '../server/autogen/definition'
 
 export interface PersonaType {
   id: number
@@ -14,8 +13,7 @@ export interface BaseContentType {
   id: string
   content: string
   persona: PersonaType
-  createdAt: string
-  privilege: GetPostQuery['post']['privilege']
+  createdAt: Date
 }
 
 export interface BoardType extends BaseContentType {
@@ -51,22 +49,21 @@ export class PostState {
   author: PersonaState
   upvote: number
   downvote: number
-  createdAt: string
-  public privilege: GetPostQuery['post']['privilege']
+  createdAt: Date
   readonly imageUrls: string[]
-  constructor(
-    data: Pick<
-      GetPostQuery['post'],
-      'id' | 'boardId' | 'title' | 'content' | 'createdAt' | 'privilege'
-    > & {
-      author: PersonaState
-      upvote?: number
-      downvote?: number
-      children?: PostState[]
-      parent?: PostState
-      imageUrls?: string[]
-    }
-  ) {
+  constructor(data: {
+    id: string
+    boardId?: string | null
+    title: string
+    content: string
+    createdAt: Date
+    author: PersonaState
+    upvote?: number
+    downvote?: number
+    children?: PostState[]
+    parent?: PostState
+    imageUrls?: string[]
+  }) {
     this.id = data.id
     this.boardId = data.boardId ?? null
     this.title = data.title
@@ -74,7 +71,6 @@ export class PostState {
     this.author = data.author
     this.children = data.children ?? []
     this.parent = data.parent
-    this.privilege = data.privilege
     this.upvote = data.upvote ?? 0
     this.downvote = data.downvote ?? 0
     this.createdAt = data.createdAt

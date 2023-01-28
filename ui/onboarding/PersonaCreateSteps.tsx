@@ -1,62 +1,15 @@
 import { observer } from 'mobx-react'
-import router from 'next/router'
 import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
-import { getGqlToken } from '../../libs/cookies'
-import { client, setAuthToken } from '../../libs/fetchAPI'
 import { PersonaStateContext } from '../../states/UserState'
-import { ClientError } from 'graphql-request'
 import { ErrorMessage } from '../form/ErrorMessage'
-import { getValidationErrors, isUniqueConstraintError } from '../../server/errorResolver'
 
 export const PersonaCreateSteps: React.FC = observer(() => {
   const persona = useContext(PersonaStateContext)
-  const token = getGqlToken()
-  const [personaScreenNameErrorMessage, setPersonaScreenNameErrorMessage] = useState('')
-  const [personaNameErrorMessage, setPersonaNameErrorMessage] = useState('')
+  const [personaScreenNameErrorMessage] = useState('')
+  const [personaNameErrorMessage] = useState('')
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
-    try {
-      setAuthToken(token)
-      await client.createPersona({
-        screenName: persona.screenName,
-        name: persona.name,
-        iconPath: '',
-      })
-      await router.push('/')
-    } catch (error) {
-      if (error instanceof ClientError) {
-        const validationErrors = getValidationErrors(error)
-        validationErrors.forEach((zodIssue) => {
-          switch (zodIssue.path.join('')) {
-            case 'name':
-              setPersonaNameErrorMessage(
-                personaNameErrorMessage
-                  ? zodIssue.message
-                  : personaNameErrorMessage + '\n' + zodIssue.message
-              )
-              break
-            case 'screenName':
-              setPersonaScreenNameErrorMessage(
-                personaScreenNameErrorMessage
-                  ? zodIssue.message
-                  : personaScreenNameErrorMessage + '\n' + zodIssue.message
-              )
-              break
-            default:
-              break
-          }
-        })
-        if (isUniqueConstraintError(error)) {
-          const uniqueConstraintErrorMessage = 'This ID has already been taken'
-          setPersonaNameErrorMessage(
-            personaScreenNameErrorMessage
-              ? uniqueConstraintErrorMessage
-              : personaScreenNameErrorMessage + '\n' + uniqueConstraintErrorMessage
-          )
-        }
-      }
-    }
   }
 
   return (
