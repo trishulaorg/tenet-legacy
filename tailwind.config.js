@@ -1,6 +1,6 @@
 module.exports = {
   //content: ["./ui/**/*.{ts,tsx}", "./pages/**/*.{ts,tsx}"],
-  content: ["ui/**/*.{ts,tsx}", "pages/**/*.{ts,tsx}"],
+  content: ["ui/**/*.{ts,tsx}", "pages/**/*.{ts,tsx}","stories/**/*.stories.{ts,tsx}"],
   darkMode: "class",
   theme: {
     extend: {

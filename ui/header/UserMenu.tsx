@@ -2,7 +2,7 @@ import type { MouseEventHandler } from 'react'
 import React, { useContext, useEffect, useRef } from 'react'
 import { observer } from 'mobx-react'
 import { HeaderStateContext } from '../../states/HeaderState'
-import { MenuIcon } from '@heroicons/react/solid'
+import { UserIcon } from '@heroicons/react/solid'
 import { Switch } from '../common/Switch'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
@@ -16,7 +16,10 @@ export const UserMenu: React.FC = observer(() => {
       <div className="flex-initial mx-3 my-auto flex items-center justify-center text-high dark:text-high-dark">
         <div className="my-auto">
           <button onClick={() => state.toggleMenu()}>
-            <MenuIcon className="h-5 w-5 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}
+            {state.isLoggedIn 
+              ? <img src={state.userState?.currentPersona?.iconUrl} className="h-6 w-6 rounded"/> 
+              : <><UserIcon className="h-6 w-6 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}</>
+            }
           </button>
           <Switch visibility={state.menuVisibility}>
             <UserMenuItems>
