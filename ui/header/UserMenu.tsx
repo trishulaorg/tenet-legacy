@@ -16,10 +16,13 @@ export const UserMenu: React.FC = observer(() => {
       <div className="flex-initial mx-3 my-auto flex items-center justify-center text-high dark:text-high-dark">
         <div className="my-auto">
           <button onClick={() => state.toggleMenu()}>
-            {state.isLoggedIn 
-              ? <img src={state.userState?.currentPersona?.iconUrl} className="h-6 w-6 rounded"/> 
-              : <><UserIcon className="h-6 w-6 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}</>
-            }
+            {state.isLoggedIn ? (
+              <img src={state.userState?.currentPersona?.iconUrl} className="h-6 w-6 rounded" />
+            ) : (
+              <>
+                <UserIcon className="h-6 w-6 text-slate-700 dark:text-med-dark dark:hover:text-high-dark transition-colors" />{' '}
+              </>
+            )}
           </button>
           <Switch visibility={state.menuVisibility}>
             <UserMenuItems>

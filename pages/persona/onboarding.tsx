@@ -7,7 +7,7 @@ const OnboardingPage: NextPage = () => {
   const user = getUser()
   return (
     <PersonaStateContext.Provider
-      value={new PersonaState(user.currentPersona ?? { id: -1, name: '', screenName: '' })}
+      value={new PersonaState(user.currentPersona ?? { id: '', name: '', screenName: '' })}
     >
       <PageContentLayout
         main={<PersonaCreateSteps />}

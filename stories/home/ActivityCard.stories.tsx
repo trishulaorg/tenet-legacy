@@ -12,7 +12,7 @@ const exampleAuthor: PersonaState = {
   screenName: 'Mitchell',
   name: 'MTL',
   iconUrl: 'https://i.pinimg.com/originals/ae/24/87/ae24874dd301843548c034a3d2973658.png',
-  id: 0,
+  id: '',
   updateName: function (_name: string): void {
     throw new Error('Function not implemented.')
   },

@@ -3,7 +3,7 @@ import { createContext } from 'react'
 import { PersonaState } from './UserState'
 
 export interface PersonaType {
-  id: number
+  id: string
   name: string
   screenName: string
   iconUrl: string

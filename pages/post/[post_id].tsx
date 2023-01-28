@@ -15,7 +15,7 @@ const PostPage: NextPage<Props> = ({ initialData }) => {
   const user = getUser()
   const token = getGqlToken()
   const router = useRouter()
-  const [personaId, setPersonaId] = useState<number | undefined>(undefined)
+  const [personaId, setPersonaId] = useState<string | undefined>(undefined)
   const {
     isReady,
     query: { post_id: rawPostId },
