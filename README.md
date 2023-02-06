@@ -20,7 +20,7 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 4. Run `npm run docker:start-testdb`
 5. Run `npm run migrate:test`
 6. Run `npm run seed:test`
-7. Run `npm run dev:docker-db` 
+7. Run `npm run dev:docker-db`
 
 ## Examples
 
@@ -29,6 +29,8 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 ```
 # Plane Scale develop branch
 DATABASE_URL=YOUR_DB_URL
+# Enable API mocking
+NEXT_PUBLIC_API_MOCKING=enabled
 ```
 
 `.env`:

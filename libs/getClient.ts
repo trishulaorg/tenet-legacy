@@ -3,18 +3,32 @@ import useSWR from 'swr'
 import operations from '../schema/operation.graphql'
 import { swrKey } from './swrKey'
 
-const endpoint = 'https://coton.vercel.app/api/graphql'
-const key = (name: string, variables: Record<string, unknown>) => swrKey[name]!(variables)
-const fetcher: (args: {
-  token?: string
-  operationName: string
-  variables: Record<string, unknown>
-}) => Promise<unknown> = async () => null
+type OperationNameType = keyof typeof swrKey
+type OperationFunctionType<T extends OperationNameType> = typeof swrKey[T]
 
-const useTenet: <Data = Record<string, unknown>>(args: {
+const endpoint = 'https://coton.vercel.app/api/graphql'
+const key = <T extends OperationNameType, F extends OperationFunctionType<T>>(
+  name: T,
+  variables: Parameters<F>[0]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): string => swrKey[name as T](variables as any)
+const fetcher: <Res>(args: {
   token?: string
   operationName: string
   variables: Record<string, unknown>
+}) => Promise<Res | Record<string, never>> = async ({ token, variables }) => {
+  if (process.env['NEXT_PUBLIC_API_MOCKING'] !== 'enabled') {
+    return {}
+  }
+  return await client(endpoint, operations, variables, {
+    authorization: 'Bearer ' + token ?? 'INVALID_TOKEN',
+  })
+}
+
+const useTenet: <OperationName extends OperationNameType, Data = Record<string, unknown>>(args: {
+  token?: string
+  operationName: OperationName
+  variables: Parameters<OperationFunctionType<OperationName>>[0]
   fallbackData?: Record<string, unknown>
 }) => ReturnType<typeof useSWR<Data>> = ({ fallbackData, token, operationName, variables }) => {
   const swr = useSWR(

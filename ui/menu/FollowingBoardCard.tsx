@@ -1,7 +1,14 @@
 import type { FC } from 'react'
 import Link from 'next/link'
 
-const FollowingBoardCard: FC<any> = ({ boards }) => {
+type Board = {
+  board: {
+    id: string
+    title: string
+  }
+}
+
+const FollowingBoardCard: FC<{ boards: Board[] }> = ({ boards }) => {
   if (boards.length === 0) {
     return null
   }
@@ -12,7 +19,7 @@ const FollowingBoardCard: FC<any> = ({ boards }) => {
           <tr className="font-bold text-xl text-high dark:text-high-dark mb-2">
             Following Boards:
           </tr>
-          {boards.map((board: any) => (
+          {boards.map((board: Board) => (
             <tr
               className="text-med dark:text-med-dark text-base"
               key={`following_${board.board.id}`}

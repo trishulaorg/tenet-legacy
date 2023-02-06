@@ -43,7 +43,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
         threadId: thread.id,
       },
       token: getGqlToken(),
-    })) as any
+    })) as { createReply: { id: string } }
     await fetcher({
       token: getGqlToken(),
       operationName: 'putAttachedImage',

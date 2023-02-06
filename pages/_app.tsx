@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app'
 import { ThemeProvider } from 'next-themes'
+import type { ReactElement } from 'react'
 import { useEffect } from 'react'
 import '../styles/global.css'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
@@ -11,7 +12,11 @@ import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 import { getCookies } from '../libs/cookies'
 import jwt from 'jsonwebtoken'
 
-export default function App({ Component, pageProps }: AppProps) {
+if (process.env['NEXT_PUBLIC_API_MOCKING'] === 'enabled') {
+  require('../mocks')
+}
+
+export default function App({ Component, pageProps }: AppProps): ReactElement {
   const user = getUser()
 
   useEffect(() => {
@@ -30,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
       document.cookie = `gqltoken=${localToken}`
       user.token = localToken
     })()
-  }, [])
+  }, [user])
 
   return (
     <ThemeProvider attribute="class">

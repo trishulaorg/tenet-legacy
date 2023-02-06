@@ -67,7 +67,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
         boardId: post.boardId,
       },
       token: getGqlToken() ?? 'INVALID_TOKEN',
-    })) as any
+    })) as { createThread: { id: string } }
 
     await fetcher({
       token: getGqlToken(),
