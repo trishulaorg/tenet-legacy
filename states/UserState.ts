@@ -105,7 +105,7 @@ export class PersonaState {
   }
 }
 
-export const UserStateContext = createContext(new UserState('', [], 0))
+export const UserStateContext = createContext<UserState | null>(new UserState('', [], 0))
 export const PersonaStateContext = createContext(
   new PersonaState({ id: '', name: '', screenName: '' })
 )

@@ -11,6 +11,10 @@ export const UserMenu: React.FC = observer(() => {
   const state = useContext(HeaderStateContext)
   const { theme, setTheme, systemTheme } = useTheme()
 
+  if (state == null) {
+    return null
+  }
+
   return (
     <>
       <div className="flex-initial mx-3 my-auto flex items-center justify-center text-high dark:text-high-dark">
@@ -100,6 +104,9 @@ export const UserMenuItems: React.FC = observer((props) => {
   const state = useContext(HeaderStateContext)
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
+    if (state == null) {
+      return
+    }
     const mouseDownHandler = (ev: MouseEvent): void => {
       if (ref.current && !ref.current.contains(ev.target as HTMLElement)) state.closeMenu()
     }

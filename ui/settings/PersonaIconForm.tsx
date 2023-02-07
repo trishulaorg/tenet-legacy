@@ -20,7 +20,7 @@ const PersonaIconForm: React.FC = observer(() => {
     <div>
       <form>
         <h1 className="my-4 text-med dark:text-med-dark text-2xl">
-          Icon for {userState.currentPersona?.name}
+          Icon for {userState?.currentPersona?.name}
         </h1>
         <input
           type="file"

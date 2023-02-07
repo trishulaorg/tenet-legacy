@@ -11,6 +11,9 @@ export const CreateNewBoard: React.FC = () => {
   const [titleErrorMessage, setTitleErrorMessage] = useState('')
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState('')
   const user = useContext(UserStateContext)
+  if (user == null) {
+    return null
+  }
   const persona = user.currentPersona
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()

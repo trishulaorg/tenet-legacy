@@ -13,7 +13,7 @@ export const usePublishWritingStatus = (): DebouncedState<(postId: string) => Pr
         token: getGqlToken() ?? 'INVALID_TOKEN',
         operationName: 'setTypingStateOnBoard',
         variables: {
-          personaId: user.currentPersona?.id ?? 0,
+          personaId: user?.currentPersona?.id ?? 0,
           postId,
         },
       }),
