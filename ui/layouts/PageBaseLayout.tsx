@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
-export const PageBaseLayout = ({ children }: { children: ReactNode }) => (
+export const PageBaseLayout = ({ children }: { children: ReactElement }): ReactElement => (
   <div className="transition-colors duration-350 h-max min-h-screen">
     <div
       style={{

@@ -4,7 +4,13 @@ import { useRouter } from 'next/router'
 import { fetcher, useTenet } from '../../libs/getClient'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 
-type Props = { initialData: any }
+type Props = { initialData: Record<string, unknown> }
+
+type Search = {
+  id: string
+  kind: string
+  title: string
+}
 
 const SearchResultPage: NextPage<Props> = ({ initialData }) => {
   const router = useRouter()
@@ -17,7 +23,7 @@ const SearchResultPage: NextPage<Props> = ({ initialData }) => {
   const word = isReady && typeof rawWord === 'string' ? rawWord : ''
   const searchQuery = { query: word }
 
-  const { data } = useTenet<{ search: any }>({
+  const { data } = useTenet<'search', { search: Search[] }>({
     operationName: 'search',
     variables: searchQuery,
     fallbackData: initialData,
@@ -31,7 +37,7 @@ const SearchResultPage: NextPage<Props> = ({ initialData }) => {
             <h1 className="text-xl">Search Result</h1>
             <ul>
               {data &&
-                data.search.map((c: any, idx: any) => (
+                data.search.map((c: Search, idx: number) => (
                   <li
                     key={c.id}
                     className="flex my-2 p-2 rounded bg-contentbg/75 hover:bg-contentbg dark:bg-contentbg-dark/75 dark:hover:bg-contentbg-dark transition-colors duration-350 cursor-pointer border dark:border-med"
@@ -64,7 +70,10 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async (cont
   const { params } = context
   if (!params) throw new Error('params is undefined')
   const { word } = params
-  const initialData = await fetcher({ operationName: 'Search', variables: { query: word } })
+  const initialData: Record<string, never> = await fetcher({
+    operationName: 'Search',
+    variables: { query: word },
+  })
   return {
     props: {
       initialData,

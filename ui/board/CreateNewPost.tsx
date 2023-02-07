@@ -42,7 +42,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
           boardId: state.id,
         },
         token: getGqlToken(),
-      })) as any
+      })) as { createPost: { id: string } }
 
       await fetcher({
         operationName: 'putAttachedImage',

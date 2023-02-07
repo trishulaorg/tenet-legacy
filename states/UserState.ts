@@ -39,12 +39,12 @@ export class UserState {
       return this
     }
 
-    const result = (await fetcher({
+    const result = await fetcher<GetMe>({
       token: this.token,
       operationName: 'getMe',
       variables: {},
-    })) as GetMe
-    this.personas = result.me?.personas?.map(
+    })
+    this.personas = result?.me?.personas?.map(
       (v: { id: string; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
     )
     this.requested = true

@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react'
 import { getGqlToken } from '../../libs/cookies'
 import { fetcher, useTenet } from '../../libs/getClient'
 import { getUser } from '../../states/UserState'
+import type { PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 
-type Props = { initialData: any }
+type Props = { initialData: Record<string, never> }
 
 const PostPage: NextPage<Props> = ({ initialData }) => {
   const user = getUser()
@@ -24,7 +25,7 @@ const PostPage: NextPage<Props> = ({ initialData }) => {
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 
   const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data } = useTenet<{ post: any }>({
+  const { data } = useTenet<'getPost', { post: PostType }>({
     operationName: 'getPost',
     variables: personaId ? { id: postId, personaId } : { id: postId },
     fallbackData: initialData,
@@ -82,7 +83,10 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async (cont
   const { params } = context
   if (!params) throw new Error('params is undefined')
   const { post_id } = params
-  const initialData = await fetcher({ operationName: 'getPost', variables: { id: post_id } })
+  const initialData: Record<string, never> = await fetcher({
+    operationName: 'getPost',
+    variables: { id: post_id },
+  })
   return { props: { initialData } }
 }
 

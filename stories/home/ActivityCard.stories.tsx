@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react'
 import React from 'react'
 import { ActivityCard } from '../../ui/home/ActivityCard'
 import { PostState } from '../../states/PostState'
@@ -33,4 +34,4 @@ const examplePost = new PostState({
   createdAt: new Date(),
 })
 
-export const Card = () => <ActivityCard post={examplePost as any} />
+export const Card = (): ReactElement => <ActivityCard post={examplePost} />

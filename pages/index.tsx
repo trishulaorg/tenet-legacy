@@ -6,18 +6,23 @@ import { CommentInput } from '../ui/thread/CommentInput'
 import { fetcher, useTenet } from '../libs/getClient'
 import { getGqlToken } from '../libs/cookies'
 import { getUser } from '../states/UserState'
+import type { PostType } from '../states/PostState'
 import { PostState } from '../states/PostState'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { ActivityCard } from '../ui/home/ActivityCard'
 
-const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
+type Activities = {
+  activities: PostType[]
+}
+
+const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialData }) => {
   const [user] = useState(getUser())
 
-  const { data: activitiesData } = useTenet({
+  const { data: activitiesData } = useTenet<'getActivities', Activities>({
     operationName: 'getActivities',
     variables: {},
-    token: getGqlToken()!,
+    token: getGqlToken(),
     fallbackData: initialData,
   })
 
@@ -40,9 +45,9 @@ const IndexPage: NextPage<{ initialData: any }> = ({ initialData }) => {
           <CommentInput onSubmit={onSubmit} />
           <PostFormStateContext.Provider value={new PostFormState({})}>
             <ul>
-              {(activitiesData ? (activitiesData as any)['activities'] : [])
-                .map((v: any) => PostState.fromPostTypeJSON(v))
-                .map((v: any) => (
+              {(activitiesData ? activitiesData.activities : [])
+                .map((v: PostType) => PostState.fromPostTypeJSON(v))
+                .map((v: PostState) => (
                   <li key={v.id}>
                     <ActivityCard post={v} />
                   </li>

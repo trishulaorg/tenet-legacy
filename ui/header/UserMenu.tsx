@@ -99,13 +99,13 @@ export const UserMenu: React.FC = observer(() => {
 export const UserMenuItems: React.FC = observer((props) => {
   const state = useContext(HeaderStateContext)
   const ref = useRef<HTMLDivElement>(null)
-  const mouseDownHandler = (ev: MouseEvent): void => {
-    if (ref.current && !ref.current.contains(ev.target as HTMLElement)) state.closeMenu()
-  }
   useEffect(() => {
+    const mouseDownHandler = (ev: MouseEvent): void => {
+      if (ref.current && !ref.current.contains(ev.target as HTMLElement)) state.closeMenu()
+    }
     document.addEventListener('mousedown', mouseDownHandler)
     return () => document.removeEventListener('mousedown', mouseDownHandler)
-  }, [ref])
+  }, [ref, state])
   return (
     <div className="relative inline-block float-right" ref={ref}>
       <ul
