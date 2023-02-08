@@ -39,7 +39,7 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       operationName: 'createReply',
       variables: {
         content: comment,
-        personaId: userState.currentPersona?.id ?? -1,
+        personaId: userState?.currentPersona?.id ?? -1,
         threadId: thread.id,
       },
       token: getGqlToken(),

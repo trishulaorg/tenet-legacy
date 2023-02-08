@@ -44,4 +44,4 @@ export class HeaderState {
   }
 }
 
-export const HeaderStateContext = createContext(new HeaderState())
+export const HeaderStateContext = createContext<HeaderState | null>(new HeaderState())

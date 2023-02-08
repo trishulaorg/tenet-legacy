@@ -1,11 +1,13 @@
 import type { AppProps } from 'next/app'
 import { ThemeProvider } from 'next-themes'
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 import { useEffect } from 'react'
 import '../styles/global.css'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { Header } from '../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
+import type { UserState } from '../states/UserState'
 import { getUser, UserStateContext } from '../states/UserState'
 import { init } from '../libs/initFirebase'
 import { isValidAuthInstance } from '../libs/isValidAuthInstance'
@@ -17,14 +19,20 @@ if (process.env['NEXT_PUBLIC_API_MOCKING'] === 'enabled') {
 }
 
 export default function App({ Component, pageProps }: AppProps): ReactElement {
-  const user = getUser()
+  // To prevent hydration errors, userState should be null in the initial rendering.
+  const [userState, setUserState] = useState<UserState | null>(null)
 
   useEffect(() => {
     ;(async () => {
       const { auth } = init()
-      if (!isValidAuthInstance(auth) || !auth.currentUser) return
+      const user = getUser()
+      if (!isValidAuthInstance(auth) || !auth.currentUser) {
+        setUserState(user)
+        return
+      }
       if (getCookies().has('gqltoken') && getCookies().get('gqltoken') !== '') {
         user.token = getCookies().get('gqltoken') ?? ''
+        setUserState(user)
         return
       }
       const localToken = jwt.sign(
@@ -34,14 +42,17 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       )
       document.cookie = `gqltoken=${localToken}`
       user.token = localToken
+      setUserState(user)
     })()
-  }, [user])
+  }, [])
 
   return (
     <ThemeProvider attribute="class">
       <PageBaseLayout>
-        <UserStateContext.Provider value={user}>
-          <HeaderStateContext.Provider value={new HeaderState(user)}>
+        <UserStateContext.Provider value={userState}>
+          <HeaderStateContext.Provider
+            value={userState == null ? null : new HeaderState(userState)}
+          >
             <Header />
           </HeaderStateContext.Provider>
           <Component {...pageProps} />

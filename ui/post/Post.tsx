@@ -38,15 +38,17 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   const [debouncedMembers] = useDebounce(
     [
       ...new Set(
-        (userState.notifications as TypingStateNotification[])
-          .filter(
-            (v) =>
-              v.channel === post.id &&
-              v.eventName === 'typing' &&
-              v.data.authorPersonaId !== userState.currentPersona?.id &&
-              differenceInSeconds(new Date(), parseISO(v.data.createdAt)) < 4
-          )
-          .map((v) => v.data.authorPersonaScreenName)
+        userState == null
+          ? []
+          : (userState.notifications as TypingStateNotification[])
+              .filter(
+                (v) =>
+                  v.channel === post.id &&
+                  v.eventName === 'typing' &&
+                  v.data.authorPersonaId !== userState.currentPersona?.id &&
+                  differenceInSeconds(new Date(), parseISO(v.data.createdAt)) < 4
+              )
+              .map((v) => v.data.authorPersonaScreenName)
       ),
     ],
     1000
@@ -62,7 +64,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
       operationName: 'createThread',
       variables: {
         content: comment,
-        personaId: userState.currentPersona?.id ?? -1,
+        personaId: userState?.currentPersona?.id ?? -1,
         postId: post.id,
         boardId: post.boardId,
       },
@@ -81,7 +83,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     if (prompt('Type "delete" if you really want to delete:') === 'delete') {
       await fetcher({
         operationName: 'deletePost',
-        variables: { postId: post.id, personaId: userState.currentPersona?.id || 0 },
+        variables: { postId: post.id, personaId: userState?.currentPersona?.id || 0 },
       })
       await mutate(post.id)
       await mutate(post.boardId)
