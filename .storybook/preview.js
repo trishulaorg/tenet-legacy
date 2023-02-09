@@ -1,6 +1,7 @@
 import '../styles/global.css'
 import '!style-loader!css-loader!postcss-loader!tailwindcss/tailwind.css'
 import { themes } from '@storybook/theming'
+import { RouterContext } from "next/dist/shared/lib/router-context";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -11,7 +12,7 @@ export const parameters = {
     },
   },
   nextRouter: {
-    push() {}, // override with an empty function.
+    Provider: RouterContext.Provider,
   },
   darkMode: {
     // Override the default dark theme
