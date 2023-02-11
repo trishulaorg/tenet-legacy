@@ -22,7 +22,6 @@ export const parameters = {
   nextRouter: {
     Provider: RouterContext.Provider,
   },
-  decorators: [ mswDecorator ],
   darkMode: {
     // Override the default dark theme
     dark: { ...themes.dark, appBg: 'black' },
