@@ -13,28 +13,6 @@ const coton = graphql.link('https://coton.vercel.app/api/graphql')
 export default {
   title: 'pages/IndexPage',
   component: IndexPage,
-  decorators: [
-    (Story) => (
-      <UserStateContext.Provider
-        value={
-          new UserState(
-            'token',
-            [
-              new PersonaState({
-                id: '1',
-                name: 'john_doe',
-                iconUrl: iconImage.src,
-                screenName: 'John Doe',
-              }),
-            ],
-            0
-          )
-        }
-      >
-        <Story />
-      </UserStateContext.Provider>
-    ),
-  ],
   parameters: {
     msw: {
       handlers: [
@@ -60,4 +38,44 @@ export default {
   args: { initialData: {} },
 } satisfies ComponentMeta<typeof IndexPage>
 
-export const Default: ComponentStory<typeof IndexPage> = (args) => <IndexPage {...args} />
+export const LoggedIn: ComponentStory<typeof IndexPage> = (args) => (
+  <UserStateContext.Provider
+    value={
+      new UserState(
+        'token',
+        [
+          new PersonaState({
+            id: '1',
+            name: 'john_doe',
+            iconUrl: iconImage.src,
+            screenName: 'John Doe',
+          }),
+        ],
+        0
+      )
+    }
+  >
+    <IndexPage {...args} />
+  </UserStateContext.Provider>
+)
+
+export const NotLoggedIn: ComponentStory<typeof IndexPage> = (args) => (
+  <UserStateContext.Provider
+    value={
+      new UserState(
+        'INVALID_TOKEN',
+        [
+          new PersonaState({
+            id: '1',
+            name: 'john_doe',
+            iconUrl: iconImage.src,
+            screenName: 'John Doe',
+          }),
+        ],
+        0
+      )
+    }
+  >
+    <IndexPage {...args} />
+  </UserStateContext.Provider>
+)
