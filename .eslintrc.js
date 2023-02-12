@@ -59,6 +59,7 @@ module.exports = {
         'prettier/prettier': ['warn', {}, { usePrettierrc: true }], // Includes .prettierrc.js rules
         '@typescript-eslint/no-unused-vars': 'off',
         'jsx-a11y/alt-text': 'off',
+        'jsx-a11y/label-has-associated-control': 'off',
       },
 
     },
