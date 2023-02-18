@@ -2,13 +2,13 @@ import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
-import { PersonaState, UserState } from '../../states/UserState'
-import { UserMenu } from '../../ui/header/UserMenu'
+import { UserState, PersonaState } from '../../states/UserState'
+import { Header } from '../../ui/header/Header'
 import iconImage from '../static/icon.png'
 
 export default {
-  title: 'Header/UserMenu',
-  component: UserMenu,
+  title: 'Header/Header',
+  component: Header,
   decorators: [
     (Story) => (
       <HeaderStateContext.Provider
@@ -33,6 +33,6 @@ export default {
       </HeaderStateContext.Provider>
     ),
   ],
-} satisfies ComponentMeta<typeof UserMenu>
+} satisfies ComponentMeta<typeof Header>
 
-export const Default: ComponentStory<typeof UserMenu> = (args) => <UserMenu {...args} />
+export const Default: ComponentStory<typeof Header> = () => <Header />

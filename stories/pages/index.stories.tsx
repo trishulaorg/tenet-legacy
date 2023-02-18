@@ -11,7 +11,7 @@ import { aPost } from '../../mocks/generated/mocks'
 const coton = graphql.link('https://coton.vercel.app/api/graphql')
 
 export default {
-  title: 'pages/IndexPage',
+  title: 'Pages/IndexPage',
   component: IndexPage,
   parameters: {
     msw: {
@@ -47,7 +47,7 @@ export const LoggedIn: ComponentStory<typeof IndexPage> = (args) => (
           new PersonaState({
             id: '1',
             name: 'john_doe',
-            iconUrl: iconImage.src,
+            iconUrl: iconImage as unknown as string,
             screenName: 'John Doe',
           }),
         ],
@@ -68,7 +68,7 @@ export const NotLoggedIn: ComponentStory<typeof IndexPage> = (args) => (
           new PersonaState({
             id: '1',
             name: 'john_doe',
-            iconUrl: iconImage.src,
+            iconUrl: iconImage as unknown as string,
             screenName: 'John Doe',
           }),
         ],

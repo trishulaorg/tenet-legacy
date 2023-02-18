@@ -1,12 +1,12 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import { CreateNewBoard } from '../../ui/board/CreateNewBoard'
+import { CreateNewPost } from '../../ui/board/CreateNewPost'
 import { PersonaState, UserState, UserStateContext } from '../../states/UserState'
 import iconImage from '../static/icon.png'
 
 export default {
-  title: 'Board/CreateNewBoard',
-  component: CreateNewBoard,
+  title: 'Board/CreateNewPost',
+  component: CreateNewPost,
   decorators: [
     (Story) => (
       <UserStateContext.Provider
@@ -29,6 +29,13 @@ export default {
       </UserStateContext.Provider>
     ),
   ],
-} satisfies ComponentMeta<typeof CreateNewBoard>
+  argTypes: {
+    showPostCreate: { control: 'boolean' },
+  },
+  args: {
+    boardId: '1',
+    showPostCreate: true,
+  },
+} satisfies ComponentMeta<typeof CreateNewPost>
 
-export const Default: ComponentStory<typeof CreateNewBoard> = (args) => <CreateNewBoard {...args} />
+export const Default: ComponentStory<typeof CreateNewPost> = (args) => <CreateNewPost {...args} />

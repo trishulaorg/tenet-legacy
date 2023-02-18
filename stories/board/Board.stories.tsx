@@ -3,11 +3,10 @@ import { ComponentMeta } from '@storybook/react'
 import { Board } from '../../ui/board/Board'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PersonaState, UserState, UserStateContext } from '../../states/UserState'
-
 import iconImage from '../static/icon.png'
 
 export default {
-  title: 'Board',
+  title: 'Board/Board',
   component: Board,
   decorators: [
     (Story) => (
@@ -19,7 +18,7 @@ export default {
               new PersonaState({
                 id: '1',
                 name: 'john_doe',
-                iconUrl: iconImage.src,
+                iconUrl: iconImage as unknown as string,
                 screenName: 'John Doe',
               }),
             ],
