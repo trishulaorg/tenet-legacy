@@ -4,7 +4,7 @@ import type { ComponentStory } from '@storybook/react'
 import { RssIcon } from '@heroicons/react/solid'
 
 export default {
-  title: 'Button',
+  title: 'Common/Button',
   component: Button,
 }
 

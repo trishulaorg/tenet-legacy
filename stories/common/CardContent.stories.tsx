@@ -3,7 +3,7 @@ import { ComponentMeta } from '@storybook/react'
 import { CardContent } from '../../ui/common/CardContent'
 
 export default {
-  title: 'common/CardContewnt',
+  title: 'Common/CardContent',
   component: CardContent,
 } satisfies ComponentMeta<typeof CardContent>
 

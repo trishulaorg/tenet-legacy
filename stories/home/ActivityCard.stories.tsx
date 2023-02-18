@@ -5,7 +5,7 @@ import { PostState } from '../../states/PostState'
 import type { PersonaState } from '../../states/UserState'
 
 export default {
-  title: 'ActivityCard',
+  title: 'Home/ActivityCard',
   component: ActivityCard,
 }
 

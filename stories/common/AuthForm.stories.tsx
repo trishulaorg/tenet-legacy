@@ -2,7 +2,7 @@
 import { AuthForm } from '../../ui/common/AuthForm'
 
 export default {
-  title: 'AuthForm',
+  title: 'Common/AuthForm',
   component: AuthForm,
 }
 
