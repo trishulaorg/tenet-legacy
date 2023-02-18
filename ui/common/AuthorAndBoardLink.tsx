@@ -10,7 +10,7 @@ export const AuthorAndBoardLink: React.FC<{
 }> = ({ name, screenName, iconUrl, boardLink }) => {
   return (
     <div className="flex items-center font-medium text-med dark:text-med-dark relative">
-      <UserIcon size={'small'} src={iconUrl} />
+      <UserIcon size={'sm'} src={iconUrl} />
       <p className="pl-1">
         <span className="pr-1 text-high dark:text-high-dark">{screenName}</span>
         <span className="text-low dark:text-low-dark font-thin">@{name}</span>
