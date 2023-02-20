@@ -3,7 +3,7 @@ import type { NotificationCardProps } from './NotificationCard'
 import { NotificationCard } from './NotificationCard'
 import type { NotificationState } from '../../states/NotificationState'
 
-interface NotificationListProps {
+export interface NotificationListProps {
   notifications: NotificationState[]
 }
 
