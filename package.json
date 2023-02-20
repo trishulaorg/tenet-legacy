@@ -20,7 +20,7 @@
     "count": "printf '\\e[36m\\n  This project has\\e[35m %s lines\\e[36m of source code!\\n\\n\\e[m' $(find . -name '*.html' -o -name '*.css' -o -name '*.ts' -o -name '*.tsx' | grep -v node_modules | xargs wc -l | tail -1 | awk '{print $1}')",
     "prepare": "husky install",
     "build-storybook": "build-storybook",
-    "run-mock-server": "ts-node --skipProject mock-server.ts"
+    "mock-server": "ts-node --skipProject mock-server.ts"
   },
   "repository": {
     "type": "git",

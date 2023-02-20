@@ -17,8 +17,9 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 **Since the back end has not yet reached the stage of working, we need to confirm that it works with Mock.**
 
 1. At first, you have to clone this repo
-2. Execute `npm i`
-3. Set NEXT_PUBLIC_API_MOCKING=enabled.
+2. Set NEXT_PUBLIC_API_ENDPOINT=http://localhost:4000.
+3. Execute `npm i`
+4. `npm run mock-server`
 4. `npm run dev`
 
 ## Examples
@@ -28,6 +29,8 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 ```
 # Enable API mocking
 NEXT_PUBLIC_API_MOCKING=enabled
+# GraphQL Endpoint
+NEXT_PUBLIC_API_ENDPOINT=http://localhost:4000
 ```
 
 ## Authors
