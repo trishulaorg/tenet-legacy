@@ -7,9 +7,9 @@ import React from 'react'
 import type { PersonaState } from '../../states/UserState'
 
 export interface NotificationCardProps {
-  sender: PersonaState
+  sender?: PersonaState | undefined
   recepient: PersonaState
-  message: string
+  message?: string | undefined
   type: 'like' | 'comment' | 'follow'
 }
 
@@ -32,7 +32,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
 
         <div className="ml-4">
           <p className="text-lg font-semibold text-med dark:text-med-dark">
-            From {sender.screenName}
+            From {sender?.screenName ? sender?.screenName : 'Coton'}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">{recepient.screenName}</p>
         </div>

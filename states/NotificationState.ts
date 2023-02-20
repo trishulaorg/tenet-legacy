@@ -1,17 +1,22 @@
+import { createContext } from 'react'
 import { makeAutoObservable } from 'mobx'
+import type { PersonaState } from './UserState'
 
-type NotificationType = 'follow' | 'unfollow' | 'like' | 'unlike' | 'comment'
+type NotificationType = 'follow' | 'like' | 'comment'
 
 export interface NotificationData {
   type: NotificationType
   message?: string
   createdAt: Date
+  sender?: PersonaState | undefined
 }
 
 export class NotificationState {
   private _type: NotificationType
   private _message?: string | undefined
   private _createdAt: Date
+  sender: PersonaState | undefined
+  recepient!: PersonaState
 
   constructor(data: NotificationData) {
     this._type = data.type
@@ -44,3 +49,5 @@ export class NotificationState {
     this._createdAt = value
   }
 }
+
+export const NotificationStateContext = createContext<NotificationState[]>([])
