@@ -17,16 +17,6 @@ export default function NotificationPage(): ReactElement {
     }),
   ]
 
-  // const notificationElements = notifications.map((notification) => (
-  //   <NotificationCard
-  //     sender={notification.sender}
-  //     recepient={notification.recepient}
-  //     message={notification.message}
-  //     type={notification.type}
-  //     key={notification.createdAt.toISOString()}
-  //   />
-  // ));
-
   const handleAddNotification = (): void => {
     const data: NotificationData = {
       type: 'follow',
@@ -38,7 +28,7 @@ export default function NotificationPage(): ReactElement {
 
   return useObserver(() => (
     <NotificationStateContext.Provider value={notifications}>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 p-4 items-center">
         <NotificationList notifications={notifications} />
         <button
           className="px-4 py-2 text-white bg-blue-500 rounded"

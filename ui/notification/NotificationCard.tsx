@@ -20,7 +20,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   type,
 }) => {
   return (
-    <div className="flex flex-col border border-gray-300 dark:border-gray-700 p-4 rounded-md mb-4">
+    <div className="flex flex-col border border-gray-300 dark:border-gray-700 p-4 rounded-md bg-contentbg dark:bg-contentbg-dark w-full">
       <div className="flex items-center">
         {type === 'like' ? (
           <HeartIcon className="w-6 h-6 text-red-500" />

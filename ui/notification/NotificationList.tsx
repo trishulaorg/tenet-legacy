@@ -22,5 +22,5 @@ export const NotificationList: React.FC<NotificationListProps> = ({ notification
     )
   }
 
-  return <div>{notifications.map(renderNotificationCard)}</div>
+  return <>{notifications.map(renderNotificationCard)}</>
 }
