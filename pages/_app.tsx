@@ -13,6 +13,7 @@ import { init } from '../libs/initFirebase'
 import { isValidAuthInstance } from '../libs/isValidAuthInstance'
 import { getCookies } from '../libs/cookies'
 import jwt from 'jsonwebtoken'
+import { apiClientImpl, ApiClientProvider } from '../states/ApiClientState'
 
 if (process.env['NEXT_PUBLIC_API_MOCKING'] === 'enabled') {
   require('../mocks')
@@ -49,14 +50,16 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
   return (
     <ThemeProvider attribute="class">
       <PageBaseLayout>
-        <UserStateContext.Provider value={userState}>
-          <HeaderStateContext.Provider
-            value={userState == null ? null : new HeaderState(userState)}
-          >
-            <Header />
-          </HeaderStateContext.Provider>
-          <Component {...pageProps} />
-        </UserStateContext.Provider>
+        <ApiClientProvider value={apiClientImpl}>
+          <UserStateContext.Provider value={userState}>
+            <HeaderStateContext.Provider
+              value={userState == null ? null : new HeaderState(userState)}
+            >
+              <Header />
+            </HeaderStateContext.Provider>
+            <Component {...pageProps} />
+          </UserStateContext.Provider>
+        </ApiClientProvider>
       </PageBaseLayout>
     </ThemeProvider>
   )

@@ -3,28 +3,21 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { observer } from 'mobx-react'
 import { CommentInput } from '../ui/thread/CommentInput'
-import { fetcher, useTenet } from '../libs/getClient'
-import { getGqlToken } from '../libs/cookies'
+import { fetcher } from '../libs/getClient'
 import { getUser } from '../states/UserState'
 import type { PostType } from '../states/PostState'
 import { PostState } from '../states/PostState'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { ActivityCard } from '../ui/home/ActivityCard'
+import { apiClientImpl } from '../states/ApiClientState'
 
-type Activities = {
+type Props = {
   activities: PostType[]
 }
 
-const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialData }) => {
+const IndexPage: NextPage<Props> = ({ activities }) => {
   const [user] = useState(getUser())
-
-  const { data: activitiesData } = useTenet<'getActivities', Activities>({
-    operationName: 'getActivities',
-    variables: {},
-    token: getGqlToken(),
-    fallbackData: initialData,
-  })
 
   const onSubmit: (comment: string) => void = async (comment: string) => {
     await fetcher({
@@ -45,9 +38,9 @@ const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialDa
           <CommentInput onSubmit={onSubmit} />
           <PostFormStateContext.Provider value={new PostFormState({})}>
             <ul>
-              {(activitiesData ? activitiesData.activities : [])
-                ?.map((v: PostType) => PostState.fromPostTypeJSON(v))
-                ?.map((v: PostState) => (
+              {activities
+                .map((v: PostType) => PostState.fromPostTypeJSON(v))
+                .map((v: PostState) => (
                   <li key={v.id}>
                     <ActivityCard post={v} />
                   </li>
@@ -68,9 +61,9 @@ const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialDa
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const initialData = await fetcher({ operationName: 'getActivities', variables: {} })
-  return { props: { initialData } }
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const activities = await apiClientImpl.getActivities()
+  return { props: { activities } }
 }
 
 export default observer(IndexPage)

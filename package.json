@@ -19,7 +19,8 @@
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
     "count": "printf '\\e[36m\\n  This project has\\e[35m %s lines\\e[36m of source code!\\n\\n\\e[m' $(find . -name '*.html' -o -name '*.css' -o -name '*.ts' -o -name '*.tsx' | grep -v node_modules | xargs wc -l | tail -1 | awk '{print $1}')",
     "prepare": "husky install",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "run-mock-server": "ts-node --skipProject mock-server.ts"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
   },
   "homepage": "https://github.com/minamorl/tenet#readme",
   "devDependencies": {
+    "@apollo/server": "^4.4.0",
     "@babel/core": "^7.17.2",
     "@fontsource/roboto": "^4.5.3",
     "@graphql-codegen/add": "^4.0.0",
@@ -42,6 +44,10 @@
     "@graphql-codegen/typescript": "^2.7.3",
     "@graphql-codegen/typescript-graphql-request": "^4.5.3",
     "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-tools/graphql-file-loader": "^7.5.16",
+    "@graphql-tools/load": "^7.8.12",
+    "@graphql-tools/mock": "^8.7.18",
+    "@graphql-tools/schema": "^9.0.16",
     "@heroicons/react": "^1.0.5",
     "@storybook/addon-actions": "^6.5.15",
     "@storybook/addon-essentials": "^6.5.15",
@@ -68,6 +74,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "graphql": "^16.6.0",
     "graphql-codegen-plugin-typescript-swr": "^0.8.1",
     "graphql-codegen-typescript-mock-data": "^3.2.2",
     "http-proxy-middleware": "^2.0.3",
