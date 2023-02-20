@@ -2,7 +2,7 @@ import type { Meta, Story } from '@storybook/react'
 import { SearchBoxTextField } from '../../ui/common/SearchBoxTextField'
 
 export default {
-  title: 'Components/SearchBoxTextField',
+  title: 'common/SearchBoxTextField',
   component: SearchBoxTextField,
 } as Meta
 
