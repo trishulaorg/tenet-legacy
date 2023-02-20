@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react'
-import type { NotificationData } from '../../states/NotificationState'
-import { NotificationState, NotificationStateContext } from '../../states/NotificationState'
-import { NotificationList } from '../../ui/notification/NotificationList' //TODO: Make notification list component
+import type { NotificationData } from '../states/NotificationState'
+import { NotificationState, NotificationStateContext } from '../states/NotificationState'
+import { NotificationList } from '../ui/notification/NotificationList' //TODO: Make notification list component
 // import { PageTitle } from '../../ui/PageTitle'; // TODO: Make page title component
 import { useObserver } from 'mobx-react-lite'
 // import { NotificationCard } from '../../ui/notification/NotificationCard';

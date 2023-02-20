@@ -34,7 +34,9 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
           <p className="text-lg font-semibold text-med dark:text-med-dark">
             From {sender?.screenName ? sender?.screenName : 'Coton'}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{recepient.screenName}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {recepient?.screenName ? recepient?.screenName : ''}
+          </p>
         </div>
       </div>
       <div className="mt-4">
