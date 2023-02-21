@@ -7,9 +7,9 @@ import React from 'react'
 import type { PersonaState } from '../../states/UserState'
 
 export interface NotificationCardProps {
-  sender: PersonaState
+  sender?: PersonaState | undefined
   recepient: PersonaState
-  message: string
+  message?: string | undefined
   type: 'like' | 'comment' | 'follow'
 }
 
@@ -20,7 +20,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
   type,
 }) => {
   return (
-    <div className="flex flex-col border border-gray-300 dark:border-gray-700 p-4 rounded-md mb-4">
+    <div className="flex flex-col border border-gray-300 dark:border-gray-700 p-4 rounded-md bg-contentbg dark:bg-contentbg-dark w-full">
       <div className="flex items-center">
         {type === 'like' ? (
           <HeartIcon className="w-6 h-6 text-red-500" />
@@ -32,9 +32,11 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
 
         <div className="ml-4">
           <p className="text-lg font-semibold text-med dark:text-med-dark">
-            From {sender.screenName}
+            From {sender?.screenName ? sender?.screenName : 'Coton'}
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{recepient.screenName}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {recepient?.screenName ? recepient?.screenName : ''}
+          </p>
         </div>
       </div>
       <div className="mt-4">
