@@ -3,6 +3,7 @@ import client from 'graphql-request'
 import type { PostType } from './PostState'
 import { getGqlToken } from '../libs/cookies'
 import { GetActivitiesDocument } from '../mocks/generated/types'
+import { aQuery } from '../mocks/generated/mocks'
 
 type ApiClient = {
   getActivities(): Promise<PostType[]>
@@ -20,15 +21,27 @@ export class ApiClientImpl implements ApiClient {
   }
 
   async getActivities(): Promise<PostType[]> {
-    const response = await client<{ activities: PostType[] }>(
-      this._endpoint,
-      GetActivitiesDocument,
-      {},
-      {
-        authorization: 'Bearer ' + this._token,
-      }
-    )
-    return response.activities
+    if (process.env['NEXT_PUBLIC_API_ENDPOINT'] === 'enabled') {
+      return aQuery().activities.map((activity) => ({
+        ...activity,
+        persona: {
+          ...activity.persona,
+          id: activity.persona.id.toString(),
+        },
+        createdAt: new Date(activity.createdAt),
+        threads: [],
+      }))
+    }
+    return (
+      await client<{ activities: PostType[] }>(
+        this._endpoint,
+        GetActivitiesDocument,
+        {},
+        {
+          authorization: 'Bearer ' + this._token,
+        }
+      )
+    ).activities
   }
 }
 
