@@ -26,8 +26,6 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 `.env.local`:
 
 ```
-# Enable API mocking
-NEXT_PUBLIC_API_MOCKING=enabled
 # GraphQL Endpoint
 NEXT_PUBLIC_API_ENDPOINT=http://localhost:4000
 ```
