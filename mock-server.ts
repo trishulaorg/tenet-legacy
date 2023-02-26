@@ -4,7 +4,7 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader'
 import { loadSchemaSync } from '@graphql-tools/load'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import { join } from 'path'
-import { aQuery } from './mocks/generated/mocks'
+import { aQuery } from './generated/mocks'
 
 const schema = loadSchemaSync(join(__dirname, './schema/schema.graphql'), {
   loaders: [new GraphQLFileLoader()],
@@ -16,9 +16,7 @@ const server = new ApolloServer({
   schema: addMocksToSchema({
     schema,
     resolvers: {
-      Query: {
-        activities: () => aQuery().activities,
-      },
+      Query: aQuery(),
     },
   }),
 })

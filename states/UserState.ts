@@ -1,19 +1,9 @@
 import { makeAutoObservable } from 'mobx'
 import type { Channel } from 'pusher-js/with-encryption'
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
 import { getCookies } from '../libs/cookies'
-import { fetcher } from '../libs/getClient'
+import { apiClientImplMock } from './ApiClientState'
 
-interface GetMe {
-  me: {
-    personas: {
-      id: string
-      name: string
-      screenName: string
-      iconUrl: string
-    }[]
-  }
-}
 export class UserState {
   _personas: PersonaState[]
   token
@@ -39,14 +29,8 @@ export class UserState {
       return this
     }
 
-    const result = await fetcher<GetMe>({
-      token: this.token,
-      operationName: 'getMe',
-      variables: {},
-    })
-    this.personas = result?.me?.personas?.map(
-      (v: { id: string; name: string; iconUrl: string; screenName: string }) => new PersonaState(v)
-    )
+    const result = await apiClientImplMock.getMe()
+    this.personas = result.me?.personas?.map((v) => new PersonaState({ ...v, id: String(v.id) }))
     this.requested = true
     return this
   }
@@ -109,6 +93,10 @@ export const UserStateContext = createContext<UserState | null>(new UserState(''
 export const PersonaStateContext = createContext(
   new PersonaState({ id: '', name: '', screenName: '' })
 )
+
+export function useUserState(): UserState | null {
+  return useContext(UserStateContext)
+}
 
 export const getUser: () => UserState = () =>
   new UserState(getCookies().get('gqltoken') ?? 'INVALID_TOKEN', [], 0)

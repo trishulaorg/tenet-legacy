@@ -65,13 +65,6 @@ export type DirectMessage = {
   sender: Persona
 }
 
-export type File = {
-  __typename?: 'File'
-  encoding?: Maybe<Scalars['String']>
-  filename: Scalars['String']
-  mimetype?: Maybe<Scalars['String']>
-}
-
 export type FollowingBoard = {
   __typename?: 'FollowingBoard'
   board: Board
@@ -94,8 +87,8 @@ export type Mutation = {
   createThirdPartyAPIKey: ThirdPartyApiKey
   createThread: Thread
   deletePost: Post
-  putAttachedImage: Array<File>
-  setPersonaIcon: File
+  putAttachedImage: Array<UploadFile>
+  setPersonaIcon: UploadFile
   setTypingStateOnBoard: Post
   unfollowBoard: FollowingBoard
 }
@@ -298,6 +291,13 @@ export type Thread = {
   postId: Scalars['String']
   privilege: Privilege
   replies: Array<Reply>
+}
+
+export type UploadFile = {
+  __typename?: 'UploadFile'
+  encoding?: Maybe<Scalars['String']>
+  filename: Scalars['String']
+  mimetype?: Maybe<Scalars['String']>
 }
 
 export type User = {
@@ -590,7 +590,7 @@ export type PutAttachedImageMutationVariables = Exact<{
 
 export type PutAttachedImageMutation = {
   __typename?: 'Mutation'
-  putAttachedImage: Array<{ __typename?: 'File'; filename: string }>
+  putAttachedImage: Array<{ __typename?: 'UploadFile'; filename: string }>
 }
 
 export type SetPersonaIconMutationVariables = Exact<{
@@ -600,7 +600,7 @@ export type SetPersonaIconMutationVariables = Exact<{
 
 export type SetPersonaIconMutation = {
   __typename?: 'Mutation'
-  setPersonaIcon: { __typename?: 'File'; filename: string }
+  setPersonaIcon: { __typename?: 'UploadFile'; filename: string }
 }
 
 export type SetTypingStateOnBoardMutationVariables = Exact<{

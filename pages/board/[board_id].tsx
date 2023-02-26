@@ -1,8 +1,8 @@
 import { Header } from '../../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { getUser, UserStateContext } from '../../states/UserState'
-import type { PostType } from '../../states/PostState'
+import { getUser, UserStateContext, useUserState } from '../../states/UserState'
+import type { BoardType, FollowingBoardType, PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
@@ -11,62 +11,45 @@ import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
 import type { GetServerSideProps, NextPage } from 'next'
-import { fetcher, useTenet } from '../../libs/getClient'
-import { getGqlToken } from '../../libs/cookies'
+import { apiClientImplMock, useApiClient } from '../../states/ApiClientState'
 
-type Board = {
-  id: string
-  title: string
-  description: string
-  posts: PostType[]
-}
+type BoardPageProps = { boardData: BoardType }
 
-type FollowingBoard = {
-  board: Board
-  boardId: string
-  createdAt: string
-  id: string
-}
-
-type BoardPageProps = { initialBoardData: Record<string, never> }
-
-const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
+const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
   const router = useRouter()
   const {
     isReady,
     query: { board_id: rawBoardId },
   } = router
   const user = getUser()
-  const [personaId, setPersonaId] = useState<string>()
+  const userState = useUserState()
 
-  const [context] = useState(new BoardState({}))
+  const [context, setContext] = useState(new BoardState({}))
   const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
 
-  const { data: boardData } = useTenet<'getBoard', { board: Board }>({
-    operationName: 'getBoard',
-    variables: personaId
-      ? {
-          topicId: boardId,
-          personaId,
-        }
-      : { topicId: boardId },
-    fallbackData: initialBoardData,
-  })
-  context.id = boardData?.board.id ?? null
-  context.title = boardData?.board.title ?? null
-  context.description = boardData?.board.description ?? null
-  context.posts = boardData?.board.posts.map((v: PostType) => PostState.fromPostTypeJSON(v)) ?? []
+  useEffect(() => {
+    setContext(
+      new BoardState({
+        id: boardData.id,
+        title: boardData.title,
+        description: boardData.description,
+        posts: boardData.posts.map((post) => PostState.fromPostTypeJSON(post)),
+      })
+    )
+  }, [boardData])
 
-  const { data: followingBoardData, mutate: mutateFollowingBoard } = useTenet<
-    'getFollowingBoard',
-    {
-      getFollowingBoard: FollowingBoard[]
-    }
-  >({
-    operationName: 'getFollowingBoard',
-    variables: { personaId: personaId ?? String(0) },
-    token: getGqlToken(),
-  })
+  const [followingBoardData, setFollowingBoardData] = useState<FollowingBoardType>()
+
+  const apiClient = useApiClient()
+
+  async function getFollowingBoard(personaId: number): Promise<void> {
+    const data = (
+      await apiClient.getFollowingBoard({
+        personaId,
+      })
+    ).getFollowingBoard
+    setFollowingBoardData(data)
+  }
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -75,13 +58,10 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
         if (user.personas.length < 1) {
           await router.push('/persona/onboarding')
         }
-        if (user.currentPersona?.id) {
-          setPersonaId(user.currentPersona.id)
-        }
       }
 
       const pusher = await makePusher()
-      const postIds = boardData?.board.posts.map((post: PostType) => post.id) ?? []
+      const postIds = boardData?.posts.map((post: PostType) => post.id) ?? []
 
       const postChannels: Channel[] = []
 
@@ -100,31 +80,30 @@ const BoardPage: NextPage<BoardPageProps> = ({ initialBoardData }) => {
     f()
   })
 
-  const following = followingBoardData?.getFollowingBoard.some(
-    (boardData: FollowingBoard) => boardId && boardData.board.id === boardId
+  const following = followingBoardData?.some(
+    (boardData) => boardId && boardData.board.id === boardId
   )
 
   const onFollowButtonClick = async (): Promise<void> => {
+    if (following == null) {
+      throw new Error('following is null')
+    }
+    if (userState == null || userState.currentPersona?.id == null) {
+      throw new Error('user is not logged in')
+    }
+    const personaId = Number(userState.currentPersona.id)
     if (!following) {
-      await fetcher({
-        operationName: 'createFollowingBoard',
-        variables: {
-          personaId: personaId ?? 0,
-          boardId,
-        },
-        token: getGqlToken(),
+      await apiClient.createFollowingBoard({
+        personaId,
+        boardId,
       })
-      await mutateFollowingBoard()
+      await getFollowingBoard(personaId)
     } else {
-      await fetcher({
-        operationName: 'unfollowBoard',
-        variables: {
-          personaId: personaId ?? 0,
-          boardId,
-        },
-        token: getGqlToken(),
+      await apiClient.unfollowBoard({
+        personaId,
+        boardId,
       })
-      await mutateFollowingBoard()
+      await getFollowingBoard(personaId)
     }
   }
 
@@ -165,14 +144,15 @@ export const getServerSideProps: GetServerSideProps<BoardPageProps, BoardPagePar
   if (!params) throw new Error('params of board page is undefined')
   const { board_id } = params
 
-  const initialBoardData: Record<string, never> = await fetcher({
-    operationName: 'getBoard',
-    variables: { topicId: board_id },
-  })
+  const boardData = (
+    await apiClientImplMock.getBoard({
+      topicId: board_id,
+    })
+  ).board
 
   return {
     props: {
-      initialBoardData,
+      boardData,
     },
   }
 }

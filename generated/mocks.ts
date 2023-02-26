@@ -3,7 +3,6 @@ import type {
   AllowedWritingRole,
   Board,
   DirectMessage,
-  File,
   FollowingBoard,
   Mutation,
   Persona,
@@ -14,6 +13,7 @@ import type {
   SearchResult,
   ThirdPartyApiKey,
   Thread,
+  UploadFile,
   User,
 } from './types'
 
@@ -125,19 +125,6 @@ export const aDirectMessage = (
   }
 }
 
-export const aFile = (
-  overrides?: Partial<File>,
-  _relationshipsToOmit: Set<string> = new Set()
-): File => {
-  const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit)
-  relationshipsToOmit.add('File')
-  return {
-    encoding: overrides && overrides.hasOwnProperty('encoding') ? overrides.encoding! : 'commodi',
-    filename: overrides && overrides.hasOwnProperty('filename') ? overrides.filename! : 'vitae',
-    mimetype: overrides && overrides.hasOwnProperty('mimetype') ? overrides.mimetype! : 'enim',
-  }
-}
-
 export const aFollowingBoard = (
   overrides?: Partial<FollowingBoard>,
   _relationshipsToOmit: Set<string> = new Set()
@@ -238,13 +225,17 @@ export const aMutation = (
     putAttachedImage:
       overrides && overrides.hasOwnProperty('putAttachedImage')
         ? overrides.putAttachedImage!
-        : [relationshipsToOmit.has('File') ? ({} as File) : aFile({}, relationshipsToOmit)],
+        : [
+            relationshipsToOmit.has('UploadFile')
+              ? ({} as UploadFile)
+              : anUploadFile({}, relationshipsToOmit),
+          ],
     setPersonaIcon:
       overrides && overrides.hasOwnProperty('setPersonaIcon')
         ? overrides.setPersonaIcon!
-        : relationshipsToOmit.has('File')
-        ? ({} as File)
-        : aFile({}, relationshipsToOmit),
+        : relationshipsToOmit.has('UploadFile')
+        ? ({} as UploadFile)
+        : anUploadFile({}, relationshipsToOmit),
     setTypingStateOnBoard:
       overrides && overrides.hasOwnProperty('setTypingStateOnBoard')
         ? overrides.setTypingStateOnBoard!
@@ -526,6 +517,20 @@ export const aThread = (
       overrides && overrides.hasOwnProperty('replies')
         ? overrides.replies!
         : [relationshipsToOmit.has('Reply') ? ({} as Reply) : aReply({}, relationshipsToOmit)],
+  }
+}
+
+export const anUploadFile = (
+  overrides?: Partial<UploadFile>,
+  _relationshipsToOmit: Set<string> = new Set()
+): UploadFile => {
+  const relationshipsToOmit: Set<string> = new Set(_relationshipsToOmit)
+  relationshipsToOmit.add('UploadFile')
+  return {
+    encoding: overrides && overrides.hasOwnProperty('encoding') ? overrides.encoding! : 'ea',
+    filename: overrides && overrides.hasOwnProperty('filename') ? overrides.filename! : 'animi',
+    mimetype:
+      overrides && overrides.hasOwnProperty('mimetype') ? overrides.mimetype! : 'exercitationem',
   }
 }
 

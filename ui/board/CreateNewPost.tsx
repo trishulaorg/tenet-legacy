@@ -1,15 +1,13 @@
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { BoardState } from '../../states/PostState'
-import { UserStateContext } from '../../states/UserState'
-import { mutate } from 'swr'
+import { useUserState } from '../../states/UserState'
 import { useRouter } from 'next/router'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { useDropzone } from 'react-dropzone'
 import { ImageUpload } from '../common/ImageUpload'
-import { fetcher } from '../../libs/getClient'
-import { getGqlToken } from '../../libs/cookies'
+import { useApiClient } from '../../states/ApiClientState'
 
 interface CreateNewPostProps {
   boardId: string
@@ -21,36 +19,36 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
     const state = new BoardState({
       id: boardId,
     })
-    const user = useContext(UserStateContext)
+    const userState = useUserState()
     const router = useRouter()
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [files, setFiles] = useState<File[]>([])
     const [uploadErrors, setUploadErrors] = useState<Error[]>([])
+    const apiClient = useApiClient()
 
     const onClick: FormEventHandler = async (e) => {
       e.preventDefault()
       e.stopPropagation()
+      if (userState == null || userState.currentPersona == null) {
+        throw new Error('userState or userState.currentPersona is null')
+      }
+      if (state.id == null) {
+        throw new Error('state.id is null')
+      }
       const {
         createPost: { id: createdPostId },
-      } = (await fetcher({
-        operationName: 'createPost',
-        variables: {
-          title,
-          content,
-          personaId: user?.currentPersona?.id ?? -1,
-          boardId: state.id,
-        },
-        token: getGqlToken(),
-      })) as { createPost: { id: string } }
-
-      await fetcher({
-        operationName: 'putAttachedImage',
-        variables: { postId: createdPostId, files: files },
-        token: getGqlToken(),
+      } = await apiClient.createPost({
+        title,
+        content,
+        personaId: Number(userState.currentPersona.id),
+        boardId: state.id,
+      })
+      await apiClient.putAttachedImage({
+        postId: createdPostId,
+        files,
       })
 
-      await mutate(boardId)
       await router.push(`/post/${createdPostId}`)
     }
     const onDrop = (acceptedFiles: File[]): void => {
@@ -96,7 +94,7 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
     return (
       <div>
         <div>
-          {showPostCreate === true && user != null && user.token !== 'INVALID_TOKEN' ? (
+          {showPostCreate === true && userState != null && userState.token !== 'INVALID_TOKEN' ? (
             <div>
               <div className="py-4">
                 <h2 className="my-2 text-med dark:text-med-dark text-1xl">Create New Post</h2>

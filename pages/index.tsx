@@ -1,33 +1,32 @@
-import type { GetStaticProps, NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
-import { useState } from 'react'
 import { observer } from 'mobx-react'
 import { CommentInput } from '../ui/thread/CommentInput'
-import { fetcher } from '../libs/getClient'
-import { getUser } from '../states/UserState'
+import { useUserState } from '../states/UserState'
 import type { PostType } from '../states/PostState'
 import { PostState } from '../states/PostState'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { ActivityCard } from '../ui/home/ActivityCard'
-import { apiClientImpl } from '../states/ApiClientState'
+import { apiClientImplMock, useApiClient } from '../states/ApiClientState'
 
 type Props = {
   activities: PostType[]
 }
 
 const IndexPage: NextPage<Props> = ({ activities }) => {
-  const [user] = useState(getUser())
+  const apiClient = useApiClient()
+  const userState = useUserState()
 
   const onSubmit: (comment: string) => void = async (comment: string) => {
-    await fetcher({
-      operationName: 'createPost',
-      variables: {
-        title: 'memo',
-        content: comment,
-        personaId: user.currentPersona?.id,
-      },
-      token: user.token,
+    if (userState == null || userState.currentPersona?.id == null) {
+      throw new Error('user is not logged in')
+    }
+    await apiClient.createPost({
+      title: 'memo',
+      content: comment,
+      personaId: Number(userState.currentPersona.id),
+      boardId: '',
     })
   }
 
@@ -61,8 +60,8 @@ const IndexPage: NextPage<Props> = ({ activities }) => {
   )
 }
 
-export const getStaticProps: GetStaticProps<Props> = async () => {
-  const activities = await apiClientImpl.getActivities()
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const activities: PostType[] = (await apiClientImplMock.getActivities()).activities
   return { props: { activities } }
 }
 
