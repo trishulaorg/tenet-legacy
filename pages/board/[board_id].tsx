@@ -1,7 +1,5 @@
-import { Header } from '../../ui/header/Header'
-import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
 import React, { useEffect, useState } from 'react'
-import { getUser, UserStateContext, useUserState } from '../../states/UserState'
+import { getUser, useUserState } from '../../states/UserState'
 import type { BoardType, FollowingBoardType, PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
@@ -115,21 +113,16 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
     : {}
 
   return (
-    <UserStateContext.Provider value={user}>
-      <HeaderStateContext.Provider value={new HeaderState(user)}>
-        <Header />
-      </HeaderStateContext.Provider>
-      <PageContentLayout
-        main={
-          <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-            <BoardStateContext.Provider value={context}>
-              <Board {...boardProps} />
-            </BoardStateContext.Provider>
-          </PostFormStateContext.Provider>
-        }
-        side={<div className="max-w-xs">test</div>}
-      />
-    </UserStateContext.Provider>
+    <PageContentLayout
+      main={
+        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+          <BoardStateContext.Provider value={context}>
+            <Board {...boardProps} />
+          </BoardStateContext.Provider>
+        </PostFormStateContext.Provider>
+      }
+      side={<div className="max-w-xs">test</div>}
+    />
   )
 }
 

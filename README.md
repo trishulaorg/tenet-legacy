@@ -19,7 +19,6 @@ Join to our [Discord server](https://discord.gg/FFbNc55Hxf)!
 1. At first, you have to clone this repo
 2. Set NEXT_PUBLIC_API_ENDPOINT=http://localhost:4000.
 3. Execute `npm i`
-4. `npm run mock-server`
 4. `npm run dev`
 
 ## Examples
