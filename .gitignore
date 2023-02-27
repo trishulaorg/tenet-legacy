@@ -16,3 +16,6 @@ tsconfig.tsbuildinfo
 # PWA auto generated files
 public/sw.js
 public/workbox-*.js
+
+# Storybook
+storybook-static/
