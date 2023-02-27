@@ -8,14 +8,12 @@ import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
-import { UserStateContext } from '../../states/UserState'
-import { mutate } from 'swr'
+import { useUserState } from '../../states/UserState'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { motion } from 'framer-motion'
-import { fetcher } from '../../libs/getClient'
-import { getGqlToken } from '../../libs/cookies'
+import { useApiClient } from '../../states/ApiClientState'
 
 export interface ThreadProps {
   parent: PostState
@@ -24,34 +22,30 @@ export interface ThreadProps {
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
   const boardState = useContext(BoardStateContext)
-  const userState = useContext(UserStateContext)
+  const userState = useUserState()
   const postForm = useContext(PostFormStateContext)
   const publishWritingStatus = usePublishWritingStatus()
+  const apiClient = useApiClient()
 
   const onSubmit: (comment: string, files: File[], thread: PostState) => void = async (
     comment,
     files,
     thread
   ) => {
+    if (userState == null || userState.currentPersona?.id == null) {
+      throw new Error('user is not logged in')
+    }
     const {
       createReply: { id },
-    } = (await fetcher({
-      operationName: 'createReply',
-      variables: {
-        content: comment,
-        personaId: userState?.currentPersona?.id ?? -1,
-        threadId: thread.id,
-      },
-      token: getGqlToken(),
-    })) as { createReply: { id: string } }
-    await fetcher({
-      token: getGqlToken(),
-      operationName: 'putAttachedImage',
-      variables: { postId: id, files: files },
+    } = await apiClient.createReply({
+      content: comment,
+      personaId: Number(userState.currentPersona.id),
+      threadId: thread.id,
     })
-
-    await mutate(boardState.id)
-    await mutate(props.parent.id)
+    await apiClient.putAttachedImage({
+      postId: id,
+      files,
+    })
     await publishWritingStatus(props.parent.id)
   }
   return (

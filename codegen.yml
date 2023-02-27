@@ -2,7 +2,7 @@ overwrite: true
 schema: 'schema/*.graphql'
 documents: ['schema/**']
 generates:
-  mocks/generated/types.ts:
+  generated/types.ts:
     config:
       scalars:
         Upload: 'File'
@@ -17,7 +17,7 @@ generates:
       - 'plugin-typescript-swr'
     hooks:
       afterOneFileWrite: 'eslint --fix'
-  mocks/generated/mocks.ts:
+  generated/mocks.ts:
     plugins:
       - add:
           content: '/* eslint-disable @typescript-eslint/no-use-before-define,@typescript-eslint/no-unused-vars,no-prototype-builtins,@typescript-eslint/no-non-null-assertion */'

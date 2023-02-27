@@ -1,35 +1,21 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { getGqlToken } from '../../libs/cookies'
-import { fetcher, useTenet } from '../../libs/getClient'
 import { getUser } from '../../states/UserState'
 import type { PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
+import { apiClientImplMock } from '../../states/ApiClientState'
 
-type Props = { initialData: Record<string, never> }
+type Props = { postData: PostType }
 
-const PostPage: NextPage<Props> = ({ initialData }) => {
+const PostPage: NextPage<Props> = ({ postData }) => {
   const user = getUser()
-  const token = getGqlToken()
   const router = useRouter()
-  const [personaId, setPersonaId] = useState<string | undefined>(undefined)
-  const {
-    isReady,
-    query: { post_id: rawPostId },
-  } = router
 
   const [context, setContext] = useState<BoardState>(new BoardState({}))
-
-  const postId = isReady && typeof rawPostId === 'string' ? rawPostId : ''
-  const { data } = useTenet<'getPost', { post: PostType }>({
-    operationName: 'getPost',
-    variables: personaId ? { id: postId, personaId } : { id: postId },
-    fallbackData: initialData,
-  })
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -38,28 +24,21 @@ const PostPage: NextPage<Props> = ({ initialData }) => {
         if (user.personas.length < 1) {
           await router.push('/persona/onboarding')
         }
-        if (user.currentPersona?.id) {
-          setPersonaId(user.currentPersona.id)
-        }
       }
     }
     f()
   }, [user, router])
 
   useEffect(() => {
-    if (data) {
-      setContext(
-        data.post.board
-          ? new BoardState({
-              id: data.post.board.id,
-              title: data.post.board.title,
-              description: data.post.board.description,
-              posts: [data.post].map((v) => PostState.fromPostTypeJSON(v)),
-            })
-          : new BoardState({})
-      )
-    }
-  }, [token, data])
+    setContext(
+      new BoardState({
+        id: postData.board.id,
+        title: postData.board.title,
+        description: postData.board.description,
+        posts: [PostState.fromPostTypeJSON(postData)],
+      })
+    )
+  }, [postData])
 
   return (
     <PageContentLayout
@@ -83,11 +62,12 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async (cont
   const { params } = context
   if (!params) throw new Error('params is undefined')
   const { post_id } = params
-  const initialData: Record<string, never> = await fetcher({
-    operationName: 'getPost',
-    variables: { id: post_id },
-  })
-  return { props: { initialData } }
+  const postData = (
+    await apiClientImplMock.getPost({
+      id: post_id,
+    })
+  ).post
+  return { props: { postData } }
 }
 
 export default PostPage

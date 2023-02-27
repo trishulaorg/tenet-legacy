@@ -1,5 +1,11 @@
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
+import type {
+  GetActivitiesQuery,
+  GetBoardQuery,
+  GetFollowingBoardQuery,
+  GetPostQuery,
+} from '../generated/types'
 import { PersonaState } from './UserState'
 
 export interface PersonaType {
@@ -16,28 +22,15 @@ export interface BaseContentType {
   createdAt: Date
 }
 
-export interface BoardType extends BaseContentType {
-  title: string
-  boardId: string
-  description: string
-  posts: PostType[]
-  persona: PersonaType
-}
+export type BoardType = GetBoardQuery['board']
 
-export interface PostType extends BaseContentType {
-  board?: Pick<BoardType, 'id' | 'title' | 'description'> | null
-  boardId?: string | null
-  title: string
-  threads: ThreadType[]
-  persona: PersonaType
-}
+export type FollowingBoardType = GetFollowingBoardQuery['getFollowingBoard']
 
-export interface ThreadType extends BaseContentType {
-  replies: BaseContentType[]
-  board: Pick<BoardType, 'id' | 'title'>
-  postId: string
-  persona: PersonaType
-}
+export type PostType = GetActivitiesQuery['activities'][number] | GetPostQuery['post']
+
+export type ThreadType =
+  | GetActivitiesQuery['activities'][number]['threads'][number]
+  | GetPostQuery['post']['threads'][number]
 
 export class PostState {
   private readonly children: PostState[] = []
@@ -90,33 +83,52 @@ export class PostState {
   get hasRepsponse(): boolean {
     return this.children.length !== 0
   }
-  static fromBoardTypeJSON(json: BoardType): PostState {
-    return new PostState({
-      ...json,
-      author: new PersonaState(json.persona),
-      children: json.posts.map((v) => this.fromPostTypeJSON(v)),
-    })
-  }
   static fromPostTypeJSON(json: PostType): PostState {
     return new PostState({
-      ...json,
-      author: new PersonaState(json.persona),
+      id: json.id,
+      boardId: json.boardId,
+      title: json.title,
+      content: json.content,
+      createdAt: new Date(json.createdAt),
+      imageUrls: 'imageUrls' in json ? json.imageUrls : [],
+      author: new PersonaState({
+        id: String(json.persona.id),
+        name: json.persona.name,
+        screenName: json.persona.screenName,
+        iconUrl: json.persona.iconUrl,
+      }),
       children: json.threads.map((v) => this.fromThreadTypeJSON(v)),
     })
   }
   static fromThreadTypeJSON(json: ThreadType): PostState {
     return new PostState({
-      ...json,
+      id: json.id,
+      content: json.content,
+      createdAt: new Date(json.createdAt),
+      imageUrls: 'imageUrls' in json ? json.imageUrls : [],
       boardId: json.board.id,
       title: json.board.title,
-      author: new PersonaState(json.persona),
+      author: new PersonaState({
+        id: String(json.persona.id),
+        name: json.persona.name,
+        screenName: json.persona.screenName,
+        iconUrl: json.persona.iconUrl,
+      }),
       children: json.replies.map(
         (v) =>
           new PostState({
-            ...v,
+            id: v.id,
+            content: v.content,
+            createdAt: new Date(v.createdAt),
+            imageUrls: 'imageUrls' in v ? v.imageUrls : [],
             boardId: json.board.id,
             title: json.board.title,
-            author: new PersonaState(v.persona),
+            author: new PersonaState({
+              id: String(v.persona.id),
+              name: v.persona.name,
+              screenName: v.persona.screenName,
+              iconUrl: v.persona.iconUrl,
+            }),
           })
       ),
     })

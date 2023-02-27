@@ -1,40 +1,32 @@
-import type { GetStaticProps, NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
-import { useState } from 'react'
 import { observer } from 'mobx-react'
 import { CommentInput } from '../ui/thread/CommentInput'
-import { fetcher, useTenet } from '../libs/getClient'
-import { getGqlToken } from '../libs/cookies'
-import { getUser } from '../states/UserState'
+import { useUserState } from '../states/UserState'
 import type { PostType } from '../states/PostState'
 import { PostState } from '../states/PostState'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { ActivityCard } from '../ui/home/ActivityCard'
+import { apiClientImplMock, useApiClient } from '../states/ApiClientState'
 
-type Activities = {
+type Props = {
   activities: PostType[]
 }
 
-const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialData }) => {
-  const [user] = useState(getUser())
-
-  const { data: activitiesData } = useTenet<'getActivities', Activities>({
-    operationName: 'getActivities',
-    variables: {},
-    token: getGqlToken(),
-    fallbackData: initialData,
-  })
+const IndexPage: NextPage<Props> = ({ activities }) => {
+  const apiClient = useApiClient()
+  const userState = useUserState()
 
   const onSubmit: (comment: string) => void = async (comment: string) => {
-    await fetcher({
-      operationName: 'createPost',
-      variables: {
-        title: 'memo',
-        content: comment,
-        personaId: user.currentPersona?.id,
-      },
-      token: user.token,
+    if (userState == null || userState.currentPersona?.id == null) {
+      throw new Error('user is not logged in')
+    }
+    await apiClient.createPost({
+      title: 'memo',
+      content: comment,
+      personaId: Number(userState.currentPersona.id),
+      boardId: '',
     })
   }
 
@@ -45,9 +37,9 @@ const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialDa
           <CommentInput onSubmit={onSubmit} />
           <PostFormStateContext.Provider value={new PostFormState({})}>
             <ul>
-              {(activitiesData ? activitiesData.activities : [])
-                ?.map((v: PostType) => PostState.fromPostTypeJSON(v))
-                ?.map((v: PostState) => (
+              {activities
+                .map((v: PostType) => PostState.fromPostTypeJSON(v))
+                .map((v: PostState) => (
                   <li key={v.id}>
                     <ActivityCard post={v} />
                   </li>
@@ -68,9 +60,9 @@ const IndexPage: NextPage<{ initialData: Record<string, never> }> = ({ initialDa
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const initialData = await fetcher({ operationName: 'getActivities', variables: {} })
-  return { props: { initialData } }
+export const getServerSideProps: GetServerSideProps<Props> = async () => {
+  const activities: PostType[] = (await apiClientImplMock.getActivities()).activities
+  return { props: { activities } }
 }
 
 export default observer(IndexPage)

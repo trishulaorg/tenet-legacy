@@ -49,7 +49,7 @@ type DirectMessage {
     sender: Persona!
 }
 
-type File {
+type UploadFile {
     encoding: String
     filename: String!
     mimetype: String
@@ -75,8 +75,8 @@ type Mutation {
     createThirdPartyAPIKey(name: String!, type: ThirdPartyAPIKeyType!): ThirdPartyAPIKey!
     createThread(boardId: String!, content: String!, contentType: ContentType!, personaId: Int!, postId: String!): Thread!
     deletePost(personaId: Int!, postId: String!): Post!
-    putAttachedImage(files: [Upload!]!, postId: String!): [File!]!
-    setPersonaIcon(file: Upload, personaId: Int!): File!
+    putAttachedImage(files: [Upload!]!, postId: String!): [UploadFile!]!
+    setPersonaIcon(file: Upload, personaId: Int!): UploadFile!
     setTypingStateOnBoard(personaId: Int!, postId: String!): Post!
     unfollowBoard(boardId: String!, personaId: Int!): FollowingBoard!
 }

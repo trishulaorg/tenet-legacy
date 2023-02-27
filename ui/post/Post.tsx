@@ -10,8 +10,7 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import type { TypingStateNotification } from '../../states/UserState'
-import { UserStateContext } from '../../states/UserState'
-import { mutate } from 'swr'
+import { useUserState } from '../../states/UserState'
 import { BoardStateContext } from '../../states/PostState'
 import { PostFormStateContext } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
@@ -21,8 +20,7 @@ import { useDebounce } from 'use-debounce'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { fetcher } from '../../libs/getClient'
-import { getGqlToken } from '../../libs/cookies'
+import { useApiClient } from '../../states/ApiClientState'
 
 export interface PostProps {
   post: PostState
@@ -31,9 +29,10 @@ export interface PostProps {
 
 export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   const boardState = useContext(BoardStateContext)
-  const userState = useContext(UserStateContext)
   const postForm = useContext(PostFormStateContext)
   const publishWritingStatus = usePublishWritingStatus()
+  const userState = useUserState()
+  const apiClient = useApiClient()
 
   const [debouncedMembers] = useDebounce(
     [
@@ -58,35 +57,38 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
   const isInPostPage = route.startsWith('/post/')
 
   const onSubmit: (comment: string, files: File[]) => void = async (comment, files) => {
+    if (userState == null || userState.currentPersona == null) {
+      throw new Error('userState or userState.currentPersona is null')
+    }
+    if (post.boardId == null) {
+      throw new Error('post.boardId is null')
+    }
     const {
       createThread: { id },
-    } = (await fetcher({
-      operationName: 'createThread',
-      variables: {
-        content: comment,
-        personaId: userState?.currentPersona?.id ?? -1,
-        postId: post.id,
-        boardId: post.boardId,
-      },
-      token: getGqlToken() ?? 'INVALID_TOKEN',
-    })) as { createThread: { id: string } }
-
-    await fetcher({
-      token: getGqlToken(),
-      operationName: 'putAttachedImage',
-      variables: { postId: id, files: files },
+    } = await apiClient.createThread({
+      content: comment,
+      personaId: Number(userState.currentPersona.id),
+      postId: post.id,
+      boardId: post.boardId,
     })
-    await mutate(post.id)
+    await apiClient.putAttachedImage({
+      postId: id,
+      files,
+    })
   }
 
   const onPostDelete = async (): Promise<void> => {
+    if (userState == null || userState.currentPersona == null) {
+      throw new Error('userState or userState.currentPersona is null')
+    }
+    if (post.boardId == null) {
+      throw new Error('post.boardId is null')
+    }
     if (prompt('Type "delete" if you really want to delete:') === 'delete') {
-      await fetcher({
-        operationName: 'deletePost',
-        variables: { postId: post.id, personaId: userState?.currentPersona?.id || 0 },
+      await apiClient.deletePost({
+        personaId: Number(userState.currentPersona.id),
+        postId: post.id,
       })
-      await mutate(post.id)
-      await mutate(post.boardId)
     }
   }
 
