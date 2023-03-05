@@ -16,7 +16,7 @@ export default {
   },
 } satisfies ComponentMeta<typeof IndexPage>
 
-export const LoggedIn: ComponentStory<typeof IndexPage> = (args) => (
+export const SignedIn: ComponentStory<typeof IndexPage> = (args) => (
   <UserStateContext.Provider
     value={
       new UserState(
@@ -36,22 +36,8 @@ export const LoggedIn: ComponentStory<typeof IndexPage> = (args) => (
   </UserStateContext.Provider>
 )
 
-export const NotLoggedIn: ComponentStory<typeof IndexPage> = (args) => (
-  <UserStateContext.Provider
-    value={
-      new UserState(
-        [
-          new PersonaState({
-            id: '1',
-            name: 'john_doe',
-            iconUrl: iconImage as unknown as string,
-            screenName: 'John Doe',
-          }),
-        ],
-        0
-      )
-    }
-  >
+export const NotSignedIn: ComponentStory<typeof IndexPage> = (args) => (
+  <UserStateContext.Provider value={null}>
     <IndexPage {...args} />
   </UserStateContext.Provider>
 )
