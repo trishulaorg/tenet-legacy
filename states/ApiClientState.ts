@@ -86,141 +86,143 @@ export const apiClientImpl: ApiClient = getSdk(
 )
 
 export const apiClientImplMock: ApiClient = {
-  getActivities(): Promise<GetActivitiesQuery> {
-    return Promise.resolve({
+  async getActivities(): Promise<GetActivitiesQuery> {
+    return {
       activities: Array(10)
         .fill(null)
         .map((_, i) => aPost({ id: i.toString(), title: `title${i}` })),
-    })
+    }
   },
-  getBoard(variables: GetBoardQueryVariables): Promise<GetBoardQuery> {
-    return Promise.resolve({
+  async getBoard(variables: GetBoardQueryVariables): Promise<GetBoardQuery> {
+    return {
       board: aBoard({
         id: variables.topicId,
       }),
-    })
+    }
   },
-  getMe(): Promise<GetMeQuery> {
-    return Promise.resolve({
+  async getMe(): Promise<GetMeQuery> {
+    return {
       me: {
         personas: Array(5)
           .fill(null)
           .map((_, i) => aPersona({ id: i })),
       },
-    })
+    }
   },
-  getPost(variables: GetPostQueryVariables): Promise<GetPostQuery> {
-    return Promise.resolve({
+  async getPost(variables: GetPostQueryVariables): Promise<GetPostQuery> {
+    return {
       post: aPost({ ...variables }),
-    })
+    }
   },
-  Search(variables: SearchQueryVariables): Promise<SearchQuery> {
-    return Promise.resolve({
+  async Search(variables: SearchQueryVariables): Promise<SearchQuery> {
+    return {
       search: Array(10)
         .fill(null)
         .map((_, i) => aSearchResult({ id: i.toString(), title: `${variables.query}${i}` })),
-    })
+    }
   },
-  getFollowingBoard(): Promise<GetFollowingBoardQuery> {
-    return Promise.resolve({
+  async getFollowingBoard(): Promise<GetFollowingBoardQuery> {
+    return {
       getFollowingBoard: Array(10)
         .fill(null)
         .map((_, i) => ({
           board: aBoard({ id: i.toString() }),
         })),
-    })
+    }
   },
-  createBoard(): Promise<CreateBoardMutation> {
-    return Promise.resolve({
+  async createBoard(): Promise<CreateBoardMutation> {
+    return {
       createBoard: {
         id: `${1000}`,
       },
-    })
+    }
   },
-  createPersona(variables: CreatePersonaMutationVariables): Promise<CreatePersonaMutation> {
-    return Promise.resolve({
+  async createPersona(variables: CreatePersonaMutationVariables): Promise<CreatePersonaMutation> {
+    return {
       createPersona: {
         ...variables,
       },
-    })
+    }
   },
-  createPost(variables: CreatePostMutationVariables): Promise<CreatePostMutation> {
-    return Promise.resolve({
+  async createPost(variables: CreatePostMutationVariables): Promise<CreatePostMutation> {
+    return {
       createPost: aPost({ ...variables }),
-    })
+    }
   },
-  createReply(): Promise<CreateReplyMutation> {
-    return Promise.resolve({
+  async createReply(): Promise<CreateReplyMutation> {
+    return {
       createReply: {
         id: `${2000}`,
       },
-    })
+    }
   },
-  createThread(): Promise<CreateThreadMutation> {
-    return Promise.resolve({
+  async createThread(): Promise<CreateThreadMutation> {
+    return {
       createThread: {
         id: `${3000}`,
       },
-    })
+    }
   },
-  putAttachedImage(
+  async putAttachedImage(
     variables: PutAttachedImageMutationVariables
   ): Promise<PutAttachedImageMutation> {
     if (Array.isArray(variables.files)) {
-      return Promise.resolve({
+      return {
         putAttachedImage: variables.files.map((v) => ({
           filename: v.name,
         })),
-      })
+      }
     }
-    return Promise.resolve({
+    return {
       putAttachedImage: [{ filename: variables.files.name }],
-    })
+    }
   },
-  setPersonaIcon(variables: SetPersonaIconMutationVariables): Promise<SetPersonaIconMutation> {
-    return Promise.resolve({
+  async setPersonaIcon(
+    variables: SetPersonaIconMutationVariables
+  ): Promise<SetPersonaIconMutation> {
+    return {
       setPersonaIcon: { filename: variables.file.name },
-    })
+    }
   },
-  setTypingStateOnBoard(): Promise<SetTypingStateOnBoardMutation> {
-    return Promise.resolve({
+  async setTypingStateOnBoard(): Promise<SetTypingStateOnBoardMutation> {
+    return {
       setTypingStateOnBoard: { id: `${4000}` },
-    })
+    }
   },
-  deletePost(variables: DeletePostMutationVariables): Promise<DeletePostMutation> {
-    return Promise.resolve({
+  async deletePost(variables: DeletePostMutationVariables): Promise<DeletePostMutation> {
+    return {
       deletePost: {
         id: variables.postId,
       },
-    })
+    }
   },
-  createFollowingBoard(): Promise<CreateFollowingBoardMutation> {
-    return Promise.resolve({
+  async createFollowingBoard(): Promise<CreateFollowingBoardMutation> {
+    return {
       createFollowingBoard: {
         id: `${2300}`,
       },
-    })
+    }
   },
-  unfollowBoard(variables: UnfollowBoardMutationVariables): Promise<UnfollowBoardMutation> {
-    return Promise.resolve({
+  async unfollowBoard(variables: UnfollowBoardMutationVariables): Promise<UnfollowBoardMutation> {
+    return {
       unfollowBoard: {
         id: variables.boardId,
       },
-    })
+    }
   },
-  createThirdPartyAPIKey(): Promise<CreateThirdPartyApiKeyMutation> {
-    return Promise.resolve({
+  async createThirdPartyAPIKey(): Promise<CreateThirdPartyApiKeyMutation> {
+    return {
       createThirdPartyAPIKey: {
         token: 'token',
       },
-    })
+    }
   },
-  createDirectMessage(): Promise<CreateDirectMessageMutation> {
-    return Promise.resolve({
+  async createDirectMessage(): Promise<CreateDirectMessageMutation> {
+    return {
       createDirectMessage: {
         id: `${12837}`,
       },
-    })
+    }
   },
 }
 

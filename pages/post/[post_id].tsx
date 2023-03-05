@@ -1,33 +1,32 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { getUser } from '../../states/UserState'
 import type { PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
 import { apiClientImplMock } from '../../states/ApiClientState'
+import { useUserState } from '../../states/UserState'
 
 type Props = { postData: PostType }
 
 const PostPage: NextPage<Props> = ({ postData }) => {
-  const user = getUser()
+  const userState = useUserState()
   const router = useRouter()
 
   const [context, setContext] = useState<BoardState>(new BoardState({}))
 
   useEffect(() => {
     const f = async (): Promise<void> => {
-      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
-        await user.request()
-        if (user.personas.length < 1) {
+      if (userState != null) {
+        if (userState.personas.length < 1) {
           await router.push('/persona/onboarding')
         }
       }
     }
     f()
-  }, [user, router])
+  }, [userState, router])
 
   useEffect(() => {
     setContext(

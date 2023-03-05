@@ -7,39 +7,32 @@ import '../styles/global.css'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { Header } from '../ui/header/Header'
 import { HeaderState, HeaderStateContext } from '../states/HeaderState'
-import type { UserState } from '../states/UserState'
-import { getUser, UserStateContext } from '../states/UserState'
-import { init } from '../libs/initFirebase'
-import { isValidAuthInstance } from '../libs/isValidAuthInstance'
-import { getCookies } from '../libs/cookies'
-import jwt from 'jsonwebtoken'
+import { PersonaState, UserState } from '../states/UserState'
+import { UserStateContext } from '../states/UserState'
 import { apiClientImplMock, ApiClientProvider } from '../states/ApiClientState'
 
 export default function App({ Component, pageProps }: AppProps): ReactElement {
-  // To prevent hydration errors, userState should be null in the initial rendering.
   const [userState, setUserState] = useState<UserState | null>(null)
 
   useEffect(() => {
     ;(async () => {
-      const { auth } = init()
-      const user = getUser()
-      if (!isValidAuthInstance(auth) || !auth.currentUser) {
-        setUserState(user)
+      const user = (await apiClientImplMock.getMe()).me
+      if (user == null) {
         return
       }
-      if (getCookies().has('gqltoken') && getCookies().get('gqltoken') !== '') {
-        user.token = getCookies().get('gqltoken') ?? ''
-        setUserState(user)
-        return
-      }
-      const localToken = jwt.sign(
-        { uid: auth.currentUser.uid },
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        process.env['NEXT_PUBLIC_API_TOKEN_SECRET']!
+      setUserState(
+        new UserState(
+          user.personas.map(
+            (persona) =>
+              new PersonaState({
+                id: String(persona.id),
+                name: persona.name,
+                screenName: persona.screenName,
+                iconUrl: persona.iconUrl,
+              })
+          )
+        )
       )
-      document.cookie = `gqltoken=${localToken}`
-      user.token = localToken
-      setUserState(user)
     })()
   }, [])
 

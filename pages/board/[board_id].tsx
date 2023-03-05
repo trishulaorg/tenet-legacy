@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getUser, useUserState } from '../../states/UserState'
+import { useUserState } from '../../states/UserState'
 import type { BoardType, FollowingBoardType, PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
@@ -19,7 +19,6 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
     isReady,
     query: { board_id: rawBoardId },
   } = router
-  const user = getUser()
   const userState = useUserState()
 
   const [context, setContext] = useState(new BoardState({}))
@@ -51,11 +50,12 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
 
   useEffect(() => {
     const f = async (): Promise<void> => {
-      if (user.token !== 'INVALID_TOKEN' && !user.requested) {
-        await user.request()
-        if (user.personas.length < 1) {
-          await router.push('/persona/onboarding')
-        }
+      if (userState == null) {
+        return
+      }
+
+      if (userState.personas.length < 1) {
+        await router.push('/persona/onboarding')
       }
 
       const pusher = await makePusher()
@@ -64,13 +64,13 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
       const postChannels: Channel[] = []
 
       postIds.forEach((postId: string) => {
-        if (user?.notifications.every((notification) => notification.channel !== postId)) {
+        if (userState.notifications.every((notification) => notification.channel !== postId)) {
           postChannels.push(pusher.subscribe(postId))
         }
       })
 
       postChannels.forEach((channel) =>
-        user?.subscribeNotifications(channel, 'typing', () => {
+        userState.subscribeNotifications(channel, 'typing', () => {
           /* no-op */
         })
       )
