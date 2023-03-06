@@ -105,19 +105,20 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
     }
   }
 
-  const boardProps = boardId
-    ? {
-        followButtonType: (following ? 'unfollow' : 'follow') as 'unfollow' | 'follow',
-        onFollowButtonClick,
-      }
-    : {}
-
   return (
     <PageContentLayout
       main={
         <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
           <BoardStateContext.Provider value={context}>
-            <Board {...boardProps} />
+            <Board
+              {...(boardId && userState != null
+                ? {
+                    followButtonType: following ? 'unfollow' : 'follow',
+                    onFollowButtonClick,
+                  }
+                : {})}
+              showPostCreate={userState != null}
+            />
           </BoardStateContext.Provider>
         </PostFormStateContext.Provider>
       }

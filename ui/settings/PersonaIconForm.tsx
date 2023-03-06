@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
-import React, { useContext } from 'react'
-import { UserStateContext } from '../../states/UserState'
+import React from 'react'
+import { useUserState } from '../../states/UserState'
 
 const PersonaIconForm: React.FC = observer(() => {
-  const userState = useContext(UserStateContext)
+  const userState = useUserState()
 
   const onIconSet = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (!e.target.files) {

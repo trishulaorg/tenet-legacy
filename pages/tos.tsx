@@ -135,7 +135,7 @@ const tos = `
 以上
 `
 
-const IndexPage: React.FC = () => {
+const TosPage: React.FC = () => {
   return (
     <PageContentLayout
       main={
@@ -150,4 +150,4 @@ const IndexPage: React.FC = () => {
   )
 }
 
-export default IndexPage
+export default TosPage
