@@ -15,7 +15,6 @@ export default {
         value={
           new HeaderState(
             new UserState(
-              'token',
               [
                 new PersonaState({
                   id: '1',

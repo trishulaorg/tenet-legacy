@@ -12,7 +12,6 @@ export default {
       <UserStateContext.Provider
         value={
           new UserState(
-            'token',
             [
               new PersonaState({
                 id: '1',

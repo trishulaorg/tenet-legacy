@@ -5,7 +5,7 @@ import { Button } from '../common/Button'
 export const CommentInput: React.FC<{ onSubmit: (comment: string) => void }> = (props) => {
   const [comment, setComment] = useState('')
   const userState = useContext(UserStateContext)
-  return userState != null && userState.token !== 'INVALID_TOKEN' ? (
+  return userState != null ? (
     <div>
       <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>
       <textarea

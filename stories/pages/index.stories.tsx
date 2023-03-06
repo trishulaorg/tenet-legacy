@@ -20,7 +20,6 @@ export const LoggedIn: ComponentStory<typeof IndexPage> = (args) => (
   <UserStateContext.Provider
     value={
       new UserState(
-        'token',
         [
           new PersonaState({
             id: '1',
@@ -41,7 +40,6 @@ export const NotLoggedIn: ComponentStory<typeof IndexPage> = (args) => (
   <UserStateContext.Provider
     value={
       new UserState(
-        'INVALID_TOKEN',
         [
           new PersonaState({
             id: '1',

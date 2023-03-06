@@ -34,7 +34,7 @@ export const UserMenu: React.FC = observer(() => {
                 <UserMenuItem onClick={() => state.togglePersonaList()}>
                   {state.userState?.currentPersona?.name}
                   <Switch visibility={state.personaListVisibility}>
-                    <Switch visibility={state.userState.token !== 'INVALID_USER'}>
+                    <Switch visibility={state.userState != null}>
                       <ul className="bg-contentbg dark:bg-contentbg-dark width-100">
                         {state.userState?.personas?.map((p, idx) => (
                           <li key={idx} className="border-solid border-b-2">

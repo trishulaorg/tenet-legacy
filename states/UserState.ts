@@ -1,39 +1,19 @@
 import { makeAutoObservable } from 'mobx'
 import type { Channel } from 'pusher-js/with-encryption'
 import { createContext, useContext } from 'react'
-import { getCookies } from '../libs/cookies'
-import { apiClientImplMock } from './ApiClientState'
 
 export class UserState {
   _personas: PersonaState[]
-  token
   currentPersonaIndex: number
   _notifications: Notification[]
-  _requested = false
-  constructor(token: string, personas: PersonaState[], currentPersonaIndex: number) {
-    this.token = token
+
+  constructor(personas: PersonaState[], currentPersonaIndex = 0) {
     this._personas = personas
     this.currentPersonaIndex = currentPersonaIndex
     this._notifications = []
-    this._requested = false
     makeAutoObservable(this)
   }
-  set requested(value: boolean) {
-    this._requested = value
-  }
-  get requested(): boolean {
-    return this._requested
-  }
-  async request(): Promise<UserState> {
-    if (this.requested) {
-      return this
-    }
 
-    const result = await apiClientImplMock.getMe()
-    this.personas = result.me?.personas?.map((v) => new PersonaState({ ...v, id: String(v.id) }))
-    this.requested = true
-    return this
-  }
   set personas(personas: PersonaState[] | undefined) {
     this._personas = personas ?? []
   }
@@ -41,6 +21,7 @@ export class UserState {
   get personas(): PersonaState[] {
     return this._personas
   }
+
   get currentPersona(): PersonaState | undefined {
     return this.personas?.length > 0 ? this.personas[this.currentPersonaIndex] : undefined
   }
@@ -64,6 +45,7 @@ export class UserState {
   set notifications(notifications: Notification[]) {
     this._notifications = notifications
   }
+
   get notifications(): Notification[] {
     return this._notifications
   }
@@ -89,7 +71,7 @@ export class PersonaState {
   }
 }
 
-export const UserStateContext = createContext<UserState | null>(new UserState('', [], 0))
+export const UserStateContext = createContext<UserState | null>(new UserState([]))
 export const PersonaStateContext = createContext(
   new PersonaState({ id: '', name: '', screenName: '' })
 )
@@ -97,9 +79,6 @@ export const PersonaStateContext = createContext(
 export function useUserState(): UserState | null {
   return useContext(UserStateContext)
 }
-
-export const getUser: () => UserState = () =>
-  new UserState(getCookies().get('gqltoken') ?? 'INVALID_TOKEN', [], 0)
 
 export interface Notification<T = unknown> {
   channel: string
