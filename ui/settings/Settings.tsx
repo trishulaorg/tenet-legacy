@@ -6,11 +6,8 @@ import { NotificationsSettings } from './NotificationsSettings'
 import { ThemeSettings } from './ThemeSettings'
 import { BackgroundSettings } from './BackgroundSettings'
 
-//TODO: Change buttons to tabs: on click, change to tab for that settings category
-//TODO: Implement form for settings, including custom text inputs, checkboxes, and submit button
 //TODO: Make responsive for mobile (change settings categories to submenus below settings)
 //TODO: Fix height (currently hardcoding at 768px, want it dynamic with margins at sides for "floating card" style)
-//TODO: Align top of left and right sides' text
 
 const inputStyles =
   'indent-1 text-lg rounded-md border-2 border-med dark:border-med-dark my-1 placeholder-low dark:placeholder-low-dark text-high dark:text-high-dark bg-pagebg dark:bg-pagebg-dark'
@@ -36,7 +33,7 @@ export const Settings = () => {
           <SettingsTab label="Background" onClick={() => setCurrentTab('background')} />
         </div>
       </div>
-      <div className="my-4 px-4 text-med dark:text-med-dark text-2xl h-full py-6">
+      <div className="py-8 px-4 text-med dark:text-med-dark text-2xl h-full ">
         {currentTab === 'contact' && (
           <ContactSettings buttonStyles={buttonStyles} inputStyles={inputStyles} />
         )}
