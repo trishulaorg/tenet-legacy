@@ -44,6 +44,11 @@ export const apiClientMockImpl: ApiClient = createApiClientImpl({
     return {
       board: aBoard({
         id: variables.topicId,
+        posts: Array(10)
+          .fill(null)
+          .map((_, i) => {
+            return aPost({ id: i.toString(), title: `title${i}` })
+          }),
       }),
     }
   },

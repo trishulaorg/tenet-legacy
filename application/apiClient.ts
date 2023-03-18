@@ -114,15 +114,15 @@ export type ApiClient = {
   getPost(params: GetPostParams): Promise<Post>
   search(params: SearchParams): Promise<SearchResult[]>
   getFollowingBoard(params: GetFollowingBoardParams): Promise<Board[]>
-  createBoard(params: CreateBoardParams): Promise<Board>
-  createPersona(params: CreatePersonaParams): Promise<Persona>
-  createPost(params: CreatePostParams): Promise<Post>
-  createReply(params: CreateReplyParams): Promise<Reply>
-  createThread(params: CreateThreadParams): Promise<Thread>
+  createBoard(params: CreateBoardParams): Promise<Pick<Board, 'id'>>
+  createPersona(params: CreatePersonaParams): Promise<Pick<Persona, 'name' | 'screenName'>>
+  createPost(params: CreatePostParams): Promise<Pick<Post, 'id'>>
+  createReply(params: CreateReplyParams): Promise<Pick<Reply, 'id'>>
+  createThread(params: CreateThreadParams): Promise<Pick<Thread, 'id'>>
   putAttachedImage(params: PutAttachedImageParams): Promise<void>
   setPersonaIcon(params: SetPersonaIconParams): Promise<void>
   setTypingStateOnBoard(params: SetTypingStateOnBoardParams): Promise<void>
   deletePost(params: DeletePostParams): Promise<void>
-  followBoard(params: FollowBoardParams): Promise<Board>
-  unfollowBoard(params: UnfollowBoardParams): Promise<Board>
+  followBoard(params: FollowBoardParams): Promise<Pick<Board, 'id'>>
+  unfollowBoard(params: UnfollowBoardParams): Promise<Pick<Board, 'id'>>
 }
