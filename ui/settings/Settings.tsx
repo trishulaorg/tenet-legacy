@@ -15,6 +15,9 @@ const inputStyles =
 const buttonStyles =
   'mt-2 py-1 px-8 border-med dark:border-med-dark border-2 rounded-full bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark text-base font-semibold'
 
+const uploadButtonStyles =
+  'mt-2 py-1 px-8 border-med dark:border-med-dark border-2 rounded-md bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark text-base font-semibold'
+
 const checkboxStyles =
   'w-6 h-6 my-1 mr-1 accent-primary dark:accent-primary-dark bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark'
 
@@ -41,7 +44,11 @@ export const Settings = () => {
           <ContactSettings buttonStyles={buttonStyles} inputStyles={inputStyles} />
         )}
         {currentTab === 'personas' && (
-          <PersonasSettings buttonStyles={buttonStyles} inputStyles={inputStyles} />
+          <PersonasSettings
+            buttonStyles={buttonStyles}
+            inputStyles={inputStyles}
+            uploadButtonStyles={uploadButtonStyles}
+          />
         )}
         {currentTab === 'notifications' && (
           <NotificationsSettings buttonStyles={buttonStyles} checkboxStyles={checkboxStyles} />
@@ -49,7 +56,9 @@ export const Settings = () => {
         {currentTab === 'theme' && (
           <ThemeSettings buttonStyles={buttonStyles} checkboxStyles={checkboxStyles} />
         )}
-        {currentTab === 'background' && <BackgroundSettings buttonStyles={buttonStyles} />}
+        {currentTab === 'background' && (
+          <BackgroundSettings buttonStyles={buttonStyles} uploadButtonStyles={uploadButtonStyles} />
+        )}
       </div>
     </div>
   )

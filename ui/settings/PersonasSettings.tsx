@@ -2,14 +2,12 @@ import React, { useState } from 'react'
 
 interface PersonasSettingsProps {
   buttonStyles: string
+  uploadButtonStyles: string
   inputStyles: string
 }
 
-const uploadButtonStyles =
-  'mt-2 py-1 px-8 border-med dark:border-med-dark border-2 rounded-md bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark text-base font-semibold'
-
 export const PersonasSettings = (props: PersonasSettingsProps) => {
-  const { buttonStyles, inputStyles } = props
+  const { buttonStyles, inputStyles, uploadButtonStyles } = props
 
   const [personaname, setPersonaName] = useState('')
 
