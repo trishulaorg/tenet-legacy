@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 
 interface NotificationsSettingsProps {
   buttonStyles: string
+  checkboxStyles: string
 }
 
-const checkboxStyles =
-  'w-6 h-6 my-1 mr-1 accent-primary dark:accent-primary-dark bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark'
-
 export const NotificationsSettings = (props: NotificationsSettingsProps) => {
-  const { buttonStyles } = props
+  const { buttonStyles, checkboxStyles } = props
 
   const [likes, setLikes] = useState(false)
   const [comments, setComments] = useState(false)

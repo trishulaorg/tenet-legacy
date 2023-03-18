@@ -15,6 +15,9 @@ const inputStyles =
 const buttonStyles =
   'mt-2 py-1 px-8 border-med dark:border-med-dark border-2 rounded-full bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark text-base font-semibold'
 
+const checkboxStyles =
+  'w-6 h-6 my-1 mr-1 accent-primary dark:accent-primary-dark bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark'
+
 export const Settings = () => {
   const [currentTab, setCurrentTab] = useState('contact')
 
@@ -40,8 +43,12 @@ export const Settings = () => {
         {currentTab === 'personas' && (
           <PersonasSettings buttonStyles={buttonStyles} inputStyles={inputStyles} />
         )}
-        {currentTab === 'notifications' && <NotificationsSettings buttonStyles={buttonStyles} />}
-        {currentTab === 'theme' && <ThemeSettings buttonStyles={buttonStyles} />}
+        {currentTab === 'notifications' && (
+          <NotificationsSettings buttonStyles={buttonStyles} checkboxStyles={checkboxStyles} />
+        )}
+        {currentTab === 'theme' && (
+          <ThemeSettings buttonStyles={buttonStyles} checkboxStyles={checkboxStyles} />
+        )}
         {currentTab === 'background' && <BackgroundSettings buttonStyles={buttonStyles} />}
       </div>
     </div>
