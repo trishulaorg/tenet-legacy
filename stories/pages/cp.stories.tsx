@@ -1,3 +1,7 @@
+import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import CreatePostPage from '../../pages/o/cp'
@@ -15,10 +19,10 @@ export const Default: ComponentStory<typeof CreatePostPage> = (args) => (
       new UserState(
         [
           new PersonaState({
-            id: '1',
-            name: 'john_doe',
-            iconUrl: iconImage as unknown as string,
-            screenName: 'John Doe',
+            id: '1' as PersonaId,
+            name: 'john_doe' as PersonaName,
+            iconUrl: iconImage as unknown as PersonaIconUrl,
+            screenName: 'John Doe' as PersonaScreenName,
           }),
         ],
         0

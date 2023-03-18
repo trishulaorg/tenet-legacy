@@ -1,3 +1,5 @@
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
 import React, { useContext, useState } from 'react'
@@ -22,7 +24,7 @@ export const PersonaCreateSteps: React.FC = observer(() => {
             type="text"
             value={persona.name}
             placeholder="e.g. test"
-            onChange={(e) => persona.updateName(e.target.value)}
+            onChange={(e) => persona.updateName(e.target.value as PersonaName)}
             className="w-64 p-2 block rounded border border-slate-300"
           />
           <ErrorMessage errorMessage={personaNameErrorMessage} />
@@ -33,7 +35,7 @@ export const PersonaCreateSteps: React.FC = observer(() => {
             type="text"
             value={persona.screenName}
             placeholder="e.g. Test User"
-            onChange={(e) => persona.updateScreenName(e.target.value)}
+            onChange={(e) => persona.updateScreenName(e.target.value as PersonaScreenName)}
             className="w-64 p-2 block rounded border border-slate-300"
           />
           <ErrorMessage errorMessage={personaScreenNameErrorMessage} />

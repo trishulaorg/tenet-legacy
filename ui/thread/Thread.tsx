@@ -14,6 +14,10 @@ import { PostFormStateContext } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { motion } from 'framer-motion'
 import { useApiClient } from '../../states/ApiClientState'
+import type { ReplyContent } from '@/models/reply/ReplyContent'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { ThreadId } from '@/models/thread/ThreadId'
+import type { PostId } from '@/models/post/PostId'
 
 export interface ThreadProps {
   parent: PostState
@@ -35,15 +39,14 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
     if (userState == null || userState.currentPersona?.id == null) {
       throw new Error('user is not logged in')
     }
-    const {
-      createReply: { id },
-    } = await apiClient.createReply({
-      content: comment,
-      personaId: Number(userState.currentPersona.id),
-      threadId: thread.id,
+    const { id } = await apiClient.createReply({
+      content: comment as ReplyContent,
+      personaId: userState.currentPersona.id as PersonaId,
+      threadId: thread.id as ThreadId,
     })
     await apiClient.putAttachedImage({
-      postId: id,
+      // TODO: I am not sure if this is the right way to use it, so I will check.
+      postId: id as unknown as PostId,
       files,
     })
     await publishWritingStatus(props.parent.id)

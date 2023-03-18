@@ -3,16 +3,30 @@ import { ComponentMeta } from '@storybook/react'
 import { PersonaState, UserState, UserStateContext } from '../../states/UserState'
 import IndexPage from '../../pages/index'
 import iconImage from '../static/icon.png'
-import type { PostType } from '../../states/PostState'
 import { aPost } from '../../generated/mocks'
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
+import { createApiClientImpl } from '@/infrastructure/apiClientImpl'
+import type { getSdk } from '@/generated/types'
 
 export default {
   title: 'Pages/IndexPage',
   component: IndexPage,
   args: {
-    activities: Array(10)
-      .fill(null)
-      .map((_, i): PostType => aPost({ id: i.toString(), title: `title${i}` })),
+    activities: await createApiClientImpl({
+      ...({} as ReturnType<typeof getSdk>),
+      async getActivities() {
+        return {
+          activities: Array(10)
+            .fill(null)
+            .map((_, i) => {
+              return aPost({ id: i.toString(), title: `title${i}` })
+            }),
+        }
+      },
+    }).getActivities(),
   },
 } satisfies ComponentMeta<typeof IndexPage>
 
@@ -22,10 +36,10 @@ export const SignedIn: ComponentStory<typeof IndexPage> = (args) => (
       new UserState(
         [
           new PersonaState({
-            id: '1',
-            name: 'john_doe',
-            iconUrl: iconImage as unknown as string,
-            screenName: 'John Doe',
+            id: '1' as PersonaId,
+            name: 'john_doe' as PersonaName,
+            iconUrl: iconImage as unknown as PersonaIconUrl,
+            screenName: 'John Doe' as PersonaScreenName,
           }),
         ],
         0

@@ -1,290 +1,70 @@
 import { createContext, useContext } from 'react'
-import { GraphQLClient } from 'graphql-request'
-import { getGqlToken } from '../libs/cookies'
-import { getSdk } from '../generated/types'
-import type {
-  CreatePostMutation,
-  CreatePostMutationVariables,
-  GetActivitiesQuery,
-  GetActivitiesQueryVariables,
-  GetBoardQuery,
-  GetBoardQueryVariables,
-  GetMeQuery,
-  GetMeQueryVariables,
-  GetPostQuery,
-  GetPostQueryVariables,
-  SearchQuery,
-  SearchQueryVariables,
-  GetFollowingBoardQuery,
-  GetFollowingBoardQueryVariables,
-  CreateBoardMutation,
-  CreateBoardMutationVariables,
-  CreatePersonaMutation,
-  CreatePersonaMutationVariables,
-  CreateReplyMutation,
-  CreateReplyMutationVariables,
-  CreateThreadMutation,
-  CreateThreadMutationVariables,
-  PutAttachedImageMutation,
-  PutAttachedImageMutationVariables,
-  SetPersonaIconMutation,
-  SetPersonaIconMutationVariables,
-  SetTypingStateOnBoardMutation,
-  SetTypingStateOnBoardMutationVariables,
-  DeletePostMutation,
-  DeletePostMutationVariables,
-  CreateFollowingBoardMutation,
-  CreateFollowingBoardMutationVariables,
-  UnfollowBoardMutation,
-  UnfollowBoardMutationVariables,
-  CreateThirdPartyApiKeyMutation,
-  CreateThirdPartyApiKeyMutationVariables,
-  CreateDirectMessageMutation,
-  CreateDirectMessageMutationVariables,
-} from '../generated/types'
-import { aPost } from '../generated/mocks'
-import { aBoard, aPersona, aSearchResult } from '../generated/mocks'
+import type { ApiClient } from '@/application/apiClient'
+import type { Activity } from '@/models/activity/Activity'
+import type { Board } from '@/models/board/Board'
+import type { BoardWithPosts } from '@/models/board/BoardWithPosts'
+import type { Persona } from '@/models/persona/Persona'
+import type { Post } from '@/models/post/Post'
+import type { Reply } from '@/models/reply/Reply'
+import type { SearchResult } from '@/models/search/SearchResult'
+import type { Thread } from '@/models/thread/Thread'
+import type { User } from '@/models/user/User'
 
-type ApiClient = {
-  getActivities(variables?: GetActivitiesQueryVariables): Promise<GetActivitiesQuery>
-  getBoard(variables: GetBoardQueryVariables): Promise<GetBoardQuery>
-  getMe(variables?: GetMeQueryVariables): Promise<GetMeQuery>
-  getPost(variables: GetPostQueryVariables): Promise<GetPostQuery>
-  Search(variables: SearchQueryVariables): Promise<SearchQuery>
-  getFollowingBoard(variables: GetFollowingBoardQueryVariables): Promise<GetFollowingBoardQuery>
-  createBoard(variables: CreateBoardMutationVariables): Promise<CreateBoardMutation>
-  createPersona(variables: CreatePersonaMutationVariables): Promise<CreatePersonaMutation>
-  createPost(variables: CreatePostMutationVariables): Promise<CreatePostMutation>
-  createReply(variables: CreateReplyMutationVariables): Promise<CreateReplyMutation>
-  createThread(variables: CreateThreadMutationVariables): Promise<CreateThreadMutation>
-  putAttachedImage(variables: {
-    postId: string
-    files: File | File[]
-  }): Promise<PutAttachedImageMutation>
-  setPersonaIcon(variables: SetPersonaIconMutationVariables): Promise<SetPersonaIconMutation>
-  setTypingStateOnBoard(
-    variables: SetTypingStateOnBoardMutationVariables
-  ): Promise<SetTypingStateOnBoardMutation>
-  deletePost(variables: DeletePostMutationVariables): Promise<DeletePostMutation>
-  createFollowingBoard(
-    variables: CreateFollowingBoardMutationVariables
-  ): Promise<CreateFollowingBoardMutation>
-  unfollowBoard(variables: UnfollowBoardMutationVariables): Promise<UnfollowBoardMutation>
-  createThirdPartyAPIKey(
-    variables: CreateThirdPartyApiKeyMutationVariables
-  ): Promise<CreateThirdPartyApiKeyMutation>
-  createDirectMessage(
-    variables: CreateDirectMessageMutationVariables
-  ): Promise<CreateDirectMessageMutation>
-}
-
-export const apiClientImpl: ApiClient = getSdk(
-  new GraphQLClient(process.env['NEXT_PUBLIC_API_ENDPOINT'] ?? ''),
-  (action, _operationName, _operationType) => {
-    return action({ authorization: 'Bearer ' + getGqlToken() })
-  }
-)
-
-export const apiClientImplMock: ApiClient = {
-  async getActivities(): Promise<GetActivitiesQuery> {
-    return {
-      activities: Array(10)
-        .fill(null)
-        .map((_, i) => aPost({ id: i.toString(), title: `title${i}` })),
-    }
+export const defaultApiClient: ApiClient = {
+  getActivities: function (): Promise<Activity[]> {
+    throw new Error('Function not implemented.')
   },
-  async getBoard(variables: GetBoardQueryVariables): Promise<GetBoardQuery> {
-    return {
-      board: aBoard({
-        id: variables.topicId,
-      }),
-    }
+  getBoard: function (): Promise<BoardWithPosts> {
+    throw new Error('Function not implemented.')
   },
-  async getMe(): Promise<GetMeQuery> {
-    return {
-      me: {
-        personas: Array(5)
-          .fill(null)
-          .map((_, i) => aPersona({ id: i })),
-      },
-    }
+  getMe: function (): Promise<User> {
+    throw new Error('Function not implemented.')
   },
-  async getPost(variables: GetPostQueryVariables): Promise<GetPostQuery> {
-    return {
-      post: aPost({ ...variables }),
-    }
+  getPost: function (): Promise<Post> {
+    throw new Error('Function not implemented.')
   },
-  async Search(variables: SearchQueryVariables): Promise<SearchQuery> {
-    return {
-      search: Array(10)
-        .fill(null)
-        .map((_, i) => aSearchResult({ id: i.toString(), title: `${variables.query}${i}` })),
-    }
+  search: function (): Promise<SearchResult[]> {
+    throw new Error('Function not implemented.')
   },
-  async getFollowingBoard(): Promise<GetFollowingBoardQuery> {
-    return {
-      getFollowingBoard: Array(10)
-        .fill(null)
-        .map((_, i) => ({
-          board: aBoard({ id: i.toString() }),
-        })),
-    }
+  getFollowingBoard: function (): Promise<Board[]> {
+    throw new Error('Function not implemented.')
   },
-  async createBoard(): Promise<CreateBoardMutation> {
-    return {
-      createBoard: {
-        id: `${1000}`,
-      },
-    }
+  createBoard: function (): Promise<Board> {
+    throw new Error('Function not implemented.')
   },
-  async createPersona(variables: CreatePersonaMutationVariables): Promise<CreatePersonaMutation> {
-    return {
-      createPersona: {
-        ...variables,
-      },
-    }
+  createPersona: function (): Promise<Persona> {
+    throw new Error('Function not implemented.')
   },
-  async createPost(variables: CreatePostMutationVariables): Promise<CreatePostMutation> {
-    return {
-      createPost: aPost({ ...variables }),
-    }
+  createPost: function (): Promise<Post> {
+    throw new Error('Function not implemented.')
   },
-  async createReply(): Promise<CreateReplyMutation> {
-    return {
-      createReply: {
-        id: `${2000}`,
-      },
-    }
+  createReply: function (): Promise<Reply> {
+    throw new Error('Function not implemented.')
   },
-  async createThread(): Promise<CreateThreadMutation> {
-    return {
-      createThread: {
-        id: `${3000}`,
-      },
-    }
+  createThread: function (): Promise<Thread> {
+    throw new Error('Function not implemented.')
   },
-  async putAttachedImage(
-    variables: PutAttachedImageMutationVariables
-  ): Promise<PutAttachedImageMutation> {
-    if (Array.isArray(variables.files)) {
-      return {
-        putAttachedImage: variables.files.map((v) => ({
-          filename: v.name,
-        })),
-      }
-    }
-    return {
-      putAttachedImage: [{ filename: variables.files.name }],
-    }
+  putAttachedImage: function (): Promise<void> {
+    throw new Error('Function not implemented.')
   },
-  async setPersonaIcon(
-    variables: SetPersonaIconMutationVariables
-  ): Promise<SetPersonaIconMutation> {
-    return {
-      setPersonaIcon: { filename: variables.file.name },
-    }
+  setPersonaIcon: function (): Promise<void> {
+    throw new Error('Function not implemented.')
   },
-  async setTypingStateOnBoard(): Promise<SetTypingStateOnBoardMutation> {
-    return {
-      setTypingStateOnBoard: { id: `${4000}` },
-    }
+  setTypingStateOnBoard: function (): Promise<void> {
+    throw new Error('Function not implemented.')
   },
-  async deletePost(variables: DeletePostMutationVariables): Promise<DeletePostMutation> {
-    return {
-      deletePost: {
-        id: variables.postId,
-      },
-    }
+  deletePost: function (): Promise<void> {
+    throw new Error('Function not implemented.')
   },
-  async createFollowingBoard(): Promise<CreateFollowingBoardMutation> {
-    return {
-      createFollowingBoard: {
-        id: `${2300}`,
-      },
-    }
+  followBoard: function (): Promise<Board> {
+    throw new Error('Function not implemented.')
   },
-  async unfollowBoard(variables: UnfollowBoardMutationVariables): Promise<UnfollowBoardMutation> {
-    return {
-      unfollowBoard: {
-        id: variables.boardId,
-      },
-    }
-  },
-  async createThirdPartyAPIKey(): Promise<CreateThirdPartyApiKeyMutation> {
-    return {
-      createThirdPartyAPIKey: {
-        token: 'token',
-      },
-    }
-  },
-  async createDirectMessage(): Promise<CreateDirectMessageMutation> {
-    return {
-      createDirectMessage: {
-        id: `${12837}`,
-      },
-    }
+  unfollowBoard: function (): Promise<Board> {
+    throw new Error('Function not implemented.')
   },
 }
 
-const ApiClientContext = createContext<ApiClient>({
-  getActivities() {
-    throw new Error('Function not implemented.')
-  },
-  createPost: function () {
-    throw new Error('Function not implemented.')
-  },
-  getBoard: function (): Promise<GetBoardQuery> {
-    throw new Error('Function not implemented.')
-  },
-  getMe: function (): Promise<GetMeQuery> {
-    throw new Error('Function not implemented.')
-  },
-  getPost: function (): Promise<GetPostQuery> {
-    throw new Error('Function not implemented.')
-  },
-  Search: function (): Promise<SearchQuery> {
-    throw new Error('Function not implemented.')
-  },
-  getFollowingBoard: function (): Promise<GetFollowingBoardQuery> {
-    throw new Error('Function not implemented.')
-  },
-  createBoard: function (): Promise<CreateBoardMutation> {
-    throw new Error('Function not implemented.')
-  },
-  createPersona: function (): Promise<CreatePersonaMutation> {
-    throw new Error('Function not implemented.')
-  },
-  createReply: function (): Promise<CreateReplyMutation> {
-    throw new Error('Function not implemented.')
-  },
-  createThread: function (): Promise<CreateThreadMutation> {
-    throw new Error('Function not implemented.')
-  },
-  putAttachedImage: function (): Promise<PutAttachedImageMutation> {
-    throw new Error('Function not implemented.')
-  },
-  setPersonaIcon: function (): Promise<SetPersonaIconMutation> {
-    throw new Error('Function not implemented.')
-  },
-  setTypingStateOnBoard: function (): Promise<SetTypingStateOnBoardMutation> {
-    throw new Error('Function not implemented.')
-  },
-  deletePost: function (): Promise<DeletePostMutation> {
-    throw new Error('Function not implemented.')
-  },
-  createFollowingBoard: function (): Promise<CreateFollowingBoardMutation> {
-    throw new Error('Function not implemented.')
-  },
-  unfollowBoard: function (): Promise<UnfollowBoardMutation> {
-    throw new Error('Function not implemented.')
-  },
-  createThirdPartyAPIKey: function (): Promise<CreateThirdPartyApiKeyMutation> {
-    throw new Error('Function not implemented.')
-  },
-  createDirectMessage: function (): Promise<CreateDirectMessageMutation> {
-    throw new Error('Function not implemented.')
-  },
-})
+const ApiClientContext = createContext<ApiClient>(defaultApiClient)
 
 export const ApiClientProvider = ApiClientContext.Provider
 

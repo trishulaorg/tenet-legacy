@@ -4,6 +4,13 @@ import { Board } from '../../ui/board/Board'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PersonaState, UserState, UserStateContext } from '../../states/UserState'
 import iconImage from '../static/icon.png'
+import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
+import type { BoardId } from '@/models/board/BoardId'
+import type { BoardTitle } from '@/models/board/BoardTitle'
+import type { BoardDescription } from '@/models/board/BoardDescription'
 
 export default {
   title: 'Board/Board',
@@ -15,10 +22,10 @@ export default {
           new UserState(
             [
               new PersonaState({
-                id: '1',
-                name: 'john_doe',
-                iconUrl: iconImage as unknown as string,
-                screenName: 'John Doe',
+                id: '1' as PersonaId,
+                name: 'john_doe' as PersonaName,
+                iconUrl: iconImage as unknown as PersonaIconUrl,
+                screenName: 'John Doe' as PersonaScreenName,
               }),
             ],
             0
@@ -28,10 +35,10 @@ export default {
         <BoardStateContext.Provider
           value={
             new BoardState({
-              id: '1',
-              title: 'lorem ipsum',
+              id: '1' as BoardId,
+              title: 'lorem ipsum' as BoardTitle,
               description:
-                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." as BoardDescription,
               posts: Array(5)
                 .fill(null)
                 .map(
@@ -43,10 +50,10 @@ export default {
                         "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
                       createdAt: new Date(`${2023 - i}-10-05T14:48:00.000Z`),
                       author: new PersonaState({
-                        id: '1',
-                        name: 'john_doe',
-                        iconUrl: iconImage.src,
-                        screenName: 'John Doe',
+                        id: '1' as PersonaId,
+                        name: 'john_doe' as PersonaName,
+                        iconUrl: iconImage as unknown as PersonaIconUrl,
+                        screenName: 'John Doe' as PersonaScreenName,
                       }),
                     })
                 ),

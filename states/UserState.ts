@@ -1,3 +1,7 @@
+import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
 import { makeAutoObservable } from 'mobx'
 import type { Channel } from 'pusher-js/with-encryption'
 import { createContext, useContext } from 'react'
@@ -52,28 +56,37 @@ export class UserState {
 }
 
 export class PersonaState {
-  name: string
-  iconUrl: string
-  id: string
-  screenName: string
-  constructor(data: { id: string; name: string; screenName: string; iconUrl?: string }) {
+  name: PersonaName
+  iconUrl: PersonaIconUrl
+  id: PersonaId
+  screenName: PersonaScreenName
+  constructor(data: {
+    id: PersonaId
+    name: PersonaName
+    screenName: PersonaScreenName
+    iconUrl?: PersonaIconUrl
+  }) {
     this.name = data.name
     this.screenName = data.screenName
-    this.iconUrl = data.iconUrl ?? ''
+    this.iconUrl = data.iconUrl ?? ('' as PersonaIconUrl)
     this.id = data.id
     makeAutoObservable(this)
   }
-  updateName(name: string): void {
+  updateName(name: PersonaName): void {
     this.name = name
   }
-  updateScreenName(name: string): void {
+  updateScreenName(name: PersonaScreenName): void {
     this.screenName = name
   }
 }
 
 export const UserStateContext = createContext<UserState | null>(new UserState([]))
 export const PersonaStateContext = createContext(
-  new PersonaState({ id: '', name: '', screenName: '' })
+  new PersonaState({
+    id: '' as PersonaId,
+    name: '' as PersonaName,
+    screenName: '' as PersonaScreenName,
+  })
 )
 
 export function useUserState(): UserState | null {

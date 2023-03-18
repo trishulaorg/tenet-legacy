@@ -13,6 +13,10 @@ import { useUserState } from '../../states/UserState'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useApiClient } from '../../states/ApiClientState'
+import type { ThreadContent } from '@/models/thread/ThreadContent'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PostId } from '@/models/post/PostId'
+import type { BoardId } from '@/models/board/BoardId'
 
 interface ActivityCardProps {
   post: PostState
@@ -30,10 +34,10 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
       throw new Error('boardId is null')
     }
     await apiClient.createThread({
-      content: comment,
-      personaId: Number(userState.currentPersona.id),
-      postId: post.id,
-      boardId: post.boardId,
+      content: comment as ThreadContent,
+      personaId: userState.currentPersona.id as PersonaId,
+      postId: post.id as PostId,
+      boardId: post.boardId as BoardId,
     })
     setCommentVisibility(false)
   }

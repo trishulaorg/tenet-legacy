@@ -6,12 +6,26 @@ import { UserStateContext, UserState, PersonaState } from '../../states/UserStat
 import iconImage from '../static/icon.png'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { routerValue } from '../utils/routerValue'
+import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
+import type { getSdk } from '@/generated/types'
+import { createApiClientImpl } from '@/infrastructure/apiClientImpl'
+import type { TopicId } from '@/models/board/TopicId'
 
 export default {
   title: 'Pages/BoardPage',
   component: BoardPage,
   args: {
-    boardData: aBoard(),
+    boardData: await createApiClientImpl({
+      ...({} as ReturnType<typeof getSdk>),
+      async getBoard() {
+        return {
+          board: aBoard(),
+        }
+      },
+    }).getBoard({ topicId: '' as TopicId }),
   },
 } satisfies ComponentMeta<typeof BoardPage>
 
@@ -21,10 +35,10 @@ export const SignedIn: ComponentStory<typeof BoardPage> = (args) => (
       new UserState(
         [
           new PersonaState({
-            id: '1',
-            name: 'john_doe',
-            iconUrl: iconImage as unknown as string,
-            screenName: 'John Doe',
+            id: '1' as PersonaId,
+            name: 'john_doe' as PersonaName,
+            iconUrl: iconImage as unknown as PersonaIconUrl,
+            screenName: 'John Doe' as PersonaScreenName,
           }),
         ],
         0
@@ -50,10 +64,10 @@ export const SignedInWithBoardId: ComponentStory<typeof BoardPage> = (args) => (
         new UserState(
           [
             new PersonaState({
-              id: '1',
-              name: 'john_doe',
-              iconUrl: iconImage as unknown as string,
-              screenName: 'John Doe',
+              id: '1' as PersonaId,
+              name: 'john_doe' as PersonaName,
+              iconUrl: iconImage as unknown as PersonaIconUrl,
+              screenName: 'John Doe' as PersonaScreenName,
             }),
           ],
           0

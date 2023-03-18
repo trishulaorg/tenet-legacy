@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useUserState } from '../../states/UserState'
-import type { BoardType, FollowingBoardType, PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
@@ -9,9 +8,17 @@ import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
 import type { GetServerSideProps, NextPage } from 'next'
-import { apiClientImplMock, useApiClient } from '../../states/ApiClientState'
+import { useApiClient } from '../../states/ApiClientState'
+import type { BoardDescription } from '@/models/board/BoardDescription'
+import type { BoardWithPosts } from '@/models/board/BoardWithPosts'
+import type { Board as BoardType } from '@/models/board/Board'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { BoardId } from '@/models/board/BoardId'
+import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
+import type { TopicId } from '@/models/board/TopicId'
+import type { Post } from '@/models/post/Post'
 
-type BoardPageProps = { boardData: BoardType }
+type BoardPageProps = { boardData: BoardWithPosts }
 
 const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
   const router = useRouter()
@@ -22,29 +29,27 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
   const userState = useUserState()
 
   const [context, setContext] = useState(new BoardState({}))
-  const boardId = isReady && typeof rawBoardId === 'string' ? rawBoardId : ''
+  const boardId = (isReady && typeof rawBoardId === 'string' ? rawBoardId : '') as BoardId
 
   useEffect(() => {
     setContext(
       new BoardState({
         id: boardData.id,
         title: boardData.title,
-        description: boardData.description,
+        description: boardData.description ?? ('' as BoardDescription),
         posts: boardData.posts.map((post) => PostState.fromPostTypeJSON(post)),
       })
     )
   }, [boardData])
 
-  const [followingBoardData, setFollowingBoardData] = useState<FollowingBoardType>()
+  const [followingBoardData, setFollowingBoardData] = useState<BoardType[]>()
 
   const apiClient = useApiClient()
 
-  async function getFollowingBoard(personaId: number): Promise<void> {
-    const data = (
-      await apiClient.getFollowingBoard({
-        personaId,
-      })
-    ).getFollowingBoard
+  async function getFollowingBoard(personaId: PersonaId): Promise<void> {
+    const data = await apiClient.getFollowingBoard({
+      personaId,
+    })
     setFollowingBoardData(data)
   }
 
@@ -59,7 +64,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
       }
 
       const pusher = await makePusher()
-      const postIds = boardData?.posts.map((post: PostType) => post.id) ?? []
+      const postIds = boardData?.posts.map((post: Post) => post.id) ?? []
 
       const postChannels: Channel[] = []
 
@@ -78,9 +83,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
     f()
   })
 
-  const following = followingBoardData?.some(
-    (boardData) => boardId && boardData.board.id === boardId
-  )
+  const following = followingBoardData?.some((boardData) => boardId && boardData.id === boardId)
 
   const onFollowButtonClick = async (): Promise<void> => {
     if (following == null) {
@@ -89,9 +92,9 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
     if (userState == null || userState.currentPersona?.id == null) {
       throw new Error('user is not logged in')
     }
-    const personaId = Number(userState.currentPersona.id)
+    const personaId = userState.currentPersona.id
     if (!following) {
-      await apiClient.createFollowingBoard({
+      await apiClient.followBoard({
         personaId,
         boardId,
       })
@@ -138,11 +141,10 @@ export const getServerSideProps: GetServerSideProps<BoardPageProps, BoardPagePar
   if (!params) throw new Error('params of board page is undefined')
   const { board_id } = params
 
-  const boardData = (
-    await apiClientImplMock.getBoard({
-      topicId: board_id,
-    })
-  ).board
+  const boardData = await apiClientMockImpl.getBoard({
+    // TODO: topicId is board_id?
+    topicId: board_id as unknown as TopicId,
+  })
 
   return {
     props: {

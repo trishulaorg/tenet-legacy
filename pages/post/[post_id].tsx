@@ -1,15 +1,17 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import type { PostType } from '../../states/PostState'
 import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
-import { apiClientImplMock } from '../../states/ApiClientState'
 import { useUserState } from '../../states/UserState'
+import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
+import type { PostId } from '@/models/post/PostId'
+import type { Post } from '@/models/post/Post'
+import type { BoardDescription } from '@/models/board/BoardDescription'
 
-type Props = { postData: PostType }
+type Props = { postData: Post }
 
 const PostPage: NextPage<Props> = ({ postData }) => {
   const userState = useUserState()
@@ -33,7 +35,7 @@ const PostPage: NextPage<Props> = ({ postData }) => {
       new BoardState({
         id: postData.board.id,
         title: postData.board.title,
-        description: postData.board.description,
+        description: postData.board.description ?? ('' as BoardDescription),
         posts: [PostState.fromPostTypeJSON(postData)],
       })
     )
@@ -54,18 +56,16 @@ const PostPage: NextPage<Props> = ({ postData }) => {
 }
 
 type Params = {
-  post_id: string
+  post_id: PostId
 }
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async (context) => {
   const { params } = context
   if (!params) throw new Error('params is undefined')
   const { post_id } = params
-  const postData = (
-    await apiClientImplMock.getPost({
-      id: post_id,
-    })
-  ).post
+  const postData = await apiClientMockImpl.getPost({
+    id: post_id,
+  })
   return { props: { postData } }
 }
 

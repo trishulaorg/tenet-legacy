@@ -2,6 +2,10 @@ import type { ComponentMeta } from '@storybook/react'
 import { NotificationList } from '../../ui/notification/NotificationList'
 import { PersonaState } from '../../states/UserState'
 import { NotificationState } from '../../states/NotificationState'
+import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PersonaName } from '@/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
 
 export default {
   title: 'Notification/NotificationList',
@@ -9,10 +13,10 @@ export default {
 } as ComponentMeta<typeof NotificationList>
 
 const persona = new PersonaState({
-  id: '1',
-  name: 'John',
-  iconUrl: 'https://via.placeholder.com/150',
-  screenName: 'John',
+  id: '1' as PersonaId,
+  name: 'John' as PersonaName,
+  iconUrl: 'https://via.placeholder.com/150' as PersonaIconUrl,
+  screenName: 'John' as PersonaScreenName,
 })
 
 const notifications = [
