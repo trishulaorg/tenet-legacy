@@ -67,6 +67,11 @@ export const UserMenu: React.FC = observer(() => {
               </Switch>
               <Switch visibility={state.isLoggedIn}>
                 <UserMenuItem onClick={() => state.closeMenu()}>
+                  <Link href="/settings">Settings</Link>
+                </UserMenuItem>
+              </Switch>
+              <Switch visibility={state.isLoggedIn}>
+                <UserMenuItem onClick={() => state.closeMenu()}>
                   <Link href="/persona/settings/icon">Change Persona Icon</Link>
                 </UserMenuItem>
               </Switch>
