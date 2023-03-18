@@ -1,6 +1,6 @@
-import type { getSdk } from '@/generated/types'
-import { createApiClientImpl } from '@/infrastructure/apiClientImpl'
-import type { SearchQuery } from '@/models/search/SearchQuery'
+import type { SearchResultId } from '@/models/search/SearchResultId'
+import type { SearchResultIdKind } from '@/models/search/SearchResultIdKind'
+import type { SearchResultTitle } from '@/models/search/SearchResultTitle'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import { aSearchResult } from '../../generated/mocks'
@@ -10,16 +10,16 @@ export default {
   title: 'Pages/SearchResultPage',
   component: SearchResultPage,
   args: {
-    searchData: await createApiClientImpl({
-      ...({} as ReturnType<typeof getSdk>),
-      async Search() {
+    searchData: Array(10)
+      .fill(null)
+      .map((_, i) => {
+        const result = aSearchResult({ id: i.toString(), title: `Search result ${i + 1}` })
         return {
-          search: Array(10)
-            .fill(null)
-            .map((_, i) => aSearchResult({ id: i.toString(), title: `Search result ${i + 1}` })),
+          id: result.id as SearchResultId,
+          kind: result.kind as SearchResultIdKind,
+          title: result.title as SearchResultTitle,
         }
-      },
-    }).search({ query: 'test' as SearchQuery }),
+      }),
   },
 } satisfies ComponentMeta<typeof SearchResultPage>
 
