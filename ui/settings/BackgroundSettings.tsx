@@ -10,7 +10,7 @@ export const BackgroundSettings = (props: BackgroundSettingsProps) => {
 
   return (
     <div>
-      <form className="mt-8">
+      <form className="">
         <h1 className="text-3xl font-normal">Change Background</h1>
         <button className={uploadButtonStyles}> Upload </button>
         <p className="text-lg mt-2">New Background: </p>
