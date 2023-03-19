@@ -27,7 +27,11 @@
     "skipLibCheck": true,
     "strict": true,
     "strictPropertyInitialization": true,
-    "typeRoots": ["node_modules/@types", "src/@types"]
+    "typeRoots": ["node_modules/@types", "src/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["*"]
+    },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "api", "server/generated-files/frontend-graphql-definition.ts"]

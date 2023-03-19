@@ -1,12 +1,11 @@
+import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
+import type { SearchQuery } from '@/models/search/SearchQuery'
+import type { SearchResult } from '@/models/search/SearchResult'
 import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
-import type { SearchQuery } from '../../generated/types'
-import { apiClientImplMock } from '../../states/ApiClientState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 
-type Props = { searchData: SearchType }
-
-type SearchType = SearchQuery['search']
+type Props = { searchData: SearchResult[] }
 
 const SearchResultPage: NextPage<Props> = ({ searchData }) => {
   return (
@@ -42,18 +41,16 @@ const SearchResultPage: NextPage<Props> = ({ searchData }) => {
 }
 
 type Params = {
-  word: string
+  word: SearchQuery
 }
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async (context) => {
   const { params } = context
   if (!params) throw new Error('params is undefined')
   const { word } = params
-  const searchData = (
-    await apiClientImplMock.Search({
-      query: word,
-    })
-  ).search
+  const searchData = await apiClientMockImpl.search({
+    query: word,
+  })
   return {
     props: {
       searchData,

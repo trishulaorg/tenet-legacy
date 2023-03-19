@@ -1,3 +1,6 @@
+import type { SearchResultId } from '@/models/search/SearchResultId'
+import type { SearchResultIdKind } from '@/models/search/SearchResultIdKind'
+import type { SearchResultTitle } from '@/models/search/SearchResultTitle'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import { aSearchResult } from '../../generated/mocks'
@@ -9,7 +12,14 @@ export default {
   args: {
     searchData: Array(10)
       .fill(null)
-      .map((_, i) => aSearchResult({ id: i.toString(), title: `Search result ${i + 1}` })),
+      .map((_, i) => {
+        const result = aSearchResult({ id: i.toString(), title: `Search result ${i + 1}` })
+        return {
+          id: result.id as SearchResultId,
+          kind: result.kind as SearchResultIdKind,
+          title: result.title as SearchResultTitle,
+        }
+      }),
   },
 } satisfies ComponentMeta<typeof SearchResultPage>
 

@@ -8,9 +8,13 @@ import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { useDropzone } from 'react-dropzone'
 import { ImageUpload } from '../common/ImageUpload'
 import { useApiClient } from '../../states/ApiClientState'
+import type { PostTitle } from '@/models/post/PostTitle'
+import type { PostContent } from '@/models/post/PostContent'
+import type { BoardId } from '@/models/board/BoardId'
+import type { PersonaId } from '@/models/persona/PersonaId'
 
 interface CreateNewPostProps {
-  boardId: string
+  boardId: BoardId
   showPostCreate?: boolean
 }
 
@@ -36,13 +40,11 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
       if (state.id == null) {
         throw new Error('state.id is null')
       }
-      const {
-        createPost: { id: createdPostId },
-      } = await apiClient.createPost({
-        title,
-        content,
-        personaId: Number(userState.currentPersona.id),
-        boardId: state.id,
+      const { id: createdPostId } = await apiClient.createPost({
+        title: title as PostTitle,
+        content: content as PostContent,
+        personaId: userState.currentPersona.id as PersonaId,
+        boardId: state.id as BoardId,
       })
       await apiClient.putAttachedImage({
         postId: createdPostId,

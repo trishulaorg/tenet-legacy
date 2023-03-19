@@ -1,3 +1,5 @@
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+
 module.exports = {
   "stories": [
     "../stories/**/*.stories.mdx",
@@ -20,6 +22,11 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'graphql-tag/loader',
     });
+    if (config.resolve.plugins != null) {
+      config.resolve.plugins.push(new TsconfigPathsPlugin());
+    } else {
+      config.resolve.plugins = [new TsconfigPathsPlugin()];
+    }
     return config;
   },
 };

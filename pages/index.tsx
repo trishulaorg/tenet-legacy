@@ -3,30 +3,34 @@ import Link from 'next/link'
 import { observer } from 'mobx-react'
 import { CommentInput } from '../ui/thread/CommentInput'
 import { useUserState } from '../states/UserState'
-import type { PostType } from '../states/PostState'
 import { PostState } from '../states/PostState'
 import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { ActivityCard } from '../ui/home/ActivityCard'
-import { apiClientImplMock, useApiClient } from '../states/ApiClientState'
+import { useApiClient } from '../states/ApiClientState'
+import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
+import type { Activity } from '@/models/activity/Activity'
+import type { PostTitle } from '@/models/post/PostTitle'
+import type { PostContent } from '@/models/post/PostContent'
+import type { BoardId } from '@/models/board/BoardId'
 
 type Props = {
-  activities: PostType[]
+  activities: Activity[]
 }
 
 const IndexPage: NextPage<Props> = ({ activities }) => {
   const apiClient = useApiClient()
   const userState = useUserState()
 
-  const onSubmit: (comment: string) => void = async (comment: string) => {
+  const onSubmit = async (comment: PostContent): Promise<void> => {
     if (userState == null || userState.currentPersona?.id == null) {
       throw new Error('user is not logged in')
     }
     await apiClient.createPost({
-      title: 'memo',
+      title: 'memo' as PostTitle,
       content: comment,
-      personaId: Number(userState.currentPersona.id),
-      boardId: '',
+      personaId: userState.currentPersona.id,
+      boardId: '' as BoardId,
     })
   }
 
@@ -38,7 +42,7 @@ const IndexPage: NextPage<Props> = ({ activities }) => {
           <PostFormStateContext.Provider value={new PostFormState({})}>
             <ul>
               {activities
-                .map((v: PostType) => PostState.fromPostTypeJSON(v))
+                .map((v: Activity) => PostState.fromPostTypeJSON(v))
                 .map((v: PostState) => (
                   <li key={v.id}>
                     <ActivityCard post={v} />
@@ -61,7 +65,7 @@ const IndexPage: NextPage<Props> = ({ activities }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const activities: PostType[] = (await apiClientImplMock.getActivities()).activities
+  const activities: Activity[] = await apiClientMockImpl.getActivities()
   return { props: { activities } }
 }
 

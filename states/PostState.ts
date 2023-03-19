@@ -1,36 +1,12 @@
+import type { Activity } from '@/models/activity/Activity'
+import type { BoardDescription } from '@/models/board/BoardDescription'
+import type { BoardId } from '@/models/board/BoardId'
+import type { BoardTitle } from '@/models/board/BoardTitle'
+import type { Post } from '@/models/post/Post'
+import type { Thread } from '@/models/thread/Thread'
 import { makeAutoObservable } from 'mobx'
 import { createContext } from 'react'
-import type {
-  GetActivitiesQuery,
-  GetBoardQuery,
-  GetFollowingBoardQuery,
-  GetPostQuery,
-} from '../generated/types'
 import { PersonaState } from './UserState'
-
-export interface PersonaType {
-  id: string
-  name: string
-  screenName: string
-  iconUrl: string
-}
-
-export interface BaseContentType {
-  id: string
-  content: string
-  persona: PersonaType
-  createdAt: Date
-}
-
-export type BoardType = GetBoardQuery['board']
-
-export type FollowingBoardType = GetFollowingBoardQuery['getFollowingBoard']
-
-export type PostType = GetActivitiesQuery['activities'][number] | GetPostQuery['post']
-
-export type ThreadType =
-  | GetActivitiesQuery['activities'][number]['threads'][number]
-  | GetPostQuery['post']['threads'][number]
 
 export class PostState {
   private readonly children: PostState[] = []
@@ -46,7 +22,7 @@ export class PostState {
   readonly imageUrls: string[]
   constructor(data: {
     id: string
-    boardId?: string | null
+    boardId?: BoardId | null
     title: string
     content: string
     createdAt: Date
@@ -83,16 +59,16 @@ export class PostState {
   get hasRepsponse(): boolean {
     return this.children.length !== 0
   }
-  static fromPostTypeJSON(json: PostType): PostState {
+  static fromPostTypeJSON(json: Post | Activity): PostState {
     return new PostState({
       id: json.id,
-      boardId: json.boardId,
+      boardId: json.board.id,
       title: json.title,
       content: json.content,
       createdAt: new Date(json.createdAt),
       imageUrls: 'imageUrls' in json ? json.imageUrls : [],
       author: new PersonaState({
-        id: String(json.persona.id),
+        id: json.persona.id,
         name: json.persona.name,
         screenName: json.persona.screenName,
         iconUrl: json.persona.iconUrl,
@@ -100,16 +76,16 @@ export class PostState {
       children: json.threads.map((v) => this.fromThreadTypeJSON(v)),
     })
   }
-  static fromThreadTypeJSON(json: ThreadType): PostState {
+  static fromThreadTypeJSON(json: Thread): PostState {
     return new PostState({
       id: json.id,
       content: json.content,
       createdAt: new Date(json.createdAt),
-      imageUrls: 'imageUrls' in json ? json.imageUrls : [],
+      imageUrls: json.imageUrls,
       boardId: json.board.id,
       title: json.board.title,
       author: new PersonaState({
-        id: String(json.persona.id),
+        id: json.persona.id,
         name: json.persona.name,
         screenName: json.persona.screenName,
         iconUrl: json.persona.iconUrl,
@@ -120,11 +96,11 @@ export class PostState {
             id: v.id,
             content: v.content,
             createdAt: new Date(v.createdAt),
-            imageUrls: 'imageUrls' in v ? v.imageUrls : [],
+            imageUrls: v.imageUrls,
             boardId: json.board.id,
             title: json.board.title,
             author: new PersonaState({
-              id: String(v.persona.id),
+              id: v.persona.id,
               name: v.persona.name,
               screenName: v.persona.screenName,
               iconUrl: v.persona.iconUrl,
@@ -136,33 +112,38 @@ export class PostState {
 }
 
 export class BoardState {
-  private _id: string | null
-  private _title: string | null
-  private _description: string | null
+  private _id: BoardId | null
+  private _title: BoardTitle | null
+  private _description: BoardDescription | null
   private _posts: PostState[] = []
-  constructor(args: { id?: string; title?: string; description?: string; posts?: PostState[] }) {
+  constructor(args: {
+    id?: BoardId
+    title?: BoardTitle
+    description?: BoardDescription
+    posts?: PostState[]
+  }) {
     this._id = args.id ?? null
     this._title = args.title ?? null
     this._description = args.description ?? null
     this._posts = args.posts ?? []
     makeAutoObservable(this)
   }
-  get id(): string | null {
+  get id(): BoardId | null {
     return this._id
   }
-  set id(value: string | null) {
+  set id(value: BoardId | null) {
     this._id = value
   }
-  get description(): string | null {
+  get description(): BoardDescription | null {
     return this._description
   }
-  set description(value: string | null) {
+  set description(value: BoardDescription | null) {
     this._description = value
   }
-  get title(): string | null {
+  get title(): BoardTitle | null {
     return this._title
   }
-  set title(value: string | null) {
+  set title(value: BoardTitle | null) {
     this._title = value
   }
   get posts(): PostState[] {

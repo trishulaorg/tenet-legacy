@@ -21,6 +21,10 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useApiClient } from '../../states/ApiClientState'
+import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PostId } from '@/models/post/PostId'
+import type { ThreadContent } from '@/models/thread/ThreadContent'
+import type { BoardId } from '@/models/board/BoardId'
 
 export interface PostProps {
   post: PostState
@@ -63,16 +67,14 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     if (post.boardId == null) {
       throw new Error('post.boardId is null')
     }
-    const {
-      createThread: { id },
-    } = await apiClient.createThread({
-      content: comment,
-      personaId: Number(userState.currentPersona.id),
-      postId: post.id,
-      boardId: post.boardId,
+    const { id } = await apiClient.createThread({
+      content: comment as ThreadContent,
+      personaId: userState.currentPersona.id as PersonaId,
+      postId: post.id as PostId,
+      boardId: post.boardId as BoardId,
     })
     await apiClient.putAttachedImage({
-      postId: id,
+      postId: id as unknown as PostId,
       files,
     })
   }
@@ -86,8 +88,8 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     }
     if (prompt('Type "delete" if you really want to delete:') === 'delete') {
       await apiClient.deletePost({
-        personaId: Number(userState.currentPersona.id),
-        postId: post.id,
+        personaId: userState.currentPersona.id as PersonaId,
+        postId: post.id as PostId,
       })
     }
   }
