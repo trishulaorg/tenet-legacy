@@ -34,8 +34,8 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ label, initialValue, onTogg
         >
           <span
             className={classNames(
-              'absolute top-1/7 left-0 inline-block w-full h-full transform',
-              isOn ? 'translate-x-full' : ''
+              'absolute p-[2px] left-0 inline-block w-full h-full transform',
+              isOn ? 'translate-x-2' : ''
             )}
           >
             <span
