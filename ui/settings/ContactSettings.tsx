@@ -6,18 +6,18 @@ interface ContactSettingsProps {
   inputStyles: string
 }
 
-export const ContactSettings = (props: ContactSettingsProps) => {
+export const ContactSettings: React.FC<ContactSettingsProps> = (props) => {
   const { buttonStyles, inputStyles } = props
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const handleEmailChange = (email: string) => {
+  const handleEmailChange = (email: string): void => {
     console.log('Email changed, new email: ', email)
   }
 
-  const handlePasswordChange = (password: string) => {
+  const handlePasswordChange = (password: string): void => {
     console.log('Password changed, new password: ', password)
   }
 

@@ -1,8 +1,8 @@
+import { usePostFormState } from '@/states/PostFormState'
 import { PlusCircleIcon } from '@heroicons/react/solid'
 import { observer } from 'mobx-react'
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { PostFormStateContext } from '../../states/PostFormState'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { ImageUpload } from './ImageUpload'
 
@@ -10,7 +10,7 @@ export const PostFormInner: React.FC = observer(() => {
   const [content, setContent] = useState('')
   const [files, setFiles] = useState<File[]>([])
   const [uploadErrors, setUploadErrors] = useState<Error[]>([])
-  const state = useContext(PostFormStateContext)
+  const state = usePostFormState()
   const onDrop = (acceptedFiles: File[]): void => {
     setUploadErrors([])
     const imageFiles: File[] = []

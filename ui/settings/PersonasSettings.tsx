@@ -7,16 +7,16 @@ interface PersonasSettingsProps {
   inputStyles: string
 }
 
-export const PersonasSettings = (props: PersonasSettingsProps) => {
+export const PersonasSettings: React.FC<PersonasSettingsProps> = (props) => {
   const { buttonStyles, inputStyles, uploadButtonStyles } = props
 
   const [personaname, setPersonaName] = useState('')
 
-  const handleNameChange = (name: string) => {
+  const handleNameChange = (name: string): void => {
     console.log(name)
   }
 
-  const handleAvatarChange = (avatar: string) => {
+  const handleAvatarChange = (avatar: string): void => {
     console.log(avatar)
   }
 

@@ -1,11 +1,12 @@
-import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PersonaName } from '@/models/persona/PersonaName'
-import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
+import { UserStateImpl } from '@/infrastructure/states/UserStateImpl'
+import type { PersonaIconUrl } from '@/domain/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { PersonaName } from '@/domain/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/domain/models/persona/PersonaScreenName'
+import { UserStateProvider } from '@/states/UserState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import SetPersonaIconPage from '../../pages/persona/settings/icon'
-import { UserStateContext, UserState, PersonaState } from '../../states/UserState'
 import iconImage from '../static/icon.png'
 
 export default {
@@ -14,21 +15,21 @@ export default {
 } satisfies ComponentMeta<typeof SetPersonaIconPage>
 
 export const SignedIn: ComponentStory<typeof SetPersonaIconPage> = (args) => (
-  <UserStateContext.Provider
+  <UserStateProvider
     value={
-      new UserState(
+      new UserStateImpl(
         [
-          new PersonaState({
+          {
             id: '1' as PersonaId,
             name: 'john_doe' as PersonaName,
             iconUrl: iconImage as unknown as PersonaIconUrl,
             screenName: 'John Doe' as PersonaScreenName,
-          }),
+          },
         ],
         0
       )
     }
   >
     <SetPersonaIconPage {...args} />
-  </UserStateContext.Provider>
+  </UserStateProvider>
 )

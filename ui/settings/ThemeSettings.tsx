@@ -6,7 +6,7 @@ interface ThemeSettingsProps {
   checkboxStyles: string
 }
 
-export const ThemeSettings = (props: ThemeSettingsProps) => {
+export const ThemeSettings: React.FC<ThemeSettingsProps> = (props) => {
   const { buttonStyles, checkboxStyles } = props
   const { theme, setTheme, systemTheme } = useTheme()
   return (

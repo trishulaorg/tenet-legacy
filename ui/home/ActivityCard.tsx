@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { observer } from 'mobx-react'
-import type { PostState } from '../../states/PostState'
 
 import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
 import { CardTitle } from '../common/CardTitle'
@@ -9,17 +8,15 @@ import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 import { CommentInput } from '../thread/CommentInput'
-import { useUserState } from '../../states/UserState'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useApiClient } from '../../states/ApiClientState'
-import type { ThreadContent } from '@/models/thread/ThreadContent'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PostId } from '@/models/post/PostId'
-import type { BoardId } from '@/models/board/BoardId'
+import type { ThreadContent } from '@/domain/models/thread/ThreadContent'
+import { useUserState } from '@/states/UserState'
+import type { Post } from '@/domain/models/post/Post'
 
 interface ActivityCardProps {
-  post: PostState
+  post: Post
 }
 
 export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => {
@@ -30,14 +27,11 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
     if (userState == null || userState.currentPersona?.id == null) {
       throw new Error('user is not logged in')
     }
-    if (post.boardId == null) {
-      throw new Error('boardId is null')
-    }
     await apiClient.createThread({
       content: comment as ThreadContent,
-      personaId: userState.currentPersona.id as PersonaId,
-      postId: post.id as PostId,
-      boardId: post.boardId as BoardId,
+      personaId: userState.currentPersona.id,
+      postId: post.id,
+      boardId: post.board.id,
     })
     setCommentVisibility(false)
   }
@@ -65,7 +59,7 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
       <CardMeta>
         <CardIcons
           showCommentIcon={false}
-          commentNumber={post.responseNumber}
+          numberOfComment={post.threads.length}
           upvote={post.upvote}
           downvote={post.downvote}
           replyCallback={() => {
@@ -73,9 +67,9 @@ export const ActivityCard: React.FC<ActivityCardProps> = observer(({ post }) => 
           }}
         />
         <div className="pb-2" />
-        {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : undefined}
-        <CreatedAt createdAt={post.createdAt} />
-        <Link href={`/board/${post.boardId}`} legacyBehavior>
+        {commentVisibility ? <CommentInput onSubmit={onSubmit} /> : null}
+        <CreatedAt createdAt={new Date(post.createdAt)} />
+        <Link href={`/board/${post.board.id}`} legacyBehavior>
           <div>Show board</div>
         </Link>
       </CardMeta>

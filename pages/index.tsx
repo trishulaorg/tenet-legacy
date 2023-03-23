@@ -3,19 +3,19 @@ import Link from 'next/link'
 import { observer } from 'mobx-react'
 import { CommentInput } from '../ui/thread/CommentInput'
 import { useUserState } from '../states/UserState'
-import { PostState } from '../states/PostState'
-import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 import { ActivityCard } from '../ui/home/ActivityCard'
 import { useApiClient } from '../states/ApiClientState'
 import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
-import type { Activity } from '@/models/activity/Activity'
-import type { PostTitle } from '@/models/post/PostTitle'
-import type { PostContent } from '@/models/post/PostContent'
-import type { BoardId } from '@/models/board/BoardId'
+import type { PostTitle } from '@/domain/models/post/PostTitle'
+import type { PostContent } from '@/domain/models/post/PostContent'
+import type { BoardId } from '@/domain/models/board/BoardId'
+import { PostFormStateProvider } from '@/states/PostFormState'
+import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
+import type { Post } from '@/domain/models/post/Post'
 
 type Props = {
-  activities: Activity[]
+  activities: Post[]
 }
 
 const IndexPage: NextPage<Props> = ({ activities }) => {
@@ -39,17 +39,15 @@ const IndexPage: NextPage<Props> = ({ activities }) => {
       main={
         <div>
           <CommentInput onSubmit={onSubmit} />
-          <PostFormStateContext.Provider value={new PostFormState({})}>
+          <PostFormStateProvider value={new PostFormStateImpl({})}>
             <ul>
-              {activities
-                .map((v: Activity) => PostState.fromPostTypeJSON(v))
-                .map((v: PostState) => (
-                  <li key={v.id}>
-                    <ActivityCard post={v} />
-                  </li>
-                ))}
+              {activities.map((post: Post) => (
+                <li key={post.id}>
+                  <ActivityCard post={post} />
+                </li>
+              ))}
             </ul>
-          </PostFormStateContext.Provider>
+          </PostFormStateProvider>
         </div>
       }
       side={
@@ -65,7 +63,7 @@ const IndexPage: NextPage<Props> = ({ activities }) => {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const activities: Activity[] = await apiClientMockImpl.getActivities()
+  const activities: Post[] = await apiClientMockImpl.getActivities()
   return { props: { activities } }
 }
 

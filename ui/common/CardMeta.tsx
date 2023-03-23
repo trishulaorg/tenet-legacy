@@ -1,8 +1,10 @@
 import React from 'react'
 
 export const CardMeta: React.FC<{ isPost?: boolean }> = (props) => {
-  const style = props.isPost ? undefined : 'pl-4'
-  return <div className={style}>{props.children}</div>
+  if (props.isPost) {
+    return <div>{props.children}</div>
+  }
+  return <div className="pl-4">{props.children}</div>
 }
 
 CardMeta.defaultProps = {

@@ -1,11 +1,11 @@
-import type { PostContent } from '@/models/post/PostContent'
-import React, { useContext, useState } from 'react'
-import { UserStateContext } from '../../states/UserState'
+import type { PostContent } from '@/domain/models/post/PostContent'
+import { useUserState } from '@/states/UserState'
+import React, { useState } from 'react'
 import { Button } from '../common/Button'
 
 export const CommentInput: React.FC<{ onSubmit: (comment: PostContent) => void }> = (props) => {
   const [comment, setComment] = useState<PostContent>('' as PostContent)
-  const userState = useContext(UserStateContext)
+  const userState = useUserState()
   return userState != null ? (
     <div>
       <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>

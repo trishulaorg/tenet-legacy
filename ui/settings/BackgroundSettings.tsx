@@ -5,7 +5,7 @@ interface BackgroundSettingsProps {
   uploadButtonStyles: string
 }
 
-export const BackgroundSettings = (props: BackgroundSettingsProps) => {
+export const BackgroundSettings: React.FC<BackgroundSettingsProps> = (props) => {
   const { buttonStyles, uploadButtonStyles } = props
 
   return (

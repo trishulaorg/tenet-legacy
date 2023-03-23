@@ -1,5 +1,4 @@
 import ReactMarkdown from 'react-markdown'
-import { PostFormState, PostFormStateContext } from '../states/PostFormState'
 import { PageContentLayout } from '../ui/layouts/PageContentLayout'
 
 const tos = `
@@ -140,9 +139,7 @@ const TosPage: React.FC = () => {
     <PageContentLayout
       main={
         <div className="text-med dark:text-med-dark">
-          <PostFormStateContext.Provider value={new PostFormState({})}>
-            <ReactMarkdown>{tos}</ReactMarkdown>
-          </PostFormStateContext.Provider>
+          <ReactMarkdown>{tos}</ReactMarkdown>
         </div>
       }
       side={null}

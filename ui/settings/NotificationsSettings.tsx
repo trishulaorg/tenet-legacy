@@ -6,14 +6,14 @@ interface NotificationsSettingsProps {
   checkboxStyles: string
 }
 
-export const NotificationsSettings = (props: NotificationsSettingsProps) => {
+export const NotificationsSettings: React.FC<NotificationsSettingsProps> = (props) => {
   const { buttonStyles, checkboxStyles } = props
 
   const [likes, setLikes] = useState(false)
   const [comments, setComments] = useState(false)
   const [follows, setFollows] = useState(false)
 
-  const handleNotificationsChange = (likes: boolean, comments: boolean, follows: boolean) => {
+  const handleNotificationsChange = (likes: boolean, comments: boolean, follows: boolean): void => {
     console.log('Notifications changed, new notifications: ', likes, comments, follows)
   }
 

@@ -1,11 +1,11 @@
 import { observer } from 'mobx-react'
-import React, { useContext } from 'react'
-import { BoardStateContext } from '../../states/PostState'
+import React from 'react'
 import { Post } from './Post'
 import { PostForm } from '../common/PostForm'
+import { useBoard } from '@/states/BoardState'
 
 export const PostWrapper: React.FC = observer(() => {
-  const state = useContext(BoardStateContext)
+  const state = useBoard()
 
   return (
     <div>

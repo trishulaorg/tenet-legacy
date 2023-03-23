@@ -1,23 +1,22 @@
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
-import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
+import { useEffect } from 'react'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { PostWrapper } from '../../ui/post/PostWrapper'
-import { useUserState } from '../../states/UserState'
 import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
-import type { PostId } from '@/models/post/PostId'
-import type { Post } from '@/models/post/Post'
-import type { BoardDescription } from '@/models/board/BoardDescription'
+import type { PostId } from '@/domain/models/post/PostId'
+import type { Post } from '@/domain/models/post/Post'
+import { useUserState } from '@/states/UserState'
+import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
+import { BoardProvider } from '@/states/BoardState'
+import type { BoardDescription } from '@/domain/models/board/BoardDescription'
+import { PostFormStateProvider } from '@/states/PostFormState'
 
 type Props = { postData: Post }
 
 const PostPage: NextPage<Props> = ({ postData }) => {
   const userState = useUserState()
   const router = useRouter()
-
-  const [context, setContext] = useState<BoardState>(new BoardState({}))
 
   useEffect(() => {
     const f = async (): Promise<void> => {
@@ -30,25 +29,24 @@ const PostPage: NextPage<Props> = ({ postData }) => {
     f()
   }, [userState, router])
 
-  useEffect(() => {
-    setContext(
-      new BoardState({
-        id: postData.board.id,
-        title: postData.board.title,
-        description: postData.board.description ?? ('' as BoardDescription),
-        posts: [PostState.fromPostTypeJSON(postData)],
-      })
-    )
-  }, [postData])
-
   return (
     <PageContentLayout
       main={
-        <BoardStateContext.Provider value={context}>
-          <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
+        <BoardProvider
+          value={{
+            id: postData.board.id,
+            title: postData.board.title,
+            description: postData.board.description ?? ('' as BoardDescription),
+            privilege: {
+              deleteSelf: false,
+            },
+            posts: [postData],
+          }}
+        >
+          <PostFormStateProvider value={new PostFormStateImpl({ boardState: postData.board })}>
             <PostWrapper />
-          </PostFormStateContext.Provider>
-        </BoardStateContext.Provider>
+          </PostFormStateProvider>
+        </BoardProvider>
       }
       side={<div className="max-w-xs">test</div>}
     />

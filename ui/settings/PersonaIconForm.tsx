@@ -1,7 +1,7 @@
+import { useUserState } from '@/states/UserState'
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
 import React from 'react'
-import { useUserState } from '../../states/UserState'
 
 const PersonaIconForm: React.FC = observer(() => {
   const userState = useUserState()

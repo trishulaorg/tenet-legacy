@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react'
-import React, { useContext } from 'react'
-import { BoardStateContext } from '../../states/PostState'
+import React from 'react'
 import { Post } from '../post/Post'
 import { PostForm } from '../common/PostForm'
 import Link from 'next/link'
 import { ChatIcon, MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/solid'
 import { MultiLineText } from '../common/MultiLineText'
 import { WithPrimaryButtonStyling } from '../common/Primitives'
+import { useBoard } from '@/states/BoardState'
 
 type BoardProps = {
   showPostCreate?: boolean
@@ -40,7 +40,7 @@ const UnfollowButton: React.FC<{ onClick: React.MouseEventHandler }> = ({ onClic
 
 export const Board: React.FC<BoardProps> = observer(
   ({ showPostCreate = true, followButtonType = 'follow', onFollowButtonClick }) => {
-    const state = useContext(BoardStateContext)
+    const state = useBoard()
 
     return (
       <div>

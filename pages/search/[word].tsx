@@ -1,6 +1,6 @@
 import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
-import type { SearchQuery } from '@/models/search/SearchQuery'
-import type { SearchResult } from '@/models/search/SearchResult'
+import type { SearchQuery } from '@/domain/models/search/SearchQuery'
+import type { SearchResult } from '@/domain/models/search/SearchResult'
 import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'

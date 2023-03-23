@@ -5,7 +5,7 @@ import React from 'react'
 
 // Write form component
 
-export const AuthForm = () => {
+export const AuthForm: React.FC = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-screen">
       <div className="flex flex-col items-center justify-center w-full max-w-md p-4 space-y-4 bg-white rounded-md shadow-md dark:bg-gray-800">

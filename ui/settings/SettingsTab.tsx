@@ -5,7 +5,7 @@ interface SettingsTabProps {
   onClick?: () => void
 }
 
-export const SettingsTab = (props: SettingsTabProps) => {
+export const SettingsTab: React.FC<SettingsTabProps> = (props) => {
   const { label, onClick } = props
   return (
     <button

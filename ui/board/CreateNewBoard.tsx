@@ -1,8 +1,8 @@
 import type { FormEventHandler } from 'react'
-import React, { useContext, useState } from 'react'
-import { UserStateContext } from '../../states/UserState'
+import React, { useState } from 'react'
 import { InputWithLabel } from '../form/InputWithLabel'
 import { ErrorMessage } from '../form/ErrorMessage'
+import { useUserState } from '@/states/UserState'
 
 export const CreateNewBoard: React.FC = () => {
   const [name, setName] = useState('')
@@ -10,11 +10,11 @@ export const CreateNewBoard: React.FC = () => {
   const [overallErrorMessage, setOverallErrorMessage] = useState('')
   const [titleErrorMessage, setTitleErrorMessage] = useState('')
   const [descriptionErrorMessage, setDescriptionErrorMessage] = useState('')
-  const user = useContext(UserStateContext)
-  if (user == null) {
+  const userState = useUserState()
+  if (userState == null) {
     return null
   }
-  const persona = user.currentPersona
+  const persona = userState.currentPersona
   const onClick: FormEventHandler = async (e) => {
     e.preventDefault()
     setTitleErrorMessage('')

@@ -1,5 +1,5 @@
-import type { Post } from '@/models/post/Post'
-import type { Privilege } from '@/models/Privilege'
+import type { Post } from '@/domain/models/post/Post'
+import type { Privilege } from '@/domain/models/Privilege'
 import type { BoardDescription } from './BoardDescription'
 import type { BoardId } from './BoardId'
 import type { BoardTitle } from './BoardTitle'

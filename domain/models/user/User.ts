@@ -1,4 +1,4 @@
-import type { Persona } from '@/models/persona/Persona'
+import type { Persona } from '@/domain/models/persona/Persona'
 
 export type User = {
   __typename?: 'User'

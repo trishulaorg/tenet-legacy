@@ -1,43 +1,53 @@
 import type { ReactElement } from 'react'
 import React from 'react'
 import { ActivityCard } from '../../ui/home/ActivityCard'
-import { PostState } from '../../states/PostState'
-import type { PersonaState } from '../../states/UserState'
-import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
-import type { PersonaName } from '@/models/persona/PersonaName'
-import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { BoardId } from '@/models/board/BoardId'
+import type { PersonaScreenName } from '@/domain/models/persona/PersonaScreenName'
+import type { PersonaName } from '@/domain/models/persona/PersonaName'
+import type { PersonaIconUrl } from '@/domain/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { BoardId } from '@/domain/models/board/BoardId'
+import type { Persona } from '@/domain/models/persona/Persona'
+import type { Post } from '@/domain/models/post/Post'
+import type { PostContent } from '@/domain/models/post/PostContent'
+import type { PostTitle } from '@/domain/models/post/PostTitle'
+import type { PostId } from '@/domain/models/post/PostId'
+import type { DateString } from '@/domain/models/common/DateString'
+import type { BoardDescription } from '@/domain/models/board/BoardDescription'
+import type { BoardTitle } from '@/domain/models/board/BoardTitle'
 
 export default {
   title: 'Home/ActivityCard',
   component: ActivityCard,
 }
 
-const exampleAuthor: PersonaState = {
+const exampleAuthor: Persona = {
   screenName: 'Mitchell' as PersonaScreenName,
   name: 'MTL' as PersonaName,
   iconUrl:
     'https://i.pinimg.com/originals/ae/24/87/ae24874dd301843548c034a3d2973658.png' as PersonaIconUrl,
   id: '' as PersonaId,
-  updateName: function (_name: string): void {
-    throw new Error('Function not implemented.')
-  },
-  updateScreenName: function (_name: string): void {
-    throw new Error('Function not implemented.')
-  },
 }
 
-const examplePost = new PostState({
-  id: '1',
-  boardId: '1' as BoardId,
-  title: 'Test post',
+const examplePost: Post = {
+  id: '1' as PostId,
+  title: 'Test post' as PostTitle,
   author: exampleAuthor,
   content:
-    "This is an example post. I'll put some text here for testing purposes: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "This is an example post. I'll put some text here for testing purposes: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." as PostContent,
   upvote: 0,
   downvote: 0,
-  createdAt: new Date(),
-})
+  imageUrls: [],
+  board: {
+    id: '1' as BoardId,
+    title: 'lorem ipsum' as BoardTitle,
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum." as BoardDescription,
+  },
+  privilege: {
+    deleteSelf: true,
+  },
+  threads: [],
+  createdAt: new Date().toISOString() as DateString,
+}
 
 export const Card = (): ReactElement => <ActivityCard post={examplePost} />

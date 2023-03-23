@@ -1,17 +1,16 @@
 import { createContext, useContext } from 'react'
 import type { ApiClient } from '@/application/apiClient'
-import type { Activity } from '@/models/activity/Activity'
-import type { Board } from '@/models/board/Board'
-import type { BoardWithPosts } from '@/models/board/BoardWithPosts'
-import type { Persona } from '@/models/persona/Persona'
-import type { Post } from '@/models/post/Post'
-import type { Reply } from '@/models/reply/Reply'
-import type { SearchResult } from '@/models/search/SearchResult'
-import type { Thread } from '@/models/thread/Thread'
-import type { User } from '@/models/user/User'
+import type { Board } from '@/domain/models/board/Board'
+import type { BoardWithPosts } from '@/domain/models/board/BoardWithPosts'
+import type { Persona } from '@/domain/models/persona/Persona'
+import type { Post } from '@/domain/models/post/Post'
+import type { Reply } from '@/domain/models/reply/Reply'
+import type { SearchResult } from '@/domain/models/search/SearchResult'
+import type { Thread } from '@/domain/models/thread/Thread'
+import type { User } from '@/domain/models/user/User'
 
 export const defaultApiClient: ApiClient = {
-  getActivities: function (): Promise<Activity[]> {
+  getActivities: function (): Promise<Post[]> {
     throw new Error('Function not implemented.')
   },
   getBoard: function (): Promise<BoardWithPosts> {

@@ -1,7 +1,7 @@
 // ui/notification/NotificationList.tsx
+import type { NotificationState } from '@/application/states/NotificationState'
 import type { NotificationCardProps } from './NotificationCard'
 import { NotificationCard } from './NotificationCard'
-import type { NotificationState } from '../../states/NotificationState'
 
 export interface NotificationListProps {
   notifications: NotificationState[]
@@ -17,7 +17,6 @@ export const NotificationList: React.FC<NotificationListProps> = ({ notification
         recepient={notification.recepient}
         message={notification.message}
         type={notification.type}
-        key={notification.createdAt.toISOString()}
       />
     )
   }

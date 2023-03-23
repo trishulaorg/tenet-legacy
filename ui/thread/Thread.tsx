@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react'
-import React, { useContext } from 'react'
-import type { PostState } from '../../states/PostState'
+import React from 'react'
 
 import { Reply } from './Reply'
 import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
@@ -8,30 +7,30 @@ import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
-import { useUserState } from '../../states/UserState'
-import { BoardStateContext } from '../../states/PostState'
-import { PostFormStateContext } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { motion } from 'framer-motion'
 import { useApiClient } from '../../states/ApiClientState'
-import type { ReplyContent } from '@/models/reply/ReplyContent'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { ThreadId } from '@/models/thread/ThreadId'
-import type { PostId } from '@/models/post/PostId'
+import type { ReplyContent } from '@/domain/models/reply/ReplyContent'
+import type { PostId } from '@/domain/models/post/PostId'
+import { useUserState } from '@/states/UserState'
+import type { Thread as ThreadModel } from '@/domain/models/thread/Thread'
+import { useBoard } from '@/states/BoardState'
+import { usePostFormState } from '@/states/PostFormState'
+import type { Post } from '@/domain/models/post/Post'
 
 export interface ThreadProps {
-  parent: PostState
-  threads: PostState[]
+  parent: Post
+  threads: ThreadModel[]
 }
 
 export const Thread: React.FC<ThreadProps> = observer((props) => {
-  const boardState = useContext(BoardStateContext)
+  const boardState = useBoard()
   const userState = useUserState()
-  const postForm = useContext(PostFormStateContext)
+  const postForm = usePostFormState()
   const publishWritingStatus = usePublishWritingStatus()
   const apiClient = useApiClient()
 
-  const onSubmit: (comment: string, files: File[], thread: PostState) => void = async (
+  const onSubmit: (comment: string, files: File[], thread: ThreadModel) => void = async (
     comment,
     files,
     thread
@@ -41,8 +40,8 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
     }
     const { id } = await apiClient.createReply({
       content: comment as ReplyContent,
-      personaId: userState.currentPersona.id as PersonaId,
-      threadId: thread.id as ThreadId,
+      personaId: userState.currentPersona.id,
+      threadId: thread.id,
     })
     await apiClient.putAttachedImage({
       // TODO: I am not sure if this is the right way to use it, so I will check.
@@ -71,21 +70,25 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
             <CardMeta isPost={false}>
               <CardIcons
                 showCommentIcon={true}
-                commentNumber={thread.responseNumber}
+                numberOfComment={thread.replies.length}
                 upvote={thread.upvote}
                 downvote={thread.downvote}
                 replyCallback={() => {
                   postForm.replyTo = thread
                   postForm.onSubmit = (comment: string, files: File[]) =>
                     onSubmit(comment, files, thread)
-                  postForm.boardState = boardState
+                  postForm.boardState = {
+                    id: boardState.id,
+                    title: boardState.title,
+                    description: boardState.description,
+                  }
                   postForm.onChange = () => publishWritingStatus(props.parent.id)
                 }}
               />
               <div className="pb-2" />
-              <CreatedAt createdAt={thread.createdAt} />
+              <CreatedAt createdAt={new Date(thread.createdAt)} />
             </CardMeta>
-            {thread.hasRepsponse ? <Reply replies={thread.responses} /> : undefined}
+            {thread.replies.length > 0 ? <Reply replies={thread.replies} /> : null}
           </div>
         </motion.li>
       ))}

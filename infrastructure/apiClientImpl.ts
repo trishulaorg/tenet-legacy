@@ -1,61 +1,60 @@
 import type { ApiClient } from '@/application/apiClient'
 import { getSdk } from '@/generated/types'
-import type { ActivityContent } from '@/models/activity/ActivityContent'
-import type { ActivityId } from '@/models/activity/ActivityId'
-import type { ActivityTitle } from '@/models/activity/ActivityTitle'
-import type { Board } from '@/models/board/Board'
-import type { BoardDescription } from '@/models/board/BoardDescription'
-import type { BoardId } from '@/models/board/BoardId'
-import type { BoardTitle } from '@/models/board/BoardTitle'
-import type { DateString } from '@/models/common/DateString'
-import type { Persona } from '@/models/persona/Persona'
-import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PersonaName } from '@/models/persona/PersonaName'
-import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
-import type { Post } from '@/models/post/Post'
-import type { PostContent } from '@/models/post/PostContent'
-import type { PostId } from '@/models/post/PostId'
-import type { PostImageUrl } from '@/models/post/PostImageUrl'
-import type { PostTitle } from '@/models/post/PostTitle'
-import type { Privilege } from '@/models/Privilege'
-import type { Reply } from '@/models/reply/Reply'
-import type { ReplyContent } from '@/models/reply/ReplyContent'
-import type { ReplyId } from '@/models/reply/ReplyId'
-import type { ReplyImageUrl } from '@/models/reply/ReplyImageUrl'
-import type { SearchResult } from '@/models/search/SearchResult'
-import type { SearchResultId } from '@/models/search/SearchResultId'
-import type { SearchResultIdKind } from '@/models/search/SearchResultIdKind'
-import type { SearchResultTitle } from '@/models/search/SearchResultTitle'
-import type { Thread } from '@/models/thread/Thread'
-import type { ThreadContent } from '@/models/thread/ThreadContent'
-import type { ThreadId } from '@/models/thread/ThreadId'
-import type { ThreadImageUrl } from '@/models/thread/ThreadImageUrl'
+import type { Board } from '@/domain/models/board/Board'
+import type { BoardDescription } from '@/domain/models/board/BoardDescription'
+import type { BoardId } from '@/domain/models/board/BoardId'
+import type { BoardTitle } from '@/domain/models/board/BoardTitle'
+import type { DateString } from '@/domain/models/common/DateString'
+import type { Persona } from '@/domain/models/persona/Persona'
+import type { PersonaIconUrl } from '@/domain/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { PersonaName } from '@/domain/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/domain/models/persona/PersonaScreenName'
+import type { Post } from '@/domain/models/post/Post'
+import type { PostContent } from '@/domain/models/post/PostContent'
+import type { PostId } from '@/domain/models/post/PostId'
+import type { PostImageUrl } from '@/domain/models/post/PostImageUrl'
+import type { PostTitle } from '@/domain/models/post/PostTitle'
+import type { Privilege } from '@/domain/models/Privilege'
+import type { Reply } from '@/domain/models/reply/Reply'
+import type { ReplyContent } from '@/domain/models/reply/ReplyContent'
+import type { ReplyId } from '@/domain/models/reply/ReplyId'
+import type { ReplyImageUrl } from '@/domain/models/reply/ReplyImageUrl'
+import type { SearchResult } from '@/domain/models/search/SearchResult'
+import type { SearchResultId } from '@/domain/models/search/SearchResultId'
+import type { SearchResultIdKind } from '@/domain/models/search/SearchResultIdKind'
+import type { SearchResultTitle } from '@/domain/models/search/SearchResultTitle'
+import type { Thread } from '@/domain/models/thread/Thread'
+import type { ThreadContent } from '@/domain/models/thread/ThreadContent'
+import type { ThreadId } from '@/domain/models/thread/ThreadId'
+import type { ThreadImageUrl } from '@/domain/models/thread/ThreadImageUrl'
 import { GraphQLClient } from 'graphql-request'
 
 export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient => ({
   async getActivities(params) {
-    const response = await sdk.getActivities({
+    const { activities } = await sdk.getActivities({
       personaId: params?.personaId == null ? null : Number(params.personaId),
     })
-    return response.activities.map((activity) => ({
-      id: activity.id as ActivityId,
-      boardId: activity.boardId as BoardId,
-      title: activity.title as ActivityTitle,
-      content: activity.content as ActivityContent,
+    return activities.map((activity) => ({
+      id: activity.id as PostId,
+      title: activity.title as PostTitle,
+      content: activity.content as PostContent,
+      imageUrls: [],
       createdAt: activity.createdAt as DateString,
       board: {
         id: activity.board.id as BoardId,
         title: activity.board.title as BoardTitle,
         description: activity.board.description as BoardDescription,
       },
-      persona: {
+      author: {
         id: String(activity.persona.id) as PersonaId,
         name: activity.persona.name as PersonaName,
         screenName: activity.persona.screenName as PersonaScreenName,
         iconUrl: activity.persona.iconUrl as PersonaIconUrl,
       },
       privilege: activity.privilege as Privilege,
+      upvote: 0,
+      downvote: 0,
       threads: activity.threads.map((thread) => ({
         id: thread.id as ThreadId,
         postId: thread.postId as PostId,
@@ -66,20 +65,24 @@ export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient =
           id: thread.board.id as BoardId,
           title: thread.board.title as BoardTitle,
         },
-        persona: {
+        author: {
           id: String(thread.persona.id) as PersonaId,
           name: thread.persona.name as PersonaName,
           screenName: thread.persona.screenName as PersonaScreenName,
           iconUrl: thread.persona.iconUrl as PersonaIconUrl,
         },
+        upvote: 0,
+        downvote: 0,
         privilege: thread.privilege as Privilege,
         replies: thread.replies.map((reply) => ({
           id: reply.id as ReplyId,
           threadId: reply.threadId as ThreadId,
           content: reply.content as ReplyContent,
           createdAt: reply.createdAt as DateString,
+          upvote: 0,
+          downvote: 0,
           imageUrls: [],
-          persona: {
+          author: {
             id: String(reply.persona.id) as PersonaId,
             name: reply.persona.name as PersonaName,
             screenName: reply.persona.screenName as PersonaScreenName,
@@ -111,13 +114,15 @@ export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient =
           title: post.board.title as BoardTitle,
           description: post.board.description as BoardDescription,
         },
-        persona: {
+        author: {
           id: String(post.persona.id) as PersonaId,
           name: post.persona.name as PersonaName,
           screenName: post.persona.screenName as PersonaScreenName,
           iconUrl: post.persona.iconUrl as PersonaIconUrl,
         },
         privilege: post.privilege as Privilege,
+        upvote: 0,
+        downvote: 0,
         threads: post.threads.map((thread) => ({
           id: thread.id as ThreadId,
           postId: thread.postId as PostId,
@@ -128,20 +133,24 @@ export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient =
             id: thread.board.id as BoardId,
             title: thread.board.title as BoardTitle,
           },
-          persona: {
+          author: {
             id: String(thread.persona.id) as PersonaId,
             name: thread.persona.name as PersonaName,
             screenName: thread.persona.screenName as PersonaScreenName,
             iconUrl: thread.persona.iconUrl as PersonaIconUrl,
           },
           privilege: thread.privilege as Privilege,
+          upvote: 0,
+          downvote: 0,
           replies: thread.replies.map((reply) => ({
             id: reply.id as ReplyId,
             threadId: reply.threadId as ThreadId,
             content: reply.content as ReplyContent,
             createdAt: reply.createdAt as DateString,
+            upvote: 0,
+            downvote: 0,
             imageUrls: reply.imageUrls as ReplyImageUrl[],
-            persona: {
+            author: {
               id: String(reply.persona.id) as PersonaId,
               name: reply.persona.name as PersonaName,
               screenName: reply.persona.screenName as PersonaScreenName,
@@ -183,13 +192,15 @@ export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient =
         title: post.board.title as BoardTitle,
         description: post.board.description as BoardDescription,
       },
-      persona: {
+      author: {
         id: String(post.persona.id) as PersonaId,
         name: post.persona.name as PersonaName,
         screenName: post.persona.screenName as PersonaScreenName,
         iconUrl: post.persona.iconUrl as PersonaIconUrl,
       },
       privilege: post.privilege as Privilege,
+      upvote: 0,
+      downvote: 0,
       threads: post.threads.map((thread) => ({
         id: thread.id as ThreadId,
         postId: thread.postId as PostId,
@@ -200,20 +211,24 @@ export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient =
           id: thread.board.id as BoardId,
           title: thread.board.title as BoardTitle,
         },
-        persona: {
+        author: {
           id: String(thread.persona.id) as PersonaId,
           name: thread.persona.name as PersonaName,
           screenName: thread.persona.screenName as PersonaScreenName,
           iconUrl: thread.persona.iconUrl as PersonaIconUrl,
         },
         privilege: thread.privilege as Privilege,
+        upvote: 0,
+        downvote: 0,
         replies: thread.replies.map((reply) => ({
           id: reply.id as ReplyId,
           threadId: reply.threadId as ThreadId,
           content: reply.content as ReplyContent,
           createdAt: reply.createdAt as DateString,
+          upvote: 0,
+          downvote: 0,
           imageUrls: reply.imageUrls as ReplyImageUrl[],
-          persona: {
+          author: {
             id: String(reply.persona.id) as PersonaId,
             name: reply.persona.name as PersonaName,
             screenName: reply.persona.screenName as PersonaScreenName,
