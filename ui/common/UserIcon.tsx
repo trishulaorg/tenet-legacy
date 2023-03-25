@@ -30,7 +30,7 @@ export const UserIcon: React.FC<UserIconProps> = ({ size, src }) => {
       alt="avater"
       width={sizes[size].width}
       height={sizes[size].height}
-      className="z-20 rounded"
+      className="z-10 rounded"
     />
   )
 }

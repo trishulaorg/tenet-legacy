@@ -7,8 +7,10 @@ export const CommentInput: React.FC<{ onSubmit: (comment: PostContent) => void }
   const [comment, setComment] = useState<PostContent>('' as PostContent)
   const userState = useUserState()
   return userState != null ? (
-    <div>
-      <p className="pb-2">Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}</p>
+    <div className="bg-slate-100 bg-opacity-85 p-4 rounded-lg mb-20">
+      <p className="pb-2 ">
+        Comments as {userState.currentPersona?.name ?? 'an unauthorized user'}
+      </p>
       <textarea
         className="w-full leading-6 p-4 border-2 border-black dark:border-white border-opacity-10 rounded-t-lg block"
         rows={4}

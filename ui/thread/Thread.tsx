@@ -55,8 +55,8 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
       {props.threads.map((thread, i) => (
         <motion.li
           layout
-          initial={{ y: 20, opacity: 0, borderRadius: 100 }}
-          animate={{ y: 0, opacity: 0.85, borderRadius: 20 }}
+          initial={{ y: 80, opacity: 0, borderRadius: 0 }}
+          animate={{ y: 0, opacity: 0.85, borderRadius: 20, transition: { duration: 0.1 } }}
           className="my-4 ml-4 drop-shadow-lg p-6 bg-contentbg dark:bg-contentbg-dark mb-5 text-med dark:text-med-dark transition-colors duration-350 cursor-pointer"
           key={i}
         >
