@@ -23,9 +23,9 @@ export const UserIconForHeader: React.FC<UserIconForHeaderProps> = ({ size, badg
   return (
     <motion.div
       className={`relative flex items-center justify-center ${sizes[size]}`}
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      transition={{ duration: 0.5 }}
+      initial={{ scale: 0.6, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.25 }}
     >
       <svg
         className="absolute w-full h-full"
@@ -45,9 +45,9 @@ export const UserIconForHeader: React.FC<UserIconForHeaderProps> = ({ size, badg
       {badgeNumber !== undefined && (
         <motion.span
           className={badgeClass}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          initial={{ scale: 0.6, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.25, delay: 0.125 }}
         >
           {displayBadgeNumber}
         </motion.span>
