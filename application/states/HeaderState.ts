@@ -1,6 +1,6 @@
 import type { UserState } from '@/application/states/UserState'
 
-export type HeaderState = {
+export type HeaderState = Readonly<{
   userState: UserState | null
   menuVisibility: boolean
   personaListVisibility: boolean
@@ -13,5 +13,6 @@ export type HeaderState = {
   closePersonaList(): void
   logIn(userState: UserState): void
   logOut(): void
-  readonly isLoggedIn: boolean
-}
+  isLoggedIn: boolean
+  setCurrentPersonaIndex(index: number): void
+}>

@@ -36,6 +36,9 @@ export class HeaderStateImpl implements HeaderState {
   logOut(): void {
     removeGqlCookie()
   }
+  setCurrentPersonaIndex(index: number): void {
+    this.userState?.setCurrentPersonaIndex(index)
+  }
   get isLoggedIn(): boolean {
     return this.userState != null
   }

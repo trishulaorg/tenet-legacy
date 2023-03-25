@@ -127,14 +127,16 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
             upvote={post.upvote}
             downvote={post.downvote}
             replyCallback={() => {
-              postForm.replyTo = post
-              postForm.onSubmit = onSubmit
-              postForm.boardState = {
-                id: boardState.id,
-                title: boardState.title,
-                description: boardState.description,
-              }
-              postForm.onChange = () => publishWritingStatus(post.id)
+              postForm.setPostFormState({
+                replyTo: post,
+                onSubmit,
+                boardState: {
+                  id: boardState.id,
+                  title: boardState.title,
+                  description: boardState.description,
+                },
+                onChange: () => publishWritingStatus(post.id),
+              })
             }}
             deleteCallback={onPostDelete}
           />

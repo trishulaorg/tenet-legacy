@@ -9,7 +9,7 @@ export class NotificationStateImpl implements NotificationState {
   private _message?: string | undefined
   private _createdAt: Date
   sender: Persona | undefined
-  recepient!: Persona
+  recepient: Persona | undefined
 
   constructor(data: NotificationData) {
     this._type = data.type
@@ -24,23 +24,11 @@ export class NotificationStateImpl implements NotificationState {
     return this._type
   }
 
-  set type(value: NotificationType) {
-    this._type = value
-  }
-
   get message(): string | undefined {
     return this._message
   }
 
-  set message(value: string | undefined) {
-    this._message = value
-  }
-
   get createdAt(): Date {
     return this._createdAt
-  }
-
-  set createdAt(value: Date) {
-    this._createdAt = value
   }
 }

@@ -11,8 +11,8 @@ import type { PostTitle } from '@/domain/models/post/PostTitle'
 import type { PostContent } from '@/domain/models/post/PostContent'
 import type { BoardId } from '@/domain/models/board/BoardId'
 import { PostFormStateProvider } from '@/states/PostFormState'
-import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 import type { Post } from '@/domain/models/post/Post'
+import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 
 type Props = {
   activities: Post[]
@@ -39,7 +39,7 @@ const IndexPage: NextPage<Props> = ({ activities }) => {
       main={
         <div>
           <CommentInput onSubmit={onSubmit} />
-          <PostFormStateProvider value={new PostFormStateImpl({})}>
+          <PostFormStateProvider value={new PostFormStateImpl()}>
             <ul>
               {activities.map((post: Post) => (
                 <li key={post.id}>

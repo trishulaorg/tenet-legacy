@@ -8,7 +8,7 @@ import React from 'react'
 
 export interface NotificationCardProps {
   sender?: Persona | undefined
-  recepient: Persona
+  recepient: Persona | undefined
   message?: string | undefined
   type: 'like' | 'comment' | 'follow'
 }

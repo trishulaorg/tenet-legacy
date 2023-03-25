@@ -14,9 +14,9 @@ import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
 import type { TopicId } from '@/domain/models/board/TopicId'
 import type { Post } from '@/domain/models/post/Post'
 import { useUserState } from '@/states/UserState'
-import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 import { BoardProvider } from '@/states/BoardState'
 import { PostFormStateProvider } from '@/states/PostFormState'
+import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 
 type BoardPageProps = { boardData: BoardWithPosts }
 
@@ -99,17 +99,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
   return (
     <PageContentLayout
       main={
-        <PostFormStateProvider
-          value={
-            new PostFormStateImpl({
-              boardState: {
-                id: boardData.id,
-                title: boardData.title,
-                description: boardData.description,
-              },
-            })
-          }
-        >
+        <PostFormStateProvider value={new PostFormStateImpl()}>
           <BoardProvider value={boardData}>
             <Board
               {...(boardId && userState != null

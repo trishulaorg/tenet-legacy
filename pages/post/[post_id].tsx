@@ -7,10 +7,10 @@ import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
 import type { PostId } from '@/domain/models/post/PostId'
 import type { Post } from '@/domain/models/post/Post'
 import { useUserState } from '@/states/UserState'
-import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 import { BoardProvider } from '@/states/BoardState'
 import type { BoardDescription } from '@/domain/models/board/BoardDescription'
 import { PostFormStateProvider } from '@/states/PostFormState'
+import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 
 type Props = { postData: Post }
 
@@ -43,7 +43,7 @@ const PostPage: NextPage<Props> = ({ postData }) => {
             posts: [postData],
           }}
         >
-          <PostFormStateProvider value={new PostFormStateImpl({ boardState: postData.board })}>
+          <PostFormStateProvider value={new PostFormStateImpl()}>
             <PostWrapper />
           </PostFormStateProvider>
         </BoardProvider>

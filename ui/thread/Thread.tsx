@@ -74,15 +74,16 @@ export const Thread: React.FC<ThreadProps> = observer((props) => {
                 upvote={thread.upvote}
                 downvote={thread.downvote}
                 replyCallback={() => {
-                  postForm.replyTo = thread
-                  postForm.onSubmit = (comment: string, files: File[]) =>
-                    onSubmit(comment, files, thread)
-                  postForm.boardState = {
-                    id: boardState.id,
-                    title: boardState.title,
-                    description: boardState.description,
-                  }
-                  postForm.onChange = () => publishWritingStatus(props.parent.id)
+                  postForm.setPostFormState({
+                    replyTo: thread,
+                    onSubmit: (comment: string, files: File[]) => onSubmit(comment, files, thread),
+                    boardState: {
+                      id: boardState.id,
+                      title: boardState.title,
+                      description: boardState.description,
+                    },
+                    onChange: () => publishWritingStatus(props.parent.id),
+                  })
                 }}
               />
               <div className="pb-2" />

@@ -18,19 +18,8 @@ export class UserStateImpl implements UserState {
     makeAutoObservable(this)
   }
 
-  set personas(personas: Persona[] | undefined) {
+  setPersonas(personas: Persona[]): void {
     this._personas = personas ?? []
-  }
-
-  get personas(): Persona[] {
-    return this._personas
-  }
-
-  get currentPersona(): Persona | undefined {
-    if (this.personas.length === 0) {
-      return
-    }
-    return this.personas[this.currentPersonaIndex]
   }
 
   subscribeNotifications<T = Record<string, string>>(
@@ -49,8 +38,23 @@ export class UserStateImpl implements UserState {
     })
   }
 
-  set notifications(notifications: Notification[]) {
+  setCurrentPersonaIndex(index: number): void {
+    this.currentPersonaIndex = index
+  }
+
+  setNotifications(notifications: Notification[]): void {
     this._notifications = notifications
+  }
+
+  get personas(): Persona[] {
+    return this._personas
+  }
+
+  get currentPersona(): Persona | undefined {
+    if (this.personas.length === 0) {
+      return
+    }
+    return this.personas[this.currentPersonaIndex]
   }
 
   get notifications(): Notification[] {

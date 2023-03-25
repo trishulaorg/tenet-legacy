@@ -9,10 +9,12 @@ export interface NotificationListProps {
 
 export const NotificationList: React.FC<NotificationListProps> = ({ notifications }) => {
   const renderNotificationCard = (
-    notification: NotificationState
+    notification: NotificationState,
+    i: number
   ): React.ReactElement<NotificationCardProps> => {
     return (
       <NotificationCard
+        key={i}
         sender={notification.sender}
         recepient={notification.recepient}
         message={notification.message}
