@@ -25,7 +25,13 @@ export const Settings = () => {
   const [currentTab, setCurrentTab] = useState('Contact Information')
 
   return (
-    <div className="m-4 h-[90vh] overflow-y-auto bg-opacity-70 bg-contentbg dark:bg-contentbg-dark flex flex-row justify-start items-center rounded-lg shadow-lg transition-colors">
+    <div
+      className="m-4 h-screen overflow-y-auto bg-opacity-70 bg-contentbg dark:bg-contentbg-dark flex flex-row justify-start items-center rounded-lg shadow-lg transition-colors"
+      style={{
+        height:
+          'calc(100vh - 101.33px)' /* Full screen height, minus nav & margin (nav is 69.33px, margin is 16px on top and bottom) */,
+      }}
+    >
       <div className="h-full py-6 px-4 text-med dark:text-med-dark text-2xl border-r-[3px] border-low dark:border-low-dark">
         <div className="py-2">
           <h1 className="font-semibold">Account Settings</h1>
