@@ -10,7 +10,7 @@ import { BackgroundSettings } from './BackgroundSettings'
 //TODO: Fix height (currently hardcoding at 768px, want it dynamic with margins at sides for "floating card" style)
 
 const inputStyles =
-  'indent-1 p-1 text-lg rounded-md border-2 border-med dark:border-med-dark my-1 placeholder-low dark:placeholder-low-dark text-high dark:text-high-dark bg-pagebg dark:bg-pagebg-dark'
+  'indent-1 w-80 p-1 text-lg rounded-md border-2 border-med dark:border-med-dark my-1 placeholder-low dark:placeholder-low-dark text-high dark:text-high-dark bg-pagebg dark:bg-pagebg-dark'
 
 const buttonStyles =
   'mt-2 py-1 px-8 border-med dark:border-med-dark border-2 rounded-full bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark text-base font-semibold'
@@ -26,13 +26,13 @@ export const Settings = () => {
 
   return (
     <div
-      className="m-4 h-screen overflow-y-auto bg-opacity-70 bg-contentbg dark:bg-contentbg-dark flex flex-row justify-start items-center rounded-lg shadow-lg transition-colors"
+      className="m-4 h-screen bg-opacity-70 bg-contentbg dark:bg-contentbg-dark flex flex-row justify-start items-center rounded-lg shadow-lg transition-colors"
       style={{
         height:
           'calc(100vh - 101.33px)' /* Full screen height, minus nav & margin (nav is 69.33px, margin is 16px on top and bottom) */,
       }}
     >
-      <div className="h-full py-6 px-4 text-med dark:text-med-dark text-2xl border-r-[3px] border-low dark:border-low-dark">
+      <div className="h-full w-80 py-6 px-4 text-med dark:text-med-dark text-2xl border-r-[3px] border-low dark:border-low-dark">
         <div className="py-2">
           <h1 className="font-semibold">Account Settings</h1>
           <SettingsTab
@@ -65,7 +65,7 @@ export const Settings = () => {
           />
         </div>
       </div>
-      <div className="py-8 px-4 text-med dark:text-med-dark text-2xl h-full ">
+      <div className="py-8 px-4 text-med dark:text-med-dark text-2xl h-full w-full overflow-y-auto">
         {currentTab === 'Contact Information' && (
           <ContactSettings buttonStyles={buttonStyles} inputStyles={inputStyles} />
         )}
