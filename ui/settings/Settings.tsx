@@ -10,7 +10,7 @@ import { BackgroundSettings } from './BackgroundSettings'
 //TODO: Fix height (currently hardcoding at 768px, want it dynamic with margins at sides for "floating card" style)
 
 const inputStyles =
-  'indent-1 text-lg rounded-md border-2 border-med dark:border-med-dark my-1 placeholder-low dark:placeholder-low-dark text-high dark:text-high-dark bg-pagebg dark:bg-pagebg-dark'
+  'indent-1 p-1 text-lg rounded-md border-2 border-med dark:border-med-dark my-1 placeholder-low dark:placeholder-low-dark text-high dark:text-high-dark bg-pagebg dark:bg-pagebg-dark'
 
 const buttonStyles =
   'mt-2 py-1 px-8 border-med dark:border-med-dark border-2 rounded-full bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark text-base font-semibold'
