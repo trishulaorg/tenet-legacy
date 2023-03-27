@@ -25,7 +25,7 @@ export const Settings = () => {
   const [currentTab, setCurrentTab] = useState('contact')
 
   return (
-    <div className="m-4 h-full bg-opacity-70 bg-contentbg dark:bg-contentbg-dark flex flex-row justify-start items-center rounded-lg shadow-lg transition-colors">
+    <div className="m-4 h-[90vh] overflow-y-scroll bg-opacity-70 bg-contentbg dark:bg-contentbg-dark flex flex-row justify-start items-center rounded-lg shadow-lg transition-colors">
       <div className="h-full py-6 px-4 text-med dark:text-med-dark text-2xl border-r-[3px] border-low dark:border-low-dark">
         <div className="py-2">
           <h1 className="font-semibold">Account Settings</h1>
