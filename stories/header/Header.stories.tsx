@@ -1,12 +1,13 @@
-import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PersonaName } from '@/models/persona/PersonaName'
-import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
+import { HeaderStateImpl } from '@/infrastructure/states/HeaderStateImpl'
+import { UserStateImpl } from '@/infrastructure/states/UserStateImpl'
+import type { PersonaIconUrl } from '@/domain/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { PersonaName } from '@/domain/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/domain/models/persona/PersonaScreenName'
+import { HeaderStateProvider } from '@/states/HeaderState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import { HeaderState, HeaderStateContext } from '../../states/HeaderState'
-import { UserState, PersonaState } from '../../states/UserState'
 import { Header } from '../../ui/header/Header'
 import iconImage from '../static/icon.png'
 
@@ -15,17 +16,17 @@ export default {
   component: Header,
   decorators: [
     (Story) => (
-      <HeaderStateContext.Provider
+      <HeaderStateProvider
         value={
-          new HeaderState(
-            new UserState(
+          new HeaderStateImpl(
+            new UserStateImpl(
               [
-                new PersonaState({
+                {
                   id: '1' as PersonaId,
                   name: 'john_doe' as PersonaName,
                   iconUrl: iconImage as unknown as PersonaIconUrl,
                   screenName: 'John Doe' as PersonaScreenName,
-                }),
+                },
               ],
               0
             )
@@ -33,7 +34,7 @@ export default {
         }
       >
         <Story />
-      </HeaderStateContext.Provider>
+      </HeaderStateProvider>
     ),
   ],
 } satisfies ComponentMeta<typeof Header>

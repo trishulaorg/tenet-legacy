@@ -1,11 +1,11 @@
-import type { PostContent } from '@/models/post/PostContent'
-import React, { useContext, useState } from 'react'
-import { UserStateContext } from '../../states/UserState'
+import type { PostContent } from '@/domain/models/post/PostContent'
+import { useUserState } from '@/states/UserState'
+import React, { useState } from 'react'
 import { Button } from '../common/Button'
 
 export const CommentInput: React.FC<{ onSubmit: (comment: PostContent) => void }> = (props) => {
   const [comment, setComment] = useState<PostContent>('' as PostContent)
-  const userState = useContext(UserStateContext)
+  const userState = useUserState()
   return userState != null ? (
     <div className="bg-slate-100 bg-opacity-85 p-4 rounded-lg mb-20">
       <p className="pb-2 ">

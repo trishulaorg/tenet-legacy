@@ -14,7 +14,7 @@ const ImageUpload: FC<{
 }> = ({ files, getInputProps, removeFile, uploadErrors, isDragActive, openFileUploadWindow }) => {
   const fileUrls = files.map((file) => URL.createObjectURL(file))
   const [imagePreviewOpen, setImagePreviewOpen] = useState(false)
-  const [previewFileIndex, setPreviewFileIndex] = useState<number | undefined>(undefined)
+  const [previewFileIndex, setPreviewFileIndex] = useState<number | null>(null)
   return (
     <>
       <div className={'flex'}>

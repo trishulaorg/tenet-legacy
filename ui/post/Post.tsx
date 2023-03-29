@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react'
-import React, { useContext } from 'react'
-import type { PostState } from '../../states/PostState'
+import React from 'react'
 
 import { Thread } from '../thread/Thread'
 import { CardTitle } from '../common/CardTitle'
@@ -9,10 +8,7 @@ import { CardContent } from '../common/CardContent'
 import { CardIcons } from '../common/CardIcons'
 import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
-import type { TypingStateNotification } from '../../states/UserState'
-import { useUserState } from '../../states/UserState'
-import { BoardStateContext } from '../../states/PostState'
-import { PostFormStateContext } from '../../states/PostFormState'
+import { usePostFormState } from '../../states/PostFormState'
 import { usePublishWritingStatus } from '../board/PublishWritingStatus'
 import { TypingMemberListLabel } from '../common/TypingMemberListLabel'
 import { parseISO, differenceInSeconds } from 'date-fns'
@@ -21,19 +17,22 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useApiClient } from '../../states/ApiClientState'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PostId } from '@/models/post/PostId'
-import type { ThreadContent } from '@/models/thread/ThreadContent'
-import type { BoardId } from '@/models/board/BoardId'
+import type { PostId } from '@/domain/models/post/PostId'
+import type { ThreadContent } from '@/domain/models/thread/ThreadContent'
+import type { TypingStateNotification } from '@/domain/models/notification/TypingStateNotification'
+import { useUserState } from '@/states/UserState'
+import { useBoard } from '@/states/BoardState'
+import type { Post as PostModel } from '@/domain/models/post/Post'
+import type { NotificationChannel } from '@/domain/models/notification/NotificationChannel'
 
 export interface PostProps {
-  post: PostState
+  post: PostModel
   showThreads: boolean
 }
 
 export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
-  const boardState = useContext(BoardStateContext)
-  const postForm = useContext(PostFormStateContext)
+  const boardState = useBoard()
+  const postForm = usePostFormState()
   const publishWritingStatus = usePublishWritingStatus()
   const userState = useUserState()
   const apiClient = useApiClient()
@@ -46,7 +45,7 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
           : (userState.notifications as TypingStateNotification[])
               .filter(
                 (v) =>
-                  v.channel === post.id &&
+                  v.channel === (post.id as unknown as NotificationChannel) &&
                   v.eventName === 'typing' &&
                   v.data.authorPersonaId !== userState.currentPersona?.id &&
                   differenceInSeconds(new Date(), parseISO(v.data.createdAt)) < 4
@@ -64,14 +63,11 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     if (userState == null || userState.currentPersona == null) {
       throw new Error('userState or userState.currentPersona is null')
     }
-    if (post.boardId == null) {
-      throw new Error('post.boardId is null')
-    }
     const { id } = await apiClient.createThread({
       content: comment as ThreadContent,
-      personaId: userState.currentPersona.id as PersonaId,
-      postId: post.id as PostId,
-      boardId: post.boardId as BoardId,
+      personaId: userState.currentPersona.id,
+      postId: post.id,
+      boardId: post.board.id,
     })
     await apiClient.putAttachedImage({
       postId: id as unknown as PostId,
@@ -83,13 +79,10 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
     if (userState == null || userState.currentPersona == null) {
       throw new Error('userState or userState.currentPersona is null')
     }
-    if (post.boardId == null) {
-      throw new Error('post.boardId is null')
-    }
     if (prompt('Type "delete" if you really want to delete:') === 'delete') {
       await apiClient.deletePost({
-        personaId: userState.currentPersona.id as PersonaId,
-        postId: post.id as PostId,
+        personaId: userState.currentPersona.id,
+        postId: post.id,
       })
     }
   }
@@ -115,8 +108,8 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
             name={post.author.name}
             iconUrl={post.author.iconUrl}
             boardLink={{
-              boardId: post.boardId ?? '',
-              boardName: post.parent?.title ?? boardState.title ?? '',
+              boardId: post.board.id,
+              boardName: boardState.title,
             }}
           />
         ) : (
@@ -130,27 +123,33 @@ export const Post: React.FC<PostProps> = observer(({ post, showThreads }) => {
         <CardMeta>
           <CardIcons
             showCommentIcon={isInPostPage}
-            commentNumber={post.responseNumber}
+            numberOfComment={post.threads.length}
             upvote={post.upvote}
             downvote={post.downvote}
             replyCallback={() => {
-              postForm.replyTo = post
-              postForm.onSubmit = onSubmit
-              postForm.boardState = boardState
-              postForm.onChange = () => publishWritingStatus(post.id)
+              postForm.setPostFormState({
+                replyTo: post,
+                onSubmit,
+                boardState: {
+                  id: boardState.id,
+                  title: boardState.title,
+                  description: boardState.description,
+                },
+                onChange: () => publishWritingStatus(post.id),
+              })
             }}
             deleteCallback={onPostDelete}
           />
 
           <div className="pb-2" />
-          <CreatedAt createdAt={post.createdAt} />
+          <CreatedAt createdAt={new Date(post.createdAt)} />
           <TypingMemberListLabel members={debouncedMembers} />
         </CardMeta>
         <div className="pb-5" />
       </motion.div>
       {showThreads &&
-        (post.hasRepsponse ? (
-          <Thread threads={post.responses} parent={post} />
+        (post.threads.length > 0 ? (
+          <Thread threads={post.threads} parent={post} />
         ) : (
           <div>No Comments Yet</div>
         ))}

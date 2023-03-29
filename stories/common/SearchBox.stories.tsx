@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/react'
+import type { ComponentStory, Meta } from '@storybook/react'
 import { SearchBox } from '../../ui/common/SearchBox'
 
 export default {
@@ -6,6 +6,6 @@ export default {
   component: SearchBox,
 } as Meta
 
-export const Default = () => {
+export const Default: ComponentStory<typeof SearchBox> = () => {
   return <SearchBox />
 }

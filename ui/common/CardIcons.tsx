@@ -17,7 +17,7 @@ interface IconListElement {
 }
 
 interface CardIconsProps {
-  commentNumber: number
+  numberOfComment: number
   upvote: number
   downvote: number
   upvoteCallback?: () => void
@@ -30,7 +30,7 @@ interface CardIconsProps {
 
 export const CardIcons: React.FC<CardIconsProps> = observer(
   ({
-    commentNumber,
+    numberOfComment,
     downvote,
     downvoteCallback,
     replyCallback,
@@ -57,8 +57,8 @@ export const CardIcons: React.FC<CardIconsProps> = observer(
       },
       {
         name: AnnotationIcon,
-        text: `${commentNumber}`,
-        value: commentNumber,
+        text: `${numberOfComment}`,
+        value: numberOfComment,
         onClick: replyCallback,
         isVisible: showCommentIcon,
       },
@@ -86,7 +86,7 @@ export const CardIcons: React.FC<CardIconsProps> = observer(
                 {icon.isVisible ? (
                   <button className={iconStyle} key={`icon-${index}`} onClick={icon.onClick}>
                     <icon.name className="h-5 w-5" />
-                    {icon.value === undefined || icon.value > 0 ? (
+                    {icon.value == null || icon.value > 0 ? (
                       <div className={textStyle}>{icon.text}</div>
                     ) : null}
                   </button>

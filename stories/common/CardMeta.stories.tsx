@@ -1,3 +1,4 @@
+import type { ComponentStory } from '@storybook/react'
 import { CardMeta } from '../../ui/common/CardMeta'
 
 export default {
@@ -6,4 +7,6 @@ export default {
 }
 // Write storybook story about <CardMeta>
 // starts from export
-export const CardMetaStory = () => <CardMeta isPost={true}>Rolem ipusum</CardMeta>
+export const CardMetaStory: ComponentStory<typeof CardMeta> = () => (
+  <CardMeta isPost={true}>Rolem ipusum</CardMeta>
+)

@@ -1,17 +1,17 @@
 import type { MouseEventHandler } from 'react'
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { observer } from 'mobx-react'
-import { HeaderStateContext } from '../../states/HeaderState'
 import { Switch } from '../common/Switch'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
+import { useHeaderState } from '@/states/HeaderState'
 import { UserIconForHeader } from './UserIconForHeader'
 
 export const UserMenu: React.FC = observer(() => {
-  const state = useContext(HeaderStateContext)
+  const headerState = useHeaderState()
   const { theme, setTheme, systemTheme } = useTheme()
 
-  if (state == null) {
+  if (headerState == null) {
     return null
   }
 
@@ -19,24 +19,22 @@ export const UserMenu: React.FC = observer(() => {
     <>
       <div className="flex-initial mx-3 h-full my-auto flex items-center justify-center text-high dark:text-high-dark">
         <div className="my-auto">
-          <button onClick={() => state.toggleMenu()}>
+          <button onClick={() => headerState.toggleMenu()}>
             <UserIconForHeader size="md" />
           </button>
-          <Switch visibility={state.menuVisibility}>
+          <Switch visibility={headerState.menuVisibility}>
             <UserMenuItems>
-              <Switch visibility={state.isLoggedIn}>
-                <UserMenuItem onClick={() => state.togglePersonaList()}>
-                  {state.userState?.currentPersona?.name}
-                  <Switch visibility={state.personaListVisibility}>
-                    <Switch visibility={state.userState != null}>
+              <Switch visibility={headerState.isLoggedIn}>
+                <UserMenuItem onClick={() => headerState.togglePersonaList()}>
+                  {headerState.userState?.currentPersona?.name}
+                  <Switch visibility={headerState.personaListVisibility}>
+                    <Switch visibility={headerState.userState != null}>
                       <ul className="bg-contentbg dark:bg-contentbg-dark width-100">
-                        {state.userState?.personas?.map((p, idx) => (
+                        {headerState.userState?.personas?.map((p, idx) => (
                           <li key={idx} className="border-solid border-b-2">
                             <button
                               onClick={() => {
-                                if (state.userState) {
-                                  state.userState.currentPersonaIndex = idx
-                                }
+                                headerState.setCurrentPersonaIndex(idx)
                               }}
                             >
                               {p.name}
@@ -47,11 +45,11 @@ export const UserMenu: React.FC = observer(() => {
                     </Switch>
                   </Switch>
                 </UserMenuItem>
-                <UserMenuItem onClick={() => state.closeMenu()}>
+                <UserMenuItem onClick={() => headerState.closeMenu()}>
                   <Link
                     href="/auth"
-                    onClick={() => state.logOut()}
-                    onKeyDown={() => state.logOut()}
+                    onClick={() => headerState.logOut()}
+                    onKeyDown={() => headerState.logOut()}
                     role="link"
                     tabIndex={0}
                   >
@@ -59,18 +57,18 @@ export const UserMenu: React.FC = observer(() => {
                   </Link>
                 </UserMenuItem>
               </Switch>
-              <Switch visibility={state.isLoggedIn}>
-                <UserMenuItem onClick={() => state.closeMenu()}>
+              <Switch visibility={headerState.isLoggedIn}>
+                <UserMenuItem onClick={() => headerState.closeMenu()}>
                   <Link href="/settings">Settings</Link>
                 </UserMenuItem>
               </Switch>
-              <Switch visibility={state.isLoggedIn}>
-                <UserMenuItem onClick={() => state.closeMenu()}>
+              <Switch visibility={headerState.isLoggedIn}>
+                <UserMenuItem onClick={() => headerState.closeMenu()}>
                   <Link href="/persona/settings/icon">Change Persona Icon</Link>
                 </UserMenuItem>
               </Switch>
-              <Switch visibility={!state.isLoggedIn}>
-                <UserMenuItem onClick={() => state.closeMenu()}>
+              <Switch visibility={!headerState.isLoggedIn}>
+                <UserMenuItem onClick={() => headerState.closeMenu()}>
                   <Link href="/auth">Sign in / Sign up</Link>
                 </UserMenuItem>
               </Switch>
@@ -100,18 +98,18 @@ export const UserMenu: React.FC = observer(() => {
 })
 
 export const UserMenuItems: React.FC = observer((props) => {
-  const state = useContext(HeaderStateContext)
+  const headerState = useHeaderState()
   const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (state == null) {
+    if (headerState == null) {
       return
     }
     const mouseDownHandler = (ev: MouseEvent): void => {
-      if (ref.current && !ref.current.contains(ev.target as HTMLElement)) state.closeMenu()
+      if (ref.current && !ref.current.contains(ev.target as HTMLElement)) headerState.closeMenu()
     }
     document.addEventListener('mousedown', mouseDownHandler)
     return () => document.removeEventListener('mousedown', mouseDownHandler)
-  }, [ref, state])
+  }, [ref, headerState])
   return (
     <div className="relative inline-block float-right" ref={ref}>
       <ul

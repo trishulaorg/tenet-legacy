@@ -5,10 +5,13 @@ import { useState, useEffect } from 'react'
 import '../styles/global.css'
 import { PageBaseLayout } from '../ui/layouts/PageBaseLayout'
 import { Header } from '../ui/header/Header'
-import { HeaderState, HeaderStateContext } from '../states/HeaderState'
-import { PersonaState, UserState, UserStateContext } from '../states/UserState'
 import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
 import { ApiClientProvider } from '@/states/ApiClientState'
+import type { UserState } from '@/application/states/UserState'
+import { UserStateImpl } from '@/infrastructure/states/UserStateImpl'
+import { UserStateProvider } from '@/states/UserState'
+import { HeaderStateProvider } from '@/states/HeaderState'
+import { HeaderStateImpl } from '@/infrastructure/states/HeaderStateImpl'
 
 export default function App({ Component, pageProps }: AppProps): ReactElement {
   const [userState, setUserState] = useState<UserState | null>(null)
@@ -20,16 +23,13 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
         return
       }
       setUserState(
-        new UserState(
-          user.personas.map(
-            (persona) =>
-              new PersonaState({
-                id: persona.id,
-                name: persona.name,
-                screenName: persona.screenName,
-                iconUrl: persona.iconUrl,
-              })
-          )
+        new UserStateImpl(
+          user.personas.map((persona) => ({
+            id: persona.id,
+            name: persona.name,
+            screenName: persona.screenName,
+            iconUrl: persona.iconUrl,
+          }))
         )
       )
     })()
@@ -39,14 +39,12 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
     <ThemeProvider attribute="class">
       <PageBaseLayout>
         <ApiClientProvider value={apiClientMockImpl}>
-          <UserStateContext.Provider value={userState}>
-            <HeaderStateContext.Provider
-              value={userState == null ? null : new HeaderState(userState)}
-            >
+          <UserStateProvider value={userState}>
+            <HeaderStateProvider value={userState == null ? null : new HeaderStateImpl(userState)}>
               <Header />
-            </HeaderStateContext.Provider>
+            </HeaderStateProvider>
             <Component {...pageProps} />
-          </UserStateContext.Provider>
+          </UserStateProvider>
         </ApiClientProvider>
       </PageBaseLayout>
     </ThemeProvider>

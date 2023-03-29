@@ -1,17 +1,16 @@
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
 import React, { useState } from 'react'
-import { BoardState } from '../../states/PostState'
-import { useUserState } from '../../states/UserState'
 import { useRouter } from 'next/router'
 import { IMAGE_MIME_TYPE } from '../../libs/types'
 import { useDropzone } from 'react-dropzone'
 import { ImageUpload } from '../common/ImageUpload'
 import { useApiClient } from '../../states/ApiClientState'
-import type { PostTitle } from '@/models/post/PostTitle'
-import type { PostContent } from '@/models/post/PostContent'
-import type { BoardId } from '@/models/board/BoardId'
-import type { PersonaId } from '@/models/persona/PersonaId'
+import type { PostTitle } from '@/domain/models/post/PostTitle'
+import type { PostContent } from '@/domain/models/post/PostContent'
+import type { BoardId } from '@/domain/models/board/BoardId'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import { useUserState } from '@/states/UserState'
 
 interface CreateNewPostProps {
   boardId: BoardId
@@ -20,9 +19,6 @@ interface CreateNewPostProps {
 
 export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
   ({ boardId, showPostCreate = true }) => {
-    const state = new BoardState({
-      id: boardId,
-    })
     const userState = useUserState()
     const router = useRouter()
     const [title, setTitle] = useState('')
@@ -37,14 +33,11 @@ export const CreateNewPost: React.FC<CreateNewPostProps> = observer(
       if (userState == null || userState.currentPersona == null) {
         throw new Error('userState or userState.currentPersona is null')
       }
-      if (state.id == null) {
-        throw new Error('state.id is null')
-      }
       const { id: createdPostId } = await apiClient.createPost({
         title: title as PostTitle,
         content: content as PostContent,
         personaId: userState.currentPersona.id as PersonaId,
-        boardId: state.id as BoardId,
+        boardId,
       })
       await apiClient.putAttachedImage({
         postId: createdPostId,

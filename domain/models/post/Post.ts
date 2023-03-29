@@ -1,12 +1,12 @@
-import type { DateString } from '@/models/common/DateString'
-import type { Board } from '@/models/board/Board'
+import type { DateString } from '@/domain/models/common/DateString'
+import type { Board } from '@/domain/models/board/Board'
 import type { PostContent } from './PostContent'
 import type { PostId } from './PostId'
 import type { PostImageUrl } from './PostImageUrl'
 import type { PostTitle } from './PostTitle'
-import type { Persona } from '@/models/persona/Persona'
-import type { Privilege } from '@/models/Privilege'
-import type { Thread } from '@/models/thread/Thread'
+import type { Persona } from '@/domain/models/persona/Persona'
+import type { Privilege } from '@/domain/models/Privilege'
+import type { Thread } from '@/domain/models/thread/Thread'
 
 export type Post = {
   __typename?: 'Post'
@@ -16,7 +16,9 @@ export type Post = {
   imageUrls: PostImageUrl[]
   createdAt: DateString
   board: Board
-  persona: Persona
+  author: Persona
   privilege: Privilege
   threads: Thread[]
+  upvote: number
+  downvote: number
 }

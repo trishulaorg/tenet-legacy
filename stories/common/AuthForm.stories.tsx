@@ -1,4 +1,5 @@
 // write storybook stories for <AuthForm/>
+import type { ComponentStory } from '@storybook/react'
 import { AuthForm } from '../../ui/common/AuthForm'
 
 export default {
@@ -6,4 +7,4 @@ export default {
   component: AuthForm,
 }
 
-export const AuthFormStory = () => <AuthForm />
+export const AuthFormStory: ComponentStory<typeof AuthForm> = () => <AuthForm />

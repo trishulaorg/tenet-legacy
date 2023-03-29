@@ -1,7 +1,7 @@
+import type { Reply as ReplyModel } from '@/domain/models/reply/Reply'
+import { useUserState } from '@/states/UserState'
 import { observer } from 'mobx-react'
-import React, { useContext } from 'react'
-import type { PostState } from '../../states/PostState'
-import { UserStateContext } from '../../states/UserState'
+import React from 'react'
 
 import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
 import { CardContent } from '../common/CardContent'
@@ -10,11 +10,11 @@ import { CardMeta } from '../common/CardMeta'
 import { CreatedAt } from '../common/CreatedAt'
 
 export interface ReplyProps {
-  replies: PostState[]
+  replies: ReplyModel[]
 }
 
 export const Reply: React.FC<ReplyProps> = observer((props) => {
-  const userState = useContext(UserStateContext)
+  const userState = useUserState()
   return (
     <ul className="pl-4">
       {props.replies.map((reply, i) => {
@@ -31,7 +31,7 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
                 {reply.author.name === userState?.currentPersona?.name ? (
                   <CardIcons
                     showCommentIcon={false}
-                    commentNumber={reply.responseNumber}
+                    numberOfComment={0}
                     upvote={reply.upvote}
                     downvote={reply.downvote}
                     deleteCallback={() => {
@@ -41,13 +41,13 @@ export const Reply: React.FC<ReplyProps> = observer((props) => {
                 ) : (
                   <CardIcons
                     showCommentIcon={false}
-                    commentNumber={reply.responseNumber}
+                    numberOfComment={0}
                     upvote={reply.upvote}
                     downvote={reply.downvote}
                   />
                 )}
                 <div className="pb-2" />
-                <CreatedAt createdAt={reply.createdAt} />
+                <CreatedAt createdAt={new Date(reply.createdAt)} />
               </CardMeta>
             </div>
           </li>

@@ -2,13 +2,13 @@
 // which has 4 props: sender, recepient, message, type (like, comment, follow, unfollow)
 
 // Path: ui/notification/NotificationCard.tsx
+import type { Persona } from '@/domain/models/persona/Persona'
 import { HeartIcon, ReplyIcon, UserAddIcon } from '@heroicons/react/solid'
 import React from 'react'
-import type { PersonaState } from '../../states/UserState'
 
 export interface NotificationCardProps {
-  sender?: PersonaState | undefined
-  recepient: PersonaState
+  sender?: Persona | undefined
+  recepient: Persona | undefined
   message?: string | undefined
   type: 'like' | 'comment' | 'follow'
 }

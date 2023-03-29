@@ -1,9 +1,9 @@
-import { useUserState } from '../../states/UserState'
 import type { DebouncedState } from 'use-debounce'
 import { useDebouncedCallback } from 'use-debounce'
 import { useApiClient } from '../../states/ApiClientState'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PostId } from '@/models/post/PostId'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { PostId } from '@/domain/models/post/PostId'
+import { useUserState } from '@/states/UserState'
 
 export const usePublishWritingStatus = (): DebouncedState<(postId: string) => Promise<unknown>> => {
   const userState = useUserState()

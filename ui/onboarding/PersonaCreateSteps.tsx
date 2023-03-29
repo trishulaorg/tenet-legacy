@@ -1,17 +1,38 @@
-import type { PersonaName } from '@/models/persona/PersonaName'
-import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
+import type { PersonaName } from '@/domain/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/domain/models/persona/PersonaScreenName'
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
-import React, { useContext, useState } from 'react'
-import { PersonaStateContext } from '../../states/UserState'
+import React, { useState } from 'react'
 import { ErrorMessage } from '../form/ErrorMessage'
 
+type Form = {
+  name: PersonaName
+  screenName: PersonaScreenName
+}
+
 export const PersonaCreateSteps: React.FC = observer(() => {
-  const persona = useContext(PersonaStateContext)
   const [personaScreenNameErrorMessage] = useState('')
   const [personaNameErrorMessage] = useState('')
   const createPersona: FormEventHandler = async (e) => {
     e.preventDefault()
+  }
+  const [formState, setFormState] = useState<Form>({
+    name: '' as PersonaName,
+    screenName: '' as PersonaScreenName,
+  })
+
+  function handleChangeName(e: React.ChangeEvent<HTMLInputElement>): void {
+    setFormState((prev) => ({
+      ...prev,
+      name: e.target.value as PersonaName,
+    }))
+  }
+
+  function handleChangeScreenName(e: React.ChangeEvent<HTMLInputElement>): void {
+    setFormState((prev) => ({
+      ...prev,
+      screenName: e.target.value as PersonaScreenName,
+    }))
   }
 
   return (
@@ -22,9 +43,9 @@ export const PersonaCreateSteps: React.FC = observer(() => {
           Your id (must be unique)
           <input
             type="text"
-            value={persona.name}
+            value={formState.name}
             placeholder="e.g. test"
-            onChange={(e) => persona.updateName(e.target.value as PersonaName)}
+            onChange={handleChangeName}
             className="w-64 p-2 block rounded border border-slate-300"
           />
           <ErrorMessage errorMessage={personaNameErrorMessage} />
@@ -33,9 +54,9 @@ export const PersonaCreateSteps: React.FC = observer(() => {
           Your screen name
           <input
             type="text"
-            value={persona.screenName}
+            value={formState.screenName}
             placeholder="e.g. Test User"
-            onChange={(e) => persona.updateScreenName(e.target.value as PersonaScreenName)}
+            onChange={handleChangeScreenName}
             className="w-64 p-2 block rounded border border-slate-300"
           />
           <ErrorMessage errorMessage={personaScreenNameErrorMessage} />

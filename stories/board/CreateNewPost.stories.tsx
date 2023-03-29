@@ -1,36 +1,37 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import { CreateNewPost } from '../../ui/board/CreateNewPost'
-import { PersonaState, UserState, UserStateContext } from '../../states/UserState'
 import iconImage from '../static/icon.png'
-import type { PersonaIconUrl } from '@/models/persona/PersonaIconUrl'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { PersonaName } from '@/models/persona/PersonaName'
-import type { PersonaScreenName } from '@/models/persona/PersonaScreenName'
-import type { BoardId } from '@/models/board/BoardId'
+import type { PersonaIconUrl } from '@/domain/models/persona/PersonaIconUrl'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { PersonaName } from '@/domain/models/persona/PersonaName'
+import type { PersonaScreenName } from '@/domain/models/persona/PersonaScreenName'
+import type { BoardId } from '@/domain/models/board/BoardId'
+import { UserStateProvider } from '@/states/UserState'
+import { UserStateImpl } from '@/infrastructure/states/UserStateImpl'
 
 export default {
   title: 'Board/CreateNewPost',
   component: CreateNewPost,
   decorators: [
     (Story) => (
-      <UserStateContext.Provider
+      <UserStateProvider
         value={
-          new UserState(
+          new UserStateImpl(
             [
-              new PersonaState({
+              {
                 id: '1' as PersonaId,
                 name: 'john_doe' as PersonaName,
                 iconUrl: iconImage as unknown as PersonaIconUrl,
                 screenName: 'John Doe' as PersonaScreenName,
-              }),
+              },
             ],
             0
           )
         }
       >
         <Story />
-      </UserStateContext.Provider>
+      </UserStateProvider>
     ),
   ],
   argTypes: {

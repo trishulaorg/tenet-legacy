@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { useUserState } from '../../states/UserState'
-import { BoardState, BoardStateContext, PostState } from '../../states/PostState'
 import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
 import { useRouter } from 'next/router'
 import { Board } from '../../ui/board/Board'
-import { PostFormState, PostFormStateContext } from '../../states/PostFormState'
 import { makePusher } from '../../libs/usePusher'
 import type { Channel } from 'pusher-js'
 import type { GetServerSideProps, NextPage } from 'next'
 import { useApiClient } from '../../states/ApiClientState'
-import type { BoardDescription } from '@/models/board/BoardDescription'
-import type { BoardWithPosts } from '@/models/board/BoardWithPosts'
-import type { Board as BoardType } from '@/models/board/Board'
-import type { PersonaId } from '@/models/persona/PersonaId'
-import type { BoardId } from '@/models/board/BoardId'
+import type { BoardWithPosts } from '@/domain/models/board/BoardWithPosts'
+import type { Board as BoardType } from '@/domain/models/board/Board'
+import type { PersonaId } from '@/domain/models/persona/PersonaId'
+import type { BoardId } from '@/domain/models/board/BoardId'
 import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
-import type { TopicId } from '@/models/board/TopicId'
-import type { Post } from '@/models/post/Post'
+import type { TopicId } from '@/domain/models/board/TopicId'
+import type { Post } from '@/domain/models/post/Post'
+import { useUserState } from '@/states/UserState'
+import { BoardProvider } from '@/states/BoardState'
+import { PostFormStateProvider } from '@/states/PostFormState'
+import { PostFormStateImpl } from '@/infrastructure/states/PostFormStateImpl'
 
 type BoardPageProps = { boardData: BoardWithPosts }
 
@@ -28,19 +28,7 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
   } = router
   const userState = useUserState()
 
-  const [context, setContext] = useState(new BoardState({}))
   const boardId = (isReady && typeof rawBoardId === 'string' ? rawBoardId : '') as BoardId
-
-  useEffect(() => {
-    setContext(
-      new BoardState({
-        id: boardData.id,
-        title: boardData.title,
-        description: boardData.description ?? ('' as BoardDescription),
-        posts: boardData.posts.map((post) => PostState.fromPostTypeJSON(post)),
-      })
-    )
-  }, [boardData])
 
   const [followingBoardData, setFollowingBoardData] = useState<BoardType[]>()
 
@@ -111,8 +99,8 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
   return (
     <PageContentLayout
       main={
-        <PostFormStateContext.Provider value={new PostFormState({ boardState: context })}>
-          <BoardStateContext.Provider value={context}>
+        <PostFormStateProvider value={new PostFormStateImpl()}>
+          <BoardProvider value={boardData}>
             <Board
               {...(boardId && userState != null
                 ? {
@@ -122,8 +110,8 @@ const BoardPage: NextPage<BoardPageProps> = ({ boardData }) => {
                 : {})}
               showPostCreate={userState != null}
             />
-          </BoardStateContext.Provider>
-        </PostFormStateContext.Provider>
+          </BoardProvider>
+        </PostFormStateProvider>
       }
       side={<div className="max-w-xs">test</div>}
     />

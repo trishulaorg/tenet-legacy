@@ -21,7 +21,7 @@ const uploadButtonStyles =
 const checkboxStyles =
   'w-6 h-6 my-1 mr-1 accent-primary dark:accent-primary-dark bg-pagebg dark:bg-pagebg-dark text-med dark:text-med-dark'
 
-export const Settings = () => {
+export const Settings: React.FC = () => {
   const [currentTab, setCurrentTab] = useState('Contact Information')
 
   return (
