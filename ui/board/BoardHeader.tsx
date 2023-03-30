@@ -47,7 +47,10 @@ export const BoardHeader: React.FC<BoardHeaderProps> = ({
       <HeaderImagePlaceHolder />
       <div className="w-full rounded-b-xl mx-auto bg-contentbg dark:bg-contentbg-dark h-40">
         <div className="relative -top-10 -left-[220px] mx-auto">
-          <div className="rounded w-20 h-20 mx-auto bg-center bg-cover bg-[url(/android-chrome-512x512.png)]" />
+          <div
+            className="rounded w-20 h-20 mx-auto bg-center bg-cover"
+            style={{ backgroundImage: 'url(/android-chrome-512x512.png)' }}
+          />
         </div>
         <div className="relative -top-20 left-[120px]">
           <h1 className="flex-row my-1 text-med dark:text-med-dark text-2xl">
