@@ -37,16 +37,21 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
 
   return (
     <ThemeProvider attribute="class">
-      <PageBaseLayout>
-        <ApiClientProvider value={apiClientMockImpl}>
-          <UserStateProvider value={userState}>
-            <HeaderStateProvider value={userState == null ? null : new HeaderStateImpl(userState)}>
-              <Header />
-            </HeaderStateProvider>
+      <ApiClientProvider value={apiClientMockImpl}>
+        <UserStateProvider value={userState}>
+          <PageBaseLayout
+            header={
+              <HeaderStateProvider
+                value={userState == null ? null : new HeaderStateImpl(userState)}
+              >
+                <Header />
+              </HeaderStateProvider>
+            }
+          >
             <Component {...pageProps} />
-          </UserStateProvider>
-        </ApiClientProvider>
-      </PageBaseLayout>
+          </PageBaseLayout>
+        </UserStateProvider>
+      </ApiClientProvider>
     </ThemeProvider>
   )
 }
