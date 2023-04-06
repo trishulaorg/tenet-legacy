@@ -19,3 +19,6 @@ public/workbox-*.js
 
 # Storybook
 storybook-static/
+
+# VSCode settings should not be Git managed.
+.vscode
