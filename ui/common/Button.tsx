@@ -11,7 +11,7 @@ export interface ButtonProps {
 
 export const Button: React.FC<ButtonProps> = (props) => {
   let className =
-    'bg-primary dark:bg-primary-dark flex items-center justify-center md:px-4 ml-2 lg:px-6 block text-med dark:text-med-dark dark:hover:text-high-dark hover:text-high border-primary dark:border-primary-dark border-opacity-40 hover:border-opacity-100 rounded-xl border border-double border-4 transition-colors'
+    'bg-primary dark:bg-primary-dark flex items-center justify-center md:px-4 ml-2 lg:px-6 block text-white dark:text-med-dark dark:hover:text-high-dark hover:text-high border-primary dark:border-primary-dark border-opacity-40 hover:border-opacity-100 rounded-xl border border-double border-4 transition-colors'
   if (props.size === 'small') {
     className += ' px-2 text-sm'
   } else if (props.size === 'normal') {
