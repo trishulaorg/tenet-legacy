@@ -119,7 +119,7 @@
     "react-dropzone": "^14.2.2",
     "react-markdown": "^8.0.3",
     "react-simple-image-viewer": "^1.2.1",
-    "storybook": "^6.3.13",
+    "storybook": "^7.0.2",
     "swr": "^1.3.0",
     "ulid": "^2.3.0",
     "use-debounce": "^8.0.3",
