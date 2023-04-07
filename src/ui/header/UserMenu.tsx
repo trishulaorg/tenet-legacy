@@ -1,7 +1,7 @@
 import type { MouseEventHandler } from 'react'
 import React, { useEffect, useRef } from 'react'
 import { observer } from 'mobx-react'
-import { Switch } from '../common/Switch'
+import { Switch } from '@/src/ui/common/Switch'
 import { useTheme } from 'next-themes'
 import Link from 'next/link'
 import { useHeaderState } from '@/src/states/HeaderState'

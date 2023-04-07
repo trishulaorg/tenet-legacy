@@ -3,8 +3,8 @@
 import React from 'react'
 import type { Story, Meta } from '@storybook/react/types-6-0'
 
-import type { CardTitleProps } from '../../ui/common/CardTitle'
-import { CardTitle } from '../../ui/common/CardTitle'
+import type { CardTitleProps } from '@/src/ui/common/CardTitle'
+import { CardTitle } from '@/src/ui/common/CardTitle'
 
 export default {
   title: 'Common/CardTitle',

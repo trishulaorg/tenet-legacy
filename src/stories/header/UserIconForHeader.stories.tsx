@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Story, Meta } from '@storybook/react'
-import type { UserIconForHeaderProps } from '../../ui/header/UserIconForHeader'
-import { UserIconForHeader } from '../../ui/header/UserIconForHeader'
+import type { UserIconForHeaderProps } from '@/src/ui/header/UserIconForHeader'
+import { UserIconForHeader } from '@/src/ui/header/UserIconForHeader'
 
 export default {
   title: 'UserIconForHeader',

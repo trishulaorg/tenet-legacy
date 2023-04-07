@@ -3,11 +3,11 @@ import { useUserState } from '@/src/states/UserState'
 import { observer } from 'mobx-react'
 import React from 'react'
 
-import { AuthorAndBoardLink } from '../common/AuthorAndBoardLink'
-import { CardContent } from '../common/CardContent'
-import { CardIcons } from '../common/CardIcons'
-import { CardMeta } from '../common/CardMeta'
-import { CreatedAt } from '../common/CreatedAt'
+import { AuthorAndBoardLink } from '@/src/ui/common/AuthorAndBoardLink'
+import { CardContent } from '@/src/ui/common/CardContent'
+import { CardIcons } from '@/src/ui/common/CardIcons'
+import { CardMeta } from '@/src/ui/common/CardMeta'
+import { CreatedAt } from '@/src/ui/common/CreatedAt'
 
 export interface ReplyProps {
   replies: ReplyModel[]

@@ -1,5 +1,5 @@
 import type { ComponentStory } from '@storybook/react'
-import { PersonaIconForm } from '../../ui/settings/PersonaIconForm'
+import { PersonaIconForm } from '@/src/ui/settings/PersonaIconForm'
 
 export default {
   title: 'Settings/PersonaIconForm',

@@ -1,7 +1,7 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import { Title } from '../../ui/header/Title'
+import { Title } from '@/src/ui/header/Title'
 
 export default {
   title: 'Header/Title',

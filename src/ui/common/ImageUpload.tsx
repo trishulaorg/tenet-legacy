@@ -1,8 +1,8 @@
 import type { FC } from 'react'
 import React, { useState } from 'react'
 import ImageViewer from 'react-simple-image-viewer'
-import { ImageWithCloseButton } from '../form/ImageWithCloseButton'
-import { ErrorMessage } from '../form/ErrorMessage'
+import { ImageWithCloseButton } from '@/src/ui/form/ImageWithCloseButton'
+import { ErrorMessage } from '@/src/ui/form/ErrorMessage'
 
 const ImageUpload: FC<{
   files: File[]

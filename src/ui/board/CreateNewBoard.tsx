@@ -1,7 +1,7 @@
 import type { FormEventHandler } from 'react'
 import React, { useState } from 'react'
-import { InputWithLabel } from '../form/InputWithLabel'
-import { ErrorMessage } from '../form/ErrorMessage'
+import { InputWithLabel } from '@/src/ui/form/InputWithLabel'
+import { ErrorMessage } from '@/src/ui/form/ErrorMessage'
 import { useUserState } from '@/src/states/UserState'
 
 export const CreateNewBoard: React.FC = () => {

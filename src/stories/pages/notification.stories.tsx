@@ -1,6 +1,6 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import NotificationPage from '../../pages/notification'
+import NotificationPage from '@/src/pages/notification'
 
 export default {
   title: 'Pages/NotificationPage',

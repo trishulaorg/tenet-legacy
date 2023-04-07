@@ -4,7 +4,7 @@ import type { SearchResultTitle } from '@/src/domain/models/search/SearchResultT
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import { aSearchResult } from '@/src/generated/mocks'
-import SearchResultPage from '../../pages/search/[word]'
+import SearchResultPage from '@/src/pages/search/[word]'
 
 export default {
   title: 'Pages/SearchResultPage',

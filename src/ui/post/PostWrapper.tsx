@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react'
 import React from 'react'
 import { Post } from './Post'
-import { PostForm } from '../common/PostForm'
+import { PostForm } from '@/src/ui/common/PostForm'
 import { useBoard } from '@/src/states/BoardState'
 
 export const PostWrapper: React.FC = observer(() => {

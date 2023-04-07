@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
-import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
-import { PersonaCreateSteps } from '../../ui/onboarding/PersonaCreateSteps'
+import { PageContentLayout } from '@/src/ui/layouts/PageContentLayout'
+import { PersonaCreateSteps } from '@/src/ui/onboarding/PersonaCreateSteps'
 
 const OnboardingPage: NextPage = () => {
   return (

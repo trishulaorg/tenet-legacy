@@ -2,8 +2,8 @@ import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import type { ComponentProps, ReactElement } from 'react'
 import { useEffect, useState } from 'react'
-import { ImageWithCloseButton } from '../../ui/form/ImageWithCloseButton'
-import image from '../static/wallpaper.jpg'
+import { ImageWithCloseButton } from '@/src/ui/form/ImageWithCloseButton'
+import image from '@/src/stories/static/wallpaper.jpg'
 
 function StoryComponent(
   props: Omit<ComponentProps<typeof ImageWithCloseButton>, 'file'> & {

@@ -20,7 +20,7 @@ import type { ThreadImageUrl } from '@/src/domain/models/thread/ThreadImageUrl'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import { aPost } from '@/src/generated/mocks'
-import PostPage from '../../pages/post/[post_id]'
+import PostPage from '@/src/pages/post/[post_id]'
 
 export default {
   title: 'Pages/PostPage',

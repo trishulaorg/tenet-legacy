@@ -1,7 +1,7 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import { HomeTabList } from '../../ui/home/HomeTabList'
+import { HomeTabList } from '@/src/ui/home/HomeTabList'
 
 export default {
   title: 'Home/HomeTabList',

@@ -1,5 +1,5 @@
 import type { ComponentStory } from '@storybook/react'
-import { CardMeta } from '../../ui/common/CardMeta'
+import { CardMeta } from '@/src/ui/common/CardMeta'
 
 export default {
   title: 'Common/CardMeta',

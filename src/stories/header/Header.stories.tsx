@@ -8,8 +8,8 @@ import { HeaderStateProvider } from '@/src/states/HeaderState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import { Header } from '../../ui/header/Header'
-import iconImage from '../static/icon.png'
+import { Header } from '@/src/ui/header/Header'
+import iconImage from '@/src/stories/static/icon.png'
 
 export default {
   title: 'Header/Header',

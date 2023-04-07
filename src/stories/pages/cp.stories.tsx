@@ -6,8 +6,8 @@ import type { PersonaScreenName } from '@/src/domain/models/persona/PersonaScree
 import { UserStateProvider } from '@/src/states/UserState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import CreatePostPage from '../../pages/o/cp'
-import iconImage from '../static/icon.png'
+import CreatePostPage from '@/src/pages/o/cp'
+import iconImage from '@/src/stories/static/icon.png'
 
 export default {
   title: 'Pages/CreatePostPage',

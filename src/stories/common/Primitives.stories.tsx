@@ -1,6 +1,6 @@
 // Write storybook story about <Primitives>
 import type { ComponentStory, Meta } from '@storybook/react'
-import { Heading1, Heading2, Heading3, Paragraph } from '../../ui/common/Primitives'
+import { Heading1, Heading2, Heading3, Paragraph } from '@/src/ui/common/Primitives'
 
 export default {
   title: 'Common/Primitives',

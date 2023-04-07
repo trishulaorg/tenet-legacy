@@ -1,5 +1,5 @@
 import type { ComponentMeta, ComponentStory } from '@storybook/react'
-import { NotificationList } from '../../ui/notification/NotificationList'
+import { NotificationList } from '@/src/ui/notification/NotificationList'
 import type { PersonaIconUrl } from '@/src/domain/models/persona/PersonaIconUrl'
 import type { PersonaId } from '@/src/domain/models/persona/PersonaId'
 import type { PersonaName } from '@/src/domain/models/persona/PersonaName'

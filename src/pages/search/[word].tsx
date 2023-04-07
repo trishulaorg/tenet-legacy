@@ -3,7 +3,7 @@ import type { SearchQuery } from '@/src/domain/models/search/SearchQuery'
 import type { SearchResult } from '@/src/domain/models/search/SearchResult'
 import type { GetServerSideProps, NextPage } from 'next'
 import Link from 'next/link'
-import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
+import { PageContentLayout } from '@/src/ui/layouts/PageContentLayout'
 
 type Props = { searchData: SearchResult[] }
 

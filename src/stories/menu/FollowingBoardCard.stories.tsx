@@ -1,6 +1,6 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import { FollowingBoardCard } from '../../ui/menu/FollowingBoardCard'
+import { FollowingBoardCard } from '@/src/ui/menu/FollowingBoardCard'
 
 export default {
   title: 'Menu/FollowingBoardCard',

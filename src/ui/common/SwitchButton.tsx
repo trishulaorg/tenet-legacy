@@ -10,7 +10,7 @@ export interface SwitchButtonProps {
 const SwitchButton: React.FC<SwitchButtonProps> = ({ label, initialValue, onToggle }) => {
   const [isOn, setIsOn] = useState<boolean>(initialValue)
 
-  const handleToggle = () => {
+  const handleToggle = (): void => {
     const newState = !isOn
     setIsOn(newState)
     onToggle(newState)

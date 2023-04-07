@@ -3,7 +3,7 @@ import type { PersonaScreenName } from '@/src/domain/models/persona/PersonaScree
 import { observer } from 'mobx-react'
 import type { FormEventHandler } from 'react'
 import React, { useState } from 'react'
-import { ErrorMessage } from '../form/ErrorMessage'
+import { ErrorMessage } from '@/src/ui/form/ErrorMessage'
 
 type Form = {
   name: PersonaName

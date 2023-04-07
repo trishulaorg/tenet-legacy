@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
-import { PageContentLayout } from '../../../ui/layouts/PageContentLayout'
-import { PersonaIconForm } from '../../../ui/settings/PersonaIconForm'
+import { PageContentLayout } from '@/src/ui/layouts/PageContentLayout'
+import { PersonaIconForm } from '@/src/ui/settings/PersonaIconForm'
 
 const SetPersonaIconPage: NextPage = () => {
   return (

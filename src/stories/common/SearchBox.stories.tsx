@@ -1,5 +1,5 @@
 import type { ComponentStory, Meta } from '@storybook/react'
-import { SearchBox } from '../../ui/common/SearchBox'
+import { SearchBox } from '@/src/ui/common/SearchBox'
 
 export default {
   title: 'common/SearchBox',

@@ -1,5 +1,5 @@
 import type { ComponentStory } from '@storybook/react'
-import { InputWithLabel } from '../../ui/form/InputWithLabel'
+import { InputWithLabel } from '@/src/ui/form/InputWithLabel'
 
 export default {
   title: 'Form/InputWithLabel',

@@ -8,8 +8,8 @@ import { HeaderStateProvider } from '@/src/states/HeaderState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import { UserMenu } from '../../ui/header/UserMenu'
-import iconImage from '../static/icon.png'
+import { UserMenu } from '@/src/ui/header/UserMenu'
+import iconImage from '@/src/stories/static/icon.png'
 
 export default {
   title: 'Header/UserMenu',

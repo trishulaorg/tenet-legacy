@@ -1,5 +1,5 @@
 import type { ComponentStory } from '@storybook/react'
-import { SuccessMessage } from '../../ui/form/SuccessMessage'
+import { SuccessMessage } from '@/src/ui/form/SuccessMessage'
 
 export default {
   title: 'Form/SuccessMessage',

@@ -3,7 +3,7 @@ import { PlusCircleIcon } from '@heroicons/react/solid'
 import { observer } from 'mobx-react'
 import React, { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { IMAGE_MIME_TYPE } from '../../libs/types'
+import { IMAGE_MIME_TYPE } from '@/src/libs/types'
 import { ImageUpload } from './ImageUpload'
 
 export const PostFormInner: React.FC = observer(() => {
