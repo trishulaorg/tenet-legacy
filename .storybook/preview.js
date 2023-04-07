@@ -1,4 +1,4 @@
-import '../styles/global.css'
+import '@/src/styles/global.css'
 import '!style-loader!css-loader!postcss-loader!tailwindcss/tailwind.css'
 import { themes } from '@storybook/theming'
 import { RouterContext } from "next/dist/shared/lib/router-context";

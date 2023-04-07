@@ -1,7 +1,7 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import { CreateNewBoard } from '@/src/ui/board/CreateNewBoard'
-import iconImage from '@/stories/static/icon.png'
+import iconImage from '@/src/stories/static/icon.png'
 import type { PersonaIconUrl } from '@/src/domain/models/persona/PersonaIconUrl'
 import type { PersonaId } from '@/src/domain/models/persona/PersonaId'
 import type { PersonaName } from '@/src/domain/models/persona/PersonaName'
