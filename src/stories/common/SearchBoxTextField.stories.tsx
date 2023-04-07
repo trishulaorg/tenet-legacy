@@ -1,5 +1,5 @@
 import type { Meta, Story } from '@storybook/react'
-import { SearchBoxTextField } from '../../ui/common/SearchBoxTextField'
+import { SearchBoxTextField } from '@/src/ui/common/SearchBoxTextField'
 
 export default {
   title: 'common/SearchBoxTextField',

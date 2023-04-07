@@ -1,6 +1,6 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import { ErrorMessage } from '../../ui/form/ErrorMessage'
+import { ErrorMessage } from '@/src/ui/form/ErrorMessage'
 
 export default {
   title: 'Form/ErrorMessage',

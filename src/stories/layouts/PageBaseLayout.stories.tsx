@@ -1,6 +1,6 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import { PageBaseLayout } from '../../ui/layouts/PageBaseLayout'
+import { PageBaseLayout } from '@/src/ui/layouts/PageBaseLayout'
 
 export default {
   title: 'Layouts/PageBaseLayout',

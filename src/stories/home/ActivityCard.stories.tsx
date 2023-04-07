@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import React from 'react'
-import { ActivityCard } from '../../ui/home/ActivityCard'
+import { ActivityCard } from '@/src/ui/home/ActivityCard'
 import type { PersonaScreenName } from '@/src/domain/models/persona/PersonaScreenName'
 import type { PersonaName } from '@/src/domain/models/persona/PersonaName'
 import type { PersonaIconUrl } from '@/src/domain/models/persona/PersonaIconUrl'

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import React from 'react'
-import { SvgLogo } from '../common/SvgLogo'
+import { SvgLogo } from '@/src/ui/common/SvgLogo'
 
 export const Title: React.FC = () => {
   return (

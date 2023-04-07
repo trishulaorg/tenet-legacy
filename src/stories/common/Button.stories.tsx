@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '../../ui/common/Button'
+import { Button } from '@/src/ui/common/Button'
 import type { ComponentStory } from '@storybook/react'
 import { RssIcon } from '@heroicons/react/solid'
 

@@ -1,6 +1,6 @@
 // write storybook stories for <AuthForm/>
 import type { ComponentStory } from '@storybook/react'
-import { AuthForm } from '../../ui/common/AuthForm'
+import { AuthForm } from '@/src/ui/common/AuthForm'
 
 export default {
   title: 'Common/AuthForm',

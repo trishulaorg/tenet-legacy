@@ -1,11 +1,11 @@
 import { observer } from 'mobx-react'
 import React from 'react'
-import { Post } from '../post/Post'
-import { PostForm } from '../common/PostForm'
+import { Post } from '@/src/ui/post/Post'
+import { PostForm } from '@/src/ui/common/PostForm'
 import Link from 'next/link'
 import { ChatIcon, MinusCircleIcon, PlusCircleIcon } from '@heroicons/react/solid'
-import { MultiLineText } from '../common/MultiLineText'
-import { WithPrimaryButtonStyling } from '../common/Primitives'
+import { MultiLineText } from '@/src/ui/common/MultiLineText'
+import { WithPrimaryButtonStyling } from '@/src/ui/common/Primitives'
 import { useBoard } from '@/src/states/BoardState'
 
 type BoardProps = {

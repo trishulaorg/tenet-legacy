@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { UserIcon } from '../common/UserIcon'
+import { UserIcon } from '@/src/ui/common/UserIcon'
 
 export type UserIconForHeaderProps = {
   size: 'sm' | 'md' | 'lg'

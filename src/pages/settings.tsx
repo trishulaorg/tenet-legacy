@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Settings } from '../ui/settings/Settings'
+import { Settings } from '@/src/ui/settings/Settings'
 
 const SettingsPage: NextPage = () => {
   return (

@@ -1,11 +1,11 @@
 import type { ReactElement } from 'react'
-import { NotificationList } from '../ui/notification/NotificationList' //TODO: Make notification list component
-// import { PageTitle } from '../../ui/PageTitle'; // TODO: Make page title component
+import { NotificationList } from '@/src/ui/notification/NotificationList' //TODO: Make notification list component
+// import { PageTitle } from '@/src/ui/PageTitle'; // TODO: Make page title component
 import { useObserver } from 'mobx-react-lite'
 import { NotificationStateImpl } from '@/src/infrastructure/states/NotificationStateImpl'
 import { NotificationStateProvider } from '@/src/states/NotificationState'
 import type { NotificationData } from '@/src/domain/models/notification/NotificationData'
-// import { NotificationCard } from '../../ui/notification/NotificationCard';
+// import { NotificationCard } from '@/src/ui/notification/NotificationCard';
 
 export default function NotificationPage(): ReactElement {
   const notifications = [

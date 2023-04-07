@@ -1,6 +1,6 @@
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import SettingsPage from '../../pages/settings'
+import SettingsPage from '@/src/pages/settings'
 
 export default {
   title: 'Pages/SettingsPage',

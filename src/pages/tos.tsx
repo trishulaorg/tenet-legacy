@@ -1,5 +1,5 @@
 import ReactMarkdown from 'react-markdown'
-import { PageContentLayout } from '../ui/layouts/PageContentLayout'
+import { PageContentLayout } from '@/src/ui/layouts/PageContentLayout'
 
 const tos = `
 

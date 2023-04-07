@@ -6,8 +6,8 @@ import type { PersonaScreenName } from '@/src/domain/models/persona/PersonaScree
 import { UserStateProvider } from '@/src/states/UserState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
-import SetPersonaIconPage from '../../pages/persona/settings/icon'
-import iconImage from '../static/icon.png'
+import SetPersonaIconPage from '@/src/pages/persona/settings/icon'
+import iconImage from '@/src/stories/static/icon.png'
 
 export default {
   title: 'Pages/SetPersonaIconPage',

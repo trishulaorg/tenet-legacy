@@ -1,7 +1,7 @@
 import type { PostContent } from '@/src/domain/models/post/PostContent'
 import { useUserState } from '@/src/states/UserState'
 import React, { useState } from 'react'
-import { Button } from '../common/Button'
+import { Button } from '@/src/ui/common/Button'
 
 export const CommentInput: React.FC<{ onSubmit: (comment: PostContent) => void }> = (props) => {
   const [comment, setComment] = useState<PostContent>('' as PostContent)

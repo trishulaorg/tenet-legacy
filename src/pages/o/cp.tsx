@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import { PageContentLayout } from '../../ui/layouts/PageContentLayout'
-import { CreateNewPost } from '../../ui/board/CreateNewPost'
+import { PageContentLayout } from '@/src/ui/layouts/PageContentLayout'
+import { CreateNewPost } from '@/src/ui/board/CreateNewPost'
 import type { BoardId } from '@/src/domain/models/board/BoardId'
 
 const CreatePostPage: NextPage = () => {

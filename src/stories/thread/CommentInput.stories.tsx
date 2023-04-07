@@ -7,8 +7,8 @@ import { UserStateProvider } from '@/src/states/UserState'
 import type { ComponentStory } from '@storybook/react'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
-import { CommentInput } from '../../ui/thread/CommentInput'
-import iconImage from '../static/icon.png'
+import { CommentInput } from '@/src/ui/thread/CommentInput'
+import iconImage from '@/src/stories/static/icon.png'
 
 export default {
   title: 'CommentInput',

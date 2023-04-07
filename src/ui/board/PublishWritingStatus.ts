@@ -1,6 +1,6 @@
 import type { DebouncedState } from 'use-debounce'
 import { useDebouncedCallback } from 'use-debounce'
-import { useApiClient } from '../../states/ApiClientState'
+import { useApiClient } from '@/src/states/ApiClientState'
 import type { PersonaId } from '@/src/domain/models/persona/PersonaId'
 import type { PostId } from '@/src/domain/models/post/PostId'
 import { useUserState } from '@/src/states/UserState'
