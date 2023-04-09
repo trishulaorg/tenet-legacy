@@ -2,6 +2,9 @@ import '../styles/global.css'
 import '!style-loader!css-loader!postcss-loader!tailwindcss/tailwind.css'
 import { themes } from '@storybook/theming'
 import { RouterContext } from "next/dist/shared/lib/router-context";
+import { SnackbarProvider } from '@/ui/snackbar/SnackbarProvider'
+import { ApiClientProvider } from '@/states/ApiClientState'
+import { apiClientMockImpl } from '@/infrastructure/apiClientMockImpl'
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -23,3 +26,22 @@ export const parameters = {
     stylePreview: true,
   }
 }
+
+export const decorators = [
+  (Story) => (
+    <SnackbarProvider
+      value={{
+        enqueueError: () => {
+          return
+        },
+        clearError: () => {
+          return
+        },
+      }}
+    >
+      <ApiClientProvider value={apiClientMockImpl}>
+        <Story />
+      </ApiClientProvider>
+    </SnackbarProvider>
+  ),
+]

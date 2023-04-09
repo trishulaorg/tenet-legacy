@@ -1,22 +1,28 @@
-import type { ValidationErrors } from '@/types/ValidationErrors'
-import type { Schema } from 'zod'
+import type { z } from 'zod'
 import { ZodError } from 'zod'
-import mapObject from 'map-obj'
+import type { DirtyFields, ValidationErrors } from '@/libs/useForm'
+import { getByPath } from './getByPath'
+import { setByPath } from './setByPath'
 
-export function zodResolver<FormType>(schema: Schema): {
-  validate: (form: FormType) => ValidationErrors<FormType>
+export function zodResolver<T>(schema: z.ZodType<T>): {
+  validate: (form: T, dirtyFields: DirtyFields<T>) => ValidationErrors<T>
 } {
   return {
-    validate: (form: FormType) => {
+    validate: (form: T, dirtyFields: DirtyFields<T>) => {
       try {
         schema.parse(form)
         return {}
       } catch (error) {
         if (error instanceof ZodError) {
-          return mapObject(error.formErrors.fieldErrors, (key, value) => [
-            String(key),
-            value?.join(),
-          ]) as ValidationErrors<FormType>
+          const validationErrors: ValidationErrors<T> = {}
+          for (const issue of error.issues) {
+            const path = issue.path.join('.')
+            if (getByPath(dirtyFields, path as never) !== true) {
+              continue
+            }
+            setByPath(validationErrors, path as never, issue.message as never, true)
+          }
+          return validationErrors
         }
         return {}
       }

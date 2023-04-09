@@ -16,7 +16,7 @@ describe('getByPath', () => {
         },
       },
     }
-    const result = getByPath<Target, ['a', 'b', 'c']>(target, ['a', 'b', 'c'])
+    const result = getByPath(target, 'a.b.c')
     expect(result).toBe(1)
   })
 })

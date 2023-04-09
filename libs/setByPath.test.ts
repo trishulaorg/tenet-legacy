@@ -16,7 +16,7 @@ describe('setByPath', () => {
         },
       },
     }
-    const result = setByPath<Target, ['a', 'b', 'c']>(target, ['a', 'b', 'c'], 2)
+    const result = setByPath(target, 'a.b.c', 2)
     expect(result).toEqual({
       a: {
         b: {

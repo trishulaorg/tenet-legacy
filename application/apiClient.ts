@@ -4,6 +4,8 @@ import type { BoardId } from '@/domain/models/board/BoardId'
 import type { BoardTitle } from '@/domain/models/board/BoardTitle'
 import type { BoardWithPosts } from '@/domain/models/board/BoardWithPosts'
 import type { TopicId } from '@/domain/models/board/TopicId'
+import type { EmailAddress } from '@/domain/models/common/EmailAddress'
+import type { Password } from '@/domain/models/common/Password'
 import type { Persona } from '@/domain/models/persona/Persona'
 import type { PersonaIconUrl } from '@/domain/models/persona/PersonaIconUrl'
 import type { PersonaId } from '@/domain/models/persona/PersonaId'
@@ -21,6 +23,11 @@ import type { Thread } from '@/domain/models/thread/Thread'
 import type { ThreadContent } from '@/domain/models/thread/ThreadContent'
 import type { ThreadId } from '@/domain/models/thread/ThreadId'
 import type { User } from '@/domain/models/user/User'
+
+export type SignInParams = {
+  emailAddress: EmailAddress
+  password: Password
+}
 
 export type GetActivitiesParams = {
   personaId?: PersonaId
@@ -107,6 +114,7 @@ export type UnfollowBoardParams = {
 }
 
 export type ApiClient = {
+  signIn(params: SignInParams): Promise<void>
   getActivities(params?: GetActivitiesParams): Promise<Post[]>
   getBoard(params: GetBoardParams): Promise<BoardWithPosts>
   getMe(): Promise<User>

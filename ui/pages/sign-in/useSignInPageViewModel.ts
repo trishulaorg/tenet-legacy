@@ -1,15 +1,18 @@
-import type { HandleChangeFactoryType } from '@/libs/useForm'
+import { validationErrorMessages } from '@/constants/validationErrorMessages'
+import type { EmailAddress } from '@/domain/models/common/EmailAddress'
+import type { Password } from '@/domain/models/common/Password'
+import type { HandleChangeFactoryType, ValidationErrors } from '@/libs/useForm'
 import { useForm } from '@/libs/useForm'
 import { zodResolver } from '@/libs/zodResolver'
-import type { ValidationErrors } from '@/types/ValidationErrors'
 import { z } from 'zod'
+import { useSignIn } from './useSignIn'
 
-const validationSchema = z
-  .object({
-    email: z.string().email(),
-    password: z.string(),
-  })
-  .required()
+const validationSchema = z.object({
+  email: z.string().nonempty(validationErrorMessages.required).email(validationErrorMessages.email),
+  password: z.object({
+    y: z.string().nonempty(validationErrorMessages.required),
+  }),
+})
 
 export type SignInForm = z.infer<typeof validationSchema>
 
@@ -20,18 +23,25 @@ export function useSignInPageViewModel(): {
     validationErrors: ValidationErrors<SignInForm>
     handleChangeFactory: HandleChangeFactoryType<SignInForm>
   }
-  error?: Error
+  isLoading: boolean
 } {
   const { form, handleChangeFactory, validationErrors } = useForm<SignInForm>({
     defaultValues: {
       email: '',
-      password: '',
+      password: {
+        y: '',
+      },
     },
     validator: zodResolver(validationSchema),
   })
 
+  const { signIn, isLoading } = useSignIn()
+
   function handleSubmit(): void {
-    return
+    signIn({
+      emailAddress: form.email as EmailAddress,
+      password: form.password.y as Password,
+    })
   }
 
   return {
@@ -41,5 +51,6 @@ export function useSignInPageViewModel(): {
       handleSubmit,
       validationErrors,
     },
+    isLoading,
   }
 }

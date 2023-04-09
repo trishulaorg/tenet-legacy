@@ -31,6 +31,10 @@ import type { ThreadImageUrl } from '@/domain/models/thread/ThreadImageUrl'
 import { GraphQLClient } from 'graphql-request'
 
 export const createApiClientImpl = (sdk: ReturnType<typeof getSdk>): ApiClient => ({
+  async signIn() {
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    throw new Error('Not implemented')
+  },
   async getActivities(params) {
     const { activities } = await sdk.getActivities({
       personaId: params?.personaId == null ? null : Number(params.personaId),

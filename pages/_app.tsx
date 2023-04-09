@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app'
+import { SnackbarProvider as NotistackProvider } from 'notistack'
 import { ThemeProvider } from 'next-themes'
 import type { ReactElement } from 'react'
 import { useState, useEffect } from 'react'
@@ -12,6 +13,8 @@ import { UserStateImpl } from '@/infrastructure/states/UserStateImpl'
 import { UserStateProvider } from '@/states/UserState'
 import { HeaderStateProvider } from '@/states/HeaderState'
 import { HeaderStateImpl } from '@/infrastructure/states/HeaderStateImpl'
+import { SnackbarProvider } from '@/ui/snackbar/SnackbarProvider'
+import { useSnackbarImpl } from '@/ui/snackbar/useSnackbarImpl'
 
 export default function App({ Component, pageProps }: AppProps): ReactElement {
   const [userState, setUserState] = useState<UserState | null>(null)
@@ -37,21 +40,31 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
 
   return (
     <ThemeProvider attribute="class">
-      <ApiClientProvider value={apiClientMockImpl}>
-        <UserStateProvider value={userState}>
-          <PageBaseLayout
-            header={
-              <HeaderStateProvider
-                value={userState == null ? null : new HeaderStateImpl(userState)}
+      <NotistackProvider>
+        <DependenciesInjector>
+          <ApiClientProvider value={apiClientMockImpl}>
+            <UserStateProvider value={userState}>
+              <PageBaseLayout
+                header={
+                  <HeaderStateProvider
+                    value={userState == null ? null : new HeaderStateImpl(userState)}
+                  >
+                    <Header />
+                  </HeaderStateProvider>
+                }
               >
-                <Header />
-              </HeaderStateProvider>
-            }
-          >
-            <Component {...pageProps} />
-          </PageBaseLayout>
-        </UserStateProvider>
-      </ApiClientProvider>
+                <Component {...pageProps} />
+              </PageBaseLayout>
+            </UserStateProvider>
+          </ApiClientProvider>
+        </DependenciesInjector>
+      </NotistackProvider>
     </ThemeProvider>
   )
+}
+
+const DependenciesInjector: React.FC = ({ children }) => {
+  // useStackbarImpl depends on Provider of notistack.
+  const snackbarImpl = useSnackbarImpl()
+  return <SnackbarProvider value={snackbarImpl}>{children}</SnackbarProvider>
 }

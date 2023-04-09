@@ -10,6 +10,9 @@ import type { Thread } from '@/domain/models/thread/Thread'
 import type { User } from '@/domain/models/user/User'
 
 export const defaultApiClient: ApiClient = {
+  signIn: function (): Promise<void> {
+    throw new Error('Function not implemented.')
+  },
   getActivities: function (): Promise<Post[]> {
     throw new Error('Function not implemented.')
   },

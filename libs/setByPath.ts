@@ -1,17 +1,19 @@
-import type { Object, Any } from 'ts-toolbelt'
-import { set } from 'object-path'
+import set from 'lodash.set'
+import type { ObjectValueType } from '@/utility-types/ObjectValueType'
+import type { ObjectKeyPaths } from '@/utility-types/ObjectKeyPaths'
 
 /**
  * Returns a new object with the value of the third argument assigned to the path specified in the second argument of the first object.
  */
-export function setByPath<T extends Record<Any.Key, unknown>, P extends Object.Paths<T>>(
+export function setByPath<T extends object, P extends ObjectKeyPaths<T>>(
   target: T,
-  path: Object.Paths<T>,
-  value: Object.Path<T, P>
+  path: P,
+  value: ObjectValueType<T, P>,
+  destructive = false
 ): T {
-  const newValue = set(target, path as unknown as string[], value)
-  if (newValue == null) {
-    throw new Error('setByPath: newValue is null or undefined')
+  if (destructive) {
+    return set(target, path as unknown as string[], value)
+  } else {
+    return set({ ...target }, path as unknown as string[], value)
   }
-  return target
 }

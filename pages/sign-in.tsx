@@ -9,7 +9,7 @@ import { Paragraph } from '@/ui/common/Paragraph'
 import { Link } from '@/ui/common/Link'
 
 const SignInPage: NextPage = () => {
-  const { formState } = useSignInPageViewModel()
+  const { formState, isLoading } = useSignInPageViewModel()
 
   return (
     <div className="h-full flex items-center justify-center">
@@ -20,17 +20,23 @@ const SignInPage: NextPage = () => {
             type="email"
             label="Email"
             value={formState.form.email}
-            onChange={formState.handleChangeFactory<['email']>(['email'])}
+            onChange={formState.handleChangeFactory('email')}
             errorMessage={formState.validationErrors.email}
           />
           <TextField
             type="password"
             label="Password"
-            value={formState.form.password}
-            onChange={formState.handleChangeFactory<['password']>(['password'])}
-            errorMessage={formState.validationErrors.password}
+            value={formState.form.password.y}
+            onChange={formState.handleChangeFactory('password.y')}
+            errorMessage={formState.validationErrors.password?.y}
           />
-          <Button className="w-full" type="submit" label="Sign in" size="normal" />
+          <Button
+            className="w-full"
+            type="submit"
+            label="Sign in"
+            size="normal"
+            isLoading={isLoading}
+          />
         </Form>
         <div className="mt-5">
           <Paragraph>

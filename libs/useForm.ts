@@ -1,33 +1,45 @@
 import { useState } from 'react'
-import type { Object } from 'ts-toolbelt'
 import { setByPath } from '@/libs/setByPath'
-import type { ValidationErrors } from '@/types/ValidationErrors'
+import type { ObjectKeyPaths } from '@/utility-types/ObjectKeyPaths'
+import type { ObjectValueType } from '@/utility-types/ObjectValueType'
+import type { PartialDeepMap } from '@/utility-types/PartialDeepMap'
 
-export type HandleChangeFactoryType<FormType> = <Path extends Object.Paths<FormType>>(
-  path: Path
-) => (value: Object.Path<FormType, Path>) => void
+export type ValidationErrors<T> = PartialDeepMap<T, string>
+export type DirtyFields<T> = PartialDeepMap<T, boolean>
 
-export function useForm<FormType extends Record<string, unknown>>(params: {
-  defaultValues: FormType
+export type HandleChangeFactoryType<T extends object> = <P extends ObjectKeyPaths<T>>(
+  path: P
+) => (value: ObjectValueType<T, P>) => void
+
+export function useForm<T extends object>(params: {
+  defaultValues: T
   validator: {
-    validate: (form: FormType) => ValidationErrors<FormType>
+    validate: (form: T, dirtyFields: DirtyFields<T>) => ValidationErrors<T>
   }
 }): {
-  form: FormType
-  validationErrors: ValidationErrors<FormType>
-  handleChangeFactory: HandleChangeFactoryType<FormType>
+  form: T
+  validationErrors: ValidationErrors<T>
+  handleChangeFactory: HandleChangeFactoryType<T>
 } {
   const { defaultValues, validator } = params
-  const [form, setForm] = useState<FormType>(defaultValues)
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors<FormType>>({})
+  const [form, setForm] = useState<T>(defaultValues)
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors<T>>({})
+  const [dirtyFields, setDirtyFields] = useState<DirtyFields<T>>({})
 
-  function handleChangeFactory<
-    Path extends Object.Paths<FormType>,
-    Value extends Object.Path<FormType, Path>
-  >(path: Path): (value: Value) => void {
-    return (value: Value) => {
-      setValidationErrors(validator.validate(form))
-      setForm(setByPath<FormType, Path>(form, path, value))
+  function handleChangeFactory<P extends ObjectKeyPaths<T>>(
+    path: P
+  ): (value: ObjectValueType<T, P>) => void {
+    return (value: ObjectValueType<T, P>) => {
+      // type puzzle is not perfect
+      const newDirtyFields = setByPath(
+        dirtyFields,
+        path,
+        true as ObjectValueType<PartialDeepMap<T, boolean>, P>
+      )
+      setDirtyFields(newDirtyFields)
+      const newForm = setByPath(form, path, value)
+      setValidationErrors(validator.validate(newForm, newDirtyFields))
+      setForm(newForm)
     }
   }
 
