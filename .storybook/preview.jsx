@@ -26,7 +26,6 @@ export const parameters = {
     stylePreview: true,
   }
 }
-<<<<<<< HEAD:.storybook/preview.jsx
 
 export const decorators = [
   (Story) => (
@@ -46,5 +45,3 @@ export const decorators = [
     </SnackbarProvider>
   ),
 ]
-=======
->>>>>>> v2:.storybook/preview.js
