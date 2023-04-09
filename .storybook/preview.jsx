@@ -1,4 +1,4 @@
-import '../styles/global.css'
+import '@/src/styles/global.css'
 import '!style-loader!css-loader!postcss-loader!tailwindcss/tailwind.css'
 import { themes } from '@storybook/theming'
 import { RouterContext } from "next/dist/shared/lib/router-context";
@@ -26,6 +26,7 @@ export const parameters = {
     stylePreview: true,
   }
 }
+<<<<<<< HEAD:.storybook/preview.jsx
 
 export const decorators = [
   (Story) => (
@@ -45,3 +46,5 @@ export const decorators = [
     </SnackbarProvider>
   ),
 ]
+=======
+>>>>>>> v2:.storybook/preview.js

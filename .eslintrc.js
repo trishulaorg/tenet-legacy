@@ -62,6 +62,9 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'off',
         'jsx-a11y/alt-text': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
+
+        // import with relative paths is not allowed
+        "no-restricted-imports": ["error", { "patterns": ["../"] }],
       },
 
     },

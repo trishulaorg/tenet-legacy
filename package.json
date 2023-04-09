@@ -25,16 +25,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/minamorl/tenet.git"
+    "url": "https://github.com/trishulaorg/tenet.git"
   },
-  "author": {
-    "name": "minamorl"
-  },
-  "license": "UNLICENSED",
   "bugs": {
-    "url": "https://github.com/minamorl/tenet/issues"
+    "url": "https://github.com/trishulaorg/tenet/issues"
   },
-  "homepage": "https://github.com/minamorl/tenet#readme",
   "devDependencies": {
     "@apollo/server": "^4.4.0",
     "@babel/core": "^7.17.2",
@@ -142,8 +137,6 @@
   "engines": {
     "node": "18.x"
   },
-  "readme": "ERROR: No README data found!",
-  "_id": "tenet@0.0.1",
   "msw": {
     "workerDirectory": "public"
   }
