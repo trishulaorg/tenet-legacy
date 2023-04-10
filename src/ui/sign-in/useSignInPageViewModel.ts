@@ -19,13 +19,14 @@ export type SignInForm = z.infer<typeof validationSchema>
 export function useSignInPageViewModel(): {
   formState: {
     form: SignInForm
+    isValid: boolean
     handleSubmit: () => void
     validationErrors: ValidationErrors<SignInForm>
     handleChangeFactory: HandleChangeFactoryType<SignInForm>
   }
   isLoading: boolean
 } {
-  const { form, handleChangeFactory, validationErrors } = useForm<SignInForm>({
+  const { form, handleChangeFactory, validationErrors, isValid } = useForm<SignInForm>({
     defaultValues: {
       email: '',
       password: {
@@ -47,6 +48,7 @@ export function useSignInPageViewModel(): {
   return {
     formState: {
       form,
+      isValid,
       handleChangeFactory,
       handleSubmit,
       validationErrors,

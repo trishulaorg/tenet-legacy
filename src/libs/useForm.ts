@@ -18,6 +18,7 @@ export function useForm<T extends object>(params: {
   }
 }): {
   form: T
+  isValid: boolean
   validationErrors: ValidationErrors<T>
   handleChangeFactory: HandleChangeFactoryType<T>
 } {
@@ -45,6 +46,7 @@ export function useForm<T extends object>(params: {
 
   return {
     form,
+    isValid: Object.keys(validationErrors).length === 0,
     validationErrors,
     handleChangeFactory,
   }

@@ -8,10 +8,11 @@ type Props = {
   value: string
   errorMessage?: string | undefined
   onChange: (value: string) => void
+  disabled?: boolean
 }
 
 export const TextField: React.FC<Props> = (props) => {
-  const { className, type, label, value, errorMessage, onChange } = props
+  const { className, type, label, value, errorMessage, onChange, disabled = false } = props
   function handleChange(e: SyntheticEvent<HTMLInputElement>): void {
     onChange(e.currentTarget.value)
   }
@@ -19,10 +20,11 @@ export const TextField: React.FC<Props> = (props) => {
     <label className={classNames(className, 'block w-full flex flex-col')}>
       <span className="block text-sm text-gray-900 dark:text-white mb-1">{label}</span>
       <input
-        className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400"
+        className="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 disabled:opacity-50"
         type={type}
         value={value}
         onChange={handleChange}
+        disabled={disabled}
       />
       {errorMessage != null && <span className="text-red-500 text-sm mt-1">{errorMessage}</span>}
     </label>

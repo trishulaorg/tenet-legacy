@@ -22,6 +22,7 @@ const SignInPage: NextPage = () => {
             value={formState.form.email}
             onChange={formState.handleChangeFactory('email')}
             errorMessage={formState.validationErrors.email}
+            disabled={isLoading}
           />
           <TextField
             type="password"
@@ -29,6 +30,7 @@ const SignInPage: NextPage = () => {
             value={formState.form.password.y}
             onChange={formState.handleChangeFactory('password.y')}
             errorMessage={formState.validationErrors.password?.y}
+            disabled={isLoading}
           />
           <Button
             className="w-full"
@@ -36,6 +38,7 @@ const SignInPage: NextPage = () => {
             label="Sign in"
             size="normal"
             isLoading={isLoading}
+            disabled={!formState.isValid}
           />
         </Form>
         <div className="mt-5">
