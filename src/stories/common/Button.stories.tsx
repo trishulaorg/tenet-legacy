@@ -16,16 +16,37 @@ PrimarySmall.args = {
   label: 'Button',
 }
 
+export const PrimarySmallLoading = Template.bind({})
+PrimarySmallLoading.args = {
+  size: 'small',
+  label: 'Button',
+  isLoading: true,
+}
+
 export const PrimaryNormal = Template.bind({})
 PrimaryNormal.args = {
   size: 'normal',
   label: 'Button',
 }
 
+export const PrimaryNormalLoading = Template.bind({})
+PrimaryNormalLoading.args = {
+  size: 'normal',
+  label: 'Button',
+  isLoading: true,
+}
+
 export const PrimaryBig = Template.bind({})
 PrimaryBig.args = {
   size: 'big',
   label: 'Button',
+}
+
+export const PrimaryBigLoading = Template.bind({})
+PrimaryBigLoading.args = {
+  size: 'big',
+  label: 'Button',
+  isLoading: true,
 }
 
 export const PrimarySmallWithIcon = Template.bind({})

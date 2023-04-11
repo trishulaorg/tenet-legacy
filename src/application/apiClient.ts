@@ -21,6 +21,13 @@ import type { Thread } from '@/src/domain/models/thread/Thread'
 import type { ThreadContent } from '@/src/domain/models/thread/ThreadContent'
 import type { ThreadId } from '@/src/domain/models/thread/ThreadId'
 import type { User } from '@/src/domain/models/user/User'
+import type { EmailAddress } from '@/src/domain/models/common/EmailAddress'
+import type { Password } from '@/src/domain/models/common/Password'
+
+export type SignInParams = {
+  emailAddress: EmailAddress
+  password: Password
+}
 
 export type GetActivitiesParams = {
   personaId?: PersonaId
@@ -107,6 +114,7 @@ export type UnfollowBoardParams = {
 }
 
 export type ApiClient = {
+  signIn(params: SignInParams): Promise<void>
   getActivities(params?: GetActivitiesParams): Promise<Post[]>
   getBoard(params: GetBoardParams): Promise<BoardWithPosts>
   getMe(): Promise<User>
