@@ -20,16 +20,16 @@ const persona: Persona = {
   screenName: 'John' as PersonaScreenName,
 }
 export const NotificationCardLikeStory: ComponentStory<typeof NotificationCard> = () => (
-  <NotificationCard type="like" sender={persona} recepient={persona} message={'liked your post'} />
+  <NotificationCard type="like" sender={persona} recipient={persona} message={'liked your post'} />
 )
 export const NotificationCardFollowStory: ComponentStory<typeof NotificationCard> = () => (
-  <NotificationCard type="follow" sender={persona} recepient={persona} message={'follow you'} />
+  <NotificationCard type="follow" sender={persona} recipient={persona} message={'follow you'} />
 )
 export const NotificationCardCommentStory: ComponentStory<typeof NotificationCard> = () => (
   <NotificationCard
     type="comment"
     sender={persona}
-    recepient={persona}
+    recipient={persona}
     message={'commented on your post'}
   />
 )

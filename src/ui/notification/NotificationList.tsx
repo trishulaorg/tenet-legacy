@@ -16,7 +16,7 @@ export const NotificationList: React.FC<NotificationListProps> = ({ notification
       <NotificationCard
         key={i}
         sender={notification.sender}
-        recepient={notification.recepient}
+        recipient={notification.recipient}
         message={notification.message}
         type={notification.type}
       />
