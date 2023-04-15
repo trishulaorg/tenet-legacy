@@ -3,7 +3,7 @@ import type { NotificationType } from '@/src/domain/models/notification/Notifica
 
 export type NotificationState = Readonly<{
   sender: Persona | undefined
-  recepient: Persona | undefined
+  recipient: Persona | undefined
   type: NotificationType
   message: string | undefined
   createdAt: Date
