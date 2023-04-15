@@ -12,8 +12,8 @@ const SignInPage: NextPage = () => {
   const { formState, isLoading } = useSignInPageViewModel()
 
   return (
-    <div className="h-full flex items-center justify-center">
-      <Card className="flex flex-col items-center max-w-md w-full">
+    <div className="flex items-center justify-center">
+      <Card className="my-24 flex flex-col items-center max-w-md w-full">
         <CardTitle title="Sign in" />
         <Form onSubmit={formState.handleSubmit}>
           <TextField

@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { SearchBoxTextField } from './SearchBoxTextField'
+import classNames from 'classnames'
 
-export const SearchBox: React.FC = () => {
+export const SearchBox: React.FC<{ className?: string }> = ({ className }) => {
   const [query, setQuery] = useState('')
   const [visibility, setVisibility] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -20,7 +21,7 @@ export const SearchBox: React.FC = () => {
     return () => document.removeEventListener('mousedown', mouseDownHandler)
   }, [ref])
   return (
-    <div className="relative" ref={ref}>
+    <div className={classNames('relative flex items-center', className)} ref={ref}>
       <SearchBoxTextField query={query} onChange={onChange} onFocus={() => setVisibility(true)} />
       {visibility ? (
         <div className="absolute bg-contentbg dark:bg-contentbg-dark transition-colors duration-350 w-full rounded border dark:border-low z-10">
