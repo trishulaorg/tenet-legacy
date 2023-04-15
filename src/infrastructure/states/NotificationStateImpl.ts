@@ -9,7 +9,7 @@ export class NotificationStateImpl implements NotificationState {
   private _message?: string | undefined
   private _createdAt: Date
   sender: Persona | undefined
-  recepient: Persona | undefined
+  recipient: Persona | undefined
 
   constructor(data: NotificationData) {
     this._type = data.type

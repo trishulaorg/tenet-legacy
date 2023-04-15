@@ -1,5 +1,5 @@
 // Generate <NotificationCard /> component
-// which has 4 props: sender, recepient, message, type (like, comment, follow, unfollow)
+// which has 4 props: sender, recipient, message, type (like, comment, follow, unfollow)
 
 // Path: ui/notification/NotificationCard.tsx
 import type { Persona } from '@/src/domain/models/persona/Persona'
@@ -8,14 +8,14 @@ import React from 'react'
 
 export interface NotificationCardProps {
   sender?: Persona | undefined
-  recepient: Persona | undefined
+  recipient: Persona | undefined
   message?: string | undefined
   type: 'like' | 'comment' | 'follow'
 }
 
 export const NotificationCard: React.FC<NotificationCardProps> = ({
   sender,
-  recepient,
+  recipient,
   message,
   type,
 }) => {
@@ -35,7 +35,7 @@ export const NotificationCard: React.FC<NotificationCardProps> = ({
             From {sender?.screenName ? sender?.screenName : 'Coton'}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {recepient?.screenName ? recepient?.screenName : ''}
+            {recipient?.screenName ? recipient?.screenName : ''}
           </p>
         </div>
       </div>
