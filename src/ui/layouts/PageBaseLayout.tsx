@@ -7,7 +7,7 @@ export const PageBaseLayout = ({
   children: ReactElement
   header: ReactElement
 }): ReactElement => (
-  <div className="flex flex-col transition-colors duration-350 h-max min-h-screen">
+  <div className="flex flex-col transition-colors duration-350 min-h-screen">
     <div
       style={{
         backgroundImage: "url('/wallpaper.jpg')",
@@ -21,6 +21,6 @@ export const PageBaseLayout = ({
     />
     <header className="shrink-0">{header}</header>
     {/* height: 0 because we want to specify the height relative to the main child element. */}
-    <main className="grow h-0">{children}</main>
+    <main className="grow">{children}</main>
   </div>
 )
