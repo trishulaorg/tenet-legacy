@@ -24,6 +24,11 @@ import type { User } from '@/src/domain/models/user/User'
 import type { EmailAddress } from '@/src/domain/models/common/EmailAddress'
 import type { Password } from '@/src/domain/models/common/Password'
 
+export type SignUpParams = {
+  emailAddress: EmailAddress
+  password: Password
+}
+
 export type SignInParams = {
   emailAddress: EmailAddress
   password: Password
@@ -114,6 +119,7 @@ export type UnfollowBoardParams = {
 }
 
 export type ApiClient = {
+  signUp(params: SignUpParams): Promise<void>
   signIn(params: SignInParams): Promise<void>
   getActivities(params?: GetActivitiesParams): Promise<Post[]>
   getBoard(params: GetBoardParams): Promise<BoardWithPosts>
