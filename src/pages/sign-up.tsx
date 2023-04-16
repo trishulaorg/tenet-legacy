@@ -6,15 +6,15 @@ import { Card } from '@/src/ui/board/Card'
 import { CardTitle } from '@/src/ui/common/CardTitle'
 import { Paragraph } from '@/src/ui/common/Paragraph'
 import { Link } from '@/src/ui/common/Link'
-import { useSignInPageViewModel } from '@/src/ui/sign-in/useSignInPageViewModel'
+import { useSignUpPageViewModel } from '@/src/ui/sign-up/useSignUpPageViewModel'
 
-const SignInPage: NextPage = () => {
-  const { formState, isLoading } = useSignInPageViewModel()
+const SignUpPage: NextPage = () => {
+  const { formState, isLoading } = useSignUpPageViewModel()
 
   return (
     <div className="flex items-center justify-center">
       <Card className="my-24 flex flex-col items-center max-w-md w-full">
-        <CardTitle title="Sign in" />
+        <CardTitle title="Sign up" />
         <Form onSubmit={formState.handleSubmit}>
           <TextField
             type="email"
@@ -35,7 +35,7 @@ const SignInPage: NextPage = () => {
           <Button
             className="w-full"
             type="submit"
-            label="Sign in"
+            label="Sign up"
             size="normal"
             isLoading={isLoading}
             disabled={!formState.isValid}
@@ -43,10 +43,7 @@ const SignInPage: NextPage = () => {
         </Form>
         <div className="mt-5">
           <Paragraph>
-            Don&apos;t have an account? <Link href="/sign-up">Sign up</Link>
-          </Paragraph>
-          <Paragraph>
-            Forgot password? <Link href="/reset-password">Reset password</Link>
+            Already have an account? <Link href="/sign-in">Sign in</Link>
           </Paragraph>
         </div>
       </Card>
@@ -54,4 +51,4 @@ const SignInPage: NextPage = () => {
   )
 }
 
-export default SignInPage
+export default SignUpPage

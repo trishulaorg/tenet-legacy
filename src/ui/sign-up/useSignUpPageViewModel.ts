@@ -5,26 +5,32 @@ import type { HandleChangeFactoryType, ValidationErrors } from '@/src/libs/useFo
 import { useForm } from '@/src/libs/useForm'
 import { zodResolver } from '@/src/libs/zodResolver'
 import { z } from 'zod'
-import { useSignIn } from './useSignIn'
+import { useSignUp } from './useSignUp'
+import { passwordPolicy } from '@/src/libs/passwordPolicy'
 
 const validationSchema = z.object({
   email: z.string().nonempty(validationErrorMessages.required).email(validationErrorMessages.email),
-  password: z.string().nonempty(validationErrorMessages.required),
+  password: z
+    .string()
+    .min(8, validationErrorMessages.passwordMin)
+    .max(100, validationErrorMessages.passwordMax)
+    .regex(passwordPolicy, validationErrorMessages.passwordPolicy)
+    .nonempty(validationErrorMessages.required),
 })
 
-export type SignInForm = z.infer<typeof validationSchema>
+export type SignUpForm = z.infer<typeof validationSchema>
 
-export function useSignInPageViewModel(): {
+export function useSignUpPageViewModel(): {
   formState: {
-    form: SignInForm
+    form: SignUpForm
     isValid: boolean
     handleSubmit: () => void
-    validationErrors: ValidationErrors<SignInForm>
-    handleChangeFactory: HandleChangeFactoryType<SignInForm>
+    validationErrors: ValidationErrors<SignUpForm>
+    handleChangeFactory: HandleChangeFactoryType<SignUpForm>
   }
   isLoading: boolean
 } {
-  const { form, handleChangeFactory, validationErrors, isValid } = useForm<SignInForm>({
+  const { form, handleChangeFactory, validationErrors, isValid } = useForm<SignUpForm>({
     defaultValues: {
       email: '',
       password: '',
@@ -32,10 +38,10 @@ export function useSignInPageViewModel(): {
     validator: zodResolver(validationSchema),
   })
 
-  const { signIn, isLoading } = useSignIn()
+  const { signUp, isLoading } = useSignUp()
 
   function handleSubmit(): void {
-    signIn({
+    signUp({
       emailAddress: form.email as EmailAddress,
       password: form.password as Password,
     })
