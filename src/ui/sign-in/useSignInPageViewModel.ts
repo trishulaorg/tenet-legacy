@@ -9,9 +9,7 @@ import { useSignIn } from './useSignIn'
 
 const validationSchema = z.object({
   email: z.string().nonempty(validationErrorMessages.required).email(validationErrorMessages.email),
-  password: z.object({
-    y: z.string().nonempty(validationErrorMessages.required),
-  }),
+  password: z.string().nonempty(validationErrorMessages.required),
 })
 
 export type SignInForm = z.infer<typeof validationSchema>
@@ -29,9 +27,7 @@ export function useSignInPageViewModel(): {
   const { form, handleChangeFactory, validationErrors, isValid } = useForm<SignInForm>({
     defaultValues: {
       email: '',
-      password: {
-        y: '',
-      },
+      password: '',
     },
     validator: zodResolver(validationSchema),
   })
@@ -41,7 +37,7 @@ export function useSignInPageViewModel(): {
   function handleSubmit(): void {
     signIn({
       emailAddress: form.email as EmailAddress,
-      password: form.password.y as Password,
+      password: form.password as Password,
     })
   }
 

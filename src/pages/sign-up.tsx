@@ -27,9 +27,9 @@ const SignUpPage: NextPage = () => {
           <TextField
             type="password"
             label="Password"
-            value={formState.form.password.y}
-            onChange={formState.handleChangeFactory('password.y')}
-            errorMessage={formState.validationErrors.password?.y}
+            value={formState.form.password}
+            onChange={formState.handleChangeFactory('password')}
+            errorMessage={formState.validationErrors.password}
             disabled={isLoading}
           />
           <Button

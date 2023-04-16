@@ -6,12 +6,16 @@ import { useForm } from '@/src/libs/useForm'
 import { zodResolver } from '@/src/libs/zodResolver'
 import { z } from 'zod'
 import { useSignUp } from './useSignUp'
+import { passwordPolicy } from '@/src/libs/passwordPolicy'
 
 const validationSchema = z.object({
   email: z.string().nonempty(validationErrorMessages.required).email(validationErrorMessages.email),
-  password: z.object({
-    y: z.string().nonempty(validationErrorMessages.required),
-  }),
+  password: z
+    .string()
+    .min(8, validationErrorMessages.passwordMin)
+    .max(100, validationErrorMessages.passwordMax)
+    .regex(passwordPolicy, validationErrorMessages.passwordPolicy)
+    .nonempty(validationErrorMessages.required),
 })
 
 export type SignUpForm = z.infer<typeof validationSchema>
@@ -29,9 +33,7 @@ export function useSignUpPageViewModel(): {
   const { form, handleChangeFactory, validationErrors, isValid } = useForm<SignUpForm>({
     defaultValues: {
       email: '',
-      password: {
-        y: '',
-      },
+      password: '',
     },
     validator: zodResolver(validationSchema),
   })
@@ -41,7 +43,7 @@ export function useSignUpPageViewModel(): {
   function handleSubmit(): void {
     signUp({
       emailAddress: form.email as EmailAddress,
-      password: form.password.y as Password,
+      password: form.password as Password,
     })
   }
 
