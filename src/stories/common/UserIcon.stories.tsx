@@ -2,6 +2,7 @@ import React from 'react'
 import type { ComponentStory } from '@storybook/react'
 import { UserIcon } from '@/src/ui/common/UserIcon'
 import iconImage from '@/src/stories/static/icon.png'
+
 export default {
   title: 'Common/UserIcon',
   component: UserIcon,

@@ -1,6 +1,7 @@
 import React from 'react'
 import type { ComponentStory } from '@storybook/react'
 import { CreatedAt } from '@/src/ui/common/CreatedAt'
+
 export default {
   title: 'Common/CreatedAt',
   component: CreatedAt,
